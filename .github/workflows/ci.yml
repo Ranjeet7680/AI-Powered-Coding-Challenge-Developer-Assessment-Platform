@@ -1,0 +1,53 @@
+name: CI & Harbor Benchmark Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify:
+    name: Typecheck & Security Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify Frontend Types
+        run: |
+          cd frontend
+          npm install
+          npx tsc --noEmit
+
+      - name: Install Backend Core Dependencies
+        run: |
+          cd backend
+          pip install fastapi uvicorn pydantic pydantic-settings sqlalchemy
+
+      - name: Verify Zero-Trust Security Suite
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'backend')
+          from app.routers.auth import validate_strong_password, hash_pw, verify_pw, create_jwt_token, decode_jwt_token
+          validate_strong_password('Unhackable#Pass2026!')
+          hashed = hash_pw('Unhackable#Pass2026!')
+          assert verify_pw('Unhackable#Pass2026!', hashed)
+          assert not verify_pw('WrongPassword123!', hashed)
+          token = create_jwt_token('test-user', 'test@example.com', 'developer')
+          payload = decode_jwt_token(token)
+          assert payload['sub'] == 'test-user'
+          assert payload['email'] == 'test@example.com'
+          print('Zero-Trust Security Unit Tests: 100% PASSED')
+          "

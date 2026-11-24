@@ -9,12 +9,15 @@ from .database import engine, Base, SessionLocal
 from .models import User, Challenge, VideoLesson
 from .routers import auth, challenges, ai_generator, execution, submissions, assessments, analytics, user, videos
 
-# Ensure environment has the user's provided Gemini API Key
-USER_GEMINI_KEY = "AIzaSyCDf-9P1YGPPBnQ2MosOyGXex38yGg4Kco"
-if not os.getenv("GEMINI_API_KEY"):
-    os.environ["GEMINI_API_KEY"] = USER_GEMINI_KEY
-if not os.getenv("GOOGLE_API_KEY"):
-    os.environ["GOOGLE_API_KEY"] = USER_GEMINI_KEY
+# Load environment variables from .env if present
+env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+if os.path.exists(env_path):
+    with open(env_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -66,12 +69,12 @@ def on_startup():
                 streak=12,
                 solved_count=28,
                 has_completed_onboarding=True,
-                gemini_api_key=USER_GEMINI_KEY
+                gemini_api_key=os.getenv("GEMINI_API_KEY", "")
             )
             db.add(demo)
             db.commit()
         else:
-            demo.gemini_api_key = USER_GEMINI_KEY
+            demo.gemini_api_key = os.getenv("GEMINI_API_KEY", "")
             db.commit()
 
         # Seed initial challenges, assessments, and videos

@@ -4,7 +4,7 @@ import re
 import requests
 from typing import Dict, Any, Optional
 
-DEFAULT_GEMINI_KEY = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", "AIzaSyCDf-9P1YGPPBnQ2MosOyGXex38yGg4Kco"))
+DEFAULT_GEMINI_KEY = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
 
 def clean_json_response(text: str) -> str:
     """Removes markdown code blocks if the model wraps JSON in ```json ... ```"""

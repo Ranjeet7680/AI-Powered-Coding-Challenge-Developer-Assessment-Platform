@@ -2,10 +2,15 @@
 ### Coding Task Factory & TaskForge Pipeline (Innodata AI Hackathon — Track 1)
 *"Create. Code. Evaluate. Improve."*
 
+📖 **Official Project Documentation & Architecture Wiki**:  
+👉 [Home · Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform Wiki](https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform/wiki)
+
+[![GitHub Wiki](https://img.shields.io/badge/GitHub%20Wiki-Documentation%20%26%20Architecture-7928CA?style=for-the-badge&logo=github)](https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform/wiki)
 [![Harbor Framework](https://img.shields.io/badge/Harbor-0.25.x-blue.svg)](https://github.com/avfoundation/harbor)
 [![Validation Matrix](https://img.shields.io/badge/Validation%20Matrix-100%25%20Passed-emerald.svg)](validation_evidence/validation_summary.md)
 [![Mutation Testing](https://img.shields.io/badge/Mutation%20Kill%20Rate-100.0%25-brightgreen.svg)](validation_evidence/mutation_summary.md)
 [![Security Standard](https://img.shields.io/badge/Security-PBKDF2%20100k%20%7C%20HMAC--SHA256%20JWT-purple.svg)](backend/app/routers/auth.py)
+[![CI Status](https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform/actions)
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
 ---
