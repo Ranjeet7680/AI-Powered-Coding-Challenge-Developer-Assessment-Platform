@@ -170,7 +170,7 @@ npm run dev -- --host 127.0.0.1 --port 5173
 
 ### 3. Default Verified Test Credentials
 - **Email**: `developer@codingtaskfactory.io`
-- **Password**: `Developer@2026!` *(Or use the 1-click **"Demo Developer Login"** button on the sign-in page for instant verified access).*
+- **Password**: `Developer@2026!` *(Or register a brand new account with any valid email and strong password).*
 
 ---
 
