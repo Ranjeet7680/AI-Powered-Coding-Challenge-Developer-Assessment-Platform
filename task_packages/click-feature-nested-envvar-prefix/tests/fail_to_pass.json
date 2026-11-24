@@ -1,0 +1,4 @@
+[
+  "tests/test_feature.py::test_nested_auto_envvar_default_delimiter",
+  "tests/test_feature.py::test_nested_auto_envvar_double_underscore"
+]

@@ -1,0 +1,73 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index e630501..d3b1f06 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1212,6 +1212,7 @@ class Command(BaseCommand):
+         help: t.Optional[str] = None,
+         epilog: t.Optional[str] = None,
+         short_help: t.Optional[str] = None,
++        aliases: t.Optional[t.List[str]] = None,
+         options_metavar: t.Optional[str] = "[OPTIONS]",
+         add_help_option: bool = True,
+         no_args_is_help: bool = False,
+@@ -1227,6 +1228,7 @@ class Command(BaseCommand):
+         #: will automatically be handled before non eager ones.
+         self.params: t.List[Parameter] = params or []
+         self.help = help
++        self.aliases: t.List[str] = list(aliases) if aliases else []
+         self.epilog = epilog
+         self.options_metavar = options_metavar
+         self.short_help = short_help
+@@ -1639,7 +1641,12 @@ class MultiCommand(Command):
+             rows = []
+             for subcommand, cmd in commands:
+                 help = cmd.get_short_help_str(limit)
+-                rows.append((subcommand, help))
++                aliases = getattr(cmd, "aliases", [])
++                if aliases:
++                    display_name = f"{subcommand} ({', '.join(aliases)})"
++                else:
++                    display_name = subcommand
++                rows.append((display_name, help))
+ 
+             if rows:
+                 with formatter.section(_("Commands")):
+@@ -1840,6 +1847,10 @@ class Group(MultiCommand):
+ 
+         #: The registered subcommands by their exported names.
+         self.commands: t.MutableMapping[str, Command] = commands
++        self._alias_mapping: t.Dict[str, str] = {}
++        for cmd_name, cmd in self.commands.items():
++            for a in getattr(cmd, "aliases", []):
++                self._alias_mapping[a] = cmd_name
+ 
+     def add_command(self, cmd: Command, name: t.Optional[str] = None) -> None:
+         """Registers another :class:`Command` with this group.  If the name
+@@ -1848,6 +1859,14 @@ class Group(MultiCommand):
+         name = name or cmd.name
+         if name is None:
+             raise TypeError("Command has no name.")
++        if not hasattr(self, "_alias_mapping"):
++            self._alias_mapping = {}
++        if name in self._alias_mapping:
++            raise ValueError(f"Command name '{name}' conflicts with an existing alias.")
++        for a in getattr(cmd, "aliases", []):
++            if a in self.commands or a in self._alias_mapping:
++                raise ValueError(f"Alias '{a}' conflicts with an existing command or alias.")
++            self._alias_mapping[a] = name
+         _check_multicommand(self, name, cmd, register=True)
+         self.commands[name] = cmd
+ 
+@@ -1953,7 +1972,11 @@ class Group(MultiCommand):
+         return decorator
+ 
+     def get_command(self, ctx: Context, cmd_name: str) -> t.Optional[Command]:
+-        return self.commands.get(cmd_name)
++        if cmd_name in self.commands:
++            return self.commands[cmd_name]
++        if hasattr(self, "_alias_mapping") and cmd_name in self._alias_mapping:
++            return self.commands.get(self._alias_mapping[cmd_name])
++        return None
+ 
+     def list_commands(self, ctx: Context) -> t.List[str]:
+         return sorted(self.commands)

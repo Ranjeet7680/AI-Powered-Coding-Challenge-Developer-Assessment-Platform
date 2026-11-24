@@ -1,0 +1,5 @@
+[
+  "tests/test_feature.py::test_command_alias_dispatch",
+  "tests/test_feature.py::test_command_alias_help_formatting",
+  "tests/test_feature.py::test_alias_conflict_detection"
+]

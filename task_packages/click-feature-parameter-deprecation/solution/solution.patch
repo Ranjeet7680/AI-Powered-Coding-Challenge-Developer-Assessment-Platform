@@ -1,0 +1,87 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index 2610d0e..119e623 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -30,6 +30,7 @@ from .exceptions import Abort as Abort
+ from .exceptions import BadArgumentUsage as BadArgumentUsage
+ from .exceptions import BadOptionUsage as BadOptionUsage
+ from .exceptions import BadParameter as BadParameter
++from .exceptions import ClickDeprecationWarning as ClickDeprecationWarning
+ from .exceptions import ClickException as ClickException
+ from .exceptions import FileError as FileError
+ from .exceptions import MissingParameter as MissingParameter
+diff --git a/src/click/core.py b/src/click/core.py
+index e630501..4eda91c 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -4,6 +4,7 @@ import inspect
+ import os
+ import sys
+ import typing as t
++import warnings
+ from collections import abc
+ from contextlib import contextmanager
+ from contextlib import ExitStack
+@@ -18,6 +19,7 @@ from .exceptions import Abort
+ from .exceptions import BadParameter
+ from .exceptions import ClickException
+ from .exceptions import Exit
++from .exceptions import ClickDeprecationWarning
+ from .exceptions import MissingParameter
+ from .exceptions import UsageError
+ from .formatting import HelpFormatter
+@@ -2109,6 +2111,7 @@ class Parameter:
+                 t.Union[t.List["CompletionItem"], t.List[str]],
+             ]
+         ] = None,
++        deprecated: t.Union[bool, str] = False,
+     ) -> None:
+         self.name: t.Optional[str]
+         self.opts: t.List[str]
+@@ -2117,6 +2120,7 @@ class Parameter:
+             param_decls or (), expose_value
+         )
+         self.type: types.ParamType = types.convert_type(type, default)
++        self.deprecated = deprecated
+ 
+         # Default nargs to what the type tells us if we have that
+         # information available.
+@@ -2399,6 +2403,13 @@ class Parameter:
+             value, source = self.consume_value(ctx, opts)
+             ctx.set_parameter_source(self.name, source)  # type: ignore
+ 
++            if getattr(self, "deprecated", False) and self.name in opts:
++                if isinstance(self.deprecated, str):
++                    msg = f"Option '{self.name}' is deprecated: {self.deprecated}"
++                else:
++                    msg = f"Option '{self.name}' is deprecated and will be removed in a future release."
++                warnings.warn(msg, ClickDeprecationWarning, stacklevel=2)
++
+             try:
+                 value = self.process_value(ctx, value)
+             except Exception:
+@@ -2762,6 +2773,11 @@ class Option(Parameter):
+ 
+         help = self.help or ""
+         extra = []
++        if getattr(self, "deprecated", False):
++            if isinstance(self.deprecated, str):
++                extra.append(f"Deprecated: {self.deprecated}")
++            else:
++                extra.append("Deprecated")
+ 
+         if self.show_envvar:
+             envvar = self.envvar
+diff --git a/src/click/exceptions.py b/src/click/exceptions.py
+index 0b83151..3e81e3d 100644
+--- a/src/click/exceptions.py
++++ b/src/click/exceptions.py
+@@ -294,3 +294,8 @@ class Exit(RuntimeError):
+ 
+     def __init__(self, code: int = 0) -> None:
+         self.exit_code: int = code
++
++
++class ClickDeprecationWarning(DeprecationWarning):
++    """Warning emitted when a deprecated Click parameter or feature is used."""
++    pass

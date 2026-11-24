@@ -1,0 +1,5 @@
+[
+  "tests/test_basic.py::test_basic_functionality",
+  "tests/test_basic.py::test_prompts",
+  "tests/test_options.py::test_custom_values"
+]

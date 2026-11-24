@@ -1,0 +1,4 @@
+[
+  "tests/test_commands.py::test_command_execution",
+  "tests/test_commands.py::test_command_return_values"
+]

@@ -1,0 +1,37 @@
+  [100%]
+
+================================== FAILURES ===================================
+__________________________ test_json_help_formatting __________________________
+
+    def test_json_help_formatting():
+        @click.command(help="Test greeting command.")
+        @click.option("--count", "-c", default=1, type=int, help="Number of repetitions.")
+        @click.option("--name", required=True, help="Person to greet.")
+        def cli(count, name):
+            pass
+    
+        runner = CliRunner()
+>       ctx = click.Context(cli, help_format="json")
+E       TypeError: Context.__init__() got an unexpected keyword argument 'help_format'
+
+tests\test_feature.py:14: TypeError
+______________________ test_json_help_group_subcommands _______________________
+
+    def test_json_help_group_subcommands():
+        @click.group(help="Root service CLI.")
+        def group():
+            pass
+    
+        @group.command("deploy", help="Deploy service.")
+        def deploy():
+            pass
+    
+>       ctx = click.Context(group, help_format="json")
+E       TypeError: Context.__init__() got an unexpected keyword argument 'help_format'
+
+tests\test_feature.py:41: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_feature.py::test_json_help_formatting - TypeError: Context....
+FAILED tests/test_feature.py::test_json_help_group_subcommands - TypeError: C...
+============================== 2 failed in 0.12s ==============================
+

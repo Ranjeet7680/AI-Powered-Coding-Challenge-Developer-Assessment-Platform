@@ -1,0 +1,47 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index e630501..67606d8 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -284,6 +284,9 @@ class Context:
+         token_normalize_func: t.Optional[t.Callable[[str], str]] = None,
+         color: t.Optional[bool] = None,
+         show_default: t.Optional[bool] = None,
++        nested_auto_envvar: bool = False,
++        nested_envvar_delimiter: str = "_",
++        **extra: t.Any,
+     ) -> None:
+         #: the parent context or `None` if none exists.
+         self.parent = parent
+@@ -401,6 +404,15 @@ class Context:
+         #: will be ignored. Useful for completion.
+         self.resilient_parsing: bool = resilient_parsing
+ 
++        if parent is not None:
++            if not nested_auto_envvar:
++                nested_auto_envvar = getattr(parent, "nested_auto_envvar", False)
++            if nested_envvar_delimiter == "_":
++                nested_envvar_delimiter = getattr(parent, "nested_envvar_delimiter", "_")
++
++        self.nested_auto_envvar: bool = nested_auto_envvar
++        self.nested_envvar_delimiter: str = nested_envvar_delimiter
++
+         # If there is no envvar prefix yet, but the parent has one and
+         # the command on this level has a name, we can expand the envvar
+         # prefix automatically.
+@@ -410,13 +422,14 @@ class Context:
+                 and parent.auto_envvar_prefix is not None
+                 and self.info_name is not None
+             ):
++                delim = self.nested_envvar_delimiter if self.nested_auto_envvar else "_"
+                 auto_envvar_prefix = (
+-                    f"{parent.auto_envvar_prefix}_{self.info_name.upper()}"
++                    f"{parent.auto_envvar_prefix}{delim}{self.info_name.upper()}"
+                 )
+         else:
+             auto_envvar_prefix = auto_envvar_prefix.upper()
+ 
+-        if auto_envvar_prefix is not None:
++        if auto_envvar_prefix is not None and not self.nested_auto_envvar:
+             auto_envvar_prefix = auto_envvar_prefix.replace("-", "_")
+ 
+         self.auto_envvar_prefix: t.Optional[str] = auto_envvar_prefix

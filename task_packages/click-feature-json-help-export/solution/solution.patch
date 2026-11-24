@@ -1,0 +1,72 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index e630501..d6eee78 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1,6 +1,7 @@
+ import enum
+ import errno
+ import inspect
++import json
+ import os
+ import sys
+ import typing as t
+@@ -284,6 +285,8 @@ class Context:
+         token_normalize_func: t.Optional[t.Callable[[str], str]] = None,
+         color: t.Optional[bool] = None,
+         show_default: t.Optional[bool] = None,
++        help_format: str = "text",
++        **extra: t.Any,
+     ) -> None:
+         #: the parent context or `None` if none exists.
+         self.parent = parent
+@@ -432,6 +435,7 @@ class Context:
+ 
+         #: Show option default values when formatting help text.
+         self.show_default: t.Optional[bool] = show_default
++        self.help_format = help_format
+ 
+         self._close_callbacks: t.List[t.Callable[[], t.Any]] = []
+         self._depth = 0
+@@ -1325,11 +1329,38 @@ class Command(BaseCommand):
+             param.add_to_parser(parser, ctx)
+         return parser
+ 
+-    def get_help(self, ctx: Context) -> str:
+-        """Formats the help into a string and returns it.
++    def to_help_dict(self, ctx: Context) -> t.Dict[str, t.Any]:
++        opts = []
++        for param in self.get_params(ctx):
++            if isinstance(param, Option):
++                t_name = param.type.name.upper() if hasattr(param.type, "name") else "TEXT"
++                opts.append({
++                    "names": list(param.opts) + list(param.secondary_opts),
++                    "type": t_name,
++                    "required": bool(param.required),
++                    "default": param.default,
++                    "help": param.help or "",
++                })
++        data: t.Dict[str, t.Any] = {
++            "name": self.name,
++            "description": self.help or "",
++            "usage": self.get_usage(ctx),
++            "options": opts,
++            "subcommands": []
++        }
++        if isinstance(self, MultiCommand):
++            for sub_name in self.list_commands(ctx):
++                sub_cmd = self.get_command(ctx, sub_name)
++                if sub_cmd:
++                    data["subcommands"].append({
++                        "name": sub_name,
++                        "help": sub_cmd.get_short_help_str()
++                    })
++        return data
+ 
+-        Calls :meth:`format_help` internally.
+-        """
++    def get_help(self, ctx: Context) -> str:
++        if getattr(ctx, "help_format", "text") == "json":
++            return json.dumps(self.to_help_dict(ctx), indent=2)
+         formatter = ctx.make_formatter()
+         self.format_help(ctx, formatter)
+         return formatter.getvalue().rstrip("\n")

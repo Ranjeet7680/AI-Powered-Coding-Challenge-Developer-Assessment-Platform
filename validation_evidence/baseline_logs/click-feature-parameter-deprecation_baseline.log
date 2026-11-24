@@ -1,0 +1,23 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpzc2px1m0\click_work
+configfile: pyproject.toml
+plugins: anyio-4.10.0, json-ctrf-0.5.2
+collecting ... collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_feature.py ____________________
+ImportError while importing test module 'C:\Users\Victus\AppData\Local\Temp\tmpzc2px1m0\click_work\tests\test_feature.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\Programs\Python\Python311\Lib\importlib\__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\test_feature.py:3: in <module>
+    from click.exceptions import ClickDeprecationWarning
+E   ImportError: cannot import name 'ClickDeprecationWarning' from 'click.exceptions' (C:\Users\Victus\AppData\Local\Temp\tmpzc2px1m0\click_work\src\click\exceptions.py)
+=========================== short test summary info ===========================
+ERROR tests/test_feature.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+============================== 1 error in 0.20s ===============================
+

@@ -1,0 +1,5 @@
+[
+  "tests/test_feature.py::test_deprecated_option_warning",
+  "tests/test_feature.py::test_deprecated_option_custom_message",
+  "tests/test_feature.py::test_deprecated_option_help_output"
+]

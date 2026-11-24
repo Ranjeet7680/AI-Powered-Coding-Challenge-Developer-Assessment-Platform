@@ -1,0 +1,51 @@
+=== MUTATION TEST: MUT-3.2 ===
+Task: click-feature-json-help-export
+Name: Omit subcommands from JSON payload
+Description: MultiCommand.to_help_dict omits child command details from the generated JSON.
+Result: KILLED (Test Suite Caught Bug)
+Duration: 3.41s
+
+--- Pytest Output ---
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmp6104_9lt\click_mutant
+configfile: pyproject.toml
+plugins: anyio-4.10.0, json-ctrf-0.5.2
+collecting ... collected 2 items
+
+tests/test_feature.py::test_json_help_formatting PASSED                  [ 50%]
+tests/test_feature.py::test_json_help_group_subcommands FAILED           [100%]
+
+================================== FAILURES ===================================
+______________________ test_json_help_group_subcommands _______________________
+
+    def test_json_help_group_subcommands():
+        @click.group(help="Root service CLI.")
+        def group():
+            pass
+    
+        @group.command("deploy", help="Deploy service.")
+        def deploy():
+            pass
+    
+        ctx = click.Context(group, help_format="json")
+        help_text = group.get_help(ctx)
+        data = json.loads(help_text)
+    
+        assert data["name"] is None or data["name"] == "group"
+        sub_names = [sub["name"] for sub in data["subcommands"]]
+>       assert "deploy" in sub_names
+E       AssertionError: assert 'deploy' in []
+
+tests\test_feature.py:47: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_feature.py::test_json_help_group_subcommands - AssertionErr...
+========================= 1 failed, 1 passed in 0.15s =========================
+
+Using CPython 3.13.14
+Creating virtual environment at: .venv
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp6104_9lt/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp6104_9lt/click_mutant
+Installed 2 packages in 24ms
+

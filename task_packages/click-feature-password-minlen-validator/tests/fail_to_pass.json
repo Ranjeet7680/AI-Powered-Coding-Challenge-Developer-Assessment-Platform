@@ -1,0 +1,5 @@
+[
+  "tests/test_feature.py::test_password_option_min_length_interactive",
+  "tests/test_feature.py::test_password_option_min_length_flag_validation",
+  "tests/test_feature.py::test_password_option_custom_validator"
+]

@@ -1,0 +1,4 @@
+[
+  "tests/test_formatting.py::test_basic_formatting",
+  "tests/test_context.py::test_basic_context"
+]

@@ -1,0 +1,110 @@
+{
+  "repository": "pallets/click",
+  "base_commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+  "release_tag": "8.1.8",
+  "total_tasks": 5,
+  "all_passed": true,
+  "total_duration_sec": 62.18,
+  "tasks": [
+    {
+      "task": "click-feature-command-aliases",
+      "status": "passed",
+      "is_valid": true,
+      "baseline": {
+        "reward": 0.0,
+        "regression_passed": true,
+        "feature_passed": false,
+        "stdout": "f = <function test_alias_conflict_detection.<locals>.first at 0x000001E85B7C14E0>\n\n    def decorator(f: _AnyCallable) -> CmdType:\n        if isinstance(f, Command):\n            raise TypeError(\"Attempted to convert a callback into a command twice.\")\n    \n        attr_params = attrs.pop(\"params\", None)\n        params = attr_params if attr_params is not None else []\n    \n        try:\n            decorator_params = f.__click_params__  # type: ignore\n        except AttributeError:\n            pass\n        else:\n            del f.__click_params__  # type: ignore\n            params.extend(reversed(decorator_params))\n    \n        if attrs.get(\"help\") is None:\n            attrs[\"help\"] = f.__doc__\n    \n        if t.TYPE_CHECKING:\n            assert cls is not None\n            assert not callable(name)\n    \n>       cmd = cls(\n            name=name or f.__name__.lower().replace(\"_\", \"-\"),\n            callback=f,\n            params=params,\n            **attrs,\n        )\nE       TypeError: Command.__init__() got an unexpected keyword argument 'aliases'\n\nsrc\\click\\decorators.py:234: TypeError\n=========================== short test summary info ===========================\nFAILED tests/test_feature.py::test_command_alias_dispatch - TypeError: Comman...\nFAILED tests/test_feature.py::test_command_alias_help_formatting - TypeError:...\nFAILED tests/test_feature.py::test_alias_conflict_detection - TypeError: Comm...\n============================== 3 failed in 0.26s ==============================\n",
+        "stderr": ""
+      },
+      "oracle": {
+        "reward": 1.0,
+        "regression_passed": true,
+        "feature_passed": true,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmp044bfee9\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 3 items\n\ntests/test_feature.py::test_command_alias_dispatch PASSED                [ 33%]\ntests/test_feature.py::test_command_alias_help_formatting PASSED         [ 66%]\ntests/test_feature.py::test_alias_conflict_detection PASSED              [100%]\n\n============================== 3 passed in 0.07s ==============================\n",
+        "stderr": ""
+      },
+      "duration_sec": 13.41
+    },
+    {
+      "task": "click-feature-json-help-export",
+      "status": "passed",
+      "is_valid": true,
+      "baseline": {
+        "reward": 0.0,
+        "regression_passed": true,
+        "feature_passed": false,
+        "stdout": "  [100%]\n\n================================== FAILURES ===================================\n__________________________ test_json_help_formatting __________________________\n\n    def test_json_help_formatting():\n        @click.command(help=\"Test greeting command.\")\n        @click.option(\"--count\", \"-c\", default=1, type=int, help=\"Number of repetitions.\")\n        @click.option(\"--name\", required=True, help=\"Person to greet.\")\n        def cli(count, name):\n            pass\n    \n        runner = CliRunner()\n>       ctx = click.Context(cli, help_format=\"json\")\nE       TypeError: Context.__init__() got an unexpected keyword argument 'help_format'\n\ntests\\test_feature.py:14: TypeError\n______________________ test_json_help_group_subcommands _______________________\n\n    def test_json_help_group_subcommands():\n        @click.group(help=\"Root service CLI.\")\n        def group():\n            pass\n    \n        @group.command(\"deploy\", help=\"Deploy service.\")\n        def deploy():\n            pass\n    \n>       ctx = click.Context(group, help_format=\"json\")\nE       TypeError: Context.__init__() got an unexpected keyword argument 'help_format'\n\ntests\\test_feature.py:41: TypeError\n=========================== short test summary info ===========================\nFAILED tests/test_feature.py::test_json_help_formatting - TypeError: Context....\nFAILED tests/test_feature.py::test_json_help_group_subcommands - TypeError: C...\n============================== 2 failed in 0.12s ==============================\n",
+        "stderr": ""
+      },
+      "oracle": {
+        "reward": 1.0,
+        "regression_passed": true,
+        "feature_passed": true,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpvx07jtmy\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 2 items\n\ntests/test_feature.py::test_json_help_formatting PASSED                  [ 50%]\ntests/test_feature.py::test_json_help_group_subcommands PASSED           [100%]\n\n============================== 2 passed in 0.06s ==============================\n",
+        "stderr": ""
+      },
+      "duration_sec": 12.3
+    },
+    {
+      "task": "click-feature-nested-envvar-prefix",
+      "status": "passed",
+      "is_valid": true,
+      "baseline": {
+        "reward": 0.0,
+        "regression_passed": true,
+        "feature_passed": false,
+        "stdout": "envvar=True)\n>       assert result.exit_code == 0\nE       assert 1 == 0\nE        +  where 1 = <Result TypeError(\"Context.__init__() got an unexpected keyword argument 'nested_auto_envvar'\")>.exit_code\n\ntests\\test_feature.py:22: AssertionError\n__________________ test_nested_auto_envvar_double_underscore __________________\n\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002162D26BD90>\n\n    def test_nested_auto_envvar_double_underscore(monkeypatch):\n        @click.group()\n        def cli():\n            pass\n    \n        @cli.command()\n        @click.option(\"--port\", type=int)\n        def serve(port):\n            click.echo(f\"Port: {port}\")\n    \n        monkeypatch.setenv(\"ACME__SERVE_PORT\", \"9090\")\n        runner = CliRunner()\n        result = runner.invoke(\n            cli,\n            [\"serve\"],\n            auto_envvar_prefix=\"ACME\",\n            nested_auto_envvar=True,\n            nested_envvar_delimiter=\"__\"\n        )\n>       assert result.exit_code == 0\nE       assert 1 == 0\nE        +  where 1 = <Result TypeError(\"Context.__init__() got an unexpected keyword argument 'nested_auto_envvar'\")>.exit_code\n\ntests\\test_feature.py:44: AssertionError\n=========================== short test summary info ===========================\nFAILED tests/test_feature.py::test_nested_auto_envvar_default_delimiter - ass...\nFAILED tests/test_feature.py::test_nested_auto_envvar_double_underscore - ass...\n============================== 2 failed in 0.13s ==============================\n",
+        "stderr": ""
+      },
+      "oracle": {
+        "reward": 1.0,
+        "regression_passed": true,
+        "feature_passed": true,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmp90_teddl\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 2 items\n\ntests/test_feature.py::test_nested_auto_envvar_default_delimiter PASSED  [ 50%]\ntests/test_feature.py::test_nested_auto_envvar_double_underscore PASSED  [100%]\n\n============================== 2 passed in 0.05s ==============================\n",
+        "stderr": ""
+      },
+      "duration_sec": 12.35
+    },
+    {
+      "task": "click-feature-parameter-deprecation",
+      "status": "passed",
+      "is_valid": true,
+      "baseline": {
+        "reward": 0.0,
+        "regression_passed": true,
+        "feature_passed": false,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpzc2px1m0\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 0 items / 1 error\n\n=================================== ERRORS ====================================\n___________________ ERROR collecting tests/test_feature.py ____________________\nImportError while importing test module 'C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpzc2px1m0\\click_work\\tests\\test_feature.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n..\\..\\..\\Programs\\Python\\Python311\\Lib\\importlib\\__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\ntests\\test_feature.py:3: in <module>\n    from click.exceptions import ClickDeprecationWarning\nE   ImportError: cannot import name 'ClickDeprecationWarning' from 'click.exceptions' (C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpzc2px1m0\\click_work\\src\\click\\exceptions.py)\n=========================== short test summary info ===========================\nERROR tests/test_feature.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n============================== 1 error in 0.20s ===============================\n",
+        "stderr": ""
+      },
+      "oracle": {
+        "reward": 1.0,
+        "regression_passed": true,
+        "feature_passed": true,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpazngmn89\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 3 items\n\ntests/test_feature.py::test_deprecated_option_warning PASSED             [ 33%]\ntests/test_feature.py::test_deprecated_option_custom_message PASSED      [ 66%]\ntests/test_feature.py::test_deprecated_option_help_output PASSED         [100%]\n\n============================== 3 passed in 0.04s ==============================\n",
+        "stderr": ""
+      },
+      "duration_sec": 12.15
+    },
+    {
+      "task": "click-feature-password-minlen-validator",
+      "status": "passed",
+      "is_valid": true,
+      "baseline": {
+        "reward": 0.0,
+        "regression_passed": true,
+        "feature_passed": false,
+        "stdout": "FA160>}\ndefault_is_missing = True\n\n    def __init__(\n        self,\n        param_decls: t.Optional[t.Sequence[str]] = None,\n        show_default: t.Union[bool, str, None] = None,\n        prompt: t.Union[bool, str] = False,\n        confirmation_prompt: t.Union[bool, str] = False,\n        prompt_required: bool = True,\n        hide_input: bool = False,\n        is_flag: t.Optional[bool] = None,\n        flag_value: t.Optional[t.Any] = None,\n        multiple: bool = False,\n        count: bool = False,\n        allow_from_autoenv: bool = True,\n        type: t.Optional[t.Union[types.ParamType, t.Any]] = None,\n        help: t.Optional[str] = None,\n        hidden: bool = False,\n        show_choices: bool = True,\n        show_envvar: bool = False,\n        **attrs: t.Any,\n    ) -> None:\n        if help:\n            help = inspect.cleandoc(help)\n    \n        default_is_missing = \"default\" not in attrs\n>       super().__init__(param_decls, type=type, multiple=multiple, **attrs)\nE       TypeError: Parameter.__init__() got an unexpected keyword argument 'validator'\n\nsrc\\click\\core.py:2539: TypeError\n=========================== short test summary info ===========================\nFAILED tests/test_feature.py::test_password_option_min_length_interactive - T...\nFAILED tests/test_feature.py::test_password_option_min_length_flag_validation\nFAILED tests/test_feature.py::test_password_option_custom_validator - TypeErr...\n============================== 3 failed in 0.25s ==============================\n",
+        "stderr": ""
+      },
+      "oracle": {
+        "reward": 1.0,
+        "regression_passed": true,
+        "feature_passed": true,
+        "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\\Users\\Victus\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\Victus\\AppData\\Local\\Temp\\tmpyc6hnx8t\\click_work\nconfigfile: pyproject.toml\nplugins: anyio-4.10.0, json-ctrf-0.5.2\ncollecting ... collected 3 items\n\ntests/test_feature.py::test_password_option_min_length_interactive PASSED [ 33%]\ntests/test_feature.py::test_password_option_min_length_flag_validation PASSED [ 66%]\ntests/test_feature.py::test_password_option_custom_validator PASSED      [100%]\n\n============================== 3 passed in 0.05s ==============================\n",
+        "stderr": ""
+      },
+      "duration_sec": 11.95
+    }
+  ]
+}

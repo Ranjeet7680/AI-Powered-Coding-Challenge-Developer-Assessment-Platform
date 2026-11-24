@@ -1,0 +1,31 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "innodata/click-feature-command-aliases"
+version = "1.0.0"
+description = "Add native aliases support to click.Group commands, enabling multiple invocation aliases, prefix resolution, collision detection, and help formatting."
+authors = []
+keywords = ["click", "cli", "python", "feature-development", "harbor"]
+
+[metadata]
+repository = "https://github.com/pallets/click"
+base_commit = "934813e4d421071a1b3db3973c02fe2721359a6e"
+release_tag = "8.1.8"
+license = "BSD-3-Clause"
+language = "python"
+track = "track-1"
+
+[verifier]
+timeout_sec = 600.0
+environment_mode = "separate"
+collect = []
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 600.0
+os = "linux"
+mcp_servers = []

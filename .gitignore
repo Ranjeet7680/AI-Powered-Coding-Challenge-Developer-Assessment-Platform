@@ -1,0 +1,48 @@
+# Node.js
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Databases & local state
+*.db
+*.sqlite3
+.env
+.env.local
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cloned repos internal artifacts (keep repos/click source but ignore internal build caches)
+repos/click/.venv/
+repos/click/build/
+repos/click/*.egg-info/
+repos/click/__pycache__/

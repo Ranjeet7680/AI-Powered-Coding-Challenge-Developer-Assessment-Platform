@@ -1,0 +1,59 @@
+=== MUTATION TEST: MUT-4.1 ===
+Task: click-feature-nested-envvar-prefix
+Name: Hardcode single underscore delimiter
+Description: Ignore custom nested_envvar_delimiter and always use standard '_'.
+Result: KILLED (Test Suite Caught Bug)
+Duration: 3.37s
+
+--- Pytest Output ---
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpy_eznigq\click_mutant
+configfile: pyproject.toml
+plugins: anyio-4.10.0, json-ctrf-0.5.2
+collecting ... collected 2 items
+
+tests/test_feature.py::test_nested_auto_envvar_default_delimiter PASSED  [ 50%]
+tests/test_feature.py::test_nested_auto_envvar_double_underscore FAILED  [100%]
+
+================================== FAILURES ===================================
+__________________ test_nested_auto_envvar_double_underscore __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED93F6250>
+
+    def test_nested_auto_envvar_double_underscore(monkeypatch):
+        @click.group()
+        def cli():
+            pass
+    
+        @cli.command()
+        @click.option("--port", type=int)
+        def serve(port):
+            click.echo(f"Port: {port}")
+    
+        monkeypatch.setenv("ACME__SERVE_PORT", "9090")
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["serve"],
+            auto_envvar_prefix="ACME",
+            nested_auto_envvar=True,
+            nested_envvar_delimiter="__"
+        )
+        assert result.exit_code == 0
+>       assert "Port: 9090" in result.output
+E       AssertionError: assert 'Port: 9090' in 'Port: None\n'
+E        +  where 'Port: None\n' = <Result okay>.output
+
+tests\test_feature.py:45: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_feature.py::test_nested_auto_envvar_double_underscore - Ass...
+========================= 1 failed, 1 passed in 0.12s =========================
+
+Using CPython 3.13.14
+Creating virtual environment at: .venv
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpy_eznigq/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpy_eznigq/click_mutant
+Installed 2 packages in 14ms
+

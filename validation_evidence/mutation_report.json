@@ -1,0 +1,101 @@
+{
+  "repository": "pallets/click",
+  "base_commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+  "total_mutants": 10,
+  "killed_mutants": 10,
+  "kill_rate_percent": 100.0,
+  "all_killed": true,
+  "total_duration_sec": 38.21,
+  "mutants": [
+    {
+      "mutant_id": "MUT-1.1",
+      "task": "click-feature-password-minlen-validator",
+      "name": "Bypass min_length validation",
+      "description": "Disable minimum length enforcement so short passwords pass without error.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.32
+    },
+    {
+      "mutant_id": "MUT-1.2",
+      "task": "click-feature-password-minlen-validator",
+      "name": "Bypass custom validator function",
+      "description": "Remove custom validator callback invocation in prompt so invalid passwords pass silently.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 2.82
+    },
+    {
+      "mutant_id": "MUT-2.1",
+      "task": "click-feature-command-aliases",
+      "name": "Bypass alias dispatch lookup",
+      "description": "Disable alias resolution in Group.get_command so invoking via alias fails to resolve.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.37
+    },
+    {
+      "mutant_id": "MUT-2.2",
+      "task": "click-feature-command-aliases",
+      "name": "Omit aliases from help formatting",
+      "description": "Omit alias annotations from Group.format_commands output.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.16
+    },
+    {
+      "mutant_id": "MUT-3.1",
+      "task": "click-feature-json-help-export",
+      "name": "Ignore json help_format flag",
+      "description": "Always return standard text help even when ctx.help_format is 'json'.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.19
+    },
+    {
+      "mutant_id": "MUT-3.2",
+      "task": "click-feature-json-help-export",
+      "name": "Omit subcommands from JSON payload",
+      "description": "MultiCommand.to_help_dict omits child command details from the generated JSON.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.41
+    },
+    {
+      "mutant_id": "MUT-4.1",
+      "task": "click-feature-nested-envvar-prefix",
+      "name": "Hardcode single underscore delimiter",
+      "description": "Ignore custom nested_envvar_delimiter and always use standard '_'.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.37
+    },
+    {
+      "mutant_id": "MUT-4.2",
+      "task": "click-feature-nested-envvar-prefix",
+      "name": "Disable nested prefix inheritance",
+      "description": "Child context fails to inherit nested_auto_envvar setting from parent.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.33
+    },
+    {
+      "mutant_id": "MUT-5.1",
+      "task": "click-feature-parameter-deprecation",
+      "name": "Suppress deprecation runtime warning",
+      "description": "Do not emit ClickDeprecationWarning when deprecated option is passed on CLI.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.17
+    },
+    {
+      "mutant_id": "MUT-5.2",
+      "task": "click-feature-parameter-deprecation",
+      "name": "Omit Deprecated tag from help text",
+      "description": "Option.get_help_record omits [Deprecated: ...] metadata from help output.",
+      "killed": true,
+      "status": "KILLED",
+      "duration_sec": 3.18
+    }
+  ]
+}

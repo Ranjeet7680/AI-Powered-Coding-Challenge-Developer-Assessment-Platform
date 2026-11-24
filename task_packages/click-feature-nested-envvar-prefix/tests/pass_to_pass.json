@@ -1,0 +1,4 @@
+[
+  "tests/test_options.py::test_multiple_options",
+  "tests/test_basic.py::test_basic_functionality"
+]

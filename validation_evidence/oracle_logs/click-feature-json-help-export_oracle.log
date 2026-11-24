@@ -1,0 +1,13 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpvx07jtmy\click_work
+configfile: pyproject.toml
+plugins: anyio-4.10.0, json-ctrf-0.5.2
+collecting ... collected 2 items
+
+tests/test_feature.py::test_json_help_formatting PASSED                  [ 50%]
+tests/test_feature.py::test_json_help_group_subcommands PASSED           [100%]
+
+============================== 2 passed in 0.06s ==============================
+

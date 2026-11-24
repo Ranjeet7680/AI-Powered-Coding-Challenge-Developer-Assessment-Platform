@@ -1,0 +1,117 @@
+=== MUTATION TEST: MUT-3.1 ===
+Task: click-feature-json-help-export
+Name: Ignore json help_format flag
+Description: Always return standard text help even when ctx.help_format is 'json'.
+Result: KILLED (Test Suite Caught Bug)
+Duration: 3.19s
+
+--- Pytest Output ---
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpo11vnte5\click_mutant
+configfile: pyproject.toml
+plugins: anyio-4.10.0, json-ctrf-0.5.2
+collecting ... collected 2 items
+
+tests/test_feature.py::test_json_help_formatting FAILED                  [ 50%]
+tests/test_feature.py::test_json_help_group_subcommands FAILED           [100%]
+
+================================== FAILURES ===================================
+__________________________ test_json_help_formatting __________________________
+
+    def test_json_help_formatting():
+        @click.command(help="Test greeting command.")
+        @click.option("--count", "-c", default=1, type=int, help="Number of repetitions.")
+        @click.option("--name", required=True, help="Person to greet.")
+        def cli(count, name):
+            pass
+    
+        runner = CliRunner()
+        ctx = click.Context(cli, help_format="json")
+        help_text = cli.get_help(ctx)
+    
+>       data = json.loads(help_text)
+
+tests\test_feature.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\Programs\Python\Python311\Lib\json\__init__.py:346: in loads
+    return _default_decoder.decode(s)
+..\..\..\Programs\Python\Python311\Lib\json\decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <json.decoder.JSONDecoder object at 0x000002C1C057F9D0>
+s = 'Usage:  [OPTIONS]\n\n  Test greeting command.\n\nOptions:\n  -c, --count INTEGER  Number of repetitions.\n  --name TEXT          Person to greet.  [required]\n  --help               Show this message and exit.'
+idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+..\..\..\Programs\Python\Python311\Lib\json\decoder.py:355: JSONDecodeError
+______________________ test_json_help_group_subcommands _______________________
+
+    def test_json_help_group_subcommands():
+        @click.group(help="Root service CLI.")
+        def group():
+            pass
+    
+        @group.command("deploy", help="Deploy service.")
+        def deploy():
+            pass
+    
+        ctx = click.Context(group, help_format="json")
+        help_text = group.get_help(ctx)
+>       data = json.loads(help_text)
+
+tests\test_feature.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\Programs\Python\Python311\Lib\json\__init__.py:346: in loads
+    return _default_decoder.decode(s)
+..\..\..\Programs\Python\Python311\Lib\json\decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <json.decoder.JSONDecoder object at 0x000002C1C057F9D0>
+s = 'Usage:  [OPTIONS] COMMAND [ARGS]...\n\n  Root service CLI.\n\nOptions:\n  --help  Show this message and exit.\n\nCommands:\n  deploy  Deploy service.'
+idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+..\..\..\Programs\Python\Python311\Lib\json\decoder.py:355: JSONDecodeError
+=========================== short test summary info ===========================
+FAILED tests/test_feature.py::test_json_help_formatting - json.decoder.JSONDe...
+FAILED tests/test_feature.py::test_json_help_group_subcommands - json.decoder...
+============================== 2 failed in 0.17s ==============================
+
+Using CPython 3.13.14
+Creating virtual environment at: .venv
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpo11vnte5/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpo11vnte5/click_mutant
+Installed 2 packages in 18ms
+

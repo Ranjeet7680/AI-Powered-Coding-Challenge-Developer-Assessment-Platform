@@ -1,0 +1,24 @@
+=== MUTATION TEST: MUT-1.2 ===
+Task: click-feature-password-minlen-validator
+Name: Bypass custom validator function
+Description: Remove custom validator callback invocation in prompt so invalid passwords pass silently.
+Result: KILLED (Test Suite Caught Bug)
+Duration: 2.82s
+
+--- Pytest Output ---
+
+Using CPython 3.13.14
+Creating virtual environment at: .venv
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpghuepe9y/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpghuepe9y/click_mutant
+Installed 2 packages in 22ms
+ImportError while loading conftest 'C:\Users\Victus\AppData\Local\Temp\tmpghuepe9y\click_mutant\tests\conftest.py'.
+tests\conftest.py:3: in <module>
+    from click.testing import CliRunner
+src\click\__init__.py:8: in <module>
+    from .core import Argument as Argument
+E     File "C:\Users\Victus\AppData\Local\Temp\tmpghuepe9y\click_mutant\src\click\core.py", line 2917
+E       self.None  # validator(value)
+E            ^^^^
+E   SyntaxError: invalid syntax
+

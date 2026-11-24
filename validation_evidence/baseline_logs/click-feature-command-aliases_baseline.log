@@ -1,0 +1,39 @@
+f = <function test_alias_conflict_detection.<locals>.first at 0x000001E85B7C14E0>
+
+    def decorator(f: _AnyCallable) -> CmdType:
+        if isinstance(f, Command):
+            raise TypeError("Attempted to convert a callback into a command twice.")
+    
+        attr_params = attrs.pop("params", None)
+        params = attr_params if attr_params is not None else []
+    
+        try:
+            decorator_params = f.__click_params__  # type: ignore
+        except AttributeError:
+            pass
+        else:
+            del f.__click_params__  # type: ignore
+            params.extend(reversed(decorator_params))
+    
+        if attrs.get("help") is None:
+            attrs["help"] = f.__doc__
+    
+        if t.TYPE_CHECKING:
+            assert cls is not None
+            assert not callable(name)
+    
+>       cmd = cls(
+            name=name or f.__name__.lower().replace("_", "-"),
+            callback=f,
+            params=params,
+            **attrs,
+        )
+E       TypeError: Command.__init__() got an unexpected keyword argument 'aliases'
+
+src\click\decorators.py:234: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_feature.py::test_command_alias_dispatch - TypeError: Comman...
+FAILED tests/test_feature.py::test_command_alias_help_formatting - TypeError:...
+FAILED tests/test_feature.py::test_alias_conflict_detection - TypeError: Comm...
+============================== 3 failed in 0.26s ==============================
+

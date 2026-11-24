@@ -1,0 +1,4 @@
+[
+  "tests/test_feature.py::test_json_help_formatting",
+  "tests/test_feature.py::test_json_help_group_subcommands"
+]

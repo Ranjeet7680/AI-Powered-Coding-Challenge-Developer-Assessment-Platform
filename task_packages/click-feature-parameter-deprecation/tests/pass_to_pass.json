@@ -1,0 +1,4 @@
+[
+  "tests/test_options.py::test_custom_values",
+  "tests/test_commands.py::test_command_execution"
+]
