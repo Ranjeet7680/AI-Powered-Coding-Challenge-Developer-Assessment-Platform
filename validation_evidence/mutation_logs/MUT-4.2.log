@@ -3,13 +3,13 @@ Task: click-feature-nested-envvar-prefix
 Name: Disable nested prefix inheritance
 Description: Child context fails to inherit nested_auto_envvar setting from parent.
 Result: KILLED (Test Suite Caught Bug)
-Duration: 3.33s
+Duration: 10.08s
 
 --- Pytest Output ---
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\Victus\AppData\Local\Temp\tmp4r_wbb__\click_mutant
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmp23thovuh\click_mutant
 configfile: pyproject.toml
 plugins: anyio-4.10.0, json-ctrf-0.5.2
 collecting ... collected 2 items
@@ -20,7 +20,7 @@ tests/test_feature.py::test_nested_auto_envvar_double_underscore FAILED  [100%]
 ================================== FAILURES ===================================
 __________________ test_nested_auto_envvar_double_underscore __________________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024670665E10>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BEE3525CD0>
 
     def test_nested_auto_envvar_double_underscore(monkeypatch):
         @click.group()
@@ -49,11 +49,11 @@ E        +  where 'Port: None\n' = <Result okay>.output
 tests\test_feature.py:45: AssertionError
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_nested_auto_envvar_double_underscore - Ass...
-========================= 1 failed, 1 passed in 0.16s =========================
+========================= 1 failed, 1 passed in 0.65s =========================
 
 Using CPython 3.13.14
 Creating virtual environment at: .venv
-   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp4r_wbb__/click_mutant
-      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp4r_wbb__/click_mutant
-Installed 2 packages in 23ms
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp23thovuh/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp23thovuh/click_mutant
+Installed 2 packages in 69ms
 

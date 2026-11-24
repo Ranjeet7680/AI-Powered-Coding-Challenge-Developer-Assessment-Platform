@@ -3,13 +3,13 @@ Task: click-feature-json-help-export
 Name: Omit subcommands from JSON payload
 Description: MultiCommand.to_help_dict omits child command details from the generated JSON.
 Result: KILLED (Test Suite Caught Bug)
-Duration: 3.41s
+Duration: 4.9s
 
 --- Pytest Output ---
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\Victus\AppData\Local\Temp\tmp6104_9lt\click_mutant
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmp7xl_t_gf\click_mutant
 configfile: pyproject.toml
 plugins: anyio-4.10.0, json-ctrf-0.5.2
 collecting ... collected 2 items
@@ -41,11 +41,11 @@ E       AssertionError: assert 'deploy' in []
 tests\test_feature.py:47: AssertionError
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_json_help_group_subcommands - AssertionErr...
-========================= 1 failed, 1 passed in 0.15s =========================
+========================= 1 failed, 1 passed in 0.61s =========================
 
 Using CPython 3.13.14
 Creating virtual environment at: .venv
-   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp6104_9lt/click_mutant
-      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp6104_9lt/click_mutant
-Installed 2 packages in 24ms
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp7xl_t_gf/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp7xl_t_gf/click_mutant
+Installed 2 packages in 22ms
 

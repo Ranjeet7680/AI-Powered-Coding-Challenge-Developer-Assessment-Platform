@@ -3,13 +3,13 @@ Task: click-feature-parameter-deprecation
 Name: Suppress deprecation runtime warning
 Description: Do not emit ClickDeprecationWarning when deprecated option is passed on CLI.
 Result: KILLED (Test Suite Caught Bug)
-Duration: 3.17s
+Duration: 9.59s
 
 --- Pytest Output ---
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\Victus\AppData\Local\Temp\tmpxpwnbpnt\click_mutant
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpef0865nb\click_mutant
 configfile: pyproject.toml
 plugins: anyio-4.10.0, json-ctrf-0.5.2
 collecting ... collected 3 items
@@ -50,11 +50,11 @@ tests\test_feature.py:25: Failed
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_deprecated_option_warning - Failed: DID NO...
 FAILED tests/test_feature.py::test_deprecated_option_custom_message - Failed:...
-========================= 2 failed, 1 passed in 0.13s =========================
+========================= 2 failed, 1 passed in 0.63s =========================
 
 Using CPython 3.13.14
 Creating virtual environment at: .venv
-   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpxpwnbpnt/click_mutant
-      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpxpwnbpnt/click_mutant
-Installed 2 packages in 19ms
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpef0865nb/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpef0865nb/click_mutant
+Installed 2 packages in 80ms
 

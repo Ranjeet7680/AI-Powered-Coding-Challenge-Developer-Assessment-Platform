@@ -1,4 +1,4 @@
-f = <function test_alias_conflict_detection.<locals>.first at 0x000001E85B7C14E0>
+f = <function test_alias_conflict_detection.<locals>.first at 0x000002633E1E14E0>
 
     def decorator(f: _AnyCallable) -> CmdType:
         if isinstance(f, Command):
@@ -35,5 +35,5 @@ src\click\decorators.py:234: TypeError
 FAILED tests/test_feature.py::test_command_alias_dispatch - TypeError: Comman...
 FAILED tests/test_feature.py::test_command_alias_help_formatting - TypeError:...
 FAILED tests/test_feature.py::test_alias_conflict_detection - TypeError: Comm...
-============================== 3 failed in 0.26s ==============================
+============================== 3 failed in 0.31s ==============================
 

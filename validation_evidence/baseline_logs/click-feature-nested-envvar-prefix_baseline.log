@@ -6,7 +6,7 @@ E        +  where 1 = <Result TypeError("Context.__init__() got an unexpected ke
 tests\test_feature.py:22: AssertionError
 __________________ test_nested_auto_envvar_double_underscore __________________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002162D26BD90>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002318FA3AB90>
 
     def test_nested_auto_envvar_double_underscore(monkeypatch):
         @click.group()
@@ -35,5 +35,5 @@ tests\test_feature.py:44: AssertionError
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_nested_auto_envvar_default_delimiter - ass...
 FAILED tests/test_feature.py::test_nested_auto_envvar_double_underscore - ass...
-============================== 2 failed in 0.13s ==============================
+============================== 2 failed in 0.12s ==============================
 

@@ -3,13 +3,13 @@ Task: click-feature-json-help-export
 Name: Ignore json help_format flag
 Description: Always return standard text help even when ctx.help_format is 'json'.
 Result: KILLED (Test Suite Caught Bug)
-Duration: 3.19s
+Duration: 3.72s
 
 --- Pytest Output ---
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\Victus\AppData\Local\Temp\tmpo11vnte5\click_mutant
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpa6ee4npu\click_mutant
 configfile: pyproject.toml
 plugins: anyio-4.10.0, json-ctrf-0.5.2
 collecting ... collected 2 items
@@ -41,7 +41,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     obj, end = self.raw_decode(s, idx=_w(s, 0).end())
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <json.decoder.JSONDecoder object at 0x000002C1C057F9D0>
+self = <json.decoder.JSONDecoder object at 0x000002309F6BFC50>
 s = 'Usage:  [OPTIONS]\n\n  Test greeting command.\n\nOptions:\n  -c, --count INTEGER  Number of repetitions.\n  --name TEXT          Person to greet.  [required]\n  --help               Show this message and exit.'
 idx = 0
 
@@ -84,7 +84,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     obj, end = self.raw_decode(s, idx=_w(s, 0).end())
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-self = <json.decoder.JSONDecoder object at 0x000002C1C057F9D0>
+self = <json.decoder.JSONDecoder object at 0x000002309F6BFC50>
 s = 'Usage:  [OPTIONS] COMMAND [ARGS]...\n\n  Root service CLI.\n\nOptions:\n  --help  Show this message and exit.\n\nCommands:\n  deploy  Deploy service.'
 idx = 0
 
@@ -107,11 +107,11 @@ E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_json_help_formatting - json.decoder.JSONDe...
 FAILED tests/test_feature.py::test_json_help_group_subcommands - json.decoder...
-============================== 2 failed in 0.17s ==============================
+============================== 2 failed in 0.24s ==============================
 
 Using CPython 3.13.14
 Creating virtual environment at: .venv
-   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpo11vnte5/click_mutant
-      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpo11vnte5/click_mutant
-Installed 2 packages in 18ms
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpa6ee4npu/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpa6ee4npu/click_mutant
+Installed 2 packages in 26ms
 

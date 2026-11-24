@@ -4,17 +4,17 @@
 - **Base Commit**: `934813e4d421071a1b3db3973c02fe2721359a6e` (Release `8.1.8`)
 - **Total Tasks Evaluated**: 5
 - **Evaluation Status**: ALL PASSED (100% Compliance)
-- **Total Validation Duration**: 62.18s
+- **Total Validation Duration**: 79.6s
 
 ## Validation Matrix Results
 
 | Task ID | Baseline (nop) Reward | Oracle Reward | Regressions Clean | Result | Duration |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `click-feature-command-aliases` | `0.0` | `1.0` | Yes | **PASSED** | 13.41s |
-| `click-feature-json-help-export` | `0.0` | `1.0` | Yes | **PASSED** | 12.3s |
-| `click-feature-nested-envvar-prefix` | `0.0` | `1.0` | Yes | **PASSED** | 12.35s |
-| `click-feature-parameter-deprecation` | `0.0` | `1.0` | Yes | **PASSED** | 12.15s |
-| `click-feature-password-minlen-validator` | `0.0` | `1.0` | Yes | **PASSED** | 11.95s |
+| `click-feature-command-aliases` | `0.0` | `1.0` | Yes | **PASSED** | 21.34s |
+| `click-feature-json-help-export` | `0.0` | `1.0` | Yes | **PASSED** | 13.86s |
+| `click-feature-nested-envvar-prefix` | `0.0` | `1.0` | Yes | **PASSED** | 13.37s |
+| `click-feature-parameter-deprecation` | `0.0` | `1.0` | Yes | **PASSED** | 13.89s |
+| `click-feature-password-minlen-validator` | `0.0` | `1.0` | Yes | **PASSED** | 17.13s |
 
 ## Grading Criteria Alignment
 - **Baseline Pass (`nop`)**: Untouched repository produces reward `0.0` (new feature tests fail, existing tests pass).

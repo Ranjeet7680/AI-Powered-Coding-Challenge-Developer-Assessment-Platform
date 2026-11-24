@@ -3,13 +3,13 @@ Task: click-feature-command-aliases
 Name: Omit aliases from help formatting
 Description: Omit alias annotations from Group.format_commands output.
 Result: KILLED (Test Suite Caught Bug)
-Duration: 3.16s
+Duration: 8.34s
 
 --- Pytest Output ---
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\Victus\AppData\Local\Programs\Python\Python311\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\Victus\AppData\Local\Temp\tmp7t4o7_5o\click_mutant
+rootdir: C:\Users\Victus\AppData\Local\Temp\tmpitp7f0h9\click_mutant
 configfile: pyproject.toml
 plugins: anyio-4.10.0, json-ctrf-0.5.2
 collecting ... collected 3 items
@@ -40,11 +40,11 @@ E        +  where 'Usage: cli [OPTIONS] COMMAND [ARGS]...\n\nOptions:\n  --help 
 tests\test_feature.py:42: AssertionError
 =========================== short test summary info ===========================
 FAILED tests/test_feature.py::test_command_alias_help_formatting - AssertionE...
-========================= 1 failed, 2 passed in 0.14s =========================
+========================= 1 failed, 2 passed in 0.24s =========================
 
 Using CPython 3.13.14
 Creating virtual environment at: .venv
-   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp7t4o7_5o/click_mutant
-      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmp7t4o7_5o/click_mutant
-Installed 2 packages in 21ms
+   Building click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpitp7f0h9/click_mutant
+      Built click @ file:///C:/Users/Victus/AppData/Local/Temp/tmpitp7f0h9/click_mutant
+Installed 2 packages in 66ms
 
