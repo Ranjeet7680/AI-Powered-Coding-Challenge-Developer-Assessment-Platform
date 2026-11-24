@@ -46,3 +46,6 @@ repos/click/.venv/
 repos/click/build/
 repos/click/*.egg-info/
 repos/click/__pycache__/
+
+.agent/
+repos/
