@@ -20,6 +20,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Search,
   Bell,
   Menu,
@@ -27,12 +28,92 @@ import {
   User as UserIcon,
   Video,
   BrainCircuit,
+  GraduationCap,
+  BookOpen,
   Flame,
   Keyboard,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 
+interface NavItemConfig {
+  name: string;
+  path: string;
+  icon: React.ComponentType<{ className?: string }>;
+  badge?: string;
+  badgeTone?: 'indigo' | 'emerald' | 'rose' | 'cyan' | 'purple';
+}
+
+interface NavSectionConfig {
+  id: string;
+  label: string;
+  items: NavItemConfig[];
+}
+
+const NAV_SECTIONS: NavSectionConfig[] = [
+  {
+    id: 'core',
+    label: 'Core Workspace',
+    items: [
+      { name: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
+      { name: 'Explore Challenges', path: '/app/challenges', icon: Layers, badge: '368+', badgeTone: 'indigo' },
+      { name: 'AI Task Generator', path: '/app/generator', icon: Sparkles, badge: 'AI', badgeTone: 'purple' },
+      { name: 'My Workspace IDE', path: '/app/workspace/c2-lru-cache', icon: Code2 },
+      { name: 'My Submissions', path: '/app/submissions', icon: History },
+    ],
+  },
+  {
+    id: 'lms',
+    label: 'AI & DL Academies',
+    items: [
+      { name: 'ML Course LMS', path: '/app/ml-course', icon: BrainCircuit, badge: '106', badgeTone: 'cyan' },
+      { name: 'Stanford × CTF DL', path: '/app/dl-course', icon: GraduationCap, badge: '21', badgeTone: 'rose' },
+      { name: 'Video Masterclasses', path: '/app/videos', icon: Video, badge: 'HUB', badgeTone: 'purple' },
+    ],
+  },
+  {
+    id: 'growth',
+    label: 'Assessments & Growth',
+    items: [
+      { name: 'Assessments', path: '/app/assessments', icon: Award },
+      { name: 'Certificates', path: '/app/certificates', icon: FileCheck2, badge: 'PDF', badgeTone: 'emerald' },
+      { name: 'Analytics', path: '/app/analytics', icon: BarChart3 },
+      { name: 'Leaderboard', path: '/app/leaderboard', icon: Trophy },
+    ],
+  },
+  {
+    id: 'docs',
+    label: 'Knowledge Base',
+    items: [
+      { name: 'Platform Wiki', path: '/wiki', icon: BookOpen },
+    ],
+  },
+];
+
+const BADGE_CLASSES: Record<NonNullable<NavItemConfig['badgeTone']>, string> = {
+  indigo: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+  emerald: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  rose: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+  cyan: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+  purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+};
+
+function readInitialCollapsedState(): boolean {
+  try {
+    return localStorage.getItem('ctf_sidebar_collapsed') === 'true';
+  } catch {
+    return false;
+  }
+}
+
 export const AppLayout: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(readInitialCollapsedState);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    core: true,
+    lms: true,
+    growth: true,
+    docs: true,
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -48,27 +129,42 @@ export const AppLayout: React.FC = () => {
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const navigationItems = [
-    { name: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
-    { name: 'ML Course (106)', path: '/app/ml-course', icon: BrainCircuit, badge: 'LMS' },
-    { name: 'Deep Learning (21)', path: '/app/dl-course', icon: BrainCircuit, badge: 'Stanford' },
-    { name: 'Explore Challenges', path: '/app/challenges', icon: Layers },
-    { name: 'Video Masterclasses', path: '/app/videos', icon: Video, badge: 'NEW' },
-    { name: 'AI Task Generator', path: '/app/generator', icon: Sparkles, badge: 'AI' },
-    { name: 'My Workspace', path: '/app/workspace/c2-lru-cache', icon: Code2 },
-    { name: 'My Submissions', path: '/app/submissions', icon: History },
-    { name: 'Assessments', path: '/app/assessments', icon: Award },
-    { name: 'Leaderboard', path: '/app/leaderboard', icon: Trophy },
-    { name: 'Analytics', path: '/app/analytics', icon: BarChart3 },
-    { name: 'Certificates', path: '/app/certificates', icon: FileCheck2 },
-  ];
+  const toggleSidebar = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('ctf_sidebar_collapsed', String(next));
+      } catch {
+        // Ignore storage restrictions
+      }
+      return next;
+    });
+  };
 
-  // Global keyboard shortcuts: Ctrl/Cmd+K for Search, ? for Help
+  const toggleSection = (sectionId: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [sectionId]: !(prev[sectionId] ?? true),
+    }));
+  };
+
+  // Global keyboard shortcuts: Ctrl/Cmd+K Search, Ctrl/Cmd+B Sidebar, ? Help
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setSearchModalOpen((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        setCollapsed((prev) => {
+          const next = !prev;
+          try {
+            localStorage.setItem('ctf_sidebar_collapsed', String(next));
+          } catch {
+            // Ignore
+          }
+          return next;
+        });
       } else if (
         e.key === '?' &&
         !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName || '') &&
@@ -115,7 +211,9 @@ export const AppLayout: React.FC = () => {
   const getBreadcrumbs = () => {
     const path = location.pathname;
     if (path.includes('/dashboard')) return ['Workspace', 'Overview'];
-    if (path.includes('/videos')) return ['Workspace', 'Video Masterclasses'];
+    if (path.includes('/ml-course')) return ['Workspace', 'Academies', 'ML Course (106)'];
+    if (path.includes('/dl-course')) return ['Workspace', 'Academies', 'Stanford × CTF Deep Learning'];
+    if (path.includes('/videos')) return ['Workspace', 'Academies', 'Video Masterclasses'];
     if (path.includes('/challenges')) return ['Workspace', 'Challenge Library'];
     if (path.includes('/generator')) return ['Workspace', 'AI Task Generator'];
     if (path.includes('/workspace')) return ['Workspace', 'Coding IDE'];
@@ -131,81 +229,133 @@ export const AppLayout: React.FC = () => {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <div className="min-h-screen bg-[#05070E] text-slate-100 flex overflow-hidden">
+    <div className="h-screen bg-[#05070E] text-slate-100 flex overflow-hidden">
       {searchModalOpen && (
         <GlobalSearchModal onClose={() => setSearchModalOpen(false)} />
       )}
 
-      {/* Desktop Left Sidebar */}
+      {/* Desktop Left Sidebar — fixed viewport height so navigation stays pinned cleanly */}
       <aside
-        className={`hidden md:flex flex-col border-r border-slate-800/80 bg-[#080B14] transition-all duration-300 z-30 shrink-0 no-print ${
-          collapsed ? 'w-20' : 'w-64'
+        className={`hidden md:flex flex-col h-full border-r border-slate-800/80 bg-[#080B14] transition-all duration-300 z-30 shrink-0 no-print ${
+          collapsed ? 'w-[76px]' : 'w-64'
         }`}
       >
-        {/* Brand header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80">
-          <BrandLogo iconOnly={collapsed} size={collapsed ? 'md' : 'sm'} />
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition"
-            title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
-        </div>
+        {/* Brand header with guaranteed-accessible Expand / Collapse toggle */}
+        {collapsed ? (
+          <div className="py-3 px-2 flex flex-col items-center justify-center gap-2 border-b border-slate-800/80 shrink-0">
+            <BrandLogo iconOnly size="sm" />
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="w-10 h-7 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/35 flex items-center justify-center transition"
+              title="Expand Sidebar (Ctrl+B)"
+              aria-label="Expand Sidebar"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 shrink-0">
+            <BrandLogo size="sm" />
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent hover:border-slate-700 transition"
+              title="Collapse Sidebar (Ctrl+B)"
+              aria-label="Collapse Sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-        {/* Navigation list */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
-          {!collapsed && (
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 font-mono px-3 mb-2">
-              Core Platform
-            </p>
-          )}
-
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const basePrefix = item.path.startsWith('/app/workspace') ? '/app/workspace' : item.path;
-            const isActive = location.pathname.startsWith(basePrefix);
+        {/* Expandable Categorized Navigation Groups */}
+        <div className="flex-1 overflow-y-auto px-2.5 py-3 space-y-3 custom-scrollbar">
+          {NAV_SECTIONS.map((section) => {
+            const isGroupOpen = openGroups[section.id] ?? true;
 
             return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={() =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-150 relative group ${
-                    isActive
-                      ? 'bg-gradient-to-r from-indigo-600/20 to-violet-600/15 text-indigo-200 border border-indigo-500/35 shadow-sm shadow-indigo-950/50'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/45 border border-transparent'
-                  } ${collapsed ? 'justify-center' : ''}`
-                }
-              >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                {!collapsed && <span className="truncate">{item.name}</span>}
-                {!collapsed && item.badge && (
-                  <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                    {item.badge}
-                  </span>
+              <div key={section.id} className="space-y-1">
+                {!collapsed ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full flex items-center justify-between px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-slate-300 font-mono transition"
+                    aria-expanded={isGroupOpen}
+                  >
+                    <span>{section.label}</span>
+                    {isGroupOpen ? (
+                      <ChevronDown className="w-3 h-3" />
+                    ) : (
+                      <ChevronRight className="w-3 h-3" />
+                    )}
+                  </button>
+                ) : (
+                  <div className="mx-2 my-1 border-t border-slate-800/70" />
                 )}
-                {collapsed && (
-                  <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-900 border border-slate-700 text-xs text-white rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap shadow-xl">
-                    {item.name}
-                  </div>
-                )}
-              </NavLink>
+
+                {(collapsed || isGroupOpen) &&
+                  section.items.map((item) => {
+                    const Icon = item.icon;
+                    const basePrefix = item.path.startsWith('/app/workspace')
+                      ? '/app/workspace'
+                      : item.path;
+                    const isActive =
+                      item.path === '/wiki'
+                        ? location.pathname.startsWith('/wiki')
+                        : location.pathname.startsWith(basePrefix);
+                    const badgeStyle = BADGE_CLASSES[item.badgeTone || 'indigo'];
+
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={() =>
+                          `flex items-center gap-3 px-3 py-2 rounded-xl font-medium text-xs sm:text-[13px] transition-all duration-150 relative group ${
+                            isActive
+                              ? 'bg-gradient-to-r from-indigo-600/20 to-violet-600/15 text-indigo-200 border border-indigo-500/35 shadow-sm shadow-indigo-950/50'
+                              : 'text-slate-400 hover:text-white hover:bg-slate-800/45 border border-transparent'
+                          } ${collapsed ? 'justify-center px-2' : ''}`
+                        }
+                      >
+                        <Icon
+                          className={`w-4 h-4 shrink-0 ${
+                            isActive
+                              ? 'text-indigo-400'
+                              : 'text-slate-400 group-hover:text-slate-200'
+                          }`}
+                        />
+                        {!collapsed && <span className="truncate">{item.name}</span>}
+                        {!collapsed && item.badge && (
+                          <span
+                            className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded border ${badgeStyle}`}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                        {collapsed && (
+                          <div className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity fixed left-20 ml-1 px-2.5 py-1 bg-slate-900 border border-slate-700 text-xs text-white rounded-lg z-50 whitespace-nowrap shadow-xl">
+                            {item.name}
+                          </div>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+              </div>
             );
           })}
         </div>
 
-        {/* Bottom Sidebar: Help, Settings, Profile */}
-        <div className="p-3 border-t border-slate-800/80 space-y-1 bg-slate-950/40">
+        {/* Bottom Sidebar: Expand Action (if collapsed), Settings, Help, Profile */}
+        <div className="p-2.5 border-t border-slate-800/80 space-y-1 bg-slate-950/40 shrink-0">
           <NavLink
             to="/app/settings"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition ${
+              `flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition ${
                 isActive
                   ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent'
-              } ${collapsed ? 'justify-center' : ''}`
+              } ${collapsed ? 'justify-center px-2' : ''}`
             }
           >
             <Settings className="w-4 h-4 shrink-0" />
@@ -213,15 +363,16 @@ export const AppLayout: React.FC = () => {
           </NavLink>
 
           <button
+            type="button"
             onClick={() => setHelpModalOpen(true)}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/50 transition ${
-              collapsed ? 'justify-center' : ''
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/50 transition ${
+              collapsed ? 'justify-center px-2' : ''
             }`}
           >
             <HelpCircle className="w-4 h-4 shrink-0" />
             {!collapsed && (
               <span className="flex items-center justify-between w-full">
-                <span>Shortcuts & Help</span>
+                <span>Shortcuts &amp; Help</span>
                 <kbd className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 font-mono text-slate-400">
                   ?
                 </kbd>
@@ -230,7 +381,7 @@ export const AppLayout: React.FC = () => {
           </button>
 
           {/* User Profile Pill */}
-          <div className="pt-2">
+          <div className="pt-1.5">
             <div
               className={`flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/60 border border-slate-800/80 ${
                 collapsed ? 'justify-center' : ''
@@ -258,6 +409,7 @@ export const AppLayout: React.FC = () => {
 
               {!collapsed && (
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition"
                   title="Sign out"
@@ -270,18 +422,36 @@ export const AppLayout: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* Main Content Area — independent internal scroll keeping Topbar & Sidebar fixed */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Navigation Bar */}
         <header className="h-16 border-b border-slate-800/80 bg-[#080B14]/85 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 no-print">
-          {/* Left: Mobile toggle & Breadcrumbs */}
+          {/* Left: Mobile toggle, Desktop Sidebar Toggle & Breadcrumbs */}
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(true)}
               className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/60"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/40 text-xs font-medium text-slate-300 transition"
+              title={collapsed ? 'Expand Navigation (Ctrl+B)' : 'Collapse Navigation (Ctrl+B)'}
+              aria-label={collapsed ? 'Expand Navigation' : 'Collapse Navigation'}
+            >
+              {collapsed ? (
+                <>
+                  <PanelLeftOpen className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Expand Nav</span>
+                </>
+              ) : (
+                <PanelLeftClose className="w-3.5 h-3.5 text-slate-400" />
+              )}
             </button>
 
             <nav className="flex items-center gap-2 text-xs font-medium text-slate-400">
@@ -299,6 +469,7 @@ export const AppLayout: React.FC = () => {
           {/* Right: Search, Status, Streak, Notifications, User Avatar */}
           <div className="flex items-center gap-2.5">
             <button
+              type="button"
               onClick={() => setSearchModalOpen(true)}
               className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-400 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl transition"
             >
@@ -346,6 +517,7 @@ export const AppLayout: React.FC = () => {
             {/* Notifications Popover */}
             <div className="relative" ref={notifRef}>
               <button
+                type="button"
                 onClick={() => {
                   setNotificationsOpen((prev) => !prev);
                   setUnreadCount(0);
@@ -375,13 +547,13 @@ export const AppLayout: React.FC = () => {
                       </p>
                     </div>
                     <Link
-                      to="/app/assessments"
+                      to="/app/dl-course"
                       onClick={() => setNotificationsOpen(false)}
-                      className="block p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition"
+                      className="block p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 transition"
                     >
-                      <p className="font-semibold text-emerald-300">Interactive Assessments Live</p>
+                      <p className="font-semibold text-rose-300">Stanford × CTF Deep Learning LMS</p>
                       <p className="text-slate-400 mt-0.5">
-                        Complete any timed technical screener to earn a verifiable certificate.
+                        21 lectures, capstone lab, reviews &amp; camera-proctored certification live now.
                       </p>
                     </Link>
                   </div>
@@ -392,6 +564,7 @@ export const AppLayout: React.FC = () => {
             {/* Profile Dropdown */}
             <div className="relative" ref={profileRef}>
               <button
+                type="button"
                 onClick={() => setProfileDropdownOpen((prev) => !prev)}
                 className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-800/80 transition"
               >
@@ -415,7 +588,7 @@ export const AppLayout: React.FC = () => {
                       className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
                     >
                       <UserIcon className="w-3.5 h-3.5" />
-                      Profile & Settings
+                      Profile &amp; Settings
                     </Link>
                     <Link
                       to="/app/certificates"
@@ -426,6 +599,7 @@ export const AppLayout: React.FC = () => {
                       My Certificates
                     </Link>
                     <button
+                      type="button"
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition text-left"
                     >
@@ -448,40 +622,53 @@ export const AppLayout: React.FC = () => {
         </main>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Navigation (Grouped Expandable Sections) */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden bg-black/80 backdrop-blur-sm flex no-print">
           <div className="w-72 bg-[#080B14] border-r border-slate-800 flex flex-col h-full p-4">
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <BrandLogo size="sm" />
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto py-4 space-y-1">
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition ${
-                        isActive
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                          : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                      }`
-                    }
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.name}</span>
-                  </NavLink>
-                );
-              })}
+            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+              {NAV_SECTIONS.map((section) => (
+                <div key={section.id} className="space-y-1">
+                  <div className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 font-mono">
+                    {section.label}
+                  </div>
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3.5 py-2 rounded-xl font-medium text-sm transition ${
+                            isActive
+                              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
+                              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                          }`
+                        }
+                      >
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span className="truncate">{item.name}</span>
+                        {item.badge && (
+                          <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+                            {item.badge}
+                          </span>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              ))}
               <NavLink
                 to="/app/settings"
                 onClick={() => setMobileMenuOpen(false)}
@@ -499,6 +686,7 @@ export const AppLayout: React.FC = () => {
             </div>
             <div className="pt-4 border-t border-slate-800">
               <button
+                type="button"
                 onClick={handleLogout}
                 className="w-full flex items-center gap-2 py-2.5 px-3 rounded-xl text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 font-medium text-sm"
               >
@@ -524,9 +712,10 @@ export const AppLayout: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Keyboard className="w-4 h-4 text-indigo-400" />
-                Keyboard Shortcuts & Guide
+                Keyboard Shortcuts &amp; Guide
               </h3>
               <button
+                type="button"
                 onClick={() => setHelpModalOpen(false)}
                 className="p-1 text-slate-400 hover:text-white rounded-lg"
               >
@@ -536,6 +725,7 @@ export const AppLayout: React.FC = () => {
 
             <div className="space-y-2.5 text-xs">
               {[
+                { keys: 'Ctrl / ⌘ + B', desc: 'Expand or collapse sidebar navigation' },
                 { keys: 'Ctrl / ⌘ + K', desc: 'Open global command search' },
                 { keys: 'Ctrl / ⌘ + Enter', desc: 'Run code against sample tests (Workspace)' },
                 { keys: 'Ctrl / ⌘ + Shift + Enter', desc: 'Submit solution & trigger AI Review' },
@@ -560,6 +750,7 @@ export const AppLayout: React.FC = () => {
                 View Platform FAQ &rarr;
               </Link>
               <button
+                type="button"
                 onClick={() => setHelpModalOpen(false)}
                 className="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold"
               >

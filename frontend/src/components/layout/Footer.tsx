@@ -60,42 +60,96 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
   if (compact) {
     return (
-      <footer className="mt-10 border-t border-slate-800/80 bg-[#060911]/85 px-4 sm:px-6 lg:px-8 py-5 no-print">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-2.5 text-slate-400">
-            <Link to="/" className="font-semibold text-white hover:text-indigo-300 transition">
-              Coding Task Factory
-            </Link>
-            <span className="text-slate-700">•</span>
-            <span className="text-slate-500">© {CURRENT_YEAR}</span>
+      <footer className="mt-10 rounded-2xl border border-slate-800/80 bg-[#070B14]/95 px-5 py-6 sm:px-7 no-print shadow-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-5 border-b border-slate-800/75 text-xs">
+          {/* Group 1: Workspace & Coding */}
+          <div className="space-y-2.5">
+            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-300">
+              Workspace &amp; Coding
+            </h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li><Link to="/" className="hover:text-white transition">Home Overview</Link></li>
+              <li><Link to="/app/dashboard" className="hover:text-white transition">Dashboard</Link></li>
+              <li><Link to="/app/challenges" className="hover:text-white transition">Challenges (368+)</Link></li>
+              <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-white transition">Monaco Coding IDE</Link></li>
+              <li><Link to="/app/generator" className="hover:text-white transition">AI Task Generator</Link></li>
+            </ul>
           </div>
 
-          <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 text-slate-400">
-            <Link to="/" className="hover:text-white transition whitespace-nowrap">Home</Link>
-            <Link to="/wiki" className="text-cyan-300 hover:text-cyan-200 font-semibold transition whitespace-nowrap flex items-center gap-1">
-              <BookOpen className="w-3 h-3" />
-              Wiki
-            </Link>
-            <Link to="/app/dashboard" className="hover:text-white transition whitespace-nowrap">Dashboard</Link>
-            <Link to="/app/ml-course" className="text-emerald-300 hover:text-emerald-200 font-semibold transition whitespace-nowrap">ML Course (106)</Link>
-            <Link to="/app/dl-course" className="text-rose-300 hover:text-rose-200 font-semibold transition whitespace-nowrap">Deep Learning (21)</Link>
-            <Link to="/app/challenges" className="hover:text-white transition whitespace-nowrap">Challenges (368+)</Link>
-            <Link to="/app/videos" className="hover:text-white transition whitespace-nowrap">Masterclasses</Link>
-            <Link to="/app/generator" className="hover:text-white transition whitespace-nowrap">AI Generator</Link>
-            <Link to="/app/workspace/c2-lru-cache" className="hover:text-white transition whitespace-nowrap">Workspace IDE</Link>
-            <Link to="/app/submissions" className="hover:text-white transition whitespace-nowrap">Submissions</Link>
-            <Link to="/app/assessments" className="hover:text-white transition whitespace-nowrap">Assessments</Link>
-            <Link to="/app/leaderboard" className="hover:text-white transition whitespace-nowrap">Leaderboard</Link>
-            <Link to="/app/analytics" className="hover:text-white transition whitespace-nowrap">Analytics</Link>
-            <Link to="/app/certificates" className="hover:text-white transition whitespace-nowrap">Certificates</Link>
-            <Link to="/app/settings" className="hover:text-white transition whitespace-nowrap">Settings</Link>
-            <button type="button" onClick={() => setLegalModal('privacy')} className="hover:text-white transition whitespace-nowrap">
-              Privacy
-            </button>
-            <button type="button" onClick={() => setLegalModal('terms')} className="hover:text-white transition whitespace-nowrap">
-              Terms
-            </button>
-          </nav>
+          {/* Group 2: AI & Deep Learning LMS */}
+          <div className="space-y-2.5">
+            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-300">
+              AI &amp; DL Academies
+            </h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>
+                <Link to="/app/ml-course" className="text-emerald-300 hover:text-emerald-200 font-semibold transition">
+                  ML Course LMS (106)
+                </Link>
+              </li>
+              <li>
+                <Link to="/app/dl-course" className="text-rose-300 hover:text-rose-200 font-semibold transition">
+                  Stanford × CTF DL (21)
+                </Link>
+              </li>
+              <li><Link to="/app/videos" className="hover:text-white transition">Video Masterclasses</Link></li>
+              <li><Link to="/app/submissions" className="hover:text-white transition">My Submissions</Link></li>
+            </ul>
+          </div>
+
+          {/* Group 3: Assessments & Growth */}
+          <div className="space-y-2.5">
+            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-300">
+              Growth &amp; Credentials
+            </h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li><Link to="/app/assessments" className="hover:text-white transition">Technical Assessments</Link></li>
+              <li><Link to="/app/certificates" className="hover:text-white transition">PDF Certificates &amp; Share</Link></li>
+              <li><Link to="/app/analytics" className="hover:text-white transition">Developer Analytics</Link></li>
+              <li><Link to="/app/leaderboard" className="hover:text-white transition">Global Leaderboard</Link></li>
+            </ul>
+          </div>
+
+          {/* Group 4: Wiki, Settings & Legal */}
+          <div className="space-y-2.5">
+            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-300">
+              Platform Wiki &amp; Legal
+            </h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>
+                <Link to="/wiki" className="text-cyan-300 hover:text-cyan-200 font-semibold transition inline-flex items-center gap-1">
+                  <BookOpen className="w-3 h-3" />
+                  Platform Wiki
+                </Link>
+              </li>
+              <li><Link to="/app/settings" className="hover:text-white transition">API &amp; Key Settings</Link></li>
+              <li>
+                <button type="button" onClick={() => setLegalModal('privacy')} className="hover:text-white transition text-left">
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => setLegalModal('terms')} className="hover:text-white transition text-left">
+                  Terms of Service
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Status Strip */}
+        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <BrandLogo size="sm" />
+            <span className="hidden sm:inline text-slate-700">•</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 font-mono text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              All Services Online
+            </span>
+          </div>
+          <p className="text-[11px] font-mono text-slate-500">
+            © {CURRENT_YEAR} Coding Task Factory • MIT License
+          </p>
         </div>
         {legalModalNode}
       </footer>
