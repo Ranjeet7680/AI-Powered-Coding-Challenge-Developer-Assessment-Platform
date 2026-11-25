@@ -1,6 +1,7 @@
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, ConfigDict
 import datetime
+
 
 # User Schemas
 class UserBase(BaseModel):
@@ -12,20 +13,29 @@ class UserBase(BaseModel):
     goals: Optional[List[str]] = []
     avatar_url: Optional[str] = None
 
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str
 
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
 
 class UserOnboardingUpdate(BaseModel):
     role: str
     experience: str
     preferred_languages: List[str]
     goals: List[str]
+
 
 class UserProfileUpdate(BaseModel):
     full_name: Optional[str] = None
@@ -36,7 +46,10 @@ class UserProfileUpdate(BaseModel):
     gemini_api_key: Optional[str] = None
     avatar_url: Optional[str] = None
 
+
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     email: str
     full_name: str
@@ -49,15 +62,15 @@ class UserResponse(BaseModel):
     streak: int
     solved_count: int
     has_completed_onboarding: bool
-    gemini_api_key: Optional[str] = None
+    has_gemini_api_key: bool = False
+    gemini_api_key_preview: Optional[str] = None
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
 
 class AuthResponse(BaseModel):
     token: str
     user: UserResponse
+
 
 # Challenge Schemas
 class TestCaseSchema(BaseModel):
@@ -65,14 +78,17 @@ class TestCaseSchema(BaseModel):
     expected_output: str
     is_hidden: bool = False
 
+
 class ExampleSchema(BaseModel):
     input: str
     output: str
     explanation: Optional[str] = ""
 
+
 class ComplexitySchema(BaseModel):
     time: str = "O(N)"
     space: str = "O(1)"
+
 
 class ChallengeCreate(BaseModel):
     title: str
@@ -93,7 +109,10 @@ class ChallengeCreate(BaseModel):
     tags: List[str] = []
     is_ai_generated: bool = False
 
+
 class ChallengeResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     title: str
     slug: str
@@ -117,10 +136,8 @@ class ChallengeResponse(BaseModel):
     total_submissions: int
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
 
-# AI Generation Schemas
+# AI Generation & Copilot Schemas
 class GenerateChallengeRequest(BaseModel):
     topic: str
     language: str = "python"
@@ -129,7 +146,25 @@ class GenerateChallengeRequest(BaseModel):
     test_case_count: int = 5
     time_limit_ms: int = 2000
     custom_instructions: Optional[str] = ""
+    model: Optional[str] = "gemini-2.0-flash"
     api_key: Optional[str] = None
+
+
+class CopilotRequest(BaseModel):
+    message: str
+    challenge_id: Optional[str] = None
+    challenge_title: Optional[str] = None
+    challenge_description: Optional[str] = None
+    language: str = "python"
+    code: str = ""
+    last_error: Optional[str] = None
+    api_key: Optional[str] = None
+
+
+class CopilotResponse(BaseModel):
+    reply: str
+    source: str = "heuristic"
+
 
 # Code Execution & Submission Schemas
 class RunCodeRequest(BaseModel):
@@ -138,6 +173,7 @@ class RunCodeRequest(BaseModel):
     test_cases: List[TestCaseSchema] = []
     custom_input: Optional[str] = None
     challenge_id: Optional[str] = None
+
 
 class TestCaseResult(BaseModel):
     test_case_index: int
@@ -149,8 +185,9 @@ class TestCaseResult(BaseModel):
     is_hidden: bool
     error: Optional[str] = None
 
+
 class RunCodeResponse(BaseModel):
-    status: str  # "Accepted", "Wrong Answer", "Error", "Time Limit Exceeded"
+    status: str  # "Accepted", "Wrong Answer", "Runtime Error", "Compilation Error", "Time Limit Exceeded"
     stdout: str
     stderr: str
     runtime_ms: int
@@ -160,13 +197,17 @@ class RunCodeResponse(BaseModel):
     test_results: List[TestCaseResult]
     ai_feedback: Optional[Dict[str, Any]] = None
 
+
 class SubmitCodeRequest(BaseModel):
     challenge_id: str
     language: str
     code: str
     api_key: Optional[str] = None
 
+
 class SubmissionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     user_id: str
     challenge_id: str
@@ -183,8 +224,6 @@ class SubmissionResponse(BaseModel):
     ai_feedback: Dict[str, Any]
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
 
 # Assessment Schemas
 class AssessmentCreate(BaseModel):
@@ -195,7 +234,10 @@ class AssessmentCreate(BaseModel):
     challenge_ids: List[str]
     category: str = "Technical Assessment"
 
+
 class AssessmentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     title: str
     description: str
@@ -207,11 +249,24 @@ class AssessmentResponse(BaseModel):
     candidates_count: int
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+
+class AssessmentCompleteRequest(BaseModel):
+    score: int
+    solved_challenge_ids: List[str] = []
+    elapsed_seconds: int = 0
+
+
+class AssessmentCompleteResponse(BaseModel):
+    assessment_id: str
+    score: int
+    passed: bool
+    certificate: Optional["CertificateResponse"] = None
+
 
 # Certificate Schemas
 class CertificateResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     user_id: str
     title: str
@@ -222,8 +277,6 @@ class CertificateResponse(BaseModel):
     category: str
     grade: str
 
-    class Config:
-        from_attributes = True
 
 # Analytics Schemas
 class AnalyticsSummary(BaseModel):
@@ -237,8 +290,11 @@ class AnalyticsSummary(BaseModel):
     language_breakdown: Dict[str, int]
     skills_radar: List[Dict[str, Any]]
 
+
 # Video Schemas
 class VideoLessonResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     title: str
     slug: str
@@ -257,6 +313,5 @@ class VideoLessonResponse(BaseModel):
     views_count: int
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
 
+AssessmentCompleteResponse.model_rebuild()

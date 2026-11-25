@@ -17,6 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base, SessionLocal
 from .models import User
 from .routers import auth, challenges, ai_generator, execution, submissions, assessments, analytics, user, videos
+from .services.code_runner import get_runtime_capabilities
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -26,13 +27,13 @@ Base.metadata.create_all(bind=engine)
 async def lifespan(_app: FastAPI):
     db = SessionLocal()
     try:
-        # Seed default demo user if missing (never attach server GEMINI_API_KEY to user records)
+        # Seed default demo user matching documented credentials
         demo = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
         if not demo:
             demo = User(
                 id="user-demo-alex",
                 email="developer@codingtaskfactory.io",
-                hashed_password=auth.hash_pw("demo1234"),
+                hashed_password=auth.hash_pw("Developer@2026!"),
                 full_name="Alex Chen",
                 role="Senior Full Stack & ML Engineer",
                 experience="Advanced",
@@ -63,7 +64,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS: explicit allowed origins instead of wildcard with credentials
 _raw_origins = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000",
@@ -89,9 +89,16 @@ app.include_router(analytics.router)
 app.include_router(user.router)
 app.include_router(videos.router)
 
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "service": "Coding Task Factory API", "version": "2.0.0"}
+    return {
+        "status": "ok",
+        "service": "Coding Task Factory API",
+        "version": "2.0.0",
+        "runtimes": get_runtime_capabilities(),
+    }
+
 
 @app.get("/api/platform-stats")
 def platform_stats():
@@ -99,5 +106,5 @@ def platform_stats():
         "coding_challenges": "500+",
         "active_developers": "14,200+",
         "successful_submissions": "182,500+",
-        "supported_languages": "12+"
+        "supported_languages": "12+",
     }

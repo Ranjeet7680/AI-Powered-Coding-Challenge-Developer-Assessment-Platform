@@ -26,7 +26,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('ctf_user');
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved) as User;
+    } catch {
+      localStorage.removeItem('ctf_user');
+      localStorage.removeItem('ctf_token');
+      return null;
+    }
   });
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem('ctf_token');
@@ -95,25 +102,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const demoLogin = async () => {
     setIsLoading(true);
     try {
-      const res = await api.login({ email: 'developer@codingtaskfactory.io', password: 'demo' });
+      const res = await api.login({ email: 'developer@codingtaskfactory.io', password: 'demo1234' });
       handleAuthSuccess(res.token, res.user);
-    } catch {
-      // Direct fallback
-      const fallbackUser: User = {
-        id: 'user-demo-alex',
-        email: 'developer@codingtaskfactory.io',
-        full_name: 'Alex Chen',
-        role: 'Full Stack Engineer',
-        experience: 'Advanced',
-        preferred_languages: ['Python', 'TypeScript', 'Go'],
-        goals: ['Practice algorithms', 'Prepare for interviews', 'Master system design'],
-        avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-        points: 2450,
-        streak: 12,
-        solved_count: 28,
-        has_completed_onboarding: true,
-      };
-      handleAuthSuccess(fallbackUser.id, fallbackUser);
     } finally {
       setIsLoading(false);
     }

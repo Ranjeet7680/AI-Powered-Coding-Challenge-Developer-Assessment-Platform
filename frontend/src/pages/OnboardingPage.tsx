@@ -13,7 +13,6 @@ import {
   Briefcase,
   Check,
   Rocket,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const OnboardingPage: React.FC = () => {
@@ -26,6 +25,7 @@ export const OnboardingPage: React.FC = () => {
     'Prepare for interviews',
   ]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { updateOnboarding, user } = useAuth();
   const navigate = useNavigate();
@@ -88,6 +88,7 @@ export const OnboardingPage: React.FC = () => {
 
   const handleFinish = async () => {
     setLoading(true);
+    setError(null);
     try {
       await updateOnboarding({
         role,
@@ -109,7 +110,7 @@ export const OnboardingPage: React.FC = () => {
         navigate('/app/dashboard');
       }, 700);
     } catch (err) {
-      navigate('/app/dashboard');
+      setError(err instanceof Error ? err.message : 'Failed to save onboarding preferences. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -193,6 +194,11 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
+            {error && (
+              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
+                {error}
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(1)}
@@ -239,6 +245,11 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
+            {error && (
+              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
+                {error}
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(2)}
@@ -281,6 +292,11 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
+            {error && (
+              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
+                {error}
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(3)}
@@ -324,6 +340,11 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
+            {error && (
+              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
+                {error}
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(4)}

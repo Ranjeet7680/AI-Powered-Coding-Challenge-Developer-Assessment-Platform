@@ -8,10 +8,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  Terminal,
-  Zap,
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -26,7 +22,10 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as any)?.from?.pathname || '/app/dashboard';
+  const rawFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
+  const from = typeof rawFrom === 'string' && rawFrom.startsWith('/') && !rawFrom.startsWith('//')
+    ? rawFrom
+    : '/app/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

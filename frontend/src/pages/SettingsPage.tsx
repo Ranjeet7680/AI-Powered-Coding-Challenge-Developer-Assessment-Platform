@@ -29,13 +29,17 @@ export const SettingsPage: React.FC = () => {
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateProfile({
-      full_name: fullName,
-      role: role,
-      gemini_api_key: geminiApiKey,
-    });
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
+    try {
+      await updateProfile({
+        full_name: fullName,
+        role: role,
+        gemini_api_key: geminiApiKey,
+      });
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    } catch (err) {
+      setKeyStatus(err instanceof Error ? err.message : 'Failed to save profile settings.');
+    }
   };
 
   const handleTestApiKey = async () => {
@@ -47,7 +51,7 @@ export const SettingsPage: React.FC = () => {
         return;
       }
       // Simple validation test
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${geminiApiKey}`);
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(geminiApiKey)}`);
       if (res.ok) {
         setKeyStatus('Connection verified! Google Gemini API is ready.');
       } else {

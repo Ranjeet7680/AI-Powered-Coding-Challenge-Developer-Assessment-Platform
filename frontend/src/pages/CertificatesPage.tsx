@@ -4,21 +4,16 @@ import { Certificate } from '../types';
 import { useAuth } from '../context/AuthContext';
 import {
   Award,
-  Download,
   Printer,
-  CheckCircle2,
   ShieldCheck,
-  Sparkles,
-  ExternalLink,
   X,
-  FileCheck2,
 } from 'lucide-react';
 
 export const CertificatesPage: React.FC = () => {
   const { user } = useAuth();
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     api.getCertificates()
@@ -128,7 +123,7 @@ export const CertificatesPage: React.FC = () => {
               <div className="pt-6 border-t border-slate-800 grid grid-cols-2 text-left font-mono text-[11px] text-slate-400">
                 <div>
                   <p className="text-slate-500">Issued On:</p>
-                  <p className="text-white font-semibold">{new Date(selectedCert.issue_date || Date.now()).toLocaleDateString()}</p>
+                  <p className="text-white font-semibold">{selectedCert.issue_date ? new Date(selectedCert.issue_date).toLocaleDateString() : 'N/A'}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-slate-500">Credential ID:</p>

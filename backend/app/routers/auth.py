@@ -12,7 +12,14 @@ from sqlalchemy.orm import Session
 from typing import Optional, Dict, Any
 from ..database import get_db
 from ..models import User
-from ..schemas import UserCreate, UserLogin, UserOnboardingUpdate, AuthResponse, UserResponse
+from ..schemas import (
+    UserCreate,
+    UserLogin,
+    UserOnboardingUpdate,
+    ChangePasswordRequest,
+    AuthResponse,
+    UserResponse,
+)
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
@@ -25,8 +32,33 @@ FAILED_ATTEMPTS: Dict[str, Dict[str, Any]] = {}
 COMMON_WEAK_PASSWORDS = {
     "password", "12345678", "123456789", "1234567890", "qwertyuiop",
     "admin1234", "admin12345", "welcome123", "letmein123", "iloveyou123",
-    "pass1234", "codingtask", "developer1"
+    "pass1234", "codingtask", "developer1",
 }
+
+
+def serialize_user(user: User) -> UserResponse:
+    raw_key = (user.gemini_api_key or "").strip()
+    preview = None
+    if raw_key:
+        preview = f"{raw_key[:4]}••••{raw_key[-4:]}" if len(raw_key) > 8 else "••••••••"
+    return UserResponse(
+        id=user.id,
+        email=user.email,
+        full_name=user.full_name,
+        role=user.role,
+        experience=user.experience,
+        preferred_languages=user.preferred_languages or [],
+        goals=user.goals or [],
+        avatar_url=user.avatar_url,
+        points=user.points,
+        streak=user.streak,
+        solved_count=user.solved_count,
+        has_completed_onboarding=user.has_completed_onboarding,
+        has_gemini_api_key=bool(raw_key),
+        gemini_api_key_preview=preview,
+        created_at=user.created_at,
+    )
+
 
 # -----------------------------------------------------------------------------
 # Cryptographic Password Security
@@ -41,9 +73,10 @@ def hash_pw(password: str) -> str:
         "sha256",
         password.encode("utf-8"),
         salt.encode("utf-8"),
-        PBKDF2_ITERATIONS
+        PBKDF2_ITERATIONS,
     )
     return f"pbkdf2:sha256:{PBKDF2_ITERATIONS}${salt}${derived.hex()}"
+
 
 def verify_pw(password: str, stored_hash: str) -> bool:
     """
@@ -52,8 +85,7 @@ def verify_pw(password: str, stored_hash: str) -> bool:
     """
     if not stored_hash or not password:
         return False
-    
-    # Modern PBKDF2 format
+
     if stored_hash.startswith("pbkdf2:sha256:"):
         try:
             parts = stored_hash.split("$")
@@ -65,15 +97,15 @@ def verify_pw(password: str, stored_hash: str) -> bool:
                 "sha256",
                 password.encode("utf-8"),
                 salt.encode("utf-8"),
-                iterations
+                iterations,
             )
             return hmac.compare_digest(derived.hex(), expected_hex)
         except Exception:
             return False
 
-    # Legacy SHA-256 fallback (transparent backward compatibility)
     legacy_hex = hashlib.sha256(password.encode("utf-8")).hexdigest()
     return hmac.compare_digest(legacy_hex, stored_hash)
+
 
 def validate_strong_password(password: str, email: str = "") -> None:
     """
@@ -88,7 +120,7 @@ def validate_strong_password(password: str, email: str = "") -> None:
     if len(password) < 10:
         raise HTTPException(
             status_code=400,
-            detail="Password is too weak. Minimum 10 characters required for account security."
+            detail="Password is too weak. Minimum 10 characters required for account security.",
         )
     if len(password) > 128:
         raise HTTPException(status_code=400, detail="Password exceeds maximum length (128 characters).")
@@ -105,11 +137,13 @@ def validate_strong_password(password: str, email: str = "") -> None:
     if email and email.split("@")[0].lower() in password.lower():
         raise HTTPException(status_code=400, detail="Password cannot contain your email username.")
 
+
 # -----------------------------------------------------------------------------
 # Cryptographic JWT Tokens (HMAC-SHA256)
 # -----------------------------------------------------------------------------
 def b64url_encode(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
 
 def b64url_decode(s: str) -> bytes:
     padding = 4 - (len(s) % 4)
@@ -117,10 +151,11 @@ def b64url_decode(s: str) -> bytes:
         s += "=" * padding
     return base64.urlsafe_b64decode(s)
 
+
 def create_jwt_token(user_id: str, email: str, role: str) -> str:
     """Generate signed JWT token valid for 7 days."""
     now = int(time.time())
-    exp = now + (7 * 24 * 3600)  # 7 days
+    exp = now + (7 * 24 * 3600)
     header = {"alg": "HS256", "typ": "JWT"}
     payload = {
         "sub": user_id,
@@ -128,7 +163,7 @@ def create_jwt_token(user_id: str, email: str, role: str) -> str:
         "role": role,
         "iat": now,
         "exp": exp,
-        "jti": secrets.token_hex(16)
+        "jti": secrets.token_hex(16),
     }
     header_b64 = b64url_encode(json.dumps(header, separators=(",", ":")).encode("utf-8"))
     payload_b64 = b64url_encode(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
@@ -136,6 +171,7 @@ def create_jwt_token(user_id: str, email: str, role: str) -> str:
     signature = hmac.new(SECRET_KEY.encode("utf-8"), signing_input, hashlib.sha256).digest()
     sig_b64 = b64url_encode(signature)
     return f"{header_b64}.{payload_b64}.{sig_b64}"
+
 
 def decode_jwt_token(token: str) -> Optional[dict]:
     """Verify and decode signed JWT token. Returns payload dict or None if invalid."""
@@ -159,6 +195,7 @@ def decode_jwt_token(token: str) -> Optional[dict]:
     except (ValueError, KeyError, TypeError, UnicodeDecodeError):
         return None
 
+
 # -----------------------------------------------------------------------------
 # Brute-Force & Rate-Limiting Protection
 # -----------------------------------------------------------------------------
@@ -169,28 +206,31 @@ def check_brute_force(email: str) -> None:
         remaining_mins = max(1, int((info["locked_until"] - now) / 60))
         raise HTTPException(
             status_code=429,
-            detail=f"Security lockout: Too many failed login attempts. Try again in {remaining_mins} minutes."
+            detail=f"Security lockout: Too many failed login attempts. Try again in {remaining_mins} minutes.",
         )
+
 
 def record_failed_login(email: str) -> None:
     now = time.time()
     info = FAILED_ATTEMPTS.get(email, {"count": 0, "locked_until": 0})
     info["count"] += 1
     if info["count"] >= 5:
-        info["locked_until"] = now + (15 * 60)  # Lock account for 15 minutes
+        info["locked_until"] = now + (15 * 60)
         FAILED_ATTEMPTS[email] = info
         raise HTTPException(
             status_code=429,
-            detail="Security lockout: Account locked for 15 minutes due to 5 consecutive failed login attempts."
+            detail="Security lockout: Account locked for 15 minutes due to 5 consecutive failed login attempts.",
         )
     FAILED_ATTEMPTS[email] = info
+
 
 def record_successful_login(email: str) -> None:
     if email in FAILED_ATTEMPTS:
         del FAILED_ATTEMPTS[email]
 
+
 # -----------------------------------------------------------------------------
-# Authentication Dependency
+# Authentication Dependencies
 # -----------------------------------------------------------------------------
 def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
     if not authorization or not authorization.startswith("Bearer "):
@@ -225,25 +265,31 @@ def get_current_user(authorization: Optional[str] = Header(None), db: Session = 
         )
     return user
 
+
+def get_optional_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> Optional[User]:
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    raw_token = authorization[len("Bearer "):].strip()
+    payload = decode_jwt_token(raw_token) if raw_token else None
+    if not payload or "sub" not in payload:
+        return None
+    return db.query(User).filter(User.id == payload["sub"]).first()
+
+
 # -----------------------------------------------------------------------------
 # End-to-End Auth Endpoints
 # -----------------------------------------------------------------------------
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: UserCreate, db: Session = Depends(get_db)):
     email = payload.email.strip().lower()
-    
-    # 1. Enforce strong password complexity
     validate_strong_password(payload.password, email=email)
-    
-    # 2. Check duplicate email
+
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         raise HTTPException(status_code=400, detail="An account with this email address already exists.")
-    
-    # 3. Create user with salted PBKDF2 hash
-    user_id = str(uuid.uuid4())
+
     user = User(
-        id=user_id,
+        id=str(uuid.uuid4()),
         email=email,
         hashed_password=hash_pw(payload.password),
         full_name=payload.full_name.strip(),
@@ -254,29 +300,26 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
         points=1200,
         streak=1,
         solved_count=0,
-        has_completed_onboarding=False
+        has_completed_onboarding=False,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
 
-    # 4. Generate signed cryptographic JWT token
     token = create_jwt_token(user.id, user.email, user.role)
-    return AuthResponse(token=token, user=UserResponse.from_orm(user))
+    return AuthResponse(token=token, user=serialize_user(user))
+
 
 @router.post("/login", response_model=AuthResponse)
 def login(payload: UserLogin, db: Session = Depends(get_db)):
     email = payload.email.strip().lower()
-    
-    # 1. Check brute force lockout
     check_brute_force(email)
-    
+
     user = db.query(User).filter(User.email == email).first()
-    
-    # Seed demo user if requested
+
     if not user and email == "developer@codingtaskfactory.io":
         user = User(
-            id=str(uuid.uuid4()),
+            id="user-demo-alex",
             email="developer@codingtaskfactory.io",
             hashed_password=hash_pw("Developer@2026!"),
             full_name="Alex Chen",
@@ -284,36 +327,28 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
             experience="Advanced",
             preferred_languages=["Python", "TypeScript", "Go"],
             goals=["Practice algorithms", "Prepare for interviews"],
+            avatar_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
             points=2450,
             streak=12,
             solved_count=28,
-            has_completed_onboarding=True
+            has_completed_onboarding=True,
         )
         db.add(user)
         db.commit()
         db.refresh(user)
-        record_successful_login(email)
-        token = create_jwt_token(user.id, user.email, user.role)
-        return AuthResponse(token=token, user=UserResponse.from_orm(user))
 
-    # Generic error message to prevent user enumeration
-    if not user:
-        record_failed_login(email)
-        raise HTTPException(status_code=401, detail="Invalid email or password.")
-    
-    # Constant-time password verification
-    if not verify_pw(payload.password, user.hashed_password or ""):
+    if not user or not verify_pw(payload.password, user.hashed_password or ""):
         record_failed_login(email)
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    # Transparent password upgrade to modern PBKDF2 if on legacy hash
     if user.hashed_password and not user.hashed_password.startswith("pbkdf2:sha256:"):
         user.hashed_password = hash_pw(payload.password)
         db.commit()
 
     record_successful_login(email)
     token = create_jwt_token(user.id, user.email, user.role)
-    return AuthResponse(token=token, user=UserResponse.from_orm(user))
+    return AuthResponse(token=token, user=serialize_user(user))
+
 
 @router.post("/google", response_model=AuthResponse)
 def google_auth():
@@ -322,12 +357,18 @@ def google_auth():
         detail="Google OAuth token verification is not configured on this server.",
     )
 
+
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
-    return UserResponse.from_orm(user)
+    return serialize_user(user)
+
 
 @router.post("/onboarding", response_model=UserResponse)
-def complete_onboarding(payload: UserOnboardingUpdate, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def complete_onboarding(
+    payload: UserOnboardingUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     user.role = payload.role
     user.experience = payload.experience
     user.preferred_languages = payload.preferred_languages
@@ -335,8 +376,23 @@ def complete_onboarding(payload: UserOnboardingUpdate, user: User = Depends(get_
     user.has_completed_onboarding = True
     db.commit()
     db.refresh(user)
-    return UserResponse.from_orm(user)
+    return serialize_user(user)
+
+
+@router.post("/change-password")
+def change_password(
+    payload: ChangePasswordRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_pw(payload.current_password, user.hashed_password or ""):
+        raise HTTPException(status_code=400, detail="Current password is incorrect.")
+    validate_strong_password(payload.new_password, email=user.email)
+    user.hashed_password = hash_pw(payload.new_password)
+    db.commit()
+    return {"message": "Password updated securely with PBKDF2-HMAC-SHA256."}
+
 
 @router.post("/forgot-password")
 def forgot_password(email: str):
-    return {"message": f"Security verification instructions have been dispatched to {email}."}
+    return {"message": f"If an account exists for {email}, security verification instructions have been dispatched."}

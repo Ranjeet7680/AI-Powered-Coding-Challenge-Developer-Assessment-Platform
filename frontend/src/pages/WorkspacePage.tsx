@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { api } from '../services/api';
@@ -14,9 +14,6 @@ import {
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  Clock,
-  Code2,
-  Terminal,
   Timer,
   Lightbulb,
   Copy,
@@ -62,16 +59,23 @@ export const WorkspacePage: React.FC = () => {
   ]);
   const [chatInput, setChatInput] = useState('');
 
+  const selectedLanguageRef = useRef(selectedLanguage);
+  selectedLanguageRef.current = selectedLanguage;
+
   // Load Challenge and Related Video
   useEffect(() => {
+    let cancelled = false;
     api.getChallenge(challengeId)
       .then((c) => {
+        if (cancelled) return;
+        const lang = selectedLanguageRef.current;
         setChallenge(c);
-        const starter = c.starter_code?.[selectedLanguage] || c.starter_code?.python || '';
+        const starter = c.starter_code?.[lang] || c.starter_code?.python || '';
         setCode(starter);
 
         // Fetch matching video
         api.getVideos().then((vList) => {
+          if (cancelled) return;
           const match = vList.find((v) => v.related_challenge_id === c.id) ||
                         vList.find((v) => v.category === c.category) ||
                         vList[0];
@@ -80,11 +84,16 @@ export const WorkspacePage: React.FC = () => {
       })
       .catch(async () => {
         const all = await api.getChallenges().catch(() => []);
+        if (cancelled) return;
         if (all.length > 0) {
+          const lang = selectedLanguageRef.current;
           setChallenge(all[0]);
-          setCode(all[0].starter_code?.[selectedLanguage] || all[0].starter_code?.python || '');
+          setCode(all[0].starter_code?.[lang] || all[0].starter_code?.python || '');
         }
       });
+    return () => {
+      cancelled = true;
+    };
   }, [challengeId]);
 
   // Handle language switch
@@ -196,11 +205,13 @@ export const WorkspacePage: React.FC = () => {
     const ext = selectedLanguage === 'python' ? 'py' : selectedLanguage === 'javascript' ? 'js' : selectedLanguage === 'typescript' ? 'ts' : 'cpp';
     const element = document.createElement('a');
     const file = new Blob([code], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    element.href = url;
     element.download = `${challenge?.slug || 'solution'}.${ext}`;
     document.body.appendChild(element);
     element.click();
     element.remove();
+    URL.revokeObjectURL(url);
   };
 
   const handleSendChatMessage = (e: React.FormEvent) => {

@@ -78,8 +78,8 @@ export const GeneratorPage: React.FC = () => {
         acceptance_rate: 74.0,
         total_submissions: 0,
       });
-    } catch (err: any) {
-      setError(err.message || 'Failed to generate challenge. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to generate challenge. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -87,12 +87,14 @@ export const GeneratorPage: React.FC = () => {
 
   const handleSaveToLibrary = async () => {
     if (!generatedChallenge) return;
+    setError(null);
     try {
       const saved = await api.createChallenge(generatedChallenge);
       setGeneratedChallenge(saved);
       setSavedSuccess(true);
-    } catch {
-      setSavedSuccess(true);
+    } catch (err: unknown) {
+      setSavedSuccess(false);
+      setError(err instanceof Error ? err.message : 'Failed to save challenge to library.');
     }
   };
 
@@ -311,6 +313,13 @@ export const GeneratorPage: React.FC = () => {
                 className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
               />
             </div>
+
+            {/* Error Banner */}
+            {error && (
+              <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300">
+                {error}
+              </div>
+            )}
 
             {/* Generate Action Button */}
             <button

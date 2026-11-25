@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '../common/BrandLogo';
-import { Terminal } from 'lucide-react';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 export const Footer: React.FC = () => {
   return (
@@ -131,7 +132,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} Coding Task Factory. All rights reserved.</p>
+          <p>© {CURRENT_YEAR} Coding Task Factory. All rights reserved.</p>
           <div className="flex items-center gap-1">
             <span>Engineered with precision for developers worldwide</span>
           </div>
