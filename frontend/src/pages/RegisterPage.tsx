@@ -31,15 +31,17 @@ export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const emailPrefix = email.trim().split('@')[0]?.toLowerCase() || '';
   const reqLength = password.length >= 10;
   const reqUpper = /[A-Z]/.test(password);
   const reqLower = /[a-z]/.test(password);
   const reqNumber = /[0-9]/.test(password);
   const reqSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+  const reqNoEmailPart = !emailPrefix || !password.toLowerCase().includes(emailPrefix);
   const reqMatch = password.length > 0 && confirmPassword.length > 0 && password === confirmPassword;
 
   const passedCount = [reqLength, reqUpper, reqLower, reqNumber, reqSpecial].filter(Boolean).length;
-  const isUnhackable = passedCount === 5 && reqMatch;
+  const isUnhackable = passedCount === 5 && reqNoEmailPart && reqMatch;
 
   const strengthLabels = ['Too Weak', 'Weak', 'Fair', 'Strong', 'Unhackable Shield'];
   const strengthColors = ['bg-rose-500', 'bg-amber-500', 'bg-yellow-500', 'bg-indigo-500', 'bg-emerald-500'];
@@ -64,6 +66,10 @@ export const RegisterPage: React.FC = () => {
       setError('Security requirement: Password must contain uppercase, lowercase, numbers, and special symbols.');
       return;
     }
+    if (!reqNoEmailPart) {
+      setError('Security requirement: Password cannot contain your email username.');
+      return;
+    }
     if (password !== confirmPassword) {
       setError('Passwords do not match. Please verify your confirmation password.');
       return;
@@ -75,7 +81,7 @@ export const RegisterPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await register(fullName.trim(), email.trim(), password);
+      await register(fullName.trim(), email.trim().toLowerCase(), password);
       navigate('/onboarding');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Registration failed. That email might already be registered.';
@@ -246,6 +252,7 @@ export const RegisterPage: React.FC = () => {
                       { ok: reqLower, label: 'At least one lowercase letter (a-z)' },
                       { ok: reqNumber, label: 'At least one numeric digit (0-9)' },
                       { ok: reqSpecial, label: 'At least one special symbol (!@#$%^&*...)' },
+                      { ok: reqNoEmailPart, label: 'Does not contain your email username' },
                     ].map((req) => (
                       <div key={req.label} className="flex items-center gap-2">
                         {req.ok ? (

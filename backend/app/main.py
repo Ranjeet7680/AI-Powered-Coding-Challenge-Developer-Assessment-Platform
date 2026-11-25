@@ -15,6 +15,7 @@ from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .database import engine, Base, SessionLocal, ensure_schema_migrations, get_db
@@ -33,27 +34,43 @@ def ensure_initial_seed(db: Session) -> None:
     """Idempotently ensure demo user, 368+ challenges, assessments, and videos exist."""
     demo = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
     if not demo:
-        demo = User(
-            id="user-demo-alex",
-            email="developer@codingtaskfactory.io",
-            hashed_password=auth.hash_pw("Developer@2026!"),
-            full_name="Alex Chen",
-            role="Senior Full Stack & ML Engineer",
-            experience="Advanced",
-            preferred_languages=["Python", "TypeScript", "C++"],
-            goals=["Practice algorithms", "Prepare for interviews", "Master Machine Learning"],
-            avatar_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
-            points=2450,
-            streak=12,
-            solved_count=28,
-            has_completed_onboarding=True,
-        )
-        db.add(demo)
-        db.commit()
+        try:
+            demo = User(
+                id="user-demo-alex",
+                email="developer@codingtaskfactory.io",
+                hashed_password=auth.hash_pw("Developer@2026!"),
+                full_name="Alex Chen",
+                role="Senior Full Stack & ML Engineer",
+                experience="Advanced",
+                preferred_languages=["Python", "TypeScript", "C++"],
+                goals=["Practice algorithms", "Prepare for interviews", "Master Machine Learning"],
+                avatar_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+                points=2450,
+                streak=12,
+                solved_count=28,
+                has_completed_onboarding=True,
+            )
+            db.add(demo)
+            db.commit()
+        except IntegrityError:
+            db.rollback()
 
-    challenges.seed_initial_challenges(db)
-    assessments.seed_assessments(db)
-    videos.seed_videos(db)
+    # Fast-path: avoid re-seeding 368 rows on every cold worker once DB is already populated
+    if db.query(Challenge.id).count() >= 360:
+        return
+
+    try:
+        challenges.seed_initial_challenges(db)
+    except IntegrityError:
+        db.rollback()
+    try:
+        assessments.seed_assessments(db)
+    except IntegrityError:
+        db.rollback()
+    try:
+        videos.seed_videos(db)
+    except IntegrityError:
+        db.rollback()
 
 
 @asynccontextmanager

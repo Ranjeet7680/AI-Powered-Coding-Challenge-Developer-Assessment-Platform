@@ -30,14 +30,15 @@ export const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail || !password) {
       setError('Please fill in both email and password.');
       return;
     }
 
     setLoading(true);
     try {
-      await login(email, password);
+      await login(normalizedEmail, password);
       navigate(from, { replace: true });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to sign in. Please check your credentials.';
@@ -45,6 +46,12 @@ export const LoginPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fillDemoAccount = () => {
+    setEmail('developer@codingtaskfactory.io');
+    setPassword('Developer@2026!');
+    setError(null);
   };
 
   return (
@@ -210,12 +217,21 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <p className="text-center text-xs text-slate-400">
-            Don&apos;t have an account?{' '}
-            <Link to="/register" className="font-semibold text-indigo-400 hover:text-indigo-300">
-              Create one now
-            </Link>
-          </p>
+          <div className="space-y-2 text-center text-xs text-slate-400">
+            <button
+              type="button"
+              onClick={fillDemoAccount}
+              className="text-cyan-400 hover:text-cyan-300 font-mono text-[11px] underline underline-offset-2"
+            >
+              Fill Verified Demo Account (developer@codingtaskfactory.io)
+            </button>
+            <p>
+              Don&apos;t have an account?{' '}
+              <Link to="/register" className="font-semibold text-indigo-400 hover:text-indigo-300">
+                Create one now
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
       </div>
