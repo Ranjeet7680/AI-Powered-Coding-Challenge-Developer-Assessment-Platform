@@ -20,6 +20,11 @@ import {
   MLFinalExamResponse,
   MLFinalExamSubmitPayload,
   MLFinalExamResultResponse,
+  MLCapstoneProject,
+  MLCapstoneSubmission,
+  MLCapstoneSubmitPayload,
+  MLCourseReviewsOverview,
+  MLCourseReviewItem,
 } from '../types';
 
 const API_BASE = '/api';
@@ -354,5 +359,30 @@ function createCourseClient(basePath: '/ml-course' | '/dl-course') {
         method: 'POST',
         body: JSON.stringify(payload),
       }),
+
+    getCapstone: () =>
+      request<{ projects: MLCapstoneProject[]; submissions: MLCapstoneSubmission[] }>(
+        `${basePath}/capstone`
+      ),
+
+    submitCapstone: (payload: MLCapstoneSubmitPayload) =>
+      request<MLCapstoneSubmission>(`${basePath}/capstone/submit`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+
+    getReviews: () => request<MLCourseReviewsOverview>(`${basePath}/reviews`),
+
+    submitReview: (payload: { rating: number; headline: string; comment: string }) =>
+      request<MLCourseReviewItem>(`${basePath}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+
+    toggleReviewHelpful: (reviewId: string) =>
+      request<{ review_id: string; helpful_count: number; viewer_has_voted: boolean }>(
+        `${basePath}/reviews/${encodeURIComponent(reviewId)}/helpful`,
+        { method: 'POST' }
+      ),
   };
 }

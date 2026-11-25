@@ -221,6 +221,11 @@ export interface MLModuleInfo {
   id: string;
   order: number;
   title: string;
+  description?: string;
+  estimated_hours?: number;
+  learning_objectives?: string[];
+  key_topics?: string[];
+  prerequisite_module_ids?: string[];
   lesson_start: number;
   lesson_end: number;
   lesson_count: number;
@@ -284,11 +289,80 @@ export interface MLCourseOverview {
   playlist_url: string;
   instructor: string;
   thumbnail_url?: string;
+  lms_player_mode?: string;
   total_lessons: number;
   total_quizzes: number;
   modules: MLModuleInfo[];
   lessons: MLLessonItem[];
+  capstone_projects?: MLCapstoneProject[];
   progress: MLCourseProgressData | null;
+}
+
+export interface MLCapstoneRubricItem {
+  criterion: string;
+  max_points: number;
+}
+
+export interface MLCapstoneProject {
+  id: string;
+  module_id: string;
+  title: string;
+  difficulty: string;
+  estimated_hours: number;
+  summary: string;
+  deliverables: string[];
+  starter_template: string;
+  rubric: MLCapstoneRubricItem[];
+}
+
+export interface MLCapstoneSubmission {
+  id: string;
+  course_id: string;
+  user_id: string;
+  project_id: string;
+  title: string;
+  repo_url: string;
+  demo_url: string;
+  architecture_notes: string;
+  code_submission: string;
+  rubric_scores: Record<string, number>;
+  overall_score: number;
+  status: string;
+  ai_feedback: string;
+  points_awarded?: number;
+  created_at: string;
+}
+
+export interface MLCapstoneSubmitPayload {
+  project_id: string;
+  title: string;
+  repo_url?: string;
+  demo_url?: string;
+  architecture_notes: string;
+  code_submission?: string;
+}
+
+export interface MLCourseReviewItem {
+  id: string;
+  course_id: string;
+  author_name: string;
+  author_role: string;
+  rating: number;
+  headline: string;
+  comment: string;
+  verified_learner: boolean;
+  helpful_count: number;
+  viewer_has_voted: boolean;
+  is_own_review: boolean;
+  created_at: string;
+}
+
+export interface MLCourseReviewsOverview {
+  course_id: string;
+  average_rating: number;
+  total_reviews: number;
+  rating_breakdown: Record<string, number>;
+  reviews: MLCourseReviewItem[];
 }
 
 export interface MLQuizAnswerResponse {

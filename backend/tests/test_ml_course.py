@@ -377,3 +377,83 @@ def test_stanford_ctf_dl_course_21_videos_20_quizzes_and_proctored_exam(ml_clien
     pdf = ml_client.get(f"/api/certificates/{cred_id}/pdf", headers=headers)
     assert pdf.status_code == 200
     assert pdf.content.startswith(b"%PDF")
+
+
+def test_lms_in_lms_player_advanced_syllabus_capstones_and_reviews(ml_client: TestClient):
+    headers = _register_and_auth(ml_client)
+
+    # 1. Verify privacy-enhanced In-LMS playback URLs & rich syllabus metadata
+    dl_data = ml_client.get("/api/dl-course", headers=headers).json()
+    assert dl_data["lms_player_mode"] == "locked_in_lms"
+    assert "youtube-nocookie.com/embed/jGwO_UgTS7I" in dl_data["lessons"][0]["video_url"]
+    assert "modestbranding=1" in dl_data["lessons"][0]["video_url"]
+    assert len(dl_data["modules"][0]["learning_objectives"]) >= 2
+    assert len(dl_data["modules"][0]["key_topics"]) >= 2
+    assert dl_data["modules"][1]["prerequisite_module_ids"] == ["dl-mod-1"]
+    assert len(dl_data["capstone_projects"]) == 3
+
+    ml_data = ml_client.get("/api/ml-course", headers=headers).json()
+    assert ml_data["lms_player_mode"] == "locked_in_lms"
+    assert "youtube-nocookie.com/embed/Gv9_4yMHFhI" in ml_data["lessons"][0]["video_url"]
+    assert len(ml_data["capstone_projects"]) == 3
+
+    # 2. Test Capstone Project Assignment Evaluation & XP Award (+120 XP)
+    cap_res = ml_client.post(
+        "/api/dl-course/capstone/submit",
+        json={
+            "project_id": "dl-cap-1",
+            "title": "Vectorized Deep Neural Engine",
+            "repo_url": "https://github.com/example/dl-autograd-capstone",
+            "architecture_notes": (
+                "Implemented vectorized He initialization with ReLU activations and checked analytical "
+                "vs numerical finite-difference gradients across 4 layers with Dev error analysis."
+            ),
+            "code_submission": (
+                "import numpy as np\n"
+                "class DeepNet:\n"
+                "    def __init__(self, d):\n"
+                "        self.W = np.random.randn(d, d) * np.sqrt(2.0 / d)\n"
+                "    def forward(self, x):\n"
+                "        return np.maximum(0, x @ self.W)\n"
+                "    def loss(self, logits, y):\n"
+                "        return np.mean((logits - y) ** 2)\n"
+            ),
+        },
+        headers=headers,
+    )
+    assert cap_res.status_code == 200, cap_res.text
+    sub = cap_res.json()
+    assert sub["overall_score"] >= 70
+    assert sub["status"] == "Approved"
+    assert sub["points_awarded"] == 120
+    assert len(sub["rubric_scores"]) == 4
+
+    cap_list = ml_client.get("/api/dl-course/capstone", headers=headers).json()
+    assert len(cap_list["submissions"]) == 1
+
+    # 3. Test Peer Reviews & Helpful Upvoting (+20 XP)
+    rev_overview = ml_client.get("/api/dl-course/reviews", headers=headers).json()
+    assert rev_overview["total_reviews"] >= 3
+
+    post_rev = ml_client.post(
+        "/api/dl-course/reviews",
+        json={
+            "rating": 5,
+            "headline": "Superb CS229 derivations + proctored exam",
+            "comment": "Keeping all lectures inside the LMS with capstone rubric grading made revision productive.",
+        },
+        headers=headers,
+    )
+    assert post_rev.status_code == 200, post_rev.text
+    created_rev = post_rev.json()
+    assert created_rev["rating"] == 5
+    assert created_rev["is_own_review"] is True
+
+    # Upvote toggle on the review
+    vote1 = ml_client.post(f"/api/dl-course/reviews/{created_rev['id']}/helpful", headers=headers).json()
+    assert vote1["viewer_has_voted"] is True
+    assert vote1["helpful_count"] == 1
+
+    vote2 = ml_client.post(f"/api/dl-course/reviews/{created_rev['id']}/helpful", headers=headers).json()
+    assert vote2["viewer_has_voted"] is False
+    assert vote2["helpful_count"] == 0

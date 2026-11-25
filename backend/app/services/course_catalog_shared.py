@@ -1,6 +1,8 @@
 """
 Shared parameterized builder helpers for curated LMS video courses.
-Eliminates duplicate lesson/note/quiz assembly logic across LMS tracks.
+Provides In-LMS privacy-enhanced embed URLs (`youtube-nocookie.com`),
+advanced structured module syllabi, capstone assignment metadata,
+and comprehension quiz/exam selectors without duplicating logic.
 """
 import json
 from pathlib import Path
@@ -34,6 +36,17 @@ def module_for_order(order: int, modules: List[Dict[str, Any]]) -> Dict[str, Any
         if lo <= order <= hi:
             return m
     return modules[-1]
+
+
+def build_locked_lms_embed_url(video_id: str) -> str:
+    """
+    Privacy-enhanced, minimal-chrome embed so videos play strictly inside the LMS
+    with modestbranding, no related off-course suggestions, and no outbound links.
+    """
+    return (
+        f"https://www.youtube-nocookie.com/embed/{video_id}"
+        "?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1"
+    )
 
 
 def build_structured_notes_markdown(
@@ -76,6 +89,7 @@ def build_course_catalog(
     quiz_specs: Dict[int, QuizSpecTuple],
     id_prefix: str,
     curriculum_label: str,
+    capstone_projects: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     data_path = Path(__file__).resolve().parent / playlist_filename
     with data_path.open("r", encoding="utf-8") as f:
@@ -84,14 +98,17 @@ def build_course_catalog(
     total = len(raw_items)
     lessons: List[Dict[str, Any]] = []
     module_counts: Dict[str, int] = {m["id"]: 0 for m in modules}
+    module_minutes: Dict[str, int] = {m["id"]: 0 for m in modules}
 
     for entry in raw_items:
         order = int(entry["order"])
         vid = entry["video_id"]
         title = entry["title"]
         dur_label = entry.get("duration") or "15:00"
+        dur_mins = parse_duration_minutes(dur_label)
         mod = module_for_order(order, modules)
         module_counts[mod["id"]] += 1
+        module_minutes[mod["id"]] += dur_mins
 
         spec = quiz_specs[order]
         q_text, options, correct_idx, concept, explanation, code_snippet = spec
@@ -108,9 +125,9 @@ def build_course_catalog(
                 "module_title": mod["title"],
                 "difficulty": difficulty_for_progress(order, total),
                 "duration_label": dur_label,
-                "duration_minutes": parse_duration_minutes(dur_label),
-                "video_url": f"https://www.youtube.com/embed/{vid}?rel=0",
-                "youtube_watch_url": f"https://www.youtube.com/watch?v={vid}&list={playlist_id}",
+                "duration_minutes": dur_mins,
+                "video_url": build_locked_lms_embed_url(vid),
+                "youtube_watch_url": build_locked_lms_embed_url(vid),
                 "thumbnail_url": f"https://img.youtube.com/vi/{vid}/hqdefault.jpg",
                 "notes_markdown": build_structured_notes_markdown(
                     order, title, mod, concept, explanation, curriculum_label
@@ -137,6 +154,11 @@ def build_course_catalog(
             "id": m["id"],
             "order": m["order"],
             "title": m["title"],
+            "description": m.get("description", ""),
+            "estimated_hours": max(1, round(module_minutes[m["id"]] / 60, 1)) if module_minutes[m["id"]] >= 30 else 1,
+            "learning_objectives": m.get("learning_objectives", []),
+            "key_topics": m.get("key_topics", []),
+            "prerequisite_module_ids": m.get("prerequisite_module_ids", []),
             "lesson_start": m["range"][0],
             "lesson_end": m["range"][1],
             "lesson_count": module_counts[m["id"]],
@@ -155,6 +177,8 @@ def build_course_catalog(
         "total_quizzes": len(lessons),
         "modules": modules_out,
         "lessons": lessons,
+        "capstone_projects": capstone_projects or [],
+        "lms_player_mode": "locked_in_lms",
     }
 
 

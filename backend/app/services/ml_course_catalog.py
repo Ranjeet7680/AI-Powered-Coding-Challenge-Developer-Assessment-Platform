@@ -9,6 +9,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 
+from .course_catalog_shared import (
+    build_course_catalog,
+    filter_quiz_bank_from_catalog,
+    find_lesson_in_catalog,
+    select_exam_questions_from_catalog,
+)
+
+
 PLAYLIST_ID = "PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF"
 PLAYLIST_URL = f"https://www.youtube.com/playlist?list={PLAYLIST_ID}"
 COURSE_ID = "course-ml-statquest-106"
@@ -16,13 +24,167 @@ COURSE_TITLE = "Machine Learning Mastery — Complete 106-Lecture Engineering LM
 COURSE_INSTRUCTOR = "Josh Starmer (StatQuest) • Curated LMS"
 
 MODULES: List[Dict[str, Any]] = [
-    {"id": "mod-1", "order": 1, "title": "ML Fundamentals & Evaluation Metrics", "range": (1, 8)},
-    {"id": "mod-2", "order": 2, "title": "Linear Models, Logistic Regression & Regularization", "range": (9, 29)},
-    {"id": "mod-3", "order": 3, "title": "Dimensionality Reduction & Clustering", "range": (30, 43)},
-    {"id": "mod-4", "order": 4, "title": "Naive Bayes, Decision Trees & Random Forests", "range": (44, 54)},
-    {"id": "mod-5", "order": 5, "title": "Gradient Optimization, Boosting & SVMs", "range": (55, 75)},
-    {"id": "mod-6", "order": 6, "title": "Neural Networks, CNNs & Sequence Models", "range": (76, 90)},
-    {"id": "mod-7", "order": 7, "title": "Transformers, PyTorch & Reinforcement Learning", "range": (91, 106)},
+    {
+        "id": "mod-1",
+        "order": 1,
+        "title": "ML Fundamentals & Evaluation Metrics",
+        "description": "Master train/test splits, k-fold CV, Confusion Matrices, Precision/Recall/F1, Bias-Variance decomposition, and Shannon Entropy.",
+        "learning_objectives": [
+            "Design leakage-free cross-validation evaluation harnesses",
+            "Diagnose Type I / II errors using Precision, Recall & Sensitivity",
+            "Compute Entropy & Cross-Entropy information bounds",
+        ],
+        "key_topics": ["Train/Test & CV", "Confusion Matrix", "Bias vs Variance", "Entropy"],
+        "prerequisite_module_ids": [],
+        "range": (1, 8),
+    },
+    {
+        "id": "mod-2",
+        "order": 2,
+        "title": "Linear Models, Logistic Regression & Regularization",
+        "description": "Explore OLS regression, R^2 & F-statistics, Logistic log-odds & MLE, ROC/PR-AUC thresholds, and Ridge/Lasso/ElasticNet regularization.",
+        "learning_objectives": [
+            "Interpret R^2, Deviance residuals, and log-odds coefficients",
+            "Compare ROC-AUC against PR-AUC under class imbalance",
+            "Select L1 (Lasso), L2 (Ridge), or ElasticNet penalties cleanly",
+        ],
+        "key_topics": ["Linear & Multiple Reg", "Logistic MLE", "ROC & PR-AUC", "Ridge / Lasso / ElasticNet"],
+        "prerequisite_module_ids": ["mod-1"],
+        "range": (9, 29),
+    },
+    {
+        "id": "mod-3",
+        "order": 3,
+        "title": "Dimensionality Reduction & Clustering",
+        "description": "Compress high-dimensional spaces using PCA/SVD, PCoA/MDS, LDA, t-SNE, UMAP embeddings, Hierarchical Linkage, K-Means, and DBSCAN.",
+        "learning_objectives": [
+            "Extract orthogonal principal axes & scree variance explanations",
+            "Distinguish local neighborhood embeddings (t-SNE/UMAP) from PCA",
+            "Cluster convex & non-convex density shapes via K-Means & DBSCAN",
+        ],
+        "key_topics": ["PCA & SVD", "LDA", "t-SNE & UMAP", "K-Means, Hierarchical & DBSCAN"],
+        "prerequisite_module_ids": ["mod-2"],
+        "range": (30, 43),
+    },
+    {
+        "id": "mod-4",
+        "order": 4,
+        "title": "Naive Bayes, Decision Trees & Random Forests",
+        "description": "Implement Multinomial & Gaussian Naive Bayes, Classification/Regression Trees with Gini & Impurity splits, Target Encoding, and Random Forests.",
+        "learning_objectives": [
+            "Build smoothed Bayesian classifiers with Laplace priors",
+            "Compute Gini impurity reduction & out-of-bag Random Forest error",
+            "Handle high-cardinality categories & missing values robustly",
+        ],
+        "key_topics": ["Naive Bayes", "Classification & Reg Trees", "Target Encoding", "Random Forests"],
+        "prerequisite_module_ids": ["mod-3"],
+        "range": (44, 54),
+    },
+    {
+        "id": "mod-5",
+        "order": 5,
+        "title": "Gradient Optimization, Boosting & SVMs",
+        "description": "Master Gradient Descent/SGD, AdaBoost, Gradient Boost, XGBoost (regularized Similarity Score & Approximate Splits), CatBoost, and RBF SVMs.",
+        "learning_objectives": [
+            "Trace Gradient Boost residuals through additive regression trees",
+            "Optimize XGBoost cover, gain & gamma pruning parameters",
+            "Select Polynomial vs Radial Basis Function SVM kernels",
+        ],
+        "key_topics": ["SGD Optimization", "AdaBoost & GradBoost", "XGBoost & CatBoost", "Support Vector Machines"],
+        "prerequisite_module_ids": ["mod-4"],
+        "range": (55, 75),
+    },
+    {
+        "id": "mod-6",
+        "order": 6,
+        "title": "Neural Networks, CNNs & Sequence Models",
+        "description": "Derive Neural Network chain-rule backpropagation, ReLU/ArgMax/Softmax, Cross-Entropy loss, CNN filters/pooling, RNN/LSTM gates, and Embeddings.",
+        "learning_objectives": [
+            "Implement stable Softmax & Cross-Entropy loss functions",
+            "Design 2D Convolutional spatial extractors for images",
+            "Prevent recurrent vanishing gradients using LSTM gating cells",
+        ],
+        "key_topics": ["Backprop & ReLU", "Softmax & Cross-Entropy", "Convolutional Nets", "LSTM & Word2Vec"],
+        "prerequisite_module_ids": ["mod-5"],
+        "range": (76, 90),
+    },
+    {
+        "id": "mod-7",
+        "order": 7,
+        "title": "Transformers, PyTorch & Reinforcement Learning",
+        "description": "Architect Decoder-only Transformers, Scaled Dot-Product Self-Attention, Causal Masking, PyTorch nn.Module training loops, and RLHF LLM alignment.",
+        "learning_objectives": [
+            "Compute scaled Q*K^T / sqrt(d_k) attention matrices with causal masks",
+            "Write full PyTorch Lightning training & optimizer pipelines",
+            "Explain Reward Modeling & PPO/RLHF alignment in modern LLMs",
+        ],
+        "key_topics": ["Transformers & Self-Attention", "Causal Masking", "PyTorch + Lightning", "RLHF Alignment"],
+        "prerequisite_module_ids": ["mod-6"],
+        "range": (91, 106),
+    },
+]
+
+ML_CAPSTONE_PROJECTS: List[Dict[str, Any]] = [
+    {
+        "id": "ml-cap-1",
+        "module_id": "mod-5",
+        "title": "Capstone 1: Imbalanced Fraud / Churn Classifier with XGBoost & PR-AUC Calibration",
+        "difficulty": "Intermediate",
+        "estimated_hours": 10,
+        "summary": "Engineer a tabular machine learning pipeline combining cross-validated Ridge/Logistic baselines, Target Encoding, XGBoost cover tuning, and Precision-Recall threshold calibration.",
+        "deliverables": [
+            "Leakage-free k-fold CV pipeline using scikit-learn ColumnTransformer",
+            "ROC-AUC & PR-AUC comparison report vs imbalanced minority class baseline",
+            "Feature importance + SHAP / gain summary and calibrated threshold rule",
+        ],
+        "starter_template": "from sklearn.model_selection import StratifiedKFold, cross_val_score\nfrom sklearn.ensemble import HistGradientBoostingClassifier\n\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\nclf = HistGradientBoostingClassifier(max_iter=200, l2_regularization=1.0)\n",
+        "rubric": [
+            {"criterion": "Leakage-Free Validation & Feature Engineering", "max_points": 30},
+            {"criterion": "XGBoost / Regularization Hyperparameter Tuning", "max_points": 25},
+            {"criterion": "ROC/PR-AUC Analysis Under Imbalance", "max_points": 25},
+            {"criterion": "Production Code Readability", "max_points": 20},
+        ],
+    },
+    {
+        "id": "ml-cap-2",
+        "module_id": "mod-3",
+        "title": "Capstone 2: High-Dimensional Embedding Discovery (PCA + UMAP + DBSCAN)",
+        "difficulty": "Intermediate",
+        "estimated_hours": 7,
+        "summary": "Reduce a noisy 50+ feature scientific dataset down to interpretable latent dimensions, compare K-Means elbow curves against DBSCAN noise detection, and visualize separated regimes.",
+        "deliverables": [
+            "StandardScaler + PCA explained variance ratio scree summary",
+            "UMAP / t-SNE 2D manifold inspection without overfitting perplexity",
+            "Silhouette & cluster stability benchmark across K-Means vs DBSCAN",
+        ],
+        "starter_template": "from sklearn.preprocessing import StandardScaler\nfrom sklearn.decomposition import PCA\nfrom sklearn.cluster import DBSCAN\n\nX_scaled = StandardScaler().fit_transform(X)\nX_pca = PCA(n_components=0.95).fit_transform(X_scaled)\n",
+        "rubric": [
+            {"criterion": "Variance Preservation & Scaling Discipline", "max_points": 30},
+            {"criterion": "Cluster Quality Metrics & Outlier Handling", "max_points": 30},
+            {"criterion": "Manifold Interpretation & Assumptions", "max_points": 20},
+            {"criterion": "Clean Modular Implementation", "max_points": 20},
+        ],
+    },
+    {
+        "id": "ml-cap-3",
+        "module_id": "mod-7",
+        "title": "Capstone 3: Causal Self-Attention Block & PyTorch Trainer + RLHF Preference Scoring",
+        "difficulty": "Advanced",
+        "estimated_hours": 12,
+        "summary": "Implement scaled dot-product causal self-attention from raw PyTorch tensors, verify triangular masking prevents future token leakage, and simulate a pairwise RLHF reward preference loss.",
+        "deliverables": [
+            "CausalMultiHeadAttention module with Q/K/V projections and -inf upper-tri mask",
+            "Unit assertion proving earlier token outputs never change when future tokens vary",
+            "Pairwise Bradley-Terry reward loss implementation: -log(sigmoid(r_chosen - r_rejected))",
+        ],
+        "starter_template": "import torch\nimport torch.nn.functional as F\n\ndef causal_attention(Q, K, V):\n    dk = Q.size(-1)\n    scores = (Q @ K.transpose(-2, -1)) / (dk ** 0.5)\n    mask = torch.triu(torch.ones_like(scores, dtype=torch.bool), diagonal=1)\n    scores = scores.masked_fill(mask, float('-inf'))\n    return F.softmax(scores, dim=-1) @ V\n",
+        "rubric": [
+            {"criterion": "Scaled Dot-Product & Causal Mask Correctness", "max_points": 35},
+            {"criterion": "PyTorch Autograd & Optimization Loop", "max_points": 25},
+            {"criterion": "RLHF Preference Modeling Loss Design", "max_points": 25},
+            {"criterion": "Testing & Architecture Write-up", "max_points": 15},
+        ],
+    },
 ]
 
 
@@ -1457,111 +1619,33 @@ def _build_notes_markdown(order: int, title: str, mod: Dict[str, Any], concept: 
 
 
 @lru_cache(maxsize=1)
-def _load_raw_playlist() -> List[Dict[str, Any]]:
-    data_path = Path(__file__).resolve().parent / "ml_playlist_data.json"
-    with data_path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@lru_cache(maxsize=1)
 def get_ml_course_catalog() -> Dict[str, Any]:
-    raw_items = _load_raw_playlist()
-    lessons: List[Dict[str, Any]] = []
-    module_counts: Dict[str, int] = {m["id"]: 0 for m in MODULES}
-
-    for entry in raw_items:
-        order = int(entry["order"])
-        vid = entry["video_id"]
-        title = entry["title"]
-        dur_label = entry.get("duration") or "10:00"
-        mod = _module_for_order(order)
-        module_counts[mod["id"]] += 1
-
-        spec = LESSON_QUIZ_SPECS[order]
-        q_text, options, correct_idx, concept, explanation, code_snippet = spec
-
-        lesson_id = f"ml-{order:03d}"
-        lessons.append(
-            {
-                "id": lesson_id,
-                "order": order,
-                "video_id": vid,
-                "title": title,
-                "module_id": mod["id"],
-                "module_order": mod["order"],
-                "module_title": mod["title"],
-                "difficulty": _difficulty_for_order(order),
-                "duration_label": dur_label,
-                "duration_minutes": _parse_duration_minutes(dur_label),
-                "video_url": f"https://www.youtube.com/embed/{vid}?rel=0",
-                "youtube_watch_url": f"https://www.youtube.com/watch?v={vid}&list={PLAYLIST_ID}",
-                "thumbnail_url": f"https://img.youtube.com/vi/{vid}/hqdefault.jpg",
-                "notes_markdown": _build_notes_markdown(order, title, mod, concept, explanation),
-                "key_formula": concept,
-                "code_snippet": code_snippet,
-                "quiz": {
-                    "id": f"quiz-{order:03d}",
-                    "lesson_id": lesson_id,
-                    "lesson_order": order,
-                    "lesson_title": title,
-                    "module_id": mod["id"],
-                    "module_title": mod["title"],
-                    "question": q_text,
-                    "options": options,
-                    "correct_index": correct_idx,
-                    "explanation": explanation,
-                },
-            }
-        )
-
-    modules_out = [
-        {
-            "id": m["id"],
-            "order": m["order"],
-            "title": m["title"],
-            "lesson_start": m["range"][0],
-            "lesson_end": m["range"][1],
-            "lesson_count": module_counts[m["id"]],
-        }
-        for m in MODULES
-    ]
-
-    return {
-        "id": COURSE_ID,
-        "title": COURSE_TITLE,
-        "playlist_id": PLAYLIST_ID,
-        "playlist_url": PLAYLIST_URL,
-        "instructor": COURSE_INSTRUCTOR,
-        "thumbnail_url": "/thumbnails/ml-ctf-course-thumbnail.svg",
-        "total_lessons": len(lessons),
-        "total_quizzes": len(lessons),
-        "modules": modules_out,
-        "lessons": lessons,
-    }
+    return build_course_catalog(
+        course_id=COURSE_ID,
+        course_title=COURSE_TITLE,
+        playlist_id=PLAYLIST_ID,
+        playlist_url=PLAYLIST_URL,
+        instructor=COURSE_INSTRUCTOR,
+        thumbnail_url="/thumbnails/ml-ctf-course-thumbnail.svg",
+        playlist_filename="ml_playlist_data.json",
+        modules=MODULES,
+        quiz_specs=LESSON_QUIZ_SPECS,
+        id_prefix="ml",
+        curriculum_label="StatQuest ML Visual",
+        capstone_projects=ML_CAPSTONE_PROJECTS,
+    )
 
 
 def get_lesson_by_id(lesson_id: str) -> Optional[Dict[str, Any]]:
-    catalog = get_ml_course_catalog()
-    for lesson in catalog["lessons"]:
-        if lesson["id"] == lesson_id or str(lesson["order"]) == lesson_id:
-            return lesson
-    return None
+    return find_lesson_in_catalog(get_ml_course_catalog(), lesson_id)
 
 
 def get_100_quiz_bank(include_answers: bool = False) -> List[Dict[str, Any]]:
     """Return 100-question (or full 106) post-video mastery quiz bank."""
-    catalog = get_ml_course_catalog()
-    items: List[Dict[str, Any]] = []
-    for lesson in catalog["lessons"]:
-        q = dict(lesson["quiz"])
-        if not include_answers:
-            q.pop("correct_index", None)
-            q.pop("explanation", None)
-        items.append(q)
-    return items
+    return filter_quiz_bank_from_catalog(get_ml_course_catalog(), include_answers=include_answers)
 
 
-# Curated 30 high-signal lecture indices spanning all 7 modules for the Proctored Final Exam
+# Curated 35 high-signal lecture indices spanning all 7 modules for the Proctored Final Exam
 FINAL_EXAM_LESSON_ORDERS = [
     1, 2, 3, 6, 7,          # Module 1: CV, Confusion Matrix, Bias-Variance, Entropy
     10, 14, 16, 23, 25, 26, # Module 2: Linear Reg, Log-Odds, Logistic, ROC/AUC, Ridge, Lasso
@@ -1575,15 +1659,8 @@ FINAL_EXAM_LESSON_ORDERS = [
 
 def get_final_exam_questions(include_answers: bool = False) -> List[Dict[str, Any]]:
     """Return 35 comprehensive proctored exam questions across all 7 ML modules."""
-    catalog = get_ml_course_catalog()
-    by_order = {l["order"]: l for l in catalog["lessons"]}
-    questions: List[Dict[str, Any]] = []
-    for idx, order in enumerate(FINAL_EXAM_LESSON_ORDERS, start=1):
-        lesson = by_order[order]
-        q = dict(lesson["quiz"])
-        q["exam_number"] = idx
-        if not include_answers:
-            q.pop("correct_index", None)
-            q.pop("explanation", None)
-        questions.append(q)
-    return questions
+    return select_exam_questions_from_catalog(
+        get_ml_course_catalog(),
+        FINAL_EXAM_LESSON_ORDERS,
+        include_answers=include_answers,
+    )

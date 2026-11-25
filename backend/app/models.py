@@ -173,3 +173,39 @@ class CourseLMSProgress(Base):
     final_exam_log = Column(JSON, default=list)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
+
+class CourseCapstoneSubmission(Base):
+    __tablename__ = "course_capstone_submissions"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=False)
+    course_id = Column(String, index=True, nullable=False)
+    project_id = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    repo_url = Column(String, default="")
+    demo_url = Column(String, default="")
+    architecture_notes = Column(Text, nullable=False)
+    code_submission = Column(Text, default="")
+    rubric_scores = Column(JSON, default=dict)
+    overall_score = Column(Integer, default=0)
+    status = Column(String, default="Approved")
+    ai_feedback = Column(Text, default="")
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class CourseReview(Base):
+    __tablename__ = "course_reviews"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    course_id = Column(String, index=True, nullable=False)
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=True)
+    author_name = Column(String, nullable=False)
+    author_role = Column(String, default="AI / ML Engineer")
+    rating = Column(Integer, nullable=False)
+    headline = Column(String, nullable=False)
+    comment = Column(Text, nullable=False)
+    verified_learner = Column(Boolean, default=False)
+    helpful_count = Column(Integer, default=0)
+    helpful_voters = Column(JSON, default=list)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+

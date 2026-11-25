@@ -15,11 +15,13 @@ import {
   Code2,
   Copy,
   Download,
-  ExternalLink,
   FileEdit,
   Filter,
   HelpCircle,
+  Layers,
   ListChecks,
+  Lock,
+  Maximize2,
   PlayCircle,
   RotateCcw,
   Save,
@@ -27,6 +29,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Sparkles,
+  Star,
   Trophy,
   XCircle,
 } from 'lucide-react';
@@ -35,7 +38,16 @@ import { useAuth, useToast } from '../context/useContexts';
 import { MarkdownRenderer } from '../components/common/MarkdownRenderer';
 import { ProctorCameraGuard } from '../components/lms/ProctorCameraGuard';
 import {
+  CapstoneWorkspacePanel,
+  CourseReviewsPanel,
+  CourseSyllabusRoadmapPanel,
+} from '../components/lms/CourseAdvancedPanels';
+import {
+  MLCapstoneProject,
+  MLCapstoneSubmission,
+  MLCapstoneSubmitPayload,
   MLCourseOverview,
+  MLCourseReviewsOverview,
   MLFinalExamResponse,
   MLFinalExamResultResponse,
   MLLessonItem,
@@ -47,7 +59,7 @@ import {
   MLViolationEvent,
 } from '../types';
 
-type TopTab = 'course' | 'quiz-bank' | 'final-exam';
+type TopTab = 'course' | 'syllabus' | 'quiz-bank' | 'capstone' | 'reviews' | 'final-exam';
 type LessonDeckTab = 'notes' | 'my-notes' | 'quiz';
 type ExamPhase = 'preflight' | 'active' | 'submitted';
 type CourseTrack = 'ml' | 'dl';
@@ -72,6 +84,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [finalExam, setFinalExam] = useState<MLFinalExamResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string>('');
+  const [theaterMode, setTheaterMode] = useState<boolean>(false);
+
+  // Capstone & Reviews State
+  const [capstoneProjects, setCapstoneProjects] = useState<MLCapstoneProject[]>([]);
+  const [capstoneSubmissions, setCapstoneSubmissions] = useState<MLCapstoneSubmission[]>([]);
+  const [isSubmittingCapstone, setIsSubmittingCapstone] = useState<boolean>(false);
+  const [reviewsData, setReviewsData] = useState<MLCourseReviewsOverview | null>(null);
+  const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
 
   // Navigation & Player State
   const [activeTab, setActiveTab] = useState<TopTab>('course');
@@ -153,12 +173,19 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       courseClient.getOverview(),
       courseClient.getQuizBank(),
       courseClient.getFinalExam().catch(() => null),
+      courseClient.getCapstone().catch(() => null),
+      courseClient.getReviews().catch(() => null),
     ])
-      .then(([overview, bankRes, examRes]) => {
+      .then(([overview, bankRes, examRes, capstoneRes, revRes]) => {
         if (cancelled) return;
         setCourse(overview);
         setQuizBank(bankRes.questions || []);
         setFinalExam(examRes);
+        setCapstoneProjects(capstoneRes?.projects || overview.capstone_projects || []);
+        setCapstoneSubmissions(capstoneRes?.submissions || []);
+        if (revRes) {
+          setReviewsData(revRes);
+        }
 
         const prog = overview.progress;
         const completed = prog?.completed_lessons || [];
@@ -305,6 +332,73 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       showToast('Python reference code copied to clipboard!', 'success');
     } catch {
       showToast('Could not access clipboard.', 'error');
+    }
+  };
+
+  const handleCapstoneSubmit = async (payload: MLCapstoneSubmitPayload) => {
+    setIsSubmittingCapstone(true);
+    try {
+      const res = await courseClient.submitCapstone(payload);
+      setCapstoneSubmissions((prev) => [res, ...prev]);
+      if ((res.points_awarded || 0) > 0) {
+        refreshUser().catch(() => {});
+        showToast(
+          `Capstone evaluated (${res.overall_score}%)! +${res.points_awarded} XP awarded.`,
+          'success'
+        );
+      } else {
+        showToast(`Capstone evaluated: ${res.status} (${res.overall_score}%).`, 'info');
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to submit capstone project.';
+      showToast(msg, 'error');
+    } finally {
+      setIsSubmittingCapstone(false);
+    }
+  };
+
+  const handleSubmitReview = async (payload: {
+    rating: number;
+    headline: string;
+    comment: string;
+  }) => {
+    setIsSubmittingReview(true);
+    try {
+      await courseClient.submitReview(payload);
+      const updated = await courseClient.getReviews();
+      setReviewsData(updated);
+      refreshUser().catch(() => {});
+      showToast('Published your course review! Thank you for the feedback.', 'success');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to publish review.';
+      showToast(msg, 'error');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const handleToggleReviewHelpful = async (reviewId: string) => {
+    try {
+      const res = await courseClient.toggleReviewHelpful(reviewId);
+      setReviewsData((prev) =>
+        prev
+          ? {
+              ...prev,
+              reviews: prev.reviews.map((r) =>
+                r.id === reviewId
+                  ? {
+                      ...r,
+                      helpful_count: res.helpful_count,
+                      viewer_has_voted: res.viewer_has_voted,
+                    }
+                  : r
+              ),
+            }
+          : prev
+      );
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not update vote.';
+      showToast(msg, 'error');
     }
   };
 
@@ -686,6 +780,18 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
             </button>
             <button
               type="button"
+              onClick={() => setActiveTab('syllabus')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+                activeTab === 'syllabus'
+                  ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-violet-500/40'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              Syllabus &amp; Roadmap
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab('quiz-bank')}
               className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
                 activeTab === 'quiz-bank'
@@ -694,7 +800,31 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               }`}
             >
               <ListChecks className="w-4 h-4" />
-              {isDL ? '20+ Quiz Practice Bank' : '100+ Quiz Practice Bank'}
+              {isDL ? '20+ Quiz Bank' : '100+ Quiz Bank'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('capstone')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+                activeTab === 'capstone'
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
+              }`}
+            >
+              <Code2 className="w-4 h-4" />
+              Capstone Projects ({capstoneProjects.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('reviews')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+                activeTab === 'reviews'
+                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-amber-500/40'
+              }`}
+            >
+              <Star className="w-4 h-4" />
+              Reviews ({reviewsData ? `${reviewsData.average_rating.toFixed(1)}★` : '5.0★'})
             </button>
             <button
               type="button"
@@ -723,15 +853,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 />
               </div>
             </div>
-            <a
-              href={course.playlist_url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-600 text-xs font-semibold text-slate-300 transition"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-rose-400" />
-              YouTube Playlist
-            </a>
+            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950/90 border border-emerald-500/30 text-[11px] font-bold text-emerald-300">
+              <Lock className="w-3.5 h-3.5" />
+              LMS-Only Playback
+            </span>
           </div>
         </div>
       </div>
@@ -740,7 +865,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       {activeTab === 'course' && activeLesson && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Player & Interactive Learning Deck */}
-          <div className="lg:col-span-8 space-y-5">
+          <div className={`${theaterMode ? 'lg:col-span-12' : 'lg:col-span-8'} space-y-5`}>
             {/* Lecture Metadata Bar */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 sm:p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -771,19 +896,31 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 {activeLesson.title}
               </h2>
 
-              {/* Responsive 16:9 YouTube Player */}
-              <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl">
+              {/* Responsive 16:9 Locked In-LMS Player Shell */}
+              <div
+                onContextMenu={(e) => e.preventDefault()}
+                className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl"
+              >
                 <iframe
                   key={activeLesson.video_id}
                   src={activeLesson.video_url}
                   title={activeLesson.title}
                   className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                   allowFullScreen
                 />
+                {/* Top-right In-LMS Lock Overlay covering YouTube share/watch-later outbound chrome */}
+                <div
+                  className="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-indigo-500/40 text-[10px] font-mono font-bold text-cyan-300 flex items-center gap-1.5 backdrop-blur-md shadow-lg select-none"
+                  title="Playback locked to LMS workspace"
+                >
+                  <Lock className="w-3 h-3 text-emerald-400" />
+                  IN-LMS SECURE STREAM · #{activeLesson.order}
+                </div>
               </div>
 
-              {/* Player Controls Footer */}
+              {/* Player Controls Footer (Strictly In-LMS Controls — Zero External Redirects) */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                 <div className="flex items-center gap-2">
                   <button
@@ -807,15 +944,26 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <a
-                    href={activeLesson.youtube_watch_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-600 text-xs font-semibold text-slate-300 transition"
+                  <button
+                    type="button"
+                    onClick={() => setTheaterMode((prev) => !prev)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition ${
+                      theaterMode
+                        ? 'bg-cyan-600/20 border-cyan-400 text-cyan-200'
+                        : 'bg-slate-950 border-slate-800 hover:border-slate-600 text-slate-300'
+                    }`}
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    Watch on YouTube
-                  </a>
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    {theaterMode ? 'Standard View' : 'Theater Mode'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('capstone')}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition"
+                  >
+                    <Code2 className="w-3.5 h-3.5" />
+                    Capstone Lab
+                  </button>
                   <button
                     type="button"
                     disabled={isCompletingLesson}
@@ -1101,8 +1249,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
             </div>
           </div>
 
-          {/* Right Sidebar: 7 Modules / 106 Playlist Navigator */}
-          <div className="lg:col-span-4 rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden sticky top-4">
+          {/* Right Sidebar: Module & Lecture Navigator */}
+          <div
+            className={`${
+              theaterMode ? 'lg:col-span-12' : 'lg:col-span-4'
+            } rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden sticky top-4`}
+          >
             <div className="p-4 border-b border-slate-800 space-y-3 bg-slate-950/60">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white">
@@ -1444,6 +1596,45 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
             })}
           </div>
         </div>
+      )}
+
+      {/* ================= TAB: ADVANCED SYLLABUS & ROADMAP ================= */}
+      {activeTab === 'syllabus' && (
+        <CourseSyllabusRoadmapPanel
+          modules={course.modules}
+          lessons={course.lessons}
+          completedLessons={completedLessons}
+          quizResults={quizResults}
+          capstoneCount={capstoneSubmissions.length}
+          examPassed={savedExamPassed}
+          onJumpToLesson={(lesson) => {
+            setActiveTab('course');
+            selectLesson(lesson);
+          }}
+          onJumpToTab={(targetTab) => setActiveTab(targetTab)}
+        />
+      )}
+
+      {/* ================= TAB: CAPSTONE PROJECTS & RUBRIC GRADING ================= */}
+      {activeTab === 'capstone' && (
+        <CapstoneWorkspacePanel
+          courseTitle={course.title}
+          projects={capstoneProjects}
+          submissions={capstoneSubmissions}
+          onSubmitCapstone={handleCapstoneSubmit}
+          isSubmitting={isSubmittingCapstone}
+        />
+      )}
+
+      {/* ================= TAB: PEER REVIEWS & RATINGS ================= */}
+      {activeTab === 'reviews' && (
+        <CourseReviewsPanel
+          courseTitle={course.title}
+          reviewsData={reviewsData}
+          onSubmitReview={handleSubmitReview}
+          onToggleHelpful={handleToggleReviewHelpful}
+          isSubmittingReview={isSubmittingReview}
+        />
       )}
 
       {/* ================= TAB 3: CAMERA CHEAT-PROTECTED FINAL EXAM ================= */}

@@ -380,4 +380,62 @@ class MLFinalExamResultResponse(BaseModel):
     certificate: Optional[CertificateResponse] = None
 
 
+class CapstoneSubmitRequest(BaseModel):
+    project_id: str
+    title: str
+    repo_url: Optional[str] = ""
+    demo_url: Optional[str] = ""
+    architecture_notes: str
+    code_submission: Optional[str] = ""
+
+
+class CapstoneSubmissionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    course_id: str
+    user_id: str
+    project_id: str
+    title: str
+    repo_url: str = ""
+    demo_url: str = ""
+    architecture_notes: str
+    code_submission: str = ""
+    rubric_scores: Dict[str, int] = {}
+    overall_score: int
+    status: str
+    ai_feedback: str
+    points_awarded: int = 0
+    created_at: datetime.datetime
+
+
+class CourseReviewCreateRequest(BaseModel):
+    rating: int
+    headline: str
+    comment: str
+
+
+class CourseReviewItem(BaseModel):
+    id: str
+    course_id: str
+    author_name: str
+    author_role: str
+    rating: int
+    headline: str
+    comment: str
+    verified_learner: bool = False
+    helpful_count: int = 0
+    viewer_has_voted: bool = False
+    is_own_review: bool = False
+    created_at: datetime.datetime
+
+
+class CourseReviewsOverviewResponse(BaseModel):
+    course_id: str
+    average_rating: float
+    total_reviews: int
+    rating_breakdown: Dict[str, int]
+    reviews: List[CourseReviewItem]
+
+
 AssessmentCompleteResponse.model_rebuild()

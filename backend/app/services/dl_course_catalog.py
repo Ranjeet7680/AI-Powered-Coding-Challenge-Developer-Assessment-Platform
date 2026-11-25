@@ -24,10 +24,125 @@ DL_INSTRUCTOR = "Stanford CS229 (Andrew Ng) • Coding Task Factory Academy"
 DL_THUMBNAIL_URL = "/thumbnails/stanford-ctf-dl-thumbnail.svg"
 
 DL_MODULES: List[Dict[str, Any]] = [
-    {"id": "dl-mod-1", "order": 1, "title": "Supervised Optimization, GLMs & Generative Classifiers", "range": (1, 5)},
-    {"id": "dl-mod-2", "order": 2, "title": "Margins, Kernels, Learning Theory & Ensembles", "range": (6, 10)},
-    {"id": "dl-mod-3", "order": 3, "title": "Deep Neural Networks, Backprop, EM, PCA & ICA", "range": (11, 16)},
-    {"id": "dl-mod-4", "order": 4, "title": "Reinforcement Learning, MDPs, Control & Diagnostics", "range": (17, 21)},
+    {
+        "id": "dl-mod-1",
+        "order": 1,
+        "title": "Supervised Optimization, GLMs & Generative Classifiers",
+        "description": "Build mathematically rigorous intuition for gradient descent, Normal Equations, exponential-family GLMs, GDA, and Naive Bayes smoothing.",
+        "learning_objectives": [
+            "Derive LMS & batch/stochastic gradient descent updates",
+            "Compare parametric logistic regression with non-parametric LWR",
+            "Unify Gaussian/Bernoulli/Multinomial models under Exponential Families",
+        ],
+        "key_topics": ["OLS & Gradient Descent", "Locally Weighted Regression", "GLMs & Softmax", "GDA & Laplace Naive Bayes"],
+        "prerequisite_module_ids": [],
+        "range": (1, 5),
+    },
+    {
+        "id": "dl-mod-2",
+        "order": 2,
+        "title": "Margins, Kernels, Learning Theory & Ensembles",
+        "description": "Master maximum-margin dual optimization, Mercer kernels, VC dimension generalization guarantees, and tree variance/bias ensembles.",
+        "learning_objectives": [
+            "Formulate functional vs geometric margins and Lagrangian SVM duals",
+            "Design positive-semidefinite RBF & polynomial Mercer kernels",
+            "Quantify Bias-Variance via VC bounds, Random Forests & Boosting",
+        ],
+        "key_topics": ["Max-Margin SVM", "Mercer Kernel Trick", "VC Theory & Bounds", "Bagging vs Boosting"],
+        "prerequisite_module_ids": ["dl-mod-1"],
+        "range": (6, 10),
+    },
+    {
+        "id": "dl-mod-3",
+        "order": 3,
+        "title": "Deep Neural Networks, Backprop, EM, PCA & ICA",
+        "description": "Engineer multi-layer neural networks, stabilize backpropagation gradients, debug real-world systems via error analysis, and master latent EM/PCA/ICA.",
+        "learning_objectives": [
+            "Prevent vanishing gradients via ReLU, He initialization & skip connections",
+            "Run quantitative dev-set error analysis and ablation studies",
+            "Derive ELBO via Jensen's Inequality for EM, Factor Analysis, PCA & ICA",
+        ],
+        "key_topics": ["Deep Neural Nets", "Backprop & Initialization", "Error Analysis", "EM, Factor Analysis, PCA & ICA"],
+        "prerequisite_module_ids": ["dl-mod-2"],
+        "range": (11, 16),
+    },
+    {
+        "id": "dl-mod-4",
+        "order": 4,
+        "title": "Reinforcement Learning, MDPs, Control & Diagnostics",
+        "description": "Solve discrete and continuous-state Markov Decision Processes with Value/Policy Iteration, Fitted Value Iteration, LQR Riccati control, and RL debugging.",
+        "learning_objectives": [
+            "Prove gamma-contraction convergence for Value & Policy Iteration",
+            "Scale control to continuous state spaces using Fitted Value Iteration & LQR",
+            "Isolate simulator bugs vs optimizer bugs vs reward misspecification",
+        ],
+        "key_topics": ["MDP Bellman Equations", "Continuous-State MDPs", "LQR Control", "RL Diagnostics"],
+        "prerequisite_module_ids": ["dl-mod-3"],
+        "range": (17, 21),
+    },
+]
+
+DL_CAPSTONE_PROJECTS: List[Dict[str, Any]] = [
+    {
+        "id": "dl-cap-1",
+        "module_id": "dl-mod-3",
+        "title": "Capstone 1: Vectorized Multi-Layer Neural Engine & Backprop Autograd",
+        "difficulty": "Advanced",
+        "estimated_hours": 10,
+        "summary": "Build a clean NumPy/PyTorch multi-layer classifier from scratch supporting Xavier/He initialization, ReLU/Softmax activations, L2 weight decay, mini-batch SGD, and gradient-norm telemetry.",
+        "deliverables": [
+            "Forward + backward vectorized layer classes with numerical gradient check",
+            "Loss & accuracy comparison curves: Sigmoid vs ReLU + He initialization",
+            "Dev-set error analysis matrix on misclassified hard examples",
+        ],
+        "starter_template": "import numpy as np\n\nclass LinearReLULayer:\n    def __init__(self, d_in: int, d_out: int):\n        self.W = np.random.randn(d_in, d_out) * np.sqrt(2.0 / d_in)\n        self.b = np.zeros((1, d_out))\n\n    def forward(self, X: np.ndarray) -> np.ndarray:\n        self.X = X\n        self.Z = X @ self.W + self.b\n        return np.maximum(0, self.Z)\n",
+        "rubric": [
+            {"criterion": "Mathematical Correctness & Grad Check", "max_points": 30},
+            {"criterion": "Architecture & Initialization Stability", "max_points": 25},
+            {"criterion": "Error Analysis & Ablation Benchmarks", "max_points": 25},
+            {"criterion": "Code Clarity & Documentation", "max_points": 20},
+        ],
+    },
+    {
+        "id": "dl-cap-2",
+        "module_id": "dl-mod-2",
+        "title": "Capstone 2: Mercer Kernel SVM & Latent EM / ICA Signal Separator",
+        "difficulty": "Intermediate",
+        "estimated_hours": 8,
+        "summary": "Combine RBF Kernel Support Vector decision boundaries with an unsupervised Gaussian Mixture EM solver and Cocktail-Party ICA separator in one unified scientific pipeline.",
+        "deliverables": [
+            "Custom Gram matrix kernel evaluator verifying PSD Mercer condition",
+            "EM log-likelihood ELBO trace demonstrating monotonic ascent",
+            "PCA whitening + FastICA unmixing recovery benchmark (SIR score)",
+        ],
+        "starter_template": "import numpy as np\n\ndef rbf_gram_matrix(X: np.ndarray, gamma: float = 0.5) -> np.ndarray:\n    sq_norms = np.sum(X ** 2, axis=1, keepdims=True)\n    dists = sq_norms + sq_norms.T - 2.0 * (X @ X.T)\n    return np.exp(-gamma * np.maximum(dists, 0.0))\n",
+        "rubric": [
+            {"criterion": "Kernel PSD Verification & Margin Analysis", "max_points": 30},
+            {"criterion": "EM Convergence & Log-Likelihood Plot", "max_points": 30},
+            {"criterion": "ICA Unmixing Quality & Evaluation", "max_points": 20},
+            {"criterion": "Reproducibility & Repo Hygiene", "max_points": 20},
+        ],
+    },
+    {
+        "id": "dl-cap-3",
+        "module_id": "dl-mod-4",
+        "title": "Capstone 3: Continuous-State MDP Value Iteration & LQR Controller",
+        "difficulty": "Advanced",
+        "estimated_hours": 9,
+        "summary": "Implement a physical dynamical control environment (inverted pendulum / cart-pole linearization), solve finite-horizon LQR via Riccati backward passes, and audit reward robustness.",
+        "deliverables": [
+            "Dynamics transition model (A_t, B_t) and quadratic cost formulation",
+            "Riccati backward solver computing optimal linear feedback matrix L_t",
+            "CS229 RL diagnostic audit separating optimizer vs reward misspecification",
+        ],
+        "starter_template": "import numpy as np\n\ndef lqr_step(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray, P_next: np.ndarray):\n    # Implement Riccati optimal gain L and cost-to-go update P\n    bt_p = B.T @ P_next\n    L = -np.linalg.solve(R + bt_p @ B, bt_p @ A)\n    return L\n",
+        "rubric": [
+            {"criterion": "Bellman / Riccati Mathematical Formulation", "max_points": 35},
+            {"criterion": "Trajectory Stabilization & Simulation Metrics", "max_points": 25},
+            {"criterion": "Reward & Simulator Diagnostic Audit", "max_points": 25},
+            {"criterion": "Code Quality & Visualizations", "max_points": 15},
+        ],
+    },
 ]
 
 
@@ -326,6 +441,7 @@ def get_dl_course_catalog() -> Dict[str, Any]:
         quiz_specs=DL_LESSON_QUIZ_SPECS,
         id_prefix="dl",
         curriculum_label="Stanford X Coding Task Factory Academy",
+        capstone_projects=DL_CAPSTONE_PROJECTS,
     )
 
 
