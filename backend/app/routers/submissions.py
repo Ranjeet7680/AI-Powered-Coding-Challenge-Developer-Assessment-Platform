@@ -8,42 +8,12 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/api/submissions", tags=["Submissions"])
 
-@router.get("", response_model=List[SubmissionResponse])
-def get_user_submissions(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    submissions = db.query(Submission).filter(Submission.user_id == user.id).order_by(Submission.created_at.desc()).all()
-    res = []
-    for s in submissions:
-        ch = db.query(Challenge).filter(Challenge.id == s.challenge_id).first()
-        res.append(SubmissionResponse(
-            id=s.id,
-            user_id=s.user_id,
-            challenge_id=s.challenge_id,
-            challenge_title=ch.title if ch else "Custom Challenge",
-            language=s.language,
-            code=s.code,
-            status=s.status,
-            runtime_ms=s.runtime_ms,
-            memory_mb=s.memory_mb,
-            score=s.score,
-            test_cases_passed=s.test_cases_passed,
-            total_test_cases=s.total_test_cases,
-            test_results=s.test_results or [],
-            ai_feedback=s.ai_feedback or {},
-            created_at=s.created_at
-        ))
-    return res
-
-@router.get("/{submission_id}", response_model=SubmissionResponse)
-def get_submission_detail(submission_id: str, db: Session = Depends(get_db)):
-    s = db.query(Submission).filter(Submission.id == submission_id).first()
-    if not s:
-        raise HTTPException(status_code=404, detail="Submission not found")
-    ch = db.query(Challenge).filter(Challenge.id == s.challenge_id).first()
+def to_submission_response(s: Submission, challenge_title: str) -> SubmissionResponse:
     return SubmissionResponse(
         id=s.id,
         user_id=s.user_id,
         challenge_id=s.challenge_id,
-        challenge_title=ch.title if ch else "Custom Challenge",
+        challenge_title=challenge_title,
         language=s.language,
         code=s.code,
         status=s.status,
@@ -54,5 +24,34 @@ def get_submission_detail(submission_id: str, db: Session = Depends(get_db)):
         total_test_cases=s.total_test_cases,
         test_results=s.test_results or [],
         ai_feedback=s.ai_feedback or {},
-        created_at=s.created_at
+        created_at=s.created_at,
     )
+
+
+@router.get("", response_model=List[SubmissionResponse])
+def get_user_submissions(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    submissions = (
+        db.query(Submission)
+        .filter(Submission.user_id == user.id)
+        .order_by(Submission.created_at.desc())
+        .all()
+    )
+    challenge_ids = {s.challenge_id for s in submissions if s.challenge_id}
+    titles = {}
+    if challenge_ids:
+        rows = db.query(Challenge.id, Challenge.title).filter(Challenge.id.in_(challenge_ids)).all()
+        titles = {cid: title for cid, title in rows}
+    return [to_submission_response(s, titles.get(s.challenge_id, "Custom Challenge")) for s in submissions]
+
+
+@router.get("/{submission_id}", response_model=SubmissionResponse)
+def get_submission_detail(
+    submission_id: str,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    s = db.query(Submission).filter(Submission.id == submission_id).first()
+    if not s or s.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    ch = db.query(Challenge).filter(Challenge.id == s.challenge_id).first()
+    return to_submission_response(s, ch.title if ch else "Custom Challenge")

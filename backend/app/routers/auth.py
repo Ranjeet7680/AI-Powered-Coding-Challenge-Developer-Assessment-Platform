@@ -1,6 +1,5 @@
 import os
 import uuid
-import datetime
 import hashlib
 import hmac
 import secrets
@@ -18,7 +17,7 @@ from ..schemas import UserCreate, UserLogin, UserOnboardingUpdate, AuthResponse,
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 PBKDF2_ITERATIONS = 100_000
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "ctf-enterprise-unhackable-hmac-sha256-jwt-key-2026")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY") or secrets.token_urlsafe(32)
 
 # In-memory brute-force defense: email -> {"count": int, "locked_until": float}
 FAILED_ATTEMPTS: Dict[str, Dict[str, Any]] = {}
@@ -147,6 +146,9 @@ def decode_jwt_token(token: str) -> Optional[dict]:
     signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
     expected_sig = hmac.new(SECRET_KEY.encode("utf-8"), signing_input, hashlib.sha256).digest()
     try:
+        header = json.loads(b64url_decode(header_b64).decode("utf-8"))
+        if header.get("alg") != "HS256" or header.get("typ") != "JWT":
+            return None
         actual_sig = b64url_decode(sig_b64)
         if not hmac.compare_digest(actual_sig, expected_sig):
             return None
@@ -154,7 +156,7 @@ def decode_jwt_token(token: str) -> Optional[dict]:
         if payload.get("exp", 0) < int(time.time()):
             return None
         return payload
-    except Exception:
+    except (ValueError, KeyError, TypeError, UnicodeDecodeError):
         return None
 
 # -----------------------------------------------------------------------------
@@ -191,35 +193,42 @@ def record_successful_login(email: str) -> None:
 # Authentication Dependency
 # -----------------------------------------------------------------------------
 def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> User:
-    if not authorization:
-        demo_user = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
-        if demo_user:
-            return demo_user
-        raise HTTPException(status_code=401, detail="Authentication required")
-    
-    raw_token = authorization.replace("Bearer ", "").strip()
-    
-    # Verify cryptographic JWT
-    payload = decode_jwt_token(raw_token)
-    if payload and "sub" in payload:
-        user = db.query(User).filter(User.id == payload["sub"]).first()
-        if user:
-            return user
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-    # Fallback to direct ID match (for backward compatibility during migration)
-    user = db.query(User).filter(User.id == raw_token).first()
+    raw_token = authorization[len("Bearer "):].strip()
+    if not raw_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    payload = decode_jwt_token(raw_token)
+    if not payload or "sub" not in payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired authorization token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = db.query(User).filter(User.id == payload["sub"]).first()
     if not user:
-        user = db.query(User).filter(User.email == raw_token).first()
-    if not user:
-        user = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid authorization token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found for authorization token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
 
 # -----------------------------------------------------------------------------
 # End-to-End Auth Endpoints
 # -----------------------------------------------------------------------------
-@router.post("/register", response_model=AuthResponse)
+@router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: UserCreate, db: Session = Depends(get_db)):
     email = payload.email.strip().lower()
     
@@ -293,9 +302,7 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
     
     # Constant-time password verification
-    # Allow demo user password bypass for demo testing
-    is_demo_account = (email == "developer@codingtaskfactory.io" and payload.password in ["demo", "demo1234", "Developer@2026!"])
-    if not is_demo_account and not verify_pw(payload.password, user.hashed_password or ""):
+    if not verify_pw(payload.password, user.hashed_password or ""):
         record_failed_login(email)
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
@@ -309,30 +316,11 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
     return AuthResponse(token=token, user=UserResponse.from_orm(user))
 
 @router.post("/google", response_model=AuthResponse)
-def google_auth(db: Session = Depends(get_db)):
-    email = "alex.developer@gmail.com"
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        user = User(
-            id=str(uuid.uuid4()),
-            email=email,
-            full_name="Alex Rivera",
-            avatar_url="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-            role="Senior Developer",
-            experience="Advanced",
-            preferred_languages=["Python", "JavaScript", "Rust"],
-            goals=["Master system design", "Speed coding"],
-            points=1850,
-            streak=8,
-            solved_count=19,
-            has_completed_onboarding=True
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    
-    token = create_jwt_token(user.id, user.email, user.role)
-    return AuthResponse(token=token, user=UserResponse.from_orm(user))
+def google_auth():
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Google OAuth token verification is not configured on this server.",
+    )
 
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):

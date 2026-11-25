@@ -699,24 +699,27 @@ def get_challenges(
         query = query.filter(Challenge.category == category)
     
     challenges = query.order_by(Challenge.created_at.desc()).all()
-    if not challenges:
+    if not challenges and db.query(Challenge.id).first() is None:
         seed_initial_challenges(db)
-        challenges = query.all()
+        challenges = query.order_by(Challenge.created_at.desc()).all()
     return challenges
 
 @router.get("/{challenge_id}", response_model=ChallengeResponse)
 def get_challenge(challenge_id: str, db: Session = Depends(get_db)):
     challenge = db.query(Challenge).filter((Challenge.id == challenge_id) | (Challenge.slug == challenge_id)).first()
-    if not challenge:
-        # Check seed data
+    if not challenge and db.query(Challenge.id).first() is None:
         seed_initial_challenges(db)
         challenge = db.query(Challenge).filter((Challenge.id == challenge_id) | (Challenge.slug == challenge_id)).first()
     if not challenge:
         raise HTTPException(status_code=404, detail="Challenge not found")
     return challenge
 
-@router.post("", response_model=ChallengeResponse)
-def create_challenge(payload: ChallengeCreate, db: Session = Depends(get_db)):
+@router.post("", response_model=ChallengeResponse, status_code=201)
+def create_challenge(
+    payload: ChallengeCreate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     slug = payload.title.lower().replace(" ", "-").replace("/", "-")
     existing = db.query(Challenge).filter(Challenge.slug == slug).first()
     if existing:
@@ -724,6 +727,7 @@ def create_challenge(payload: ChallengeCreate, db: Session = Depends(get_db)):
 
     challenge = Challenge(
         id=str(uuid.uuid4()),
+        author_id=user.id,
         title=payload.title,
         slug=slug,
         description=payload.description,

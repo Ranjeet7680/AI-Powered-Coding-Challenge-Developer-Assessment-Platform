@@ -1,6 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from ..database import get_db
 from ..schemas import GenerateChallengeRequest
 from ..services.gemini_service import generate_challenge_with_gemini
 from ..models import User
@@ -9,7 +7,10 @@ from .auth import get_current_user
 router = APIRouter(prefix="/api/generate-challenge", tags=["AI Generator"])
 
 @router.post("")
-def generate_challenge(payload: GenerateChallengeRequest, db: Session = Depends(get_db)):
+def generate_challenge(
+    payload: GenerateChallengeRequest,
+    user: User = Depends(get_current_user),
+):
     try:
         result = generate_challenge_with_gemini(
             topic=payload.topic,
@@ -18,7 +19,7 @@ def generate_challenge(payload: GenerateChallengeRequest, db: Session = Depends(
             problem_type=payload.problem_type,
             test_case_count=payload.test_case_count,
             custom_instructions=payload.custom_instructions or "",
-            api_key=payload.api_key
+            api_key=payload.api_key or user.gemini_api_key,
         )
         return result
     except Exception as e:
