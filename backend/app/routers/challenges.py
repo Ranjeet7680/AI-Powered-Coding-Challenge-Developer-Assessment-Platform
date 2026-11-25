@@ -1,9 +1,9 @@
 import uuid
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import Challenge
+from ..models import Challenge, User
 from ..schemas import ChallengeCreate, ChallengeResponse
 from .auth import get_current_user
 

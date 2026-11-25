@@ -60,7 +60,6 @@ export const WorkspacePage: React.FC = () => {
   const [chatInput, setChatInput] = useState('');
 
   const selectedLanguageRef = useRef(selectedLanguage);
-  selectedLanguageRef.current = selectedLanguage;
 
   // Load Challenge and Related Video
   useEffect(() => {
@@ -98,6 +97,7 @@ export const WorkspacePage: React.FC = () => {
 
   // Handle language switch
   const handleLanguageChange = (lang: 'python' | 'javascript' | 'typescript' | 'cpp') => {
+    selectedLanguageRef.current = lang;
     setSelectedLanguage(lang);
     if (challenge && challenge.starter_code?.[lang]) {
       setCode(challenge.starter_code[lang]);

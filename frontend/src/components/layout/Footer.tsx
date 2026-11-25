@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '../common/BrandLogo';
+import { Terminal } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
 

@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
+  Terminal,
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
