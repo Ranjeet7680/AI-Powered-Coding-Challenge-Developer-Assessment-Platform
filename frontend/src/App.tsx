@@ -23,6 +23,9 @@ const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage').then((m) =>
 const CertificatesPage = lazy(() => import('./pages/CertificatesPage').then((m) => ({ default: m.CertificatesPage })));
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const VideosPage = lazy(() => import('./pages/VideosPage').then((m) => ({ default: m.VideosPage })));
+const MLCoursePage = lazy(() =>
+  import('./pages/MLCoursePage').then((m) => ({ default: m.MLCoursePage }))
+);
 const VerifyCertificatePage = lazy(() =>
   import('./pages/VerifyCertificatePage').then((m) => ({ default: m.VerifyCertificatePage }))
 );
@@ -92,6 +95,8 @@ export const App: React.FC = () => {
                 >
                   <Route index element={<Navigate to="/app/dashboard" replace />} />
                   <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="ml-course" element={<MLCoursePage />} />
+                  <Route path="ml-course/:lessonId" element={<MLCoursePage />} />
                   <Route path="videos" element={<VideosPage />} />
                   <Route path="videos/:videoId" element={<VideosPage />} />
                   <Route path="generator" element={<GeneratorPage />} />

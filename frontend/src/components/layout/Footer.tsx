@@ -77,6 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               Wiki
             </Link>
             <Link to="/app/dashboard" className="hover:text-white transition whitespace-nowrap">Dashboard</Link>
+            <Link to="/app/ml-course" className="text-emerald-300 hover:text-emerald-200 font-semibold transition whitespace-nowrap">ML Course (106)</Link>
             <Link to="/app/challenges" className="hover:text-white transition whitespace-nowrap">Challenges (368+)</Link>
             <Link to="/app/videos" className="hover:text-white transition whitespace-nowrap">Masterclasses</Link>
             <Link to="/app/generator" className="hover:text-white transition whitespace-nowrap">AI Generator</Link>
@@ -164,6 +165,7 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               <li><Link to="/app/challenges" className="hover:text-white transition">Explore 368+ Challenges</Link></li>
               <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-white transition">Coding Workspace IDE</Link></li>
               <li><Link to="/app/generator" className="hover:text-white transition">AI Task Generator</Link></li>
+              <li><Link to="/app/ml-course" className="hover:text-emerald-300 transition">ML Course LMS (106 Videos)</Link></li>
               <li><Link to="/app/videos" className="hover:text-white transition">Video Masterclasses</Link></li>
             </ul>
           </div>

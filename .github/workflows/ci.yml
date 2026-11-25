@@ -39,7 +39,7 @@ jobs:
 
       - name: Run Backend API, Sandbox & Certificate PDF Tests
         run: |
-          python -m pytest backend/tests/test_api.py -v
+          python -m pytest backend/tests/ -v
 
       - name: Verify Zero-Trust Security Suite
         run: |

@@ -329,4 +329,55 @@ class VideoLessonResponse(BaseModel):
     created_at: datetime.datetime
 
 
+# ML LMS Course Schemas
+class MLQuizAnswerRequest(BaseModel):
+    selected_index: int
+
+
+class MLQuizAnswerResponse(BaseModel):
+    lesson_id: str
+    quiz_id: str
+    correct: bool
+    correct_index: int
+    explanation: str
+    points_awarded: int = 0
+
+
+class MLLessonNoteUpdate(BaseModel):
+    notes: str
+
+
+class MLPracticeQuizSubmitRequest(BaseModel):
+    answers: Dict[str, int]
+
+
+class MLPracticeQuizResultResponse(BaseModel):
+    total_answered: int
+    total_questions: int
+    correct_count: int
+    score_percent: int
+    best_score: int
+    details: List[Dict[str, Any]] = []
+
+
+class MLFinalExamSubmitRequest(BaseModel):
+    answers: Dict[str, int]
+    violations: int = 0
+    violation_log: List[Dict[str, Any]] = []
+    elapsed_seconds: int = 0
+    camera_verified: bool = False
+    auto_terminated: bool = False
+
+
+class MLFinalExamResultResponse(BaseModel):
+    score_percent: int
+    correct_count: int
+    total_questions: int
+    passed: bool
+    disqualified: bool = False
+    violations: int
+    message: str
+    certificate: Optional[CertificateResponse] = None
+
+
 AssessmentCompleteResponse.model_rebuild()

@@ -216,3 +216,141 @@ export interface CopilotResponse {
   reply: string;
   source: string;
 }
+
+export interface MLModuleInfo {
+  id: string;
+  order: number;
+  title: string;
+  lesson_start: number;
+  lesson_end: number;
+  lesson_count: number;
+}
+
+export interface MLQuizItem {
+  id: string;
+  lesson_id: string;
+  lesson_order: number;
+  lesson_title: string;
+  module_id: string;
+  module_title: string;
+  question: string;
+  options: string[];
+  correct_index?: number;
+  explanation?: string;
+  exam_number?: number;
+}
+
+export interface MLLessonItem {
+  id: string;
+  order: number;
+  video_id: string;
+  title: string;
+  module_id: string;
+  module_order: number;
+  module_title: string;
+  difficulty: string;
+  duration_label: string;
+  duration_minutes: number;
+  video_url: string;
+  youtube_watch_url: string;
+  thumbnail_url: string;
+  notes_markdown: string;
+  key_formula: string;
+  code_snippet: string;
+  quiz: MLQuizItem;
+}
+
+export interface MLQuizResultRecord {
+  selected: number;
+  correct: boolean;
+  last_correct?: boolean;
+  attempts: number;
+}
+
+export interface MLCourseProgressData {
+  completed_lessons: string[];
+  lesson_notes: Record<string, string>;
+  quiz_results: Record<string, MLQuizResultRecord>;
+  practice_quiz_best_score: number;
+  final_exam_score: number | null;
+  final_exam_passed: boolean;
+  final_exam_violations: number;
+}
+
+export interface MLCourseOverview {
+  id: string;
+  title: string;
+  playlist_id: string;
+  playlist_url: string;
+  instructor: string;
+  total_lessons: number;
+  total_quizzes: number;
+  modules: MLModuleInfo[];
+  lessons: MLLessonItem[];
+  progress: MLCourseProgressData | null;
+}
+
+export interface MLQuizAnswerResponse {
+  lesson_id: string;
+  quiz_id: string;
+  correct: boolean;
+  correct_index: number;
+  explanation: string;
+  points_awarded: number;
+}
+
+export interface MLPracticeQuizResultDetail {
+  quiz_id: string;
+  lesson_id: string;
+  selected: number;
+  correct_index: number;
+  correct: boolean;
+  explanation: string;
+}
+
+export interface MLPracticeQuizResultResponse {
+  total_answered: number;
+  total_questions: number;
+  correct_count: number;
+  score_percent: number;
+  best_score: number;
+  details: MLPracticeQuizResultDetail[];
+}
+
+export interface MLFinalExamResponse {
+  exam_id: string;
+  title: string;
+  total_questions: number;
+  duration_minutes: number;
+  passing_score: number;
+  max_violations_allowed: number;
+  proctoring_required: boolean;
+  candidate: string;
+  questions: MLQuizItem[];
+}
+
+export interface MLViolationEvent {
+  timestamp: string;
+  type: string;
+  detail: string;
+}
+
+export interface MLFinalExamSubmitPayload {
+  answers: Record<string, number>;
+  violations: number;
+  violation_log: MLViolationEvent[];
+  elapsed_seconds: number;
+  camera_verified: boolean;
+  auto_terminated: boolean;
+}
+
+export interface MLFinalExamResultResponse {
+  score_percent: number;
+  correct_count: number;
+  total_questions: number;
+  passed: boolean;
+  disqualified: boolean;
+  violations: number;
+  message: string;
+  certificate?: Certificate | null;
+}

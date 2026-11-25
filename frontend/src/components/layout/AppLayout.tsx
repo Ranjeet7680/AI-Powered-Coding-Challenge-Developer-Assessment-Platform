@@ -26,6 +26,7 @@ import {
   X,
   User as UserIcon,
   Video,
+  BrainCircuit,
   Flame,
   Keyboard,
 } from 'lucide-react';
@@ -49,6 +50,7 @@ export const AppLayout: React.FC = () => {
 
   const navigationItems = [
     { name: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
+    { name: 'ML Course (106)', path: '/app/ml-course', icon: BrainCircuit, badge: 'LMS' },
     { name: 'Explore Challenges', path: '/app/challenges', icon: Layers },
     { name: 'Video Masterclasses', path: '/app/videos', icon: Video, badge: 'NEW' },
     { name: 'AI Task Generator', path: '/app/generator', icon: Sparkles, badge: 'AI' },

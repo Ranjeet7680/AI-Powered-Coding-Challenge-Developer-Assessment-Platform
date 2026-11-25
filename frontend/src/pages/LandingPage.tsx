@@ -790,13 +790,23 @@ public:
               </p>
             </div>
 
-            <Link
-              to="/app/videos"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition shrink-0"
-            >
-              <span>Explore All Masterclasses</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <Link
+                to="/app/ml-course"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/25"
+              >
+                <BrainCircuit className="w-4 h-4" />
+                <span>106-Video ML LMS &amp; Exam</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/app/videos"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition"
+              >
+                <span>Explore All Masterclasses</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
 
           {/* 3 Masterclass Cards Grid */}

@@ -23,6 +23,7 @@ export const Navbar: React.FC = () => {
     { name: 'Features', href: '/#features' },
     { name: 'Challenges', href: '/#challenges' },
     { name: 'Masterclasses', href: '/#videos' },
+    { name: 'ML LMS', href: '/app/ml-course' },
     { name: 'Solutions', href: '/#solutions' },
     { name: 'Pricing', href: '/#pricing' },
     { name: 'FAQ', href: '/#faq' },

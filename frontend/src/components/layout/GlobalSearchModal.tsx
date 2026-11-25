@@ -15,6 +15,7 @@ import {
   History,
   FileCheck2,
   BookOpen,
+  BrainCircuit,
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { Challenge, VideoLesson, Assessment } from '../../types';
@@ -59,6 +60,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ onClose })
     const q = query.trim().toLowerCase();
 
     const quickPages: SearchResultItem[] = [
+      { id: 'p-ml-course', title: 'ML Course LMS (106 Videos, Notes, 100+ Quizzes & Exam)', subtitle: 'StatQuest ML curriculum + camera-proctored final exam', path: '/app/ml-course', group: 'Pages', icon: BrainCircuit, iconColor: 'text-emerald-400' },
       { id: 'p-videos', title: 'Video Masterclasses & Walkthroughs', subtitle: 'ML & Algorithm deep dives', path: '/app/videos', group: 'Pages', icon: Video, iconColor: 'text-purple-400' },
       { id: 'p-gen', title: 'AI Task Generator', subtitle: 'Synthesize new coding challenges', path: '/app/generator', group: 'Pages', icon: Sparkles, iconColor: 'text-indigo-400' },
       { id: 'p-chal', title: 'Challenge Library', subtitle: 'Browse 350+ algorithmic & ML tasks', path: '/app/challenges', group: 'Pages', icon: Layers, iconColor: 'text-cyan-400' },

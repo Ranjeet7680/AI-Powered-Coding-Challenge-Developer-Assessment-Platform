@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 
 from .database import engine, Base, SessionLocal, ensure_schema_migrations, get_db
 from .models import User, Challenge
-from .routers import auth, challenges, ai_generator, execution, submissions, assessments, analytics, user, videos
+from .routers import auth, challenges, ai_generator, execution, submissions, assessments, analytics, user, videos, ml_course
 from .services.code_runner import get_runtime_capabilities
 
 # Create tables and apply lightweight SQLite column migrations
@@ -136,6 +136,7 @@ app.include_router(assessments.router)
 app.include_router(analytics.router)
 app.include_router(user.router)
 app.include_router(videos.router)
+app.include_router(ml_course.router)
 
 
 @app.get("/api/health")

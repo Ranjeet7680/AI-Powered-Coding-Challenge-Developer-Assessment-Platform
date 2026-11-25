@@ -13,6 +13,13 @@ import {
   VideoLesson,
   CopilotResponse,
   TestCase,
+  MLCourseOverview,
+  MLQuizAnswerResponse,
+  MLQuizItem,
+  MLPracticeQuizResultResponse,
+  MLFinalExamResponse,
+  MLFinalExamSubmitPayload,
+  MLFinalExamResultResponse,
 } from '../types';
 
 const API_BASE = '/api';
@@ -276,4 +283,49 @@ export const api = {
   },
 
   getVideo: (id: string) => request<VideoLesson>(`/videos/${id}`),
+
+  // Machine Learning 106-Video Full LMS
+  getMLCourseOverview: () => request<MLCourseOverview>('/ml-course'),
+
+  completeMLLesson: (lessonId: string) =>
+    request<{
+      lesson_id: string;
+      completed_lessons: string[];
+      points_awarded: number;
+      total_points: number;
+    }>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/complete`, {
+      method: 'POST',
+    }),
+
+  saveMLLessonNotes: (lessonId: string, notes: string) =>
+    request<{
+      lesson_id: string;
+      saved: boolean;
+      lesson_notes: Record<string, string>;
+    }>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/notes`, {
+      method: 'PUT',
+      body: JSON.stringify({ notes }),
+    }),
+
+  submitMLLessonQuiz: (lessonId: string, selectedIndex: number) =>
+    request<MLQuizAnswerResponse>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/quiz`, {
+      method: 'POST',
+      body: JSON.stringify({ selected_index: selectedIndex }),
+    }),
+
+  getMLQuizBank: () => request<{ total: number; questions: MLQuizItem[] }>('/ml-course/quiz-bank'),
+
+  submitMLQuizBank: (answers: Record<string, number>) =>
+    request<MLPracticeQuizResultResponse>('/ml-course/quiz-bank/submit', {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    }),
+
+  getMLFinalExam: () => request<MLFinalExamResponse>('/ml-course/final-exam'),
+
+  submitMLFinalExam: (payload: MLFinalExamSubmitPayload) =>
+    request<MLFinalExamResultResponse>('/ml-course/final-exam/submit', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
 };

@@ -199,6 +199,28 @@ export const VideosPage: React.FC = () => {
         </div>
       )}
 
+      {/* Full 106-Video Machine Learning LMS Banner */}
+      <div className="rounded-2xl border border-indigo-500/35 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-emerald-950/40 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold">
+            NEW · COMPLETE LMS TRACK
+          </div>
+          <h2 className="text-lg font-extrabold text-white">
+            Machine Learning Mastery — 106-Video Course, Notes, 100+ Quizzes &amp; Proctored Final Exam
+          </h2>
+          <p className="text-xs text-slate-300 max-w-2xl">
+            Study the full 106-lecture playlist across 7 structured modules with personal cloud notes, per-video comprehension quizzes, and webcam anti-cheat final certification.
+          </p>
+        </div>
+        <a
+          href="/app/ml-course"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold whitespace-nowrap transition shadow-lg shadow-indigo-500/25"
+        >
+          <Play className="w-4 h-4 fill-white" />
+          Launch 106-Video LMS
+        </a>
+      </div>
+
       {/* Filter and Search Bar */}
       <div className="p-4 rounded-2xl bg-[#0A0D17] border border-slate-800/80 space-y-4">
         <div className="flex flex-col sm:flex-row gap-3">
