@@ -199,26 +199,53 @@ export const VideosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Full 106-Video Machine Learning LMS Banner */}
-      <div className="rounded-2xl border border-indigo-500/35 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-emerald-950/40 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold">
-            NEW · COMPLETE LMS TRACK
+      {/* Full LMS Track Showcase Grid with Custom Thumbnails */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="rounded-2xl border border-indigo-500/35 bg-gradient-to-br from-indigo-950/60 via-slate-900 to-emerald-950/35 p-4 flex flex-col sm:flex-row items-center gap-4 shadow-xl">
+          <img
+            src="/thumbnails/ml-ctf-course-thumbnail.svg"
+            alt="Machine Learning 106-Video LMS Thumbnail"
+            className="w-full sm:w-44 aspect-video object-cover rounded-xl border border-indigo-500/30 shrink-0"
+          />
+          <div className="space-y-2 flex-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold">
+              106 VIDEOS · 100+ QUIZZES · CAM PROCTORED
+            </div>
+            <h2 className="text-base font-extrabold text-white leading-snug">
+              Machine Learning Mastery — Complete 106-Lecture LMS
+            </h2>
+            <a
+              href="/app/ml-course"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-lg shadow-indigo-500/25"
+            >
+              <Play className="w-3.5 h-3.5 fill-white" />
+              Launch 106-Video LMS
+            </a>
           </div>
-          <h2 className="text-lg font-extrabold text-white">
-            Machine Learning Mastery — 106-Video Course, Notes, 100+ Quizzes &amp; Proctored Final Exam
-          </h2>
-          <p className="text-xs text-slate-300 max-w-2xl">
-            Study the full 106-lecture playlist across 7 structured modules with personal cloud notes, per-video comprehension quizzes, and webcam anti-cheat final certification.
-          </p>
         </div>
-        <a
-          href="/app/ml-course"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold whitespace-nowrap transition shadow-lg shadow-indigo-500/25"
-        >
-          <Play className="w-4 h-4 fill-white" />
-          Launch 106-Video LMS
-        </a>
+
+        <div className="rounded-2xl border border-rose-500/35 bg-gradient-to-br from-rose-950/50 via-slate-900 to-indigo-950/40 p-4 flex flex-col sm:flex-row items-center gap-4 shadow-xl">
+          <img
+            src="/thumbnails/stanford-ctf-dl-thumbnail.svg"
+            alt="Stanford X Coding Task Factory Deep Learning Thumbnail"
+            className="w-full sm:w-44 aspect-video object-cover rounded-xl border border-rose-500/30 shrink-0"
+          />
+          <div className="space-y-2 flex-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[10px] font-bold">
+              STANFORD × CTF · 21 VIDEOS · 20+ QUIZZES
+            </div>
+            <h2 className="text-base font-extrabold text-white leading-snug">
+              [Stanford X Coding Task Factory Academy] Deep Learning
+            </h2>
+            <a
+              href="/app/dl-course"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-lg shadow-rose-500/25"
+            >
+              <Play className="w-3.5 h-3.5 fill-white" />
+              Launch Deep Learning LMS
+            </a>
+          </div>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

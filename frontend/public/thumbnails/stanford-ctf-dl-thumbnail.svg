@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <defs>
+    <linearGradient id="dlBg" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#050711" />
+      <stop offset="48%" stop-color="#130916" />
+      <stop offset="100%" stop-color="#081226" />
+    </linearGradient>
+    <radialGradient id="stanfordGlow" cx="0.18" cy="0.24" r="0.6">
+      <stop offset="0%" stop-color="#B1040E" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#B1040E" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ctfGlow" cx="0.82" cy="0.72" r="0.65">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.42" />
+      <stop offset="50%" stop-color="#06B6D4" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="dlStroke" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E11D48" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="titleAccent" x1="0" y1="0" x2="720" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FCA5A5" />
+      <stop offset="45%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#67E8F9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base Dark Canvas + Dual Brand Radial Auras -->
+  <rect width="1280" height="720" fill="url(#dlBg)" />
+  <rect width="1280" height="720" fill="url(#stanfordGlow)" />
+  <rect width="1280" height="720" fill="url(#ctfGlow)" />
+
+  <!-- Subtle Technical Blueprint Grid -->
+  <g stroke="#1E293B" stroke-width="1" opacity="0.4">
+    <path d="M0 120 H1280 M0 240 H1280 M0 360 H1280 M0 480 H1280 M0 600 H1280" />
+    <path d="M160 0 V720 M320 0 V720 M480 0 V720 M640 0 V720 M800 0 V720 M960 0 V720 M1120 0 V720" />
+  </g>
+
+  <!-- Outer Precision Frame -->
+  <rect x="28" y="28" width="1224" height="664" rx="30" fill="#070B16" fill-opacity="0.72" stroke="url(#dlStroke)" stroke-width="2.5" stroke-opacity="0.75" />
+
+  <!-- Right-Side Illuminated Deep Neural Network Architecture Artwork -->
+  <g transform="translate(765, 118)" opacity="0.95">
+    <!-- Glow Backdrop behind Neural Mesh -->
+    <circle cx="220" cy="230" r="195" fill="#1E1B4B" fill-opacity="0.38" stroke="url(#dlStroke)" stroke-width="1.5" stroke-dasharray="6 6" />
+
+    <!-- Synaptic Edges Layer 1 -> Layer 2 -->
+    <g stroke="#E11D48" stroke-opacity="0.45" stroke-width="2">
+      <line x1="60" y1="80" x2="175" y2="55" />
+      <line x1="60" y1="80" x2="175" y2="145" />
+      <line x1="60" y1="80" x2="175" y2="235" />
+      <line x1="60" y1="180" x2="175" y2="55" />
+      <line x1="60" y1="180" x2="175" y2="145" />
+      <line x1="60" y1="180" x2="175" y2="235" />
+      <line x1="60" y1="180" x2="175" y2="325" />
+      <line x1="60" y1="280" x2="175" y2="145" />
+      <line x1="60" y1="280" x2="175" y2="235" />
+      <line x1="60" y1="280" x2="175" y2="325" />
+      <line x1="60" y1="280" x2="175" y2="415" />
+      <line x1="60" y1="380" x2="175" y2="235" />
+      <line x1="60" y1="380" x2="175" y2="325" />
+      <line x1="60" y1="380" x2="175" y2="415" />
+    </g>
+
+    <!-- Synaptic Edges Layer 2 -> Layer 3 -->
+    <g stroke="#6366F1" stroke-opacity="0.55" stroke-width="2">
+      <line x1="175" y1="55" x2="295" y2="95" />
+      <line x1="175" y1="55" x2="295" y2="185" />
+      <line x1="175" y1="145" x2="295" y2="95" />
+      <line x1="175" y1="145" x2="295" y2="185" />
+      <line x1="175" y1="145" x2="295" y2="275" />
+      <line x1="175" y1="235" x2="295" y2="185" />
+      <line x1="175" y1="235" x2="295" y2="275" />
+      <line x1="175" y1="235" x2="295" y2="365" />
+      <line x1="175" y1="325" x2="295" y2="185" />
+      <line x1="175" y1="325" x2="295" y2="275" />
+      <line x1="175" y1="325" x2="295" y2="365" />
+      <line x1="175" y1="415" x2="295" y2="275" />
+      <line x1="175" y1="415" x2="295" y2="365" />
+    </g>
+
+    <!-- Synaptic Edges Layer 3 -> Output Head -->
+    <g stroke="#22D3EE" stroke-opacity="0.7" stroke-width="2.4">
+      <line x1="295" y1="95" x2="400" y2="170" />
+      <line x1="295" y1="185" x2="400" y2="170" />
+      <line x1="295" y1="275" x2="400" y2="170" />
+      <line x1="295" y1="95" x2="400" y2="290" />
+      <line x1="295" y1="275" x2="400" y2="290" />
+      <line x1="295" y1="365" x2="400" y2="290" />
+    </g>
+
+    <!-- Input Nodes (Cardinal Rose) -->
+    <g fill="#0F172A" stroke="#FB7185" stroke-width="3">
+      <circle cx="60" cy="80" r="14" />
+      <circle cx="60" cy="180" r="14" />
+      <circle cx="60" cy="280" r="14" />
+      <circle cx="60" cy="380" r="14" />
+    </g>
+    <!-- Hidden Layer 1 (Violet) -->
+    <g fill="#1E1B4B" stroke="#A78BFA" stroke-width="3">
+      <circle cx="175" cy="55" r="15" />
+      <circle cx="175" cy="145" r="15" />
+      <circle cx="175" cy="235" r="15" />
+      <circle cx="175" cy="325" r="15" />
+      <circle cx="175" cy="415" r="15" />
+    </g>
+    <!-- Hidden Layer 2 (Indigo) -->
+    <g fill="#172554" stroke="#818CF8" stroke-width="3">
+      <circle cx="295" cy="95" r="15" />
+      <circle cx="295" cy="185" r="15" />
+      <circle cx="295" cy="275" r="15" />
+      <circle cx="295" cy="365" r="15" />
+    </g>
+    <!-- Output Nodes (Cyan) -->
+    <g fill="#083344" stroke="#22D3EE" stroke-width="3.5">
+      <circle cx="400" cy="170" r="18" />
+      <circle cx="400" cy="290" r="18" />
+    </g>
+
+    <!-- Floating Formula Tag -->
+    <rect x="75" y="454" width="300" height="42" rx="12" fill="#0B1120" stroke="#334155" stroke-width="1.5" />
+    <text x="225" y="481" text-anchor="middle" fill="#67E8F9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">∇θ J(θ) = -α Σ ∂L / ∂W[l]</text>
+  </g>
+
+  <!-- Co-Brand Top Partnership Pill -->
+  <g transform="translate(74, 78)">
+    <rect x="0" y="0" width="568" height="46" rx="23" fill="#1F0B14" stroke="#E11D48" stroke-width="1.8" stroke-opacity="0.8" />
+    <circle cx="26" cy="23" r="8" fill="#F43F5E" />
+    <text x="48" y="29" fill="#FECDD3" font-family="ui-monospace, monospace" font-size="17" font-weight="800" letter-spacing="1.5">STANFORD  ×  CODING TASK FACTORY ACADEMY</text>
+  </g>
+
+  <!-- CTF Hex Emblem + Stanford CS229 Heritage Label -->
+  <g transform="translate(74, 156)">
+    <rect x="0" y="0" width="84" height="84" rx="20" fill="#0F172A" stroke="url(#dlStroke)" stroke-width="2.5" />
+    <polygon points="42,12 68,27 68,57 42,72 16,57 16,27" fill="#17203B" stroke="#818CF8" stroke-width="1.8" />
+    <path d="M33 32 L22 42 L33 52" stroke="#FDA4AF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M51 32 L62 42 L51 52" stroke="#67E8F9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <polygon points="42,26 48,42 42,58 36,42" fill="#38BDF8" />
+    <text x="106" y="34" fill="#FDA4AF" font-family="ui-monospace, monospace" font-size="16" font-weight="700" letter-spacing="2">CS229 DEEP LEARNING &amp; AI TRACK</text>
+    <text x="106" y="64" fill="#E2E8F0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="700">Andrew Ng Lecture Series · Curated Engineering LMS</text>
+  </g>
+
+  <!-- Main Course Headline -->
+  <text x="74" y="328" fill="url(#titleAccent)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="64" font-weight="900" letter-spacing="-1">Deep Learning</text>
+  <text x="74" y="400" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="58" font-weight="900" letter-spacing="-1">&amp; Neural Mastery</text>
+
+  <!-- Subtitle -->
+  <text x="74" y="458" fill="#CBD5E1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="23" font-weight="500">From Gradient Descent &amp; Kernels to Backpropagation, EM, PCA &amp; Deep RL</text>
+
+  <!-- Feature Badges Strip -->
+  <g transform="translate(74, 512)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="19" font-weight="700">
+    <rect x="0" y="0" width="160" height="58" rx="16" fill="#2A0F18" stroke="#E11D48" stroke-width="1.8" />
+    <text x="80" y="36" text-anchor="middle" fill="#FECDD3">21 Lectures</text>
+
+    <rect x="176" y="0" width="166" height="58" rx="16" fill="#171B3A" stroke="#6366F1" stroke-width="1.8" />
+    <text x="259" y="36" text-anchor="middle" fill="#E0E7FF">20+ Quizzes</text>
+
+    <rect x="358" y="0" width="164" height="58" rx="16" fill="#0B2732" stroke="#06B6D4" stroke-width="1.8" />
+    <text x="440" y="36" text-anchor="middle" fill="#CFFAFE">Notes &amp; Code</text>
+
+    <rect x="538" y="0" width="214" height="58" rx="16" fill="#0B291E" stroke="#10B981" stroke-width="1.8" />
+    <text x="645" y="36" text-anchor="middle" fill="#D1FAE5">Cam Proctored</text>
+  </g>
+
+  <!-- Bottom Verified Certificate Seal Note -->
+  <g transform="translate(74, 622)">
+    <rect x="0" y="-22" width="10" height="28" rx="5" fill="#10B981" />
+    <text x="24" y="0" fill="#94A3B8" font-family="ui-monospace, monospace" font-size="17" font-weight="600">INCLUDES AI CAMERA ANTI-CHEAT FINAL EXAM  •  SHA-256 VERIFIED CERTIFICATE &amp; A4 VECTOR PDF</text>
+  </g>
+</svg>

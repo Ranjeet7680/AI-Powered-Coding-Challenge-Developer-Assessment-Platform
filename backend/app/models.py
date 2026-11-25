@@ -156,3 +156,20 @@ class MLCourseProgress(Base):
     final_exam_log = Column(JSON, default=list)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
+
+class CourseLMSProgress(Base):
+    __tablename__ = "course_lms_progress"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=False)
+    course_id = Column(String, index=True, nullable=False)
+    completed_lessons = Column(JSON, default=list)
+    lesson_notes = Column(JSON, default=dict)
+    quiz_results = Column(JSON, default=dict)
+    practice_quiz_best_score = Column(Integer, default=0)
+    final_exam_score = Column(Integer, nullable=True)
+    final_exam_passed = Column(Boolean, default=False)
+    final_exam_violations = Column(Integer, default=0)
+    final_exam_log = Column(JSON, default=list)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+

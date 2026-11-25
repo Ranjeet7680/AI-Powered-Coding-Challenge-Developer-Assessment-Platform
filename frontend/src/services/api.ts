@@ -284,48 +284,75 @@ export const api = {
 
   getVideo: (id: string) => request<VideoLesson>(`/videos/${id}`),
 
-  // Machine Learning 106-Video Full LMS
-  getMLCourseOverview: () => request<MLCourseOverview>('/ml-course'),
+  // Parameterized LMS Course Client (supports both ML 106-video and Stanford X CTF DL 21-video)
+  courseLms: (track: 'ml' | 'dl') => createCourseClient(track === 'dl' ? '/dl-course' : '/ml-course'),
 
-  completeMLLesson: (lessonId: string) =>
-    request<{
-      lesson_id: string;
-      completed_lessons: string[];
-      points_awarded: number;
-      total_points: number;
-    }>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/complete`, {
-      method: 'POST',
-    }),
+  // Machine Learning 106-Video Full LMS (direct convenience aliases)
+  getMLCourseOverview: () => createCourseClient('/ml-course').getOverview(),
+
+  completeMLLesson: (lessonId: string) => createCourseClient('/ml-course').completeLesson(lessonId),
 
   saveMLLessonNotes: (lessonId: string, notes: string) =>
-    request<{
-      lesson_id: string;
-      saved: boolean;
-      lesson_notes: Record<string, string>;
-    }>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/notes`, {
-      method: 'PUT',
-      body: JSON.stringify({ notes }),
-    }),
+    createCourseClient('/ml-course').saveLessonNotes(lessonId, notes),
 
   submitMLLessonQuiz: (lessonId: string, selectedIndex: number) =>
-    request<MLQuizAnswerResponse>(`/ml-course/lessons/${encodeURIComponent(lessonId)}/quiz`, {
-      method: 'POST',
-      body: JSON.stringify({ selected_index: selectedIndex }),
-    }),
+    createCourseClient('/ml-course').submitLessonQuiz(lessonId, selectedIndex),
 
-  getMLQuizBank: () => request<{ total: number; questions: MLQuizItem[] }>('/ml-course/quiz-bank'),
+  getMLQuizBank: () => createCourseClient('/ml-course').getQuizBank(),
 
   submitMLQuizBank: (answers: Record<string, number>) =>
-    request<MLPracticeQuizResultResponse>('/ml-course/quiz-bank/submit', {
-      method: 'POST',
-      body: JSON.stringify({ answers }),
-    }),
+    createCourseClient('/ml-course').submitQuizBank(answers),
 
-  getMLFinalExam: () => request<MLFinalExamResponse>('/ml-course/final-exam'),
+  getMLFinalExam: () => createCourseClient('/ml-course').getFinalExam(),
 
   submitMLFinalExam: (payload: MLFinalExamSubmitPayload) =>
-    request<MLFinalExamResultResponse>('/ml-course/final-exam/submit', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
+    createCourseClient('/ml-course').submitFinalExam(payload),
 };
+
+function createCourseClient(basePath: '/ml-course' | '/dl-course') {
+  return {
+    getOverview: () => request<MLCourseOverview>(basePath),
+
+    completeLesson: (lessonId: string) =>
+      request<{
+        lesson_id: string;
+        completed_lessons: string[];
+        points_awarded: number;
+        total_points: number;
+      }>(`${basePath}/lessons/${encodeURIComponent(lessonId)}/complete`, {
+        method: 'POST',
+      }),
+
+    saveLessonNotes: (lessonId: string, notes: string) =>
+      request<{
+        lesson_id: string;
+        saved: boolean;
+        lesson_notes: Record<string, string>;
+      }>(`${basePath}/lessons/${encodeURIComponent(lessonId)}/notes`, {
+        method: 'PUT',
+        body: JSON.stringify({ notes }),
+      }),
+
+    submitLessonQuiz: (lessonId: string, selectedIndex: number) =>
+      request<MLQuizAnswerResponse>(`${basePath}/lessons/${encodeURIComponent(lessonId)}/quiz`, {
+        method: 'POST',
+        body: JSON.stringify({ selected_index: selectedIndex }),
+      }),
+
+    getQuizBank: () => request<{ total: number; questions: MLQuizItem[] }>(`${basePath}/quiz-bank`),
+
+    submitQuizBank: (answers: Record<string, number>) =>
+      request<MLPracticeQuizResultResponse>(`${basePath}/quiz-bank/submit`, {
+        method: 'POST',
+        body: JSON.stringify({ answers }),
+      }),
+
+    getFinalExam: () => request<MLFinalExamResponse>(`${basePath}/final-exam`),
+
+    submitFinalExam: (payload: MLFinalExamSubmitPayload) =>
+      request<MLFinalExamResultResponse>(`${basePath}/final-exam/submit`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+  };
+}

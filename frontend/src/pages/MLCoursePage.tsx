@@ -50,8 +50,17 @@ import {
 type TopTab = 'course' | 'quiz-bank' | 'final-exam';
 type LessonDeckTab = 'notes' | 'my-notes' | 'quiz';
 type ExamPhase = 'preflight' | 'active' | 'submitted';
+type CourseTrack = 'ml' | 'dl';
 
-export const MLCoursePage: React.FC = () => {
+export const MLCoursePage: React.FC = () => <CourseLMSView key="ml" track="ml" />;
+
+export const DLCoursePage: React.FC = () => <CourseLMSView key="dl" track="dl" />;
+
+const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
+  const isDL = track === 'dl';
+  const basePath = isDL ? '/app/dl-course' : '/app/ml-course';
+  const courseClient = useMemo(() => api.courseLms(track), [track]);
+
   const { lessonId: routeLessonId } = useParams<{ lessonId?: string }>();
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
@@ -67,7 +76,7 @@ export const MLCoursePage: React.FC = () => {
   // Navigation & Player State
   const [activeTab, setActiveTab] = useState<TopTab>('course');
   const [lessonDeckTab, setLessonDeckTab] = useState<LessonDeckTab>('notes');
-  const [selectedLessonId, setSelectedLessonId] = useState<string>('ml-001');
+  const [selectedLessonId, setSelectedLessonId] = useState<string>(isDL ? 'dl-001' : 'ml-001');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [incompleteOnly, setIncompleteOnly] = useState<boolean>(false);
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
@@ -141,9 +150,9 @@ export const MLCoursePage: React.FC = () => {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      api.getMLCourseOverview(),
-      api.getMLQuizBank(),
-      api.getMLFinalExam().catch(() => null),
+      courseClient.getOverview(),
+      courseClient.getQuizBank(),
+      courseClient.getFinalExam().catch(() => null),
     ])
       .then(([overview, bankRes, examRes]) => {
         if (cancelled) return;
@@ -183,7 +192,7 @@ export const MLCoursePage: React.FC = () => {
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        const msg = err instanceof Error ? err.message : 'Failed to load ML Course LMS.';
+        const msg = err instanceof Error ? err.message : 'Failed to load Course LMS.';
         setLoadError(msg);
         setIsLoading(false);
       });
@@ -191,7 +200,7 @@ export const MLCoursePage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [routeLessonId]);
+  }, [courseClient, routeLessonId]);
 
   const activeLesson: MLLessonItem | null = useMemo(() => {
     if (!course || course.lessons.length === 0) return null;
@@ -206,17 +215,17 @@ export const MLCoursePage: React.FC = () => {
       const prevQ = quizResults[lesson.id];
       setSelectedQuizOption(prevQ ? prevQ.selected : null);
       setQuizFeedback(null);
-      navigate(`/app/ml-course/${lesson.id}`, { replace: true });
+      navigate(`${basePath}/${lesson.id}`, { replace: true });
       playerTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
-    [navigate, notesByLesson, quizResults]
+    [basePath, navigate, notesByLesson, quizResults]
   );
 
   const handleMarkComplete = async () => {
     if (!activeLesson) return;
     setIsCompletingLesson(true);
     try {
-      const res = await api.completeMLLesson(activeLesson.id);
+      const res = await courseClient.completeLesson(activeLesson.id);
       setCompletedLessons(res.completed_lessons);
       if (res.points_awarded > 0) {
         refreshUser().catch(() => {});
@@ -239,7 +248,7 @@ export const MLCoursePage: React.FC = () => {
     if (!activeLesson) return;
     setIsSavingNote(true);
     try {
-      const res = await api.saveMLLessonNotes(activeLesson.id, draftNote);
+      const res = await courseClient.saveLessonNotes(activeLesson.id, draftNote);
       setNotesByLesson(res.lesson_notes);
       showToast(`Saved personal study notes for Lecture #${activeLesson.order}.`, 'success');
     } catch (err: unknown) {
@@ -254,7 +263,7 @@ export const MLCoursePage: React.FC = () => {
     if (!activeLesson || selectedQuizOption === null) return;
     setIsSubmittingLessonQuiz(true);
     try {
-      const res = await api.submitMLLessonQuiz(activeLesson.id, selectedQuizOption);
+      const res = await courseClient.submitLessonQuiz(activeLesson.id, selectedQuizOption);
       setQuizFeedback(res);
       setQuizResults((prev) => {
         const old = prev[activeLesson.id];
@@ -331,7 +340,7 @@ export const MLCoursePage: React.FC = () => {
     }
     setIsSubmittingPractice(true);
     try {
-      const res = await api.submitMLQuizBank(practiceAnswers);
+      const res = await courseClient.submitQuizBank(practiceAnswers);
       setPracticeResult(res);
       setBestPracticeScore(res.best_score);
       const updatedMap: Record<string, MLQuizResultRecord> = { ...quizResults };
@@ -373,7 +382,7 @@ export const MLCoursePage: React.FC = () => {
       const elapsed = Math.max(0, totalSec - examRemainingSecRef.current);
 
       try {
-        const res = await api.submitMLFinalExam({
+        const res = await courseClient.submitFinalExam({
           answers: examAnswersRef.current,
           violations: examViolationsRef.current,
           violation_log: examViolationLogRef.current,
@@ -389,7 +398,7 @@ export const MLCoursePage: React.FC = () => {
         if (res.passed) {
           setSavedExamPassed(true);
           refreshUser().catch(() => {});
-          showToast('Passed Proctored Final Exam! Official ML Certificate issued.', 'success');
+          showToast('Passed Proctored Final Exam! Official Certificate issued.', 'success');
           try {
             confetti({ particleCount: 130, spread: 75, origin: { y: 0.6 } });
           } catch {
@@ -406,7 +415,7 @@ export const MLCoursePage: React.FC = () => {
         setIsSubmittingExam(false);
       }
     },
-    [refreshUser, showToast]
+    [courseClient, refreshUser, showToast]
   );
 
   // Countdown timer when examPhase === 'active'
@@ -532,57 +541,132 @@ export const MLCoursePage: React.FC = () => {
   return (
     <div ref={playerTopRef} className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Top LMS Hero Header */}
-      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 p-5 sm:p-7 shadow-2xl">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-          <div className="space-y-2 max-w-3xl">
+      <div
+        className={`relative overflow-hidden rounded-3xl border p-5 sm:p-7 shadow-2xl ${
+          isDL
+            ? 'border-rose-500/30 bg-gradient-to-br from-slate-900 via-rose-950/25 to-slate-900'
+            : 'border-indigo-500/25 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900'
+        }`}
+      >
+        {/* Track Switcher Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-800/70">
+          <div className="inline-flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Select LMS Track:
+            </span>
+            <Link
+              to="/app/ml-course"
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                !isDL
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25'
+                  : 'bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
+              }`}
+            >
+              ML Mastery (106 Videos)
+            </Link>
+            <Link
+              to="/app/dl-course"
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                isDL
+                  ? 'bg-rose-600 text-white shadow-md shadow-rose-500/25'
+                  : 'bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-rose-500/40'
+              }`}
+            >
+              Stanford × CTF Deep Learning (21 Videos)
+            </Link>
+          </div>
+          {course.thumbnail_url && (
+            <a
+              href={course.thumbnail_url}
+              download={isDL ? 'stanford-ctf-deep-learning-thumbnail.svg' : 'ml-ctf-course-thumbnail.svg'}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download Course Thumbnail
+            </a>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+          <div className="lg:col-span-8 space-y-3">
             <div className="inline-flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold">
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                  isDL
+                    ? 'bg-rose-500/15 border-rose-500/35 text-rose-300'
+                    : 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300'
+                }`}
+              >
                 <BrainCircuit className="w-3.5 h-3.5" />
-                FULL ML LMS CURRICULUM
+                {isDL ? 'STANFORD × CODING TASK FACTORY ACADEMY' : 'FULL ML LMS CURRICULUM'}
               </span>
               <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
-                {course.total_lessons} Videos · {course.modules.length} Modules · {course.total_quizzes}+ Quizzes
+                {course.total_lessons} Videos · {course.modules.length} Modules · {isDL ? '20+' : `${course.total_quizzes}+`} Quizzes
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               {course.title}
             </h1>
             <p className="text-sm text-slate-300 leading-relaxed">
-              Curated from <span className="text-indigo-300 font-semibold">{course.instructor}</span>. Master regression, PCA, trees, boosting, neural nets, transformers, PyTorch &amp; RLHF with structured notes, personal notebooks, {course.total_quizzes}+ comprehension quizzes, and a camera-proctored final certification exam.
+              Curated from <span className="text-indigo-300 font-semibold">{course.instructor}</span>.{' '}
+              {isDL
+                ? 'Master optimization, GLMs, SVMs & Mercer kernels, neural networks, backpropagation, EM, PCA/ICA, MDPs, LQR & RL diagnostics with structured notes, personal notebooks, 20+ comprehension quizzes, and a camera-proctored certification exam.'
+                : `Master regression, PCA, trees, boosting, neural nets, transformers, PyTorch & RLHF with structured notes, personal notebooks, ${course.total_quizzes}+ comprehension quizzes, and a camera-proctored final certification exam.`}
             </p>
+
+            {/* Live Mastery Telemetry Box */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
+                <div className="text-[11px] text-slate-400">Lectures Done</div>
+                <div className="text-base sm:text-lg font-extrabold text-white">
+                  {completedCount}
+                  <span className="text-xs font-semibold text-slate-500">/{totalLessons}</span>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
+                <div className="text-[11px] text-slate-400">Quizzes Passed</div>
+                <div className="text-base sm:text-lg font-extrabold text-emerald-400">
+                  {quizzesPassedCount}
+                  <span className="text-xs font-semibold text-slate-500">/{course.total_quizzes}</span>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
+                <div className="text-[11px] text-slate-400">
+                  {isDL ? '20+ Quiz Best' : '100+ Quiz Best'}
+                </div>
+                <div className="text-base sm:text-lg font-extrabold text-cyan-400">
+                  {bestPracticeScore}%
+                </div>
+              </div>
+              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
+                <div className="text-[11px] text-slate-400">Final Exam</div>
+                <div className="text-base sm:text-lg font-extrabold text-amber-300">
+                  {savedExamPassed
+                    ? `Passed (${savedExamScore ?? 100}%)`
+                    : savedExamScore !== null
+                    ? `${savedExamScore}%`
+                    : 'Proctored'}
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Live Mastery Telemetry Box */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 shrink-0">
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3">
-              <div className="text-[11px] text-slate-400">Lectures Done</div>
-              <div className="text-lg font-extrabold text-white">
-                {completedCount}
-                <span className="text-xs font-semibold text-slate-500">/{totalLessons}</span>
+          {/* Official Co-Branded Course Thumbnail Artwork Preview */}
+          {course.thumbnail_url && (
+            <div className="lg:col-span-4">
+              <div className="group relative rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950 shadow-2xl">
+                <img
+                  src={course.thumbnail_url}
+                  alt={`${course.title} Official Thumbnail`}
+                  className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-300"
+                />
+                <div className="px-3 py-2 bg-slate-950/90 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-300">
+                  <span className="font-mono font-semibold text-cyan-300">OFFICIAL COURSE THUMBNAIL</span>
+                  <span>1280×720 HD</span>
+                </div>
               </div>
             </div>
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3">
-              <div className="text-[11px] text-slate-400">Quizzes Passed</div>
-              <div className="text-lg font-extrabold text-emerald-400">
-                {quizzesPassedCount}
-                <span className="text-xs font-semibold text-slate-500">/{course.total_quizzes}</span>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3">
-              <div className="text-[11px] text-slate-400">100+ Quiz Best</div>
-              <div className="text-lg font-extrabold text-cyan-400">{bestPracticeScore}%</div>
-            </div>
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3">
-              <div className="text-[11px] text-slate-400">Final Exam</div>
-              <div className="text-lg font-extrabold text-amber-300">
-                {savedExamPassed
-                  ? `Passed (${savedExamScore ?? 100}%)`
-                  : savedExamScore !== null
-                  ? `${savedExamScore}%`
-                  : 'Proctored'}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Overall Course Progress Bar + Primary Mode Tabs */}
@@ -610,7 +694,7 @@ export const MLCoursePage: React.FC = () => {
               }`}
             >
               <ListChecks className="w-4 h-4" />
-              100+ Quiz Practice Bank
+              {isDL ? '20+ Quiz Practice Bank' : '100+ Quiz Practice Bank'}
             </button>
             <button
               type="button"
@@ -1043,7 +1127,11 @@ export const MLCoursePage: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search 106 topics (PCA, XGBoost, GPT)..."
+                  placeholder={
+                    isDL
+                      ? 'Search 21 lectures (GLM, SVM, Backprop, EM, MDP)...'
+                      : 'Search 106 topics (PCA, XGBoost, GPT)...'
+                  }
                   className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-slate-200 placeholder:text-slate-500"
                 />
               </div>
@@ -1159,7 +1247,8 @@ export const MLCoursePage: React.FC = () => {
           <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h2 className="text-xl font-bold text-white">
-                {quizBank.length}+ Machine Learning Comprehension Quiz Bank
+                {quizBank.length} {isDL ? 'Deep Learning' : 'Machine Learning'} Comprehension Quizzes (
+                {isDL ? '20+ Bank' : '100+ Bank'})
               </h2>
               <p className="text-xs text-slate-400 mt-1">
                 Every lecture has a dedicated conceptual check. Practice across all modules or focus on a weak area.
@@ -1373,12 +1462,16 @@ export const MLCoursePage: React.FC = () => {
                       Proctored Certification Assessment
                     </span>
                     <h2 className="text-2xl font-extrabold text-white mt-0.5">
-                      {finalExam?.title || 'Machine Learning Mastery — Proctored Final Exam'}
+                      {finalExam?.title || `${course.title} — Proctored Final Exam`}
                     </h2>
                     <p className="text-sm text-slate-300 mt-2 leading-relaxed">
                       Earn an official cryptographically signed{' '}
-                      <strong className="text-white">Coding Task Factory ML Certificate</strong> with
-                      Downloadable Landscape A4 Vector PDF &amp; Public Verification URL.
+                      <strong className="text-white">
+                        {isDL
+                          ? '[Stanford X Coding Task Factory Academy] Deep Learning Certificate'
+                          : 'Coding Task Factory ML Certificate'}
+                      </strong>{' '}
+                      with Downloadable Landscape A4 Vector PDF &amp; Public Verification URL.
                     </p>
                   </div>
                 </div>
@@ -1387,13 +1480,13 @@ export const MLCoursePage: React.FC = () => {
                   <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
                     <div className="text-[11px] text-slate-400">Exam Length</div>
                     <div className="text-lg font-extrabold text-white">
-                      {finalExam?.total_questions || 35} Questions
+                      {finalExam?.total_questions || (isDL ? 20 : 35)} Questions
                     </div>
                   </div>
                   <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
                     <div className="text-[11px] text-slate-400">Time Limit</div>
                     <div className="text-lg font-extrabold text-white">
-                      {finalExam?.duration_minutes || 45} Minutes
+                      {finalExam?.duration_minutes || (isDL ? 30 : 45)} Minutes
                     </div>
                   </div>
                   <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">

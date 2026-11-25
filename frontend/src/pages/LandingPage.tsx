@@ -793,20 +793,52 @@ public:
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <Link
                 to="/app/ml-course"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/25"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/25"
               >
                 <BrainCircuit className="w-4 h-4" />
-                <span>106-Video ML LMS &amp; Exam</span>
+                <span>106-Video ML LMS</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/app/dl-course"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-rose-600/25"
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Stanford × CTF Deep Learning (21)</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/app/videos"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition"
               >
-                <span>Explore All Masterclasses</span>
+                <span>All Masterclasses</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
+          </div>
+
+          {/* Official Featured LMS Course Thumbnails */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <Link
+              to="/app/ml-course"
+              className="group relative rounded-3xl overflow-hidden border border-indigo-500/35 bg-[#080B15] hover:border-indigo-400 transition shadow-2xl"
+            >
+              <img
+                src="/thumbnails/ml-ctf-course-thumbnail.svg"
+                alt="Machine Learning 106-Video LMS Course Thumbnail"
+                className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-500"
+              />
+            </Link>
+            <Link
+              to="/app/dl-course"
+              className="group relative rounded-3xl overflow-hidden border border-rose-500/40 bg-[#080B15] hover:border-rose-400 transition shadow-2xl"
+            >
+              <img
+                src="/thumbnails/stanford-ctf-dl-thumbnail.svg"
+                alt="[Stanford X Coding Task Factory Academy] Deep Learning Thumbnail"
+                className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-500"
+              />
+            </Link>
           </div>
 
           {/* 3 Masterclass Cards Grid */}

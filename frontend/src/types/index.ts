@@ -283,6 +283,7 @@ export interface MLCourseOverview {
   playlist_id: string;
   playlist_url: string;
   instructor: string;
+  thumbnail_url?: string;
   total_lessons: number;
   total_quizzes: number;
   modules: MLModuleInfo[];

@@ -14,6 +14,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from app import main as app_main  # noqa: E402
 from app.database import Base, get_db  # noqa: E402
 from app.main import app  # noqa: E402
+from app.services.dl_course_catalog import (  # noqa: E402
+    DL_COURSE_TITLE,
+    get_dl_final_exam_questions,
+    get_dl_quiz_bank,
+)
 from app.services.ml_course_catalog import (  # noqa: E402
     get_100_quiz_bank,
     get_final_exam_questions,
@@ -266,3 +271,109 @@ def test_ml_proctored_final_exam_anti_cheat_and_certificate_pdf(ml_client: TestC
     assert pdf_resp.status_code == 200, pdf_resp.text
     assert pdf_resp.headers["content-type"].startswith("application/pdf")
     assert pdf_resp.content.startswith(b"%PDF")
+
+
+def test_stanford_ctf_dl_course_21_videos_20_quizzes_and_proctored_exam(ml_client: TestClient):
+    headers = _register_and_auth(ml_client)
+
+    overview_resp = ml_client.get("/api/dl-course", headers=headers)
+    assert overview_resp.status_code == 200, overview_resp.text
+    overview = overview_resp.json()
+
+    assert overview["title"] == DL_COURSE_TITLE
+    assert overview["playlist_id"] == "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU"
+    assert overview["thumbnail_url"] == "/thumbnails/stanford-ctf-dl-thumbnail.svg"
+    assert overview["total_lessons"] == 21
+    assert overview["total_quizzes"] == 21
+    assert len(overview["modules"]) == 4
+    assert len(overview["lessons"]) == 21
+    assert overview["lessons"][0]["video_id"] == "jGwO_UgTS7I"
+    assert overview["lessons"][-1]["video_id"] == "pLhPQynL0tY"
+
+    # Completion + personal notes + per-video comprehension quiz
+    comp = ml_client.post("/api/dl-course/lessons/dl-001/complete", headers=headers)
+    assert comp.status_code == 200, comp.text
+    assert comp.json()["points_awarded"] == 15
+
+    note_res = ml_client.put(
+        "/api/dl-course/lessons/dl-001/notes",
+        json={"notes": "CS229 Lecture 1 notes: supervised vs unsupervised mapping."},
+        headers=headers,
+    )
+    assert note_res.status_code == 200
+    assert note_res.json()["saved"] is True
+
+    # 20+ quiz mastery bank strips answers and grades submissions
+    bank_resp = ml_client.get("/api/dl-course/quiz-bank")
+    assert bank_resp.status_code == 200
+    bank = bank_resp.json()
+    assert bank["total"] >= 20
+    assert len(bank["questions"]) == 21
+    for q in bank["questions"]:
+        assert "correct_index" not in q
+        assert "explanation" not in q
+
+    truth_bank = get_dl_quiz_bank(include_answers=True)
+    batch_answers = {q["id"]: q["correct_index"] for q in truth_bank[:20]}
+    batch_res = ml_client.post(
+        "/api/dl-course/quiz-bank/submit",
+        json={"answers": batch_answers},
+        headers=headers,
+    )
+    assert batch_res.status_code == 200
+    assert batch_res.json()["total_answered"] == 20
+    assert batch_res.json()["score_percent"] == 100
+
+    # Proctored Final Exam (20 questions + camera verification + anti-cheat + PDF cert)
+    exam_meta = ml_client.get("/api/dl-course/final-exam", headers=headers).json()
+    assert exam_meta["total_questions"] == 20
+    assert exam_meta["proctoring_required"] is True
+
+    exam_truth = get_dl_final_exam_questions(include_answers=True)
+    perfect = {q["id"]: q["correct_index"] for q in exam_truth}
+
+    # Cheat termination must disqualify
+    cheat = ml_client.post(
+        "/api/dl-course/final-exam/submit",
+        json={
+            "answers": perfect,
+            "violations": 3,
+            "violation_log": [{"timestamp": "2026-11-25T14:00:00Z", "type": "TAB_SWITCH", "detail": "left"}],
+            "elapsed_seconds": 120,
+            "camera_verified": True,
+            "auto_terminated": True,
+        },
+        headers=headers,
+    ).json()
+    assert cheat["disqualified"] is True
+    assert cheat["passed"] is False
+    assert cheat["certificate"] is None
+
+    # Legitimate pass issues [Stanford X Coding Task Factory Academy] Deep Learning certificate
+    passed = ml_client.post(
+        "/api/dl-course/final-exam/submit",
+        json={
+            "answers": perfect,
+            "violations": 0,
+            "violation_log": [],
+            "elapsed_seconds": 600,
+            "camera_verified": True,
+            "auto_terminated": False,
+        },
+        headers=headers,
+    ).json()
+    assert passed["passed"] is True
+    assert passed["score_percent"] == 100
+    cert = passed["certificate"]
+    assert cert is not None
+    assert cert["title"] == DL_COURSE_TITLE
+    cred_id = cert["credential_id"]
+    assert cred_id.startswith("CTF-DL-")
+
+    verify = ml_client.get(f"/api/certificates/{cred_id}/verify")
+    assert verify.status_code == 200
+    assert verify.json()["verified"] is True
+
+    pdf = ml_client.get(f"/api/certificates/{cred_id}/pdf", headers=headers)
+    assert pdf.status_code == 200
+    assert pdf.content.startswith(b"%PDF")

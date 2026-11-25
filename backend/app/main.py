@@ -137,6 +137,7 @@ app.include_router(analytics.router)
 app.include_router(user.router)
 app.include_router(videos.router)
 app.include_router(ml_course.router)
+app.include_router(ml_course.dl_router)
 
 
 @app.get("/api/health")

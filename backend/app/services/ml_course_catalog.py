@@ -1532,6 +1532,7 @@ def get_ml_course_catalog() -> Dict[str, Any]:
         "playlist_id": PLAYLIST_ID,
         "playlist_url": PLAYLIST_URL,
         "instructor": COURSE_INSTRUCTOR,
+        "thumbnail_url": "/thumbnails/ml-ctf-course-thumbnail.svg",
         "total_lessons": len(lessons),
         "total_quizzes": len(lessons),
         "modules": modules_out,

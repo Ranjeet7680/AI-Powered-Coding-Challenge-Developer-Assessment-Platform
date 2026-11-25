@@ -1,0 +1,128 @@
+[
+  {
+    "order": 1,
+    "video_id": "jGwO_UgTS7I",
+    "title": "Stanford CS229: Machine Learning Lecture 1 - Andrew Ng (Autumn 2018)",
+    "duration": "1:15:20"
+  },
+  {
+    "order": 2,
+    "video_id": "4b4MUYve_U8",
+    "title": "Stanford CS229: Machine Learning - Linear Regression and Gradient Descent |  Lecture 2 (Autumn 2018)",
+    "duration": "1:18:17"
+  },
+  {
+    "order": 3,
+    "video_id": "het9HFqo1TQ",
+    "title": "Locally Weighted & Logistic Regression | Stanford CS229: Machine Learning - Lecture 3 (Autumn 2018)",
+    "duration": "1:19:34"
+  },
+  {
+    "order": 4,
+    "video_id": "iZTeva0WSTQ",
+    "title": "Lecture 4 - Perceptron & Generalized Linear Model | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:22:02"
+  },
+  {
+    "order": 5,
+    "video_id": "nt63k3bfXS0",
+    "title": "Lecture 5 - GDA & Naive Bayes | Stanford CS229: Machine Learning Andrew Ng (Autumn 2018)",
+    "duration": "1:18:52"
+  },
+  {
+    "order": 6,
+    "video_id": "lDwow4aOrtg",
+    "title": "Lecture 6 - Support Vector Machines | Stanford CS229: Machine Learning Andrew Ng (Autumn 2018)",
+    "duration": "1:20:57"
+  },
+  {
+    "order": 7,
+    "video_id": "8NYoQiRANpg",
+    "title": "Lecture 7 - Kernels | Stanford CS229: Machine Learning Andrew Ng (Autumn 2018)",
+    "duration": "1:20:25"
+  },
+  {
+    "order": 8,
+    "video_id": "rjbkWSTjHzM",
+    "title": "Lecture 8 - Data Splits, Models & Cross-Validation | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:23:26"
+  },
+  {
+    "order": 9,
+    "video_id": "iVOxMcumR4A",
+    "title": "Discussion Section: Learning Theory | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:26:03"
+  },
+  {
+    "order": 10,
+    "video_id": "wr9gUr-eWdA",
+    "title": "Lecture 9 - Decision Trees and Ensemble Methods | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:20:41"
+  },
+  {
+    "order": 11,
+    "video_id": "MfIjxPh6Pys",
+    "title": "Lecture 10 - Introduction to Neural Networks | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:20:14"
+  },
+  {
+    "order": 12,
+    "video_id": "zUazLXZZA2U",
+    "title": "Lecture 11 - Backprop & Improving Neural Networks | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:16:38"
+  },
+  {
+    "order": 13,
+    "video_id": "ORrStCArmP4",
+    "title": "Lecture 12 - Debugging ML Models and Error Analysis | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:18:55"
+  },
+  {
+    "order": 14,
+    "video_id": "rVfZHWTwXSA",
+    "title": "Lecture 13 - Expectation-Maximization Algorithms | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:20:31"
+  },
+  {
+    "order": 15,
+    "video_id": "tw6cmL5STuY",
+    "title": "Lecture 14 - EM Algorithm & Factor Analysis | Stanford CS229: Machine Learning Andrew Ng -Autumn2018",
+    "duration": "1:19:48"
+  },
+  {
+    "order": 16,
+    "video_id": "dyb_cFywuik",
+    "title": "Lecture 15 - PCA and ICA | Stanford CS229: Machine Learning Andrew Ng - Autumn 2018",
+    "duration": "1:18:35"
+  },
+  {
+    "order": 17,
+    "video_id": "YQA9lLdLig8",
+    "title": "Lecture 16 - Independent Component Analysis & RL | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:18:10"
+  },
+  {
+    "order": 18,
+    "video_id": "d5gaWTo6kDM",
+    "title": "Lecture 17 - MDPs & Value/Policy Iteration | Stanford CS229: Machine Learning Andrew Ng (Autumn2018)",
+    "duration": "1:19:14"
+  },
+  {
+    "order": 19,
+    "video_id": "QFu5nuc-S0s",
+    "title": "Lecture 18 - Continous State MDP & Model Simulation | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:20:15"
+  },
+  {
+    "order": 20,
+    "video_id": "0rt2CsEQv6U",
+    "title": "Lecture 19 - Reward Model & Linear Dynamical System | Stanford CS229: Machine Learning (Autumn 2018)",
+    "duration": "1:21:07"
+  },
+  {
+    "order": 21,
+    "video_id": "pLhPQynL0tY",
+    "title": "RL Debugging and Diagnostics | Stanford CS229: Machine Learning Andrew Ng - Lecture 20 (Autumn 2018)",
+    "duration": "1:12:43"
+  }
+]

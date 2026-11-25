@@ -61,6 +61,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ onClose })
 
     const quickPages: SearchResultItem[] = [
       { id: 'p-ml-course', title: 'ML Course LMS (106 Videos, Notes, 100+ Quizzes & Exam)', subtitle: 'StatQuest ML curriculum + camera-proctored final exam', path: '/app/ml-course', group: 'Pages', icon: BrainCircuit, iconColor: 'text-emerald-400' },
+      { id: 'p-dl-course', title: '[Stanford X Coding Task Factory] Deep Learning (21 Videos & Exam)', subtitle: 'CS229 21 lectures, notes, 20+ quizzes & camera-proctored exam', path: '/app/dl-course', group: 'Pages', icon: BrainCircuit, iconColor: 'text-rose-400' },
       { id: 'p-videos', title: 'Video Masterclasses & Walkthroughs', subtitle: 'ML & Algorithm deep dives', path: '/app/videos', group: 'Pages', icon: Video, iconColor: 'text-purple-400' },
       { id: 'p-gen', title: 'AI Task Generator', subtitle: 'Synthesize new coding challenges', path: '/app/generator', group: 'Pages', icon: Sparkles, iconColor: 'text-indigo-400' },
       { id: 'p-chal', title: 'Challenge Library', subtitle: 'Browse 350+ algorithmic & ML tasks', path: '/app/challenges', group: 'Pages', icon: Layers, iconColor: 'text-cyan-400' },
