@@ -7,6 +7,7 @@ Generates comprehensive mutation logs and validation evidence.
 """
 
 import os
+import re
 import json
 import time
 import subprocess
@@ -35,9 +36,10 @@ MUTANTS = [
         "mutant_id": "MUT-1.2",
         "name": "Bypass custom validator function",
         "description": "Remove custom validator callback invocation in prompt so invalid passwords pass silently.",
-        "apply_mutation": lambda sol: sol.replace(
-            "validator(value)",
-            "None  # validator(value)"
+        "apply_mutation": lambda sol: re.sub(
+            r"(?<!\.)validator\(value\)",
+            "None  # validator(value)",
+            sol,
         )
     },
 
@@ -200,7 +202,8 @@ def run_mutant(mutant: dict, click_repo_path: Path) -> dict:
             # A mutant is KILLED if tests FAIL (returncode != 0)
             killed = (test_res.returncode != 0)
         except subprocess.TimeoutExpired as e:
-            stdout_txt = e.stdout or "" if hasattr(e, "stdout") else ""
+            raw_out = getattr(e, "stdout", "") or ""
+            stdout_txt = raw_out.decode("utf-8", errors="replace") if isinstance(raw_out, bytes) else raw_out
             stderr_txt = "Test timed out (hung due to defect) - Mutant Killed"
             killed = True
         dur = round(time.time() - t0, 2)
@@ -248,7 +251,7 @@ def main():
     total_dur = round(time.time() - start_total, 2)
     total_mutants = len(results)
     killed_count = sum(1 for r in results if r["killed"])
-    kill_rate = (killed_count / total_mutants) * 100.0
+    kill_rate = (killed_count / total_mutants) * 100.0 if total_mutants else 0.0
 
     print("\n" + "=" * 75)
     print(f"Mutation Testing Completed in {total_dur}s")
@@ -291,8 +294,9 @@ def main():
 
     for r in results:
         status_md = "**KILLED**" if r["killed"] else "**SURVIVED**"
+        outcome_md = "Test Failed as Expected" if r["killed"] else "Test Passed (Mutant Escaped)"
         summary_lines.append(
-            f"| `{r['mutant_id']}` | `{r['task']}` | {r['description']} | Test Failed as Expected | {status_md} |"
+            f"| `{r['mutant_id']}` | `{r['task']}` | {r['description']} | {outcome_md} | {status_md} |"
         )
 
     summary_lines.extend([

@@ -4,10 +4,11 @@ Executes mutation testing against task packages to prove test suite rigor:
 Injects deliberate bugs into the solution implementation and verifies the test suite fails (mutant killed).
 """
 
+import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any
 from .config import DEFAULT_CONFIG
 
 class MutationTester:

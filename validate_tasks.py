@@ -24,8 +24,15 @@ def main():
     baseline_logs_dir.mkdir(exist_ok=True)
     oracle_logs_dir.mkdir(exist_ok=True)
 
+    if not TASK_PACKAGES_DIR.exists():
+        print(f"[ERROR] Task packages directory not found: {TASK_PACKAGES_DIR}. Run run_factory.py first.")
+        sys.exit(1)
+
     validator = TaskValidator()
     task_dirs = sorted([d for d in TASK_PACKAGES_DIR.iterdir() if d.is_dir()])
+    if not task_dirs:
+        print(f"[ERROR] No task packages found in {TASK_PACKAGES_DIR}.")
+        sys.exit(1)
 
     results = []
     start_total = time.time()
@@ -37,6 +44,11 @@ def main():
         elapsed = round(time.time() - t0, 2)
         res["duration_sec"] = elapsed
         results.append(res)
+
+        if res.get("status") == "error":
+            res["is_valid"] = False
+            print(f"      [FAIL] Validation error: {res.get('message', 'Unknown error')}")
+            continue
 
         b_reward = res["baseline"]["reward"]
         o_reward = res["oracle"]["reward"]

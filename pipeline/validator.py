@@ -6,12 +6,12 @@ Validates tasks according to Harbor standards:
 Also supports executing directly via Docker or local virtual environment.
 """
 
+import json
 import os
-import shutil
 import tempfile
 import subprocess
 from pathlib import Path
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 from .config import DEFAULT_CONFIG
 
 class TaskValidator:
@@ -101,13 +101,24 @@ class TaskValidator:
             env = os.environ.copy()
             env["PYTHONPATH"] = str(work_dir / "src")
 
-            # Run regressions (sample of fast, high-coverage existing tests)
+            # Run regressions from pass_to_pass.json when available
+            pass_to_pass_file = task_dir / "tests" / "pass_to_pass.json"
+            reg_targets = [
+                "tests/test_basic.py",
+                "tests/test_commands.py",
+                "tests/test_options.py",
+            ]
+            if pass_to_pass_file.exists():
+                loaded = json.loads(pass_to_pass_file.read_text(encoding="utf-8"))
+                if isinstance(loaded, list) and loaded:
+                    reg_targets = [str(t) for t in loaded]
+
             reg_cmd = subprocess.run(
-                ["uv", "run", "pytest", "tests/test_basic.py", "tests/test_commands.py", "tests/test_options.py", "-q"],
+                ["uv", "run", "pytest", *reg_targets, "-q"],
                 cwd=str(work_dir),
                 env=env,
                 capture_output=True,
-                text=True
+                text=True,
             )
             regression_passed = (reg_cmd.returncode == 0)
 
