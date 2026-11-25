@@ -11,7 +11,8 @@ export interface User {
   streak: number;
   solved_count: number;
   has_completed_onboarding: boolean;
-  gemini_api_key?: string;
+  has_gemini_api_key?: boolean;
+  gemini_api_key_preview?: string | null;
   created_at?: string;
 }
 
@@ -67,7 +68,7 @@ export interface TestCaseResult {
 }
 
 export interface ExecutionResult {
-  status: 'Accepted' | 'Wrong Answer' | 'Runtime Error' | 'Time Limit Exceeded';
+  status: 'Accepted' | 'Wrong Answer' | 'Runtime Error' | 'Compilation Error' | 'Time Limit Exceeded';
   stdout: string;
   stderr: string;
   runtime_ms: number;
@@ -97,7 +98,7 @@ export interface Submission {
   challenge_title?: string;
   language: string;
   code: string;
-  status: 'Accepted' | 'Wrong Answer' | 'Runtime Error' | 'Time Limit Exceeded';
+  status: 'Accepted' | 'Wrong Answer' | 'Runtime Error' | 'Compilation Error' | 'Time Limit Exceeded';
   runtime_ms: number;
   memory_mb: number;
   score: number;
@@ -131,6 +132,34 @@ export interface Certificate {
   badge_icon: string;
   category: string;
   grade: string;
+  issuer_name?: string;
+  signatory_name?: string;
+  signatory_title?: string;
+  score_percent?: number;
+  skills_verified?: string[];
+  challenges_completed?: number;
+  completion_hours?: number;
+  summary?: string;
+  credential_hash?: string | null;
+}
+
+export interface CertificateVerification extends Certificate {
+  verified: boolean;
+  verification_url: string;
+  platform: string;
+}
+
+export interface ChallengeStats {
+  total: number;
+  by_difficulty: Record<string, number>;
+  by_category: Record<string, number>;
+}
+
+export interface AssessmentCompleteResponse {
+  assessment_id: string;
+  score: number;
+  passed: boolean;
+  certificate?: Certificate | null;
 }
 
 export interface AnalyticsSummary {
@@ -155,6 +184,7 @@ export interface LeaderboardUser {
   streak: number;
   badge: string;
   win_rate: string;
+  is_current_user?: boolean;
 }
 
 export interface VideoChapter {
@@ -180,4 +210,9 @@ export interface VideoLesson {
   code_snippet?: string;
   views_count: number;
   created_at?: string;
+}
+
+export interface CopilotResponse {
+  reply: string;
+  source: string;
 }

@@ -276,6 +276,21 @@ class CertificateResponse(BaseModel):
     badge_icon: str
     category: str
     grade: str
+    issuer_name: str = "Coding Task Factory Academy"
+    signatory_name: str = "Dr. Aris Thorne"
+    signatory_title: str = "Chief Curriculum Architect"
+    score_percent: int = 98
+    skills_verified: List[str] = []
+    challenges_completed: int = 12
+    completion_hours: int = 24
+    summary: str = ""
+    credential_hash: Optional[str] = None
+
+
+class CertificateVerifyResponse(CertificateResponse):
+    verified: bool = True
+    verification_url: str
+    platform: str = "Coding Task Factory"
 
 
 # Analytics Schemas

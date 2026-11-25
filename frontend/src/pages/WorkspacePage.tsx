@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Editor from '@monaco-editor/react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import Editor, { Monaco } from '@monaco-editor/react';
 import { api } from '../services/api';
 import { Challenge, ExecutionResult, Submission, VideoLesson } from '../types';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, useToast, usePreferences } from '../context/useContexts';
+import { MarkdownRenderer } from '../components/common/MarkdownRenderer';
 import confetti from 'canvas-confetti';
 import {
   Play,
@@ -15,6 +16,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Timer,
+  Pause,
   Lightbulb,
   Copy,
   Download,
@@ -23,23 +25,37 @@ import {
   FileCode,
   Edit3,
   Video,
+  ShieldCheck,
+  ChevronDown,
+  FlaskConical,
 } from 'lucide-react';
+
+type SupportedLang = 'python' | 'javascript' | 'typescript' | 'cpp';
+
+function draftStorageKey(challengeId: string, lang: SupportedLang) {
+  return `ctf_draft_${challengeId}_${lang}`;
+}
 
 export const WorkspacePage: React.FC = () => {
   const { challengeId = 'c2-lru-cache' } = useParams<{ challengeId: string }>();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { showToast } = useToast();
+  const { preferences, updatePreferences } = usePreferences();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const navState = location.state as { initialCode?: string; initialLanguage?: SupportedLang } | null;
+  const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<'python' | 'javascript' | 'typescript' | 'cpp'>('python');
+  const [selectedLanguage, setSelectedLanguage] = useState<SupportedLang>(
+    () => navState?.initialLanguage || 'python'
+  );
   const [code, setCode] = useState<string>('');
-  const [fontSize, setFontSize] = useState<number>(13);
   const [activeLeftTab, setActiveLeftTab] = useState<'description' | 'hints' | 'assistant' | 'video'>('description');
   const [activeBottomTab, setActiveBottomTab] = useState<'tests' | 'custom' | 'console' | 'ai_review'>('tests');
   const [customInput, setCustomInput] = useState<string>('');
   const [relatedVideo, setRelatedVideo] = useState<VideoLesson | null>(null);
 
-  // Execution states
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
@@ -47,70 +63,102 @@ export const WorkspacePage: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Timer state for interview prep
   const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(true);
 
-  // Chat copilot state
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string }>>([
     {
       sender: 'ai',
-      text: 'Hello! I am your AI Coding Copilot powered by Google Gemini. Ask me about time complexity, edge cases, or how to design this algorithm.',
+      text: 'Hello! I am your code-aware AI Coding Copilot. Ask me to analyze your complexity, find edge cases, or debug an error.',
     },
   ]);
   const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
 
-  const selectedLanguageRef = useRef(selectedLanguage);
-
-  // Load Challenge and Related Video
+  const selectedLangRef = useRef<SupportedLang>(selectedLanguage);
   useEffect(() => {
-    let cancelled = false;
+    selectedLangRef.current = selectedLanguage;
+  }, [selectedLanguage]);
+
+  // Load challenge list once for switcher
+  useEffect(() => {
+    api.getChallenges().then(setAllChallenges).catch(() => {});
+  }, []);
+
+  // Load current challenge & restore draft or state code
+  useEffect(() => {
+    let active = true;
+    const stateObj = location.state as { initialCode?: string; initialLanguage?: SupportedLang } | null;
+    const targetLang = stateObj?.initialLanguage || selectedLangRef.current;
+
     api.getChallenge(challengeId)
       .then((c) => {
-        if (cancelled) return;
-        const lang = selectedLanguageRef.current;
+        if (!active) return;
+        setExecutionResult(null);
+        setSubmissionResult(null);
         setChallenge(c);
-        const starter = c.starter_code?.[lang] || c.starter_code?.python || '';
+        const savedDraft = localStorage.getItem(draftStorageKey(c.id, targetLang));
+        const starter = stateObj?.initialCode || savedDraft || c.starter_code?.[targetLang] || c.starter_code?.python || '';
         setCode(starter);
 
-        // Fetch matching video
-        api.getVideos().then((vList) => {
-          if (cancelled) return;
-          const match = vList.find((v) => v.related_challenge_id === c.id) ||
-                        vList.find((v) => v.category === c.category) ||
-                        vList[0];
-          if (match) setRelatedVideo(match);
-        }).catch(() => {});
+        api.getVideos()
+          .then((vList) => {
+            if (!active) return;
+            const match =
+              vList.find((v) => v.related_challenge_id === c.id) ||
+              vList.find((v) => v.category === c.category) ||
+              vList[0];
+            if (match) setRelatedVideo(match);
+          })
+          .catch(() => {});
       })
       .catch(async () => {
         const all = await api.getChallenges().catch(() => []);
-        if (cancelled) return;
+        if (!active) return;
         if (all.length > 0) {
-          const lang = selectedLanguageRef.current;
-          setChallenge(all[0]);
-          setCode(all[0].starter_code?.[lang] || all[0].starter_code?.python || '');
+          const fallback = all[0];
+          setExecutionResult(null);
+          setSubmissionResult(null);
+          setChallenge(fallback);
+          setCode(fallback.starter_code?.[targetLang] || fallback.starter_code?.python || '');
         }
       });
     return () => {
-      cancelled = true;
+      active = false;
     };
-  }, [challengeId]);
+  }, [challengeId, location.state]);
 
-  // Handle language switch
-  const handleLanguageChange = (lang: 'python' | 'javascript' | 'typescript' | 'cpp') => {
-    selectedLanguageRef.current = lang;
+  // Persist code draft locally on edit
+  const handleCodeChange = (value: string | undefined) => {
+    const nextCode = value || '';
+    setCode(nextCode);
+    if (challenge) {
+      localStorage.setItem(draftStorageKey(challenge.id, selectedLanguage), nextCode);
+    }
+  };
+
+  // Switch language cleanly while preserving per-language drafts
+  const handleLanguageChange = (lang: SupportedLang) => {
     setSelectedLanguage(lang);
-    if (challenge && challenge.starter_code?.[lang]) {
+    if (!challenge) return;
+    const draft = localStorage.getItem(draftStorageKey(challenge.id, lang));
+    if (draft !== null) {
+      setCode(draft);
+    } else if (challenge.starter_code?.[lang]) {
       setCode(challenge.starter_code[lang]);
+    } else {
+      setCode('');
     }
   };
 
   // Timer tick
   useEffect(() => {
+    if (!timerRunning) return;
     const interval = setInterval(() => {
       setTimerSeconds((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [timerRunning]);
 
   const formatTimer = (totalSec: number) => {
     const mins = Math.floor(totalSec / 60);
@@ -118,49 +166,54 @@ export const WorkspacePage: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Run Code
-  const handleRunCode = async () => {
-    if (!challenge) return;
-    setIsRunning(true);
-    if (activeBottomTab === 'custom') {
-      setActiveBottomTab('console');
-    } else {
-      setActiveBottomTab('tests');
-    }
+  const handleRunCode = useCallback(
+    async (forceCustom = false) => {
+      if (!challenge || isRunning || isSubmitting) return;
+      setIsRunning(true);
+      const useCustom = forceCustom || activeBottomTab === 'custom';
+      setActiveBottomTab(useCustom && customInput.trim() ? 'console' : 'tests');
 
-    try {
-      let testCasesToRun = challenge.test_cases?.filter((tc) => !tc.is_hidden) || [];
-      if (activeBottomTab === 'custom' && customInput.trim()) {
-        testCasesToRun = [{ input: customInput, expected_output: '', is_hidden: false }];
+      try {
+        const testCasesToRun =
+          useCustom && customInput.trim()
+            ? [{ input: customInput, expected_output: '', is_hidden: false }]
+            : challenge.test_cases?.filter((tc) => !tc.is_hidden) || [];
+
+        const res = await api.runCode({
+          language: selectedLanguage,
+          code,
+          test_cases: testCasesToRun,
+          custom_input: useCustom ? customInput : undefined,
+          challenge_id: challenge.id,
+        });
+        setExecutionResult(res);
+        if (res.status === 'Accepted') {
+          showToast(`Passed ${res.passed_count}/${res.total_count} sample test cases (${res.runtime_ms}ms)`, 'success');
+        } else {
+          showToast(`${res.status}: ${res.passed_count}/${res.total_count} passed`, 'error');
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Execution failed.';
+        setExecutionResult({
+          status: 'Runtime Error',
+          stdout: '',
+          stderr: msg,
+          runtime_ms: 0,
+          memory_mb: 0,
+          passed_count: 0,
+          total_count: 0,
+          test_results: [],
+        });
+        showToast(msg, 'error');
+      } finally {
+        setIsRunning(false);
       }
+    },
+    [challenge, isRunning, isSubmitting, activeBottomTab, customInput, selectedLanguage, code, showToast]
+  );
 
-      const res = await api.runCode({
-        language: selectedLanguage,
-        code,
-        test_cases: testCasesToRun,
-        custom_input: activeBottomTab === 'custom' ? customInput : undefined,
-        challenge_id: challenge.id,
-      });
-      setExecutionResult(res);
-    } catch (err: any) {
-      setExecutionResult({
-        status: 'Runtime Error',
-        stdout: '',
-        stderr: err.message || 'Execution failed.',
-        runtime_ms: 0,
-        memory_mb: 0,
-        passed_count: 0,
-        total_count: 0,
-        test_results: [],
-      });
-    } finally {
-      setIsRunning(false);
-    }
-  };
-
-  // Submit Solution
-  const handleSubmit = async () => {
-    if (!challenge) return;
+  const handleSubmit = useCallback(async () => {
+    if (!challenge || isRunning || isSubmitting) return;
     setIsSubmitting(true);
     setActiveBottomTab('ai_review');
 
@@ -169,86 +222,173 @@ export const WorkspacePage: React.FC = () => {
         challenge_id: challenge.id,
         language: selectedLanguage,
         code,
-        api_key: user?.gemini_api_key,
       });
       setSubmissionResult(sub);
+      setExecutionResult({
+        status: sub.status,
+        stdout: '',
+        stderr: sub.test_results.find((t) => t.error)?.error || '',
+        runtime_ms: sub.runtime_ms,
+        memory_mb: sub.memory_mb,
+        passed_count: sub.test_cases_passed,
+        total_count: sub.total_test_cases,
+        test_results: sub.test_results,
+        ai_feedback: sub.ai_feedback,
+      });
 
       if (sub.status === 'Accepted') {
+        showToast('Solution Accepted! +Points awarded and AI Code Review generated.', 'success');
+        refreshUser().catch(() => {});
         try {
-          confetti({
-            particleCount: 120,
-            spread: 70,
-            origin: { y: 0.6 },
-          });
-        } catch {}
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        } catch {
+          // Decorative confetti
+        }
+      } else {
+        showToast(`Submission status: ${sub.status} (${sub.test_cases_passed}/${sub.total_test_cases})`, 'error');
       }
-    } catch (err: any) {
-      alert(`Submission error: ${err.message}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Submission failed.';
+      showToast(`Submission error: ${msg}`, 'error');
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [challenge, isRunning, isSubmitting, selectedLanguage, code, showToast, refreshUser]);
+
+  // Keyboard shortcuts: Ctrl+Enter (Run) and Ctrl+Shift+Enter (Submit)
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleSubmit();
+        } else {
+          handleRunCode(false);
+        }
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [handleRunCode, handleSubmit]);
 
   const handleResetCode = () => {
-    if (challenge && challenge.starter_code?.[selectedLanguage]) {
-      setCode(challenge.starter_code[selectedLanguage]);
-    }
+    if (!challenge) return;
+    const starter = challenge.starter_code?.[selectedLanguage] || '';
+    setCode(starter);
+    localStorage.removeItem(draftStorageKey(challenge.id, selectedLanguage));
+    showToast('Editor reset to starter template.', 'info');
   };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(code);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
+    showToast('Code copied to clipboard.', 'info');
   };
 
   const handleDownloadCode = () => {
-    const ext = selectedLanguage === 'python' ? 'py' : selectedLanguage === 'javascript' ? 'js' : selectedLanguage === 'typescript' ? 'ts' : 'cpp';
+    const ext =
+      selectedLanguage === 'python'
+        ? 'py'
+        : selectedLanguage === 'javascript'
+        ? 'js'
+        : selectedLanguage === 'typescript'
+        ? 'ts'
+        : 'cpp';
     const element = document.createElement('a');
     const file = new Blob([code], { type: 'text/plain' });
-    const url = URL.createObjectURL(file);
-    element.href = url;
+    element.href = URL.createObjectURL(file);
     element.download = `${challenge?.slug || 'solution'}.${ext}`;
     document.body.appendChild(element);
     element.click();
     element.remove();
-    URL.revokeObjectURL(url);
+  };
+
+  const sendCopilotPrompt = async (promptText: string) => {
+    if (!promptText.trim() || chatLoading) return;
+    const userMsg = promptText.trim();
+    setChatMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
+    setChatInput('');
+    setChatLoading(true);
+
+    try {
+      const res = await api.askCopilot({
+        message: userMsg,
+        challenge_id: challenge?.id,
+        challenge_title: challenge?.title,
+        challenge_description: challenge?.description,
+        language: selectedLanguage,
+        code,
+        last_error: executionResult?.stderr || undefined,
+      });
+      setChatMessages((prev) => [...prev, { sender: 'ai', text: res.reply }]);
+    } catch {
+      setChatMessages((prev) => [
+        ...prev,
+        { sender: 'ai', text: 'Unable to reach AI Copilot right now. Check your backend connection.' },
+      ]);
+    } finally {
+      setChatLoading(false);
+    }
   };
 
   const handleSendChatMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!chatInput.trim()) return;
+    sendCopilotPrompt(chatInput);
+  };
 
-    const userMsg = chatInput.trim();
-    setChatMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
-    setChatInput('');
-
-    setTimeout(() => {
-      let reply = "That's a good direction. Look at whether you can store the seen elements in a hash map for constant-time lookup.";
-      if (userMsg.toLowerCase().includes('time') || userMsg.toLowerCase().includes('complexity')) {
-        reply = `For this challenge, the optimal target time complexity is ${challenge?.expected_complexity?.time || 'O(N)'}. Ensure you avoid nested loops over the input stream.`;
-      } else if (userMsg.toLowerCase().includes('hint')) {
-        reply = challenge?.hints?.[0] || 'Try decomposing the condition into boundary base cases first.';
-      }
-      setChatMessages((prev) => [...prev, { sender: 'ai', text: reply }]);
-    }, 600);
+  const handleEditorWillMount = (monaco: Monaco) => {
+    monaco.editor.defineTheme('midnight-obsidian', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '64748b', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '818cf8' },
+        { token: 'string', foreground: '34d399' },
+        { token: 'number', foreground: 'f59e0b' },
+      ],
+      colors: {
+        'editor.background': '#090D18',
+        'editor.lineHighlightBackground': '#11182C',
+        'editorLineNumber.foreground': '#475569',
+        'editorCursor.foreground': '#22d3ee',
+      },
+    });
   };
 
   return (
     <div
-      className={`flex flex-col bg-[#070A12] text-slate-100 ${
-        isFullscreen ? 'fixed inset-0 z-50 p-4' : 'h-[calc(100vh-6.5rem)]'
+      className={`flex flex-col bg-[#05070E] text-slate-100 ${
+        isFullscreen ? 'fixed inset-0 z-50 p-3 sm:p-4' : 'min-h-[calc(100vh-7rem)] lg:h-[calc(100vh-6.5rem)]'
       }`}
     >
       {/* Top Action & Language Toolbar */}
-      <div className="h-14 px-4 bg-[#0A0D17] border border-slate-800 rounded-t-2xl flex items-center justify-between shrink-0">
-        {/* Left: Challenge Title & Difficulty */}
-        <div className="flex items-center gap-3">
-          <span className="font-bold text-sm text-white truncate max-w-xs sm:max-w-md">
-            {challenge?.title || 'Loading Challenge...'}
-          </span>
+      <div className="min-h-14 py-2 px-3 sm:px-4 bg-[#090D18] border border-slate-800 rounded-t-2xl flex flex-wrap items-center justify-between gap-2 shrink-0">
+        {/* Left: Challenge Switcher & Difficulty */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="relative">
+            <select
+              value={challenge?.id || challengeId}
+              onChange={(e) => navigate(`/app/workspace/${e.target.value}`)}
+              aria-label="Select coding challenge"
+              className="appearance-none bg-slate-900 border border-slate-700/80 hover:border-indigo-500/50 rounded-xl pl-3 pr-8 py-1.5 text-xs sm:text-sm font-bold text-white focus:outline-none focus:border-indigo-500 max-w-[200px] sm:max-w-xs truncate"
+            >
+              {allChallenges.length > 0 ? (
+                allChallenges.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.title}
+                  </option>
+                ))
+              ) : (
+                <option value={challengeId}>{challenge?.title || 'Loading Challenge...'}</option>
+              )}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
           {challenge && (
             <span
-              className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${
+              className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold shrink-0 ${
                 challenge.difficulty === 'Easy'
                   ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                   : challenge.difficulty === 'Medium'
@@ -261,33 +401,46 @@ export const WorkspacePage: React.FC = () => {
           )}
         </div>
 
-        {/* Center: Language selector, Font size, & Timer */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300">
-            <Timer className="w-3.5 h-3.5 text-indigo-400" />
+        {/* Center: Timer, Font size, Language */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300">
+            <button
+              onClick={() => setTimerRunning((prev) => !prev)}
+              className="text-indigo-400 hover:text-indigo-300 transition"
+              title={timerRunning ? 'Pause timer' : 'Resume timer'}
+            >
+              {timerRunning ? <Timer className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
+            </button>
             <span>{formatTimer(timerSeconds)}</span>
+            <button
+              onClick={() => setTimerSeconds(0)}
+              className="text-slate-500 hover:text-slate-300 ml-0.5"
+              title="Reset timer"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
           </div>
 
-          {/* Font Size Toggle */}
           <div className="hidden sm:flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-xl px-2 py-1 text-xs text-slate-400 font-mono">
             <Type className="w-3.5 h-3.5 text-slate-400" />
             <select
-              value={fontSize}
-              onChange={(e) => setFontSize(Number(e.target.value))}
-              className="bg-transparent text-white focus:outline-none cursor-pointer"
+              value={preferences.fontSize}
+              onChange={(e) => updatePreferences({ fontSize: Number(e.target.value) })}
+              aria-label="Editor font size"
+              className="bg-transparent text-white focus:outline-none"
             >
-              <option value={12}>12px</option>
-              <option value={13}>13px</option>
-              <option value={14}>14px</option>
-              <option value={16}>16px</option>
+              <option value={12} className="bg-slate-900">12px</option>
+              <option value={13} className="bg-slate-900">13px</option>
+              <option value={14} className="bg-slate-900">14px</option>
+              <option value={16} className="bg-slate-900">16px</option>
             </select>
           </div>
 
-          {/* Language Selector */}
           <select
             value={selectedLanguage}
-            onChange={(e) => handleLanguageChange(e.target.value as any)}
-            className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+            onChange={(e) => handleLanguageChange(e.target.value as SupportedLang)}
+            aria-label="Programming language"
+            className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
           >
             <option value="python">Python 3.11</option>
             <option value="javascript">JavaScript (Node)</option>
@@ -296,8 +449,8 @@ export const WorkspacePage: React.FC = () => {
           </select>
         </div>
 
-        {/* Right: Actions (Copy, Download, Reset, Run, Submit, Fullscreen) */}
-        <div className="flex items-center gap-2">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={handleCopyCode}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
@@ -308,7 +461,7 @@ export const WorkspacePage: React.FC = () => {
 
           <button
             onClick={handleDownloadCode}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="hidden sm:inline-flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
             title="Download code file"
           >
             <Download className="w-4 h-4" />
@@ -323,29 +476,31 @@ export const WorkspacePage: React.FC = () => {
           </button>
 
           <button
-            onClick={handleRunCode}
+            onClick={() => handleRunCode(false)}
             disabled={isRunning || isSubmitting}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition active:scale-95"
+            title="Run Code (Ctrl+Enter)"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition active:scale-95 disabled:opacity-50"
           >
             {isRunning ? (
               <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <Play className="w-3.5 h-3.5 text-emerald-400 fill-current" />
             )}
-            Run Code
+            <span>Run</span>
           </button>
 
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition active:scale-95"
+            title="Submit Solution (Ctrl+Shift+Enter)"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition active:scale-95 disabled:opacity-50"
           >
             {isSubmitting ? (
               <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <Send className="w-3.5 h-3.5" />
             )}
-            Submit Solution
+            <span>Submit</span>
           </button>
 
           <button
@@ -360,89 +515,92 @@ export const WorkspacePage: React.FC = () => {
 
       {/* Main Workspace Split Panels */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0 border-x border-b border-slate-800 rounded-b-2xl overflow-hidden">
-        {/* Left Panel: Problem, Constraints, Hints, AI Copilot */}
-        <div className="lg:col-span-4 bg-[#090C16] border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col min-h-0">
-          {/* Tabs */}
-          <div className="flex items-center border-b border-slate-800 px-3 bg-slate-950/60 text-xs">
-            <button
-              onClick={() => setActiveLeftTab('description')}
-              className={`py-2.5 px-3 font-semibold border-b-2 transition ${
-                activeLeftTab === 'description'
-                  ? 'border-indigo-500 text-white'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Description
-            </button>
-            <button
-              onClick={() => setActiveLeftTab('hints')}
-              className={`py-2.5 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 ${
-                activeLeftTab === 'hints'
-                  ? 'border-indigo-500 text-white'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-              Hints ({challenge?.hints?.length || 0})
-            </button>
-            <button
-              onClick={() => setActiveLeftTab('assistant')}
-              className={`py-2.5 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 ${
-                activeLeftTab === 'assistant'
-                  ? 'border-indigo-500 text-white'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              AI Copilot
-            </button>
-            <button
-              onClick={() => setActiveLeftTab('video')}
-              className={`py-2.5 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 ${
-                activeLeftTab === 'video'
-                  ? 'border-purple-500 text-purple-300'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Video className="w-3.5 h-3.5 text-purple-400" />
-              Video Solution
-            </button>
+        {/* Left Panel */}
+        <div className="lg:col-span-5 xl:col-span-4 bg-[#080B14] border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col min-h-[300px] lg:min-h-0">
+          <div className="flex items-center border-b border-slate-800 px-2 bg-slate-950/70 text-xs overflow-x-auto">
+            {[
+              { id: 'description', label: 'Problem', icon: null },
+              { id: 'hints', label: `Hints (${challenge?.hints?.length || 0})`, icon: Lightbulb, iconColor: 'text-amber-400' },
+              { id: 'assistant', label: 'AI Copilot', icon: Sparkles, iconColor: 'text-cyan-400' },
+              { id: 'video', label: 'Video', icon: Video, iconColor: 'text-purple-400' },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const active = activeLeftTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveLeftTab(tab.id as typeof activeLeftTab)}
+                  className={`py-2.5 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 whitespace-nowrap ${
+                    active
+                      ? tab.id === 'video'
+                        ? 'border-purple-500 text-purple-300'
+                        : 'border-indigo-500 text-white'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {Icon && <Icon className={`w-3.5 h-3.5 ${tab.iconColor}`} />}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Tab Content Area */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar text-xs">
             {activeLeftTab === 'description' && challenge && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <h3 className="text-base font-bold text-white mb-2">{challenge.title}</h3>
-                  <div className="prose prose-invert text-xs text-slate-300 leading-relaxed font-sans whitespace-pre-wrap">
-                    {challenge.description}
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <h3 className="text-base font-bold text-white">{challenge.title}</h3>
+                    <span className="text-[11px] font-mono text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                      {challenge.expected_complexity?.time || 'O(N)'}
+                    </span>
                   </div>
+                  <MarkdownRenderer content={challenge.description} />
                 </div>
 
                 {/* Constraints */}
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-                  <h4 className="font-semibold text-white mb-1.5">Constraints:</h4>
-                  <ul className="space-y-1 text-slate-400 font-mono text-[11px]">
-                    {challenge.constraints?.map((c, i) => (
-                      <li key={i}>• {c}</li>
-                    ))}
-                  </ul>
-                </div>
+                {challenge.constraints && challenge.constraints.length > 0 && (
+                  <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+                    <h4 className="font-semibold text-white">Constraints</h4>
+                    <ul className="space-y-1 text-slate-400 font-mono text-[11px]">
+                      {challenge.constraints.map((c, i) => (
+                        <li key={i}>• {c}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                {/* Examples */}
-                {challenge.examples && (
+                {/* Examples with Quick Test Load */}
+                {challenge.examples && challenge.examples.length > 0 && (
                   <div className="space-y-2.5">
-                    <h4 className="font-semibold text-white">Examples:</h4>
+                    <h4 className="font-semibold text-white">Examples</h4>
                     {challenge.examples.map((ex, i) => (
                       <div
                         key={i}
-                        className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 font-mono text-xs space-y-1"
+                        className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/90 font-mono text-xs space-y-1.5"
                       >
-                        <p><span className="text-indigo-400">Input:</span> {ex.input}</p>
-                        <p><span className="text-emerald-400">Output:</span> {ex.output}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] text-slate-500 uppercase">Example #{i + 1}</span>
+                          <button
+                            onClick={() => {
+                              setCustomInput(ex.input.replace(/\\n/g, '\n'));
+                              setActiveBottomTab('custom');
+                              showToast(`Loaded Example #${i + 1} into Custom Input`, 'info');
+                            }}
+                            className="text-[10px] text-indigo-400 hover:text-indigo-300 font-sans font-semibold flex items-center gap-1"
+                          >
+                            <FlaskConical className="w-3 h-3" />
+                            Load Input
+                          </button>
+                        </div>
+                        <p className="whitespace-pre-wrap break-all">
+                          <span className="text-indigo-400">Input:</span> {ex.input.replace(/\\n/g, '\n')}
+                        </p>
+                        <p className="whitespace-pre-wrap break-all">
+                          <span className="text-emerald-400">Output:</span> {ex.output.replace(/\\n/g, '\n')}
+                        </p>
                         {ex.explanation && (
-                          <p className="text-slate-400 font-sans text-[11px] mt-1">
+                          <p className="text-slate-400 font-sans text-[11px] pt-1 border-t border-slate-800/60">
                             {ex.explanation}
                           </p>
                         )}
@@ -462,9 +620,7 @@ export const WorkspacePage: React.FC = () => {
                       key={idx}
                       className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-300 leading-relaxed"
                     >
-                      <span className="font-semibold text-indigo-400 block mb-1">
-                        Hint #{idx + 1}
-                      </span>
+                      <span className="font-semibold text-indigo-400 block mb-1">Hint #{idx + 1}</span>
                       {hint}
                     </div>
                   ))
@@ -476,39 +632,67 @@ export const WorkspacePage: React.FC = () => {
 
             {activeLeftTab === 'assistant' && (
               <div className="flex flex-col h-full justify-between space-y-3">
-                <div className="space-y-2.5 flex-1 overflow-y-auto">
+                <div className="space-y-2.5 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                   {chatMessages.map((msg, i) => (
                     <div
                       key={i}
                       className={`p-3 rounded-xl text-xs leading-relaxed ${
                         msg.sender === 'user'
                           ? 'bg-indigo-600/25 border border-indigo-500/30 text-white ml-6'
-                          : 'bg-slate-900 border border-slate-800 text-slate-300 mr-6'
+                          : 'bg-slate-900/80 border border-slate-800 text-slate-300 mr-4'
                       }`}
                     >
                       <span className="font-bold block mb-1 text-[10px] text-slate-400 uppercase font-mono">
-                        {msg.sender === 'user' ? 'You' : 'Gemini Copilot'}
+                        {msg.sender === 'user' ? user?.full_name || 'You' : 'Gemini Copilot'}
                       </span>
-                      {msg.text}
+                      <MarkdownRenderer content={msg.text} />
                     </div>
                   ))}
+                  {chatLoading && (
+                    <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-slate-400 text-xs mr-4">
+                      Analyzing your {selectedLanguage} code...
+                    </div>
+                  )}
                 </div>
 
-                <form onSubmit={handleSendChatMessage} className="pt-2 border-t border-slate-800 flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Ask Gemini AI for advice..."
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-                  />
-                  <button
-                    type="submit"
-                    className="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
-                  >
-                    Send
-                  </button>
-                </form>
+                {/* Quick Copilot Chips */}
+                <div className="space-y-2 pt-2 border-t border-slate-800">
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'Analyze my time complexity',
+                      'Find edge cases',
+                      'Give me a subtle hint',
+                      'Debug my error',
+                    ].map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={() => sendCopilotPrompt(prompt)}
+                        disabled={chatLoading}
+                        className="text-[10px] px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-slate-800 hover:border-indigo-500/40 transition"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
+
+                  <form onSubmit={handleSendChatMessage} className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ask AI Copilot about your code..."
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={chatLoading}
+                      className="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold disabled:opacity-50"
+                    >
+                      Send
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
 
@@ -525,15 +709,12 @@ export const WorkspacePage: React.FC = () => {
                           {relatedVideo.duration_minutes} min walkthrough
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-white leading-snug">
-                        {relatedVideo.title}
-                      </h4>
+                      <h4 className="text-sm font-bold text-white leading-snug">{relatedVideo.title}</h4>
                       <p className="text-[11px] text-slate-400">
                         Instructor: <span className="text-slate-200 font-medium">{relatedVideo.instructor}</span>
                       </p>
                     </div>
 
-                    {/* Embedded Video */}
                     <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-purple-500/30 bg-black shadow-lg">
                       <iframe
                         src={`${relatedVideo.video_url}?rel=0`}
@@ -544,10 +725,9 @@ export const WorkspacePage: React.FC = () => {
                       />
                     </div>
 
-                    {/* Chapters */}
                     {relatedVideo.chapters && relatedVideo.chapters.length > 0 && (
                       <div className="space-y-1.5">
-                        <h5 className="font-semibold text-white text-[11px] uppercase tracking-wider text-slate-400">
+                        <h5 className="font-semibold text-[11px] uppercase tracking-wider text-slate-400">
                           Video Chapters
                         </h5>
                         <div className="space-y-1">
@@ -564,10 +744,9 @@ export const WorkspacePage: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Key Takeaways */}
                     {relatedVideo.key_takeaways && (
                       <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
-                        <h5 className="font-semibold text-white text-[11px]">Key Concepts & Architecture:</h5>
+                        <h5 className="font-semibold text-white text-[11px]">Key Concepts & Architecture</h5>
                         <ul className="space-y-1 text-slate-400 text-[11px]">
                           {relatedVideo.key_takeaways.map((point, i) => (
                             <li key={i} className="flex items-start gap-1.5">
@@ -579,17 +758,15 @@ export const WorkspacePage: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Reference Code Actions */}
                     {relatedVideo.code_snippet && (
                       <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/30 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-semibold text-purple-300">
-                            Reference Solution Code
-                          </span>
+                          <span className="text-[11px] font-semibold text-purple-300">Reference Snippet</span>
                           <button
                             onClick={() => {
                               if (relatedVideo.code_snippet) {
-                                setCode(relatedVideo.code_snippet);
+                                handleCodeChange(relatedVideo.code_snippet);
+                                showToast('Loaded reference snippet into editor.', 'info');
                               }
                             }}
                             className="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-semibold flex items-center gap-1 transition shadow"
@@ -599,7 +776,7 @@ export const WorkspacePage: React.FC = () => {
                           </button>
                         </div>
                         <p className="text-[10px] text-slate-400">
-                          Click "Apply to Editor" to load the instructor's verified algorithmic solution directly into Monaco.
+                          Click &ldquo;Apply to Editor&rdquo; to load this reference snippet into Monaco.
                         </p>
                       </div>
                     )}
@@ -608,9 +785,6 @@ export const WorkspacePage: React.FC = () => {
                   <div className="p-6 text-center rounded-xl bg-slate-900 border border-slate-800 space-y-3">
                     <Video className="w-8 h-8 text-purple-400 mx-auto" />
                     <h4 className="text-xs font-bold text-white">Explore Video Masterclasses</h4>
-                    <p className="text-[11px] text-slate-400">
-                      Visit our comprehensive video library to watch full step-by-step masterclasses.
-                    </p>
                     <button
                       onClick={() => navigate('/app/videos')}
                       className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold"
@@ -624,175 +798,167 @@ export const WorkspacePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Center & Bottom Panel: Monaco Code Editor + Test Results */}
-        <div className="lg:col-span-8 flex flex-col min-h-0 bg-[#0B0F19]">
-          {/* Editor Area */}
-          <div className="flex-1 min-h-[300px] relative">
+        {/* Right Panel: Monaco Editor + Test Execution */}
+        <div className="lg:col-span-7 xl:col-span-8 flex flex-col min-h-[520px] lg:min-h-0 bg-[#090D18]">
+          <div className="flex-1 min-h-[260px] relative">
             <Editor
               height="100%"
               language={selectedLanguage === 'cpp' ? 'cpp' : selectedLanguage}
-              theme="vs-dark"
+              theme={preferences.editorTheme}
+              beforeMount={handleEditorWillMount}
               value={code}
-              onChange={(value) => setCode(value || '')}
+              onChange={handleCodeChange}
               options={{
-                fontSize: fontSize,
+                fontSize: preferences.fontSize,
+                tabSize: preferences.tabSize,
+                wordWrap: preferences.wordWrap,
                 fontFamily: "'JetBrains Mono', monospace",
-                minimap: { enabled: false },
+                minimap: { enabled: preferences.minimap },
                 scrollBeyondLastLine: false,
                 lineNumbers: 'on',
                 roundedSelection: true,
-                padding: { top: 12 },
+                padding: { top: 14 },
               }}
             />
           </div>
 
           {/* Bottom Execution Panel */}
-          <div className="h-60 border-t border-slate-800 bg-[#0A0D17] flex flex-col shrink-0">
-            {/* Bottom Tabs */}
-            <div className="flex items-center justify-between border-b border-slate-800 px-4 bg-slate-950 text-xs">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setActiveBottomTab('tests')}
-                  className={`py-2 px-3 font-semibold border-b-2 transition ${
-                    activeBottomTab === 'tests'
-                      ? 'border-indigo-500 text-white'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  Unit Tests
-                </button>
-                <button
-                  onClick={() => setActiveBottomTab('custom')}
-                  className={`py-2 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 ${
-                    activeBottomTab === 'custom'
-                      ? 'border-indigo-500 text-white'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Edit3 className="w-3.5 h-3.5 text-cyan-400" />
-                  Custom Input
-                </button>
-                <button
-                  onClick={() => setActiveBottomTab('console')}
-                  className={`py-2 px-3 font-semibold border-b-2 transition ${
-                    activeBottomTab === 'console'
-                      ? 'border-indigo-500 text-white'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  Standard Output
-                </button>
-                <button
-                  onClick={() => setActiveBottomTab('ai_review')}
-                  className={`py-2 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 ${
-                    activeBottomTab === 'ai_review'
-                      ? 'border-indigo-500 text-white'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  AI Code Review
-                </button>
-              </div>
-
-              {/* Status Badge */}
-              <div className="flex items-center gap-3 font-mono text-[11px]">
-                {executionResult && (
-                  <>
-                    <span
-                      className={`font-bold ${
-                        executionResult.status === 'Accepted'
-                          ? 'text-emerald-400'
-                          : 'text-rose-400'
+          <div className="h-64 border-t border-slate-800 bg-[#080B14] flex flex-col shrink-0">
+            <div className="flex flex-wrap items-center justify-between border-b border-slate-800 px-3 sm:px-4 bg-slate-950/80 text-xs gap-2">
+              <div className="flex items-center gap-1 overflow-x-auto">
+                {[
+                  { id: 'tests', label: 'Unit Tests', icon: null },
+                  { id: 'custom', label: 'Custom Input', icon: Edit3, iconColor: 'text-cyan-400' },
+                  { id: 'console', label: 'Console', icon: null },
+                  { id: 'ai_review', label: 'AI Review', icon: Sparkles, iconColor: 'text-cyan-400' },
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const active = activeBottomTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveBottomTab(tab.id as typeof activeBottomTab)}
+                      className={`py-2 px-3 font-semibold border-b-2 transition flex items-center gap-1.5 whitespace-nowrap ${
+                        active
+                          ? 'border-indigo-500 text-white'
+                          : 'border-transparent text-slate-400 hover:text-slate-200'
                       }`}
                     >
-                      {executionResult.status} ({executionResult.passed_count}/{executionResult.total_count} Passed)
+                      {Icon && <Icon className={`w-3.5 h-3.5 ${tab.iconColor}`} />}
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center gap-3 font-mono text-[11px] py-1">
+                {executionResult && (
+                  <>
+                    <span className={`font-bold ${executionResult.status === 'Accepted' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {executionResult.status} ({executionResult.passed_count}/{executionResult.total_count})
                     </span>
-                    <span className="text-slate-500">|</span>
-                    <span className="text-slate-400">{executionResult.runtime_ms} ms</span>
-                    <span className="text-slate-400">{executionResult.memory_mb} MB</span>
+                    <span className="text-slate-600">|</span>
+                    <span className="text-slate-400">{executionResult.runtime_ms}ms</span>
+                    <span className="hidden sm:inline text-slate-400">{executionResult.memory_mb}MB</span>
                   </>
                 )}
               </div>
             </div>
 
-            {/* Bottom Content Body */}
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar text-xs font-mono">
               {activeBottomTab === 'tests' && (
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {executionResult?.test_results && executionResult.test_results.length > 0 ? (
                     executionResult.test_results.map((tr, idx) => (
                       <div
                         key={idx}
-                        className={`p-2.5 rounded-lg border flex items-center justify-between ${
+                        className={`p-3 rounded-xl border space-y-2 ${
                           tr.passed
-                            ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300'
-                            : 'bg-rose-950/20 border-rose-500/30 text-rose-300'
+                            ? 'bg-emerald-950/15 border-emerald-500/30 text-emerald-200'
+                            : 'bg-rose-950/15 border-rose-500/30 text-rose-200'
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          {tr.passed ? (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                          ) : (
-                            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                          )}
-                          <span>
-                            Case #{tr.test_case_index}: {tr.passed ? 'PASSED' : 'FAILED'}
-                          </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 font-semibold">
+                            {tr.passed ? (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            ) : (
+                              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                            )}
+                            <span>
+                              Case #{tr.test_case_index}: {tr.passed ? 'PASSED' : 'FAILED'}
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-slate-400">{tr.runtime_ms}ms</span>
                         </div>
-                        <div className="text-[11px] text-slate-400 space-x-3">
-                          <span>In: {tr.input || 'None'}</span>
-                          <span>Expected: {tr.expected_output}</span>
-                          <span>Got: {tr.actual_output || 'Error'}</span>
-                          <span>({tr.runtime_ms}ms)</span>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                          <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                            <span className="text-slate-500 block mb-0.5">Input</span>
+                            <span className="text-slate-300 break-all whitespace-pre-wrap">{tr.input || 'None'}</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                            <span className="text-slate-500 block mb-0.5">Expected</span>
+                            <span className="text-emerald-300 break-all whitespace-pre-wrap">{tr.expected_output || '—'}</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                            <span className="text-slate-500 block mb-0.5">Actual</span>
+                            <span className={`${tr.passed ? 'text-emerald-300' : 'text-rose-300'} break-all whitespace-pre-wrap`}>
+                              {tr.actual_output || tr.error || 'No Output'}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p className="text-slate-500">
-                      Click <strong>"Run Code"</strong> to execute your solution against test cases.
-                    </p>
+                    <div className="text-slate-500 flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 font-sans">
+                      <span>
+                        Press <strong className="text-slate-300">Run</strong> (Ctrl+Enter) to execute sample tests or{' '}
+                        <strong className="text-indigo-300">Submit</strong> (Ctrl+Shift+Enter) to run the full hidden suite.
+                      </span>
+                    </div>
                   )}
                 </div>
               )}
 
               {activeBottomTab === 'custom' && (
-                <div className="space-y-2 font-sans">
+                <div className="space-y-2.5 font-sans">
                   <p className="text-xs text-slate-400">
-                    Enter custom standard input values to pass into your code:
+                    Enter custom standard input values to test edge cases directly:
                   </p>
                   <textarea
                     rows={4}
                     value={customInput}
                     onChange={(e) => setCustomInput(e.target.value)}
-                    placeholder="e.g. 5&#10;10 20 30 40 50"
+                    placeholder="e.g. 9&#10;2 7 11 15"
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"
                   />
                   <button
-                    onClick={handleRunCode}
-                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500"
+                    onClick={() => handleRunCode(true)}
+                    disabled={isRunning}
+                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition"
                   >
-                    Run Against Custom Input
+                    Run Custom Input
                   </button>
                 </div>
               )}
 
               {activeBottomTab === 'console' && (
-                <div className="space-y-2 text-slate-300 whitespace-pre-wrap">
+                <div className="space-y-3 text-slate-300 whitespace-pre-wrap">
                   {executionResult?.stdout && (
-                    <div>
-                      <p className="text-slate-500 font-semibold mb-1">// STDOUT</p>
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                      <p className="text-slate-500 font-semibold mb-1 text-[10px]">// STDOUT</p>
                       <p className="text-slate-200">{executionResult.stdout}</p>
                     </div>
                   )}
                   {executionResult?.stderr && (
-                    <div>
-                      <p className="text-rose-400 font-semibold mb-1">// STDERR</p>
+                    <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30">
+                      <p className="text-rose-400 font-semibold mb-1 text-[10px]">// STDERR</p>
                       <p className="text-rose-300">{executionResult.stderr}</p>
                     </div>
                   )}
                   {!executionResult?.stdout && !executionResult?.stderr && (
-                    <p className="text-slate-500">No console output recorded.</p>
+                    <p className="text-slate-500">No console output recorded yet.</p>
                   )}
                 </div>
               )}
@@ -801,26 +967,44 @@ export const WorkspacePage: React.FC = () => {
                 <div className="space-y-3 font-sans">
                   {submissionResult?.ai_feedback ? (
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span className="text-sm font-bold text-white">Automated Code Review Summary</span>
-                        <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          Overall Score: {submissionResult.ai_feedback.overall_score || 95}/100
-                        </span>
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                        <span className="text-sm font-bold text-white">Automated AI Code Review</span>
+                        <div className="flex items-center gap-2 font-mono text-[11px]">
+                          <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                            Cleanliness: {submissionResult.ai_feedback.cleanliness_score ?? 90}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                            Efficiency: {submissionResult.ai_feedback.efficiency_score ?? 90}
+                          </span>
+                          <span className="font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                            Overall: {submissionResult.ai_feedback.overall_score || 95}/100
+                          </span>
+                        </div>
                       </div>
                       <p className="text-xs text-slate-300 leading-relaxed">
                         {submissionResult.ai_feedback.summary}
                       </p>
-                      <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                        <div className="p-2 bg-slate-900 rounded border border-slate-800">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                        <div className="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
                           Time Complexity: <strong className="text-indigo-400">{submissionResult.ai_feedback.time_complexity}</strong>
                         </div>
-                        <div className="p-2 bg-slate-900 rounded border border-slate-800">
+                        <div className="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
                           Space Complexity: <strong className="text-cyan-400">{submissionResult.ai_feedback.space_complexity}</strong>
                         </div>
                       </div>
+                      {submissionResult.ai_feedback.highlights && (
+                        <div>
+                          <p className="text-xs font-semibold text-emerald-300 mb-1">Strengths:</p>
+                          <ul className="text-xs text-slate-300 space-y-1 list-disc pl-4">
+                            {submissionResult.ai_feedback.highlights.map((h, idx) => (
+                              <li key={idx}>{h}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       {submissionResult.ai_feedback.suggestions && (
                         <div>
-                          <p className="text-xs font-semibold text-slate-200 mb-1">Key Suggestions:</p>
+                          <p className="text-xs font-semibold text-amber-300 mb-1">Refactoring & Edge-Case Suggestions:</p>
                           <ul className="text-xs text-slate-400 space-y-1 list-disc pl-4">
                             {submissionResult.ai_feedback.suggestions.map((s, idx) => (
                               <li key={idx}>{s}</li>
@@ -828,10 +1012,16 @@ export const WorkspacePage: React.FC = () => {
                           </ul>
                         </div>
                       )}
+                      {submissionResult.ai_feedback.security_assessment && (
+                        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 text-[11px] text-slate-400">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                          <span>{submissionResult.ai_feedback.security_assessment}</span>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-slate-500">
-                      Submit your solution to trigger an in-depth AI Code Review with Big-O complexity breakdown.
+                      Submit your solution to trigger an automated AI Code Review with Big-O complexity breakdown and security audit.
                     </p>
                   )}
                 </div>

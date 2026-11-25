@@ -2,16 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { AnalyticsSummary } from '../types';
 import {
-  BarChart3,
-  TrendingUp,
-  Award,
-  Zap,
-  Flame,
-  CheckCircle2,
-  PieChart,
-  Layers,
-} from 'lucide-react';
-import {
   ResponsiveContainer,
   AreaChart,
   Area,
@@ -41,36 +31,44 @@ export const AnalyticsPage: React.FC = () => {
   }, []);
 
   const difficultyData = [
-    { name: 'Easy', value: data?.difficulty_breakdown?.Easy || 12, color: '#10b981' },
-    { name: 'Medium', value: data?.difficulty_breakdown?.Medium || 10, color: '#f59e0b' },
-    { name: 'Hard', value: data?.difficulty_breakdown?.Hard || 6, color: '#f43f5e' },
+    { name: 'Easy', value: data?.difficulty_breakdown?.Easy ?? 0, color: '#10b981' },
+    { name: 'Medium', value: data?.difficulty_breakdown?.Medium ?? 0, color: '#f59e0b' },
+    { name: 'Hard', value: data?.difficulty_breakdown?.Hard ?? 0, color: '#f43f5e' },
   ];
 
-  const languageData = [
-    { language: 'Python', count: 42 },
-    { language: 'TypeScript', count: 28 },
-    { language: 'JavaScript', count: 18 },
-    { language: 'C++', count: 12 },
-  ];
+  const languageData = data?.language_breakdown
+    ? Object.entries(data.language_breakdown).map(([language, count]) => ({ language, count }))
+    : [];
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="h-10 w-64 bg-slate-900 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-28 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Developer Analytics
         </h1>
         <p className="text-sm text-slate-400 mt-1">
-          In-depth breakdown of algorithmic skill velocity, language diversity, and submission accuracy.
+          Live breakdown of algorithmic skill velocity, language diversity, and submission accuracy.
         </p>
       </div>
 
-      {/* Top 4 KPI Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
           <span className="text-xs text-slate-400 font-medium">Accuracy Ratio</span>
           <p className="text-3xl font-extrabold text-emerald-400 font-mono mt-1">
-            {data?.success_rate || 89.4}%
+            {data?.success_rate ?? 0}%
           </p>
           <p className="text-[11px] text-slate-500 mt-1">Across all test runs</p>
         </div>
@@ -78,31 +76,29 @@ export const AnalyticsPage: React.FC = () => {
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
           <span className="text-xs text-slate-400 font-medium">Daily Streak</span>
           <p className="text-3xl font-extrabold text-amber-400 font-mono mt-1">
-            {data?.current_streak || 12} Days
+            {data?.current_streak ?? 0} Days
           </p>
-          <p className="text-[11px] text-slate-500 mt-1">Consistency score: High</p>
+          <p className="text-[11px] text-slate-500 mt-1">Active daily cadence</p>
         </div>
 
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
           <span className="text-xs text-slate-400 font-medium">Lifetime Score</span>
           <p className="text-3xl font-extrabold text-indigo-400 font-mono mt-1">
-            {data?.total_points || 2450} pts
+            {(data?.total_points ?? 0).toLocaleString()} pts
           </p>
-          <p className="text-[11px] text-slate-500 mt-1">Algorithm verified vectors</p>
+          <p className="text-[11px] text-slate-500 mt-1">Verified test vectors</p>
         </div>
 
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
           <span className="text-xs text-slate-400 font-medium">Global Ranking</span>
           <p className="text-3xl font-extrabold text-cyan-400 font-mono mt-1">
-            #{data?.global_rank || 184}
+            #{data?.global_rank ?? 184}
           </p>
-          <p className="text-[11px] text-slate-500 mt-1">Top 2% of platform</p>
+          <p className="text-[11px] text-slate-500 mt-1">Platform standing</p>
         </div>
       </div>
 
-      {/* Two Column Grid: Weekly Velocity & Skill Radar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Weekly Velocity */}
         <div className="lg:col-span-8 p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl">
           <h3 className="text-base font-bold text-white mb-1">Weekly Velocity Trend</h3>
           <p className="text-xs text-slate-400 mb-6">Submissions and passing algorithms per day</p>
@@ -133,7 +129,6 @@ export const AnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Skill Radar */}
         <div className="lg:col-span-4 p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl flex flex-col justify-between">
           <div>
             <h3 className="text-base font-bold text-white mb-1">Competency Radar</h3>
@@ -152,9 +147,7 @@ export const AnalyticsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Row: Difficulty Distribution & Languages Used */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Difficulty Pie Chart */}
         <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl flex flex-col justify-between">
           <div>
             <h3 className="text-base font-bold text-white mb-1">Solved Challenges by Difficulty</h3>
@@ -192,11 +185,10 @@ export const AnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Languages Bar Chart */}
         <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl flex flex-col justify-between">
           <div>
             <h3 className="text-base font-bold text-white mb-1">Language Utilization</h3>
-            <p className="text-xs text-slate-400 mb-4">Distribution of programming languages used</p>
+            <p className="text-xs text-slate-400 mb-4">Real distribution of programming languages submitted</p>
           </div>
 
           <div className="h-48 w-full">

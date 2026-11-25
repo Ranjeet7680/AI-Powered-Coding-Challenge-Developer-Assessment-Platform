@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -193,13 +194,18 @@ def run_node_code(
             test_cases,
         )
 
-    suffix = ".ts" if is_typescript else ".js"
+    uses_esm = bool(re.search(r"^\s*(?:import|export)\s", code, re.MULTILINE))
+    if is_typescript:
+        suffix = ".mts" if uses_esm else ".ts"
+    else:
+        suffix = ".mjs" if uses_esm else ".js"
+
     with tempfile.NamedTemporaryFile("w", suffix=suffix, delete=False, encoding="utf-8") as f:
         f.write(code)
         temp_path = f.name
 
     return _execute_subprocess_cases(
-        cmd_builder=lambda p: [node_bin, p],
+        cmd_builder=(lambda p: [node_bin, "--experimental-strip-types", p]) if is_typescript else (lambda p: [node_bin, p]),
         file_path=temp_path,
         test_cases=test_cases,
         time_limit_sec=time_limit_sec,

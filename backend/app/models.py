@@ -104,6 +104,18 @@ class Certificate(Base):
     badge_icon = Column(String, default="Award")
     category = Column(String, default="Algorithm Mastery")
     grade = Column(String, default="Distinction (98%)")
+    issuer_name = Column(String, default="Coding Task Factory Academy")
+    signatory_name = Column(String, default="Dr. Aris Thorne")
+    signatory_title = Column(String, default="Chief Curriculum Architect")
+    score_percent = Column(Integer, default=98)
+    skills_verified = Column(JSON, default=list)
+    challenges_completed = Column(Integer, default=12)
+    completion_hours = Column(Integer, default=24)
+    summary = Column(
+        Text,
+        default="Verified mastery across algorithmic problem solving, production complexity analysis, and automated multi-language test suites.",
+    )
+    credential_hash = Column(String, nullable=True)
 
     user = relationship("User", back_populates="certificates")
 

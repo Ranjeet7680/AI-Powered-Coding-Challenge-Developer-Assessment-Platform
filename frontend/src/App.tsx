@@ -1,30 +1,35 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-
-// Layout
+import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import { PreferencesProvider } from './context/PreferencesContext';
+import { useAuth } from './context/useContexts';
 import { AppLayout } from './components/layout/AppLayout';
 
-// Lazy-loaded pages for route-level code splitting
-const LandingPage = React.lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
-const LoginPage = React.lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })));
-const RegisterPage = React.lazy(() => import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
-const ForgotPasswordPage = React.lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
-const OnboardingPage = React.lazy(() => import('./pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage })));
-const DashboardPage = React.lazy(() => import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })));
-const GeneratorPage = React.lazy(() => import('./pages/GeneratorPage').then((m) => ({ default: m.GeneratorPage })));
-const ChallengesPage = React.lazy(() => import('./pages/ChallengesPage').then((m) => ({ default: m.ChallengesPage })));
-const WorkspacePage = React.lazy(() => import('./pages/WorkspacePage').then((m) => ({ default: m.WorkspacePage })));
-const SubmissionsPage = React.lazy(() => import('./pages/SubmissionsPage').then((m) => ({ default: m.SubmissionsPage })));
-const AssessmentsPage = React.lazy(() => import('./pages/AssessmentsPage').then((m) => ({ default: m.AssessmentsPage })));
-const AnalyticsPage = React.lazy(() => import('./pages/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage })));
-const LeaderboardPage = React.lazy(() => import('./pages/LeaderboardPage').then((m) => ({ default: m.LeaderboardPage })));
-const CertificatesPage = React.lazy(() => import('./pages/CertificatesPage').then((m) => ({ default: m.CertificatesPage })));
-const SettingsPage = React.lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
-const VideosPage = React.lazy(() => import('./pages/VideosPage').then((m) => ({ default: m.VideosPage })));
+// Code-split pages for fast initial load and smaller chunks
+const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
+const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage })));
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })));
+const GeneratorPage = lazy(() => import('./pages/GeneratorPage').then((m) => ({ default: m.GeneratorPage })));
+const ChallengesPage = lazy(() => import('./pages/ChallengesPage').then((m) => ({ default: m.ChallengesPage })));
+const WorkspacePage = lazy(() => import('./pages/WorkspacePage').then((m) => ({ default: m.WorkspacePage })));
+const SubmissionsPage = lazy(() => import('./pages/SubmissionsPage').then((m) => ({ default: m.SubmissionsPage })));
+const AssessmentsPage = lazy(() => import('./pages/AssessmentsPage').then((m) => ({ default: m.AssessmentsPage })));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage })));
+const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage').then((m) => ({ default: m.LeaderboardPage })));
+const CertificatesPage = lazy(() => import('./pages/CertificatesPage').then((m) => ({ default: m.CertificatesPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const VideosPage = lazy(() => import('./pages/VideosPage').then((m) => ({ default: m.VideosPage })));
+const VerifyCertificatePage = lazy(() =>
+  import('./pages/VerifyCertificatePage').then((m) => ({ default: m.VerifyCertificatePage }))
+);
+const WikiPage = lazy(() => import('./pages/WikiPage').then((m) => ({ default: m.WikiPage })));
 
 const PageLoader: React.FC = () => (
-  <div className="min-h-screen bg-[#070A12] flex items-center justify-center">
+  <div className="min-h-screen bg-[#05070E] flex items-center justify-center">
     <div className="flex flex-col items-center gap-3">
       <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       <span className="text-xs font-mono text-slate-400">Loading Coding Task Factory...</span>
@@ -37,21 +42,13 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const location = useLocation();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#070A12] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-          <span className="text-xs font-mono text-slate-400">Loading Coding Task Factory...</span>
-        </div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If user hasn't completed onboarding and is not already on onboarding, guide them to onboarding
   if (!user?.has_completed_onboarding && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
@@ -62,53 +59,60 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route
-            path="/onboarding"
-            element={
-              <ProtectedRoute>
-                <OnboardingPage />
-              </ProtectedRoute>
-            }
-          />
+      <ToastProvider>
+        <PreferencesProvider>
+          <AuthProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/verify/:credentialId" element={<VerifyCertificatePage />} />
+                <Route path="/wiki" element={<WikiPage />} />
+                <Route path="/wiki/:section" element={<WikiPage />} />
+                <Route
+                  path="/onboarding"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-          {/* Authenticated Application Routes */}
-          <Route
-            path="/app"
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to="/app/dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="videos" element={<VideosPage />} />
-            <Route path="videos/:videoId" element={<VideosPage />} />
-            <Route path="generator" element={<GeneratorPage />} />
-            <Route path="challenges" element={<ChallengesPage />} />
-            <Route path="workspace" element={<Navigate to="/app/workspace/c2-lru-cache" replace />} />
-            <Route path="workspace/:challengeId" element={<WorkspacePage />} />
-            <Route path="submissions" element={<SubmissionsPage />} />
-            <Route path="assessments" element={<AssessmentsPage />} />
-            <Route path="leaderboard" element={<LeaderboardPage />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
-            <Route path="certificates" element={<CertificatesPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-          </Route>
+                {/* Authenticated Application Routes */}
+                <Route
+                  path="/app"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Navigate to="/app/dashboard" replace />} />
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="videos" element={<VideosPage />} />
+                  <Route path="videos/:videoId" element={<VideosPage />} />
+                  <Route path="generator" element={<GeneratorPage />} />
+                  <Route path="challenges" element={<ChallengesPage />} />
+                  <Route path="workspace" element={<Navigate to="/app/workspace/c2-lru-cache" replace />} />
+                  <Route path="workspace/:challengeId" element={<WorkspacePage />} />
+                  <Route path="submissions" element={<SubmissionsPage />} />
+                  <Route path="assessments" element={<AssessmentsPage />} />
+                  <Route path="leaderboard" element={<LeaderboardPage />} />
+                  <Route path="analytics" element={<AnalyticsPage />} />
+                  <Route path="certificates" element={<CertificatesPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                </Route>
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        </Suspense>
-      </AuthProvider>
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </AuthProvider>
+        </PreferencesProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 };

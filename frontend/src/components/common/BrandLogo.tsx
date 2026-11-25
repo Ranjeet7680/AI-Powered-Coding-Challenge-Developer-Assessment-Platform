@@ -13,9 +13,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   size = 'md',
 }) => {
   const iconSizes = {
-    sm: 'w-7 h-7 text-xs',
-    md: 'w-9 h-9 text-sm',
-    lg: 'w-12 h-12 text-base',
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-13 h-13',
   };
 
   const textSizes = {
@@ -25,35 +25,88 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   };
 
   return (
-    <Link to="/" className={`inline-flex items-center gap-3 group transition-transform duration-200 active:scale-95 ${className}`}>
-      {/* Brand Hexagon/Circuit Icon */}
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 shadow-lg shadow-indigo-500/25 p-0.5 ${iconSizes[size]}`}>
-        <div className="w-full h-full bg-[#0A0D17]/80 rounded-[10px] flex items-center justify-center backdrop-blur-sm group-hover:bg-[#0A0D17]/60 transition-colors">
-          <svg
-            className="w-5 h-5 text-indigo-400 group-hover:text-cyan-400 transition-colors"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
+    <Link
+      to="/"
+      className={`inline-flex items-center gap-3 group transition-transform duration-200 active:scale-95 ${className}`}
+    >
+      {/* Bespoke Coding Task Factory Hex-Forge Emblem */}
+      <div className={`relative flex items-center justify-center shrink-0 ${iconSizes[size]}`}>
+        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-cyan-400 blur opacity-35 group-hover:opacity-80 transition duration-300" />
+        <svg
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="relative w-full h-full drop-shadow-md"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="brandHexStroke" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#6366F1" />
+              <stop offset="50%" stopColor="#8B5CF6" />
+              <stop offset="100%" stopColor="#22D3EE" />
+            </linearGradient>
+            <linearGradient id="brandHexBg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#0C1329" />
+              <stop offset="100%" stopColor="#060914" />
+            </linearGradient>
+            <linearGradient id="brandSpark" x1="26" y1="20" x2="38" y2="44" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#38BDF8" />
+              <stop offset="100%" stopColor="#34D399" />
+            </linearGradient>
+          </defs>
+          <rect
+            x="4"
+            y="4"
+            width="56"
+            height="56"
+            rx="16"
+            fill="url(#brandHexBg)"
+            stroke="url(#brandHexStroke)"
+            strokeWidth="2.8"
+          />
+          <polygon
+            points="32,12 49,22 49,42 32,52 15,42 15,22"
+            fill="#0E1730"
+            stroke="url(#brandHexStroke)"
+            strokeWidth="1.6"
+            strokeOpacity="0.7"
+          />
+          <path
+            d="M25.5 24.5L18.5 32L25.5 39.5"
+            stroke="#A5B4FC"
+            strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
-          >
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
-          </svg>
-        </div>
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-xl blur opacity-30 group-hover:opacity-75 transition duration-300 -z-10" />
+            className="group-hover:stroke-white transition-colors"
+          />
+          <path
+            d="M38.5 24.5L45.5 32L38.5 39.5"
+            stroke="#67E8F9"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="group-hover:stroke-cyan-200 transition-colors"
+          />
+          <polygon points="32,22 36.5,32 32,42 27.5,32" fill="url(#brandSpark)" />
+          <circle cx="48" cy="16" r="3.5" fill="#FBBF24" />
+        </svg>
       </div>
 
       {!iconOnly && (
-        <div className="flex flex-col text-left">
+        <div className="flex flex-col text-left leading-tight">
           <span className={`font-bold tracking-tight text-white flex items-center gap-1.5 ${textSizes[size]}`}>
-            Coding Task <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 font-extrabold">Factory</span>
+            Coding Task{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-300 to-cyan-400 font-extrabold">
+              Factory
+            </span>
           </span>
-          {size === 'lg' && (
-            <span className="text-xs text-slate-400 font-mono tracking-widest uppercase">
-              AI Challenge & Assessment Platform
+          {size === 'lg' ? (
+            <span className="text-[11px] text-slate-400 font-mono tracking-widest uppercase mt-0.5">
+              AI Challenge &amp; Assessment Cloud
+            </span>
+          ) : (
+            <span className="text-[9.5px] text-indigo-300/80 font-mono tracking-[0.18em] uppercase hidden sm:inline">
+              AI CODE FORGE
             </span>
           )}
         </div>

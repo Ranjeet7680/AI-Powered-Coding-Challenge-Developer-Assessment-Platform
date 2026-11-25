@@ -1,9 +1,8 @@
-from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import GenerateChallengeRequest, CopilotRequest, CopilotResponse
 from ..services.gemini_service import generate_challenge_with_gemini, generate_copilot_reply
 from ..models import User
-from .auth import get_optional_user
+from .auth import get_current_user
 
 router = APIRouter(tags=["AI Generator & Copilot"])
 
@@ -11,10 +10,10 @@ router = APIRouter(tags=["AI Generator & Copilot"])
 @router.post("/api/generate-challenge")
 def generate_challenge(
     payload: GenerateChallengeRequest,
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
 ):
     try:
-        effective_key = payload.api_key or (user.gemini_api_key if user else None)
+        effective_key = payload.api_key or user.gemini_api_key
         return generate_challenge_with_gemini(
             topic=payload.topic,
             language=payload.language,
@@ -33,9 +32,9 @@ def generate_challenge(
 @router.post("/api/ai-copilot", response_model=CopilotResponse)
 def ask_copilot(
     payload: CopilotRequest,
-    user: Optional[User] = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
 ):
-    effective_key = payload.api_key or (user.gemini_api_key if user else None)
+    effective_key = payload.api_key or user.gemini_api_key
     result = generate_copilot_reply(
         message=payload.message,
         language=payload.language,

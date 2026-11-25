@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '../components/common/BrandLogo';
+import { Footer } from '../components/layout/Footer';
 import { api } from '../services/api';
+import { useToast } from '../context/useContexts';
 import { Mail, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 export const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,7 +18,8 @@ export const ForgotPasswordPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await api.forgotPassword(email);
+      const res = await api.forgotPassword(email);
+      showToast(res.message, 'info');
       setIsSubmitted(true);
     } catch {
       setIsSubmitted(true);
@@ -25,7 +29,8 @@ export const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070A12] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#05070E] flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="w-full max-w-md p-8 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl text-center">
         <div className="flex justify-center mb-6">
           <BrandLogo size="md" />
@@ -35,7 +40,7 @@ export const ForgotPasswordPage: React.FC = () => {
           <>
             <h2 className="text-2xl font-bold text-white mb-2">Reset Password</h2>
             <p className="text-xs text-slate-400 mb-6">
-              Enter your email address and we'll send you a secure verification link to recover access.
+              Enter your email address and we&apos;ll send you a secure verification link to recover access.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4 text-left">
@@ -79,13 +84,13 @@ export const ForgotPasswordPage: React.FC = () => {
             </div>
             <h3 className="text-xl font-bold text-white">Check Your Inbox</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              We have dispatched a password reset link to <strong className="text-slate-200">{email}</strong>. Please click the link within 15 minutes to configure a new password.
+              If an account exists for <strong className="text-slate-200">{email}</strong>, verification instructions have been dispatched.
             </p>
             <button
               onClick={() => setIsSubmitted(false)}
               className="text-xs text-indigo-400 hover:text-indigo-300"
             >
-              Didn't receive email? Try another address
+              Try another email address
             </button>
           </div>
         )}
@@ -100,6 +105,8 @@ export const ForgotPasswordPage: React.FC = () => {
           </Link>
         </div>
       </div>
+      </div>
+      <Footer compact />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import { VideoLesson } from '../types';
+import { useToast } from '../context/useContexts';
 import {
   Play,
   Search,
@@ -12,17 +13,14 @@ import {
   Code2,
   BookOpen,
   ArrowRight,
-  ExternalLink,
   X,
   Copy,
   Check,
   BrainCircuit,
-  Cpu,
-  Layers,
-  ChevronRight,
 } from 'lucide-react';
 
 export const VideosPage: React.FC = () => {
+  const { videoId } = useParams<{ videoId?: string }>();
   const [videos, setVideos] = useState<VideoLesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -33,27 +31,42 @@ export const VideosPage: React.FC = () => {
   const [activeModalTab, setActiveModalTab] = useState<'chapters' | 'takeaways' | 'code'>('chapters');
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
     api.getVideos({
       search: search || undefined,
       category: categoryFilter,
       difficulty: difficultyFilter,
     })
-      .then(setVideos)
+      .then((list) => {
+        if (!active) return;
+        setVideos(list);
+        if (videoId) {
+          const match = list.find((v) => v.id === videoId || v.slug === videoId);
+          if (match) setSelectedVideo(match);
+        }
+      })
       .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [search, categoryFilter, difficultyFilter]);
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [search, categoryFilter, difficultyFilter, videoId]);
 
-  const categories = [
-    'All',
-    'Machine Learning',
-    'Algorithms',
-    'Data Structures',
-    'System Design',
-  ];
+  useEffect(() => {
+    if (!selectedVideo) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedVideo(null);
+    };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [selectedVideo]);
 
+  const categories = ['All', 'Machine Learning', 'Algorithms', 'Data Structures', 'System Design'];
   const difficulties = ['All', 'Easy', 'Medium', 'Hard', 'Advanced'];
 
   const handleCopyCode = (code?: string) => {
@@ -61,25 +74,24 @@ export const VideosPage: React.FC = () => {
     navigator.clipboard.writeText(code);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
+    showToast('Reference snippet copied.', 'info');
   };
 
   const featuredVideo = videos.find((v) => v.id === 'v-ml-transformer-attention') || videos[0];
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold mb-2">
             <BrainCircuit className="w-3.5 h-3.5" />
-            <span>Coding Masterclasses & Visual Explanations</span>
+            <span>Coding Masterclasses &amp; Visual Explanations</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Video Learning & Solution Walkthroughs
+            Video Learning &amp; Solution Walkthroughs
           </h1>
           <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-            Watch mathematical intuition, machine learning architectures, and algorithm breakdowns by industry experts.
-            Then jump directly into the workspace to code the solution.
+            Watch mathematical intuition, ML architectures, and algorithm breakdowns, then jump directly into the IDE to code the solution.
           </p>
         </div>
 
@@ -92,14 +104,13 @@ export const VideosPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Featured Masterclass Banner */}
       {featuredVideo && (
         <div className="relative rounded-3xl overflow-hidden border border-purple-500/30 bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-950/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl shadow-purple-950/20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none -z-0" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30">
                   Featured Masterclass
                 </span>
@@ -119,7 +130,6 @@ export const VideosPage: React.FC = () => {
                 {featuredVideo.description}
               </p>
 
-              {/* Instructor & Meta */}
               <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-slate-400">
                 <div className="flex items-center gap-2.5">
                   <img
@@ -144,7 +154,6 @@ export const VideosPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-3">
                 <button
                   onClick={() => setSelectedVideo(featuredVideo)}
@@ -167,7 +176,6 @@ export const VideosPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Thumbnail Preview with Play Button */}
             <div
               onClick={() => setSelectedVideo(featuredVideo)}
               className="lg:col-span-5 relative group cursor-pointer rounded-2xl overflow-hidden border border-purple-500/40 shadow-xl shadow-purple-950/40 aspect-video"
@@ -178,14 +186,11 @@ export const VideosPage: React.FC = () => {
                 className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/60 transition" />
-
-              {/* Centered Play Button */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-14 h-14 rounded-full bg-purple-600/90 text-white flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:bg-purple-500 transition border border-white/20">
                   <Play className="w-6 h-6 fill-white ml-0.5" />
                 </div>
               </div>
-
               <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/80 text-white font-mono text-[11px] backdrop-blur-md">
                 {featuredVideo.duration_minutes}:00
               </div>
@@ -208,22 +213,19 @@ export const VideosPage: React.FC = () => {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <select
-              value={difficultyFilter}
-              onChange={(e) => setDifficultyFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500 cursor-pointer"
-            >
-              {difficulties.map((diff) => (
-                <option key={diff} value={diff}>
-                  {diff === 'All' ? 'All Difficulties' : diff}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={difficultyFilter}
+            onChange={(e) => setDifficultyFilter(e.target.value)}
+            className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500"
+          >
+            {difficulties.map((diff) => (
+              <option key={diff} value={diff}>
+                {diff === 'All' ? 'All Difficulties' : diff}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Category Filter Pills */}
         <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/60">
           <span className="text-xs text-slate-400 font-medium mr-1">Categories:</span>
           {categories.map((cat) => (
@@ -246,10 +248,7 @@ export const VideosPage: React.FC = () => {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-slate-800 bg-[#0A0D17] h-80 animate-pulse p-4 space-y-3"
-            >
+            <div key={i} className="rounded-2xl border border-slate-800 bg-[#0A0D17] h-80 animate-pulse p-4 space-y-3">
               <div className="w-full h-44 rounded-xl bg-slate-800" />
               <div className="h-4 w-3/4 bg-slate-800 rounded" />
               <div className="h-3 w-1/2 bg-slate-800 rounded" />
@@ -269,7 +268,6 @@ export const VideosPage: React.FC = () => {
               key={video.id}
               className="group flex flex-col rounded-2xl border border-slate-800/80 bg-[#0A0D17] hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-950/20 transition duration-300 overflow-hidden"
             >
-              {/* Thumbnail Container */}
               <div
                 onClick={() => setSelectedVideo(video)}
                 className="relative aspect-video w-full overflow-hidden cursor-pointer"
@@ -280,26 +278,18 @@ export const VideosPage: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/60 transition" />
-
-                {/* Play Button */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-110 transition duration-300">
                   <div className="w-11 h-11 rounded-full bg-purple-600/90 group-hover:bg-purple-500 text-white flex items-center justify-center shadow-lg border border-white/20">
                     <Play className="w-5 h-5 fill-white ml-0.5" />
                   </div>
                 </div>
-
-                {/* Duration Badge */}
                 <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded bg-black/80 font-mono text-[11px] text-white backdrop-blur-md">
                   {video.duration_minutes}:00
                 </div>
-
-                {/* Category Pill */}
                 <div className="absolute top-2.5 left-2.5">
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md ${
-                      video.category === 'Machine Learning'
-                        ? 'bg-purple-600/80 text-white'
-                        : 'bg-indigo-600/80 text-white'
+                      video.category === 'Machine Learning' ? 'bg-purple-600/80 text-white' : 'bg-indigo-600/80 text-white'
                     }`}
                   >
                     {video.category}
@@ -307,7 +297,6 @@ export const VideosPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Card Body */}
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-[11px]">
@@ -335,12 +324,9 @@ export const VideosPage: React.FC = () => {
                     {video.title}
                   </h3>
 
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                    {video.description}
-                  </p>
+                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{video.description}</p>
                 </div>
 
-                {/* Instructor & Actions Footer */}
                 <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     {video.instructor_avatar && (
@@ -350,9 +336,7 @@ export const VideosPage: React.FC = () => {
                         className="w-6 h-6 rounded-full object-cover shrink-0 border border-slate-700"
                       />
                     )}
-                    <span className="text-xs text-slate-300 truncate font-medium">
-                      {video.instructor}
-                    </span>
+                    <span className="text-xs text-slate-300 truncate font-medium">{video.instructor}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -380,19 +364,21 @@ export const VideosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Video Player Modal */}
       {selectedVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090C16] border border-purple-500/40 shadow-2xl overflow-hidden">
-            {/* Modal Header */}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fadeIn"
+          onClick={() => setSelectedVideo(null)}
+        >
+          <div
+            className="relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090C16] border border-purple-500/40 shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="px-5 py-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/80">
               <div className="flex items-center gap-3 min-w-0">
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
                   {selectedVideo.category}
                 </span>
-                <h3 className="text-sm sm:text-base font-bold text-white truncate">
-                  {selectedVideo.title}
-                </h3>
+                <h3 className="text-sm sm:text-base font-bold text-white truncate">{selectedVideo.title}</h3>
               </div>
 
               <button
@@ -403,9 +389,7 @@ export const VideosPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Modal Body: Scrollable */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6">
-              {/* Responsive 16:9 Video Embed */}
               <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-slate-800 bg-black shadow-2xl">
                 <iframe
                   src={`${selectedVideo.video_url}?autoplay=1&rel=0`}
@@ -416,7 +400,6 @@ export const VideosPage: React.FC = () => {
                 />
               </div>
 
-              {/* Title, Instructor & CTA Toolbar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
                 <div className="flex items-center gap-3">
                   {selectedVideo.instructor_avatar && (
@@ -434,25 +417,22 @@ export const VideosPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {selectedVideo.related_challenge_id && (
-                    <button
-                      onClick={() => {
-                        const targetId = selectedVideo.related_challenge_id;
-                        setSelectedVideo(null);
-                        navigate(`/app/workspace/${targetId}`);
-                      }}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 transition"
-                    >
-                      <Code2 className="w-4 h-4 text-cyan-300" />
-                      <span>Code Solution in Workspace</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
+                {selectedVideo.related_challenge_id && (
+                  <button
+                    onClick={() => {
+                      const targetId = selectedVideo.related_challenge_id;
+                      setSelectedVideo(null);
+                      navigate(`/app/workspace/${targetId}`);
+                    }}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 transition"
+                  >
+                    <Code2 className="w-4 h-4 text-cyan-300" />
+                    <span>Code Solution in Workspace</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
-              {/* Description & Interactive Tabs (Chapters, Key Takeaways, Code Snippet) */}
               <div className="space-y-4">
                 <div className="flex items-center border-b border-slate-800 text-xs">
                   <button
@@ -489,7 +469,6 @@ export const VideosPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Tab 1: Chapters */}
                 {activeModalTab === 'chapters' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {selectedVideo.chapters?.map((chap, i) => (
@@ -506,7 +485,6 @@ export const VideosPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Tab 2: Key Takeaways */}
                 {activeModalTab === 'takeaways' && (
                   <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2.5">
                     {selectedVideo.key_takeaways?.map((point, i) => (
@@ -518,7 +496,6 @@ export const VideosPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Tab 3: Code Snippet */}
                 {activeModalTab === 'code' && selectedVideo.code_snippet && (
                   <div className="relative rounded-2xl bg-[#05070E] border border-slate-800 p-4 font-mono text-xs overflow-x-auto">
                     <button
@@ -528,9 +505,7 @@ export const VideosPage: React.FC = () => {
                       {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedCode ? 'Copied' : 'Copy'}</span>
                     </button>
-                    <pre className="text-slate-300 leading-relaxed custom-scrollbar">
-                      {selectedVideo.code_snippet}
-                    </pre>
+                    <pre className="text-slate-300 leading-relaxed custom-scrollbar">{selectedVideo.code_snippet}</pre>
                   </div>
                 )}
               </div>

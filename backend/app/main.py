@@ -11,47 +11,56 @@ if os.path.exists(env_path):
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-from .database import engine, Base, SessionLocal
-from .models import User
+from .database import engine, Base, SessionLocal, ensure_schema_migrations, get_db
+from .models import User, Challenge
 from .routers import auth, challenges, ai_generator, execution, submissions, assessments, analytics, user, videos
 from .services.code_runner import get_runtime_capabilities
 
-# Create tables
+# Create tables and apply lightweight SQLite column migrations
 Base.metadata.create_all(bind=engine)
+ensure_schema_migrations(engine)
+
+_BOOTSTRAPPED = False
+
+
+def ensure_initial_seed(db: Session) -> None:
+    """Idempotently ensure demo user, 368+ challenges, assessments, and videos exist."""
+    demo = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
+    if not demo:
+        demo = User(
+            id="user-demo-alex",
+            email="developer@codingtaskfactory.io",
+            hashed_password=auth.hash_pw("Developer@2026!"),
+            full_name="Alex Chen",
+            role="Senior Full Stack & ML Engineer",
+            experience="Advanced",
+            preferred_languages=["Python", "TypeScript", "C++"],
+            goals=["Practice algorithms", "Prepare for interviews", "Master Machine Learning"],
+            avatar_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+            points=2450,
+            streak=12,
+            solved_count=28,
+            has_completed_onboarding=True,
+        )
+        db.add(demo)
+        db.commit()
+
+    challenges.seed_initial_challenges(db)
+    assessments.seed_assessments(db)
+    videos.seed_videos(db)
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    global _BOOTSTRAPPED
     db = SessionLocal()
     try:
-        # Seed default demo user matching documented credentials
-        demo = db.query(User).filter(User.email == "developer@codingtaskfactory.io").first()
-        if not demo:
-            demo = User(
-                id="user-demo-alex",
-                email="developer@codingtaskfactory.io",
-                hashed_password=auth.hash_pw("Developer@2026!"),
-                full_name="Alex Chen",
-                role="Senior Full Stack & ML Engineer",
-                experience="Advanced",
-                preferred_languages=["Python", "TypeScript", "C++"],
-                goals=["Practice algorithms", "Prepare for interviews", "Master Machine Learning"],
-                avatar_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
-                points=2450,
-                streak=12,
-                solved_count=28,
-                has_completed_onboarding=True,
-            )
-            db.add(demo)
-            db.commit()
-
-        # Seed initial challenges, assessments, and videos
-        challenges.seed_initial_challenges(db)
-        assessments.seed_assessments(db)
-        videos.seed_videos(db)
+        ensure_initial_seed(db)
+        _BOOTSTRAPPED = True
     finally:
         db.close()
     yield
@@ -60,15 +69,35 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(
     title="Coding Task Factory API",
     description="Enterprise AI-Powered Coding Challenge & Developer Assessment Platform Backend",
-    version="2.0.0",
+    version="2.1.0",
     lifespan=lifespan,
 )
+
+
+@app.middleware("http")
+async def _ensure_serverless_bootstrap(request: Request, call_next):
+    global _BOOTSTRAPPED
+    if not _BOOTSTRAPPED:
+        Base.metadata.create_all(bind=engine)
+        ensure_schema_migrations(engine)
+        db = SessionLocal()
+        try:
+            ensure_initial_seed(db)
+            _BOOTSTRAPPED = True
+        finally:
+            db.close()
+    return await call_next(request)
+
 
 _raw_origins = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000",
 )
 _allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+for _env_host_key in ("VERCEL_URL", "VERCEL_BRANCH_URL", "VERCEL_PROJECT_PRODUCTION_URL"):
+    _host_val = os.getenv(_env_host_key, "").strip()
+    if _host_val:
+        _allowed_origins.append(_host_val if _host_val.startswith("http") else f"https://{_host_val}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -101,10 +130,11 @@ def health():
 
 
 @app.get("/api/platform-stats")
-def platform_stats():
+def platform_stats(db: Session = Depends(get_db)):
+    challenge_count = db.query(Challenge.id).count()
     return {
-        "coding_challenges": "500+",
+        "coding_challenges": f"{max(challenge_count, 368)}+",
         "active_developers": "14,200+",
         "successful_submissions": "182,500+",
-        "supported_languages": "12+",
+        "supported_languages": "4 Core",
     }

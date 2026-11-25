@@ -8,7 +8,7 @@ on:
 
 jobs:
   verify:
-    name: Typecheck & Security Verification
+    name: Lint, Typecheck, Build & Security Suite
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -24,16 +24,22 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Verify Frontend Types
+      - name: Verify Frontend Lint, Types & Build
         run: |
           cd frontend
           npm install
+          npm run lint
           npx tsc --noEmit
+          npm run build
 
-      - name: Install Backend Core Dependencies
+      - name: Install Backend Dependencies & Test Runner
         run: |
           cd backend
-          pip install -r requirements.txt
+          pip install -r requirements.txt pytest
+
+      - name: Run Backend API, Sandbox & Certificate PDF Tests
+        run: |
+          python -m pytest backend/tests/test_api.py -v
 
       - name: Verify Zero-Trust Security Suite
         run: |

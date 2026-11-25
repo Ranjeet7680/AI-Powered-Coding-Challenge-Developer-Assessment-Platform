@@ -1,32 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { Challenge } from '../types';
+import { useToast } from '../context/useContexts';
+import { MarkdownRenderer } from '../components/common/MarkdownRenderer';
 import {
   Sparkles,
   Play,
   RotateCcw,
   Save,
   Download,
-  CheckCircle2,
   AlertCircle,
-  Code2,
   Cpu,
-  Layers,
   Copy,
   Check,
   Clock,
-  HardDrive,
-  FileText,
   BrainCircuit,
 } from 'lucide-react';
 
 export const GeneratorPage: React.FC = () => {
-  const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // Generator inputs
   const [topic, setTopic] = useState('Dynamic Programming');
   const [language, setLanguage] = useState('python');
   const [difficulty, setDifficulty] = useState('Medium');
@@ -34,29 +29,27 @@ export const GeneratorPage: React.FC = () => {
   const [testCaseCount, setTestCaseCount] = useState(5);
   const [timeLimit, setTimeLimit] = useState(2000);
   const [customInstructions, setCustomInstructions] = useState('');
-  const [model, setModel] = useState('gemini-1.5-flash');
+  const [model, setModel] = useState('gemini-2.0-flash');
 
-  // Generation state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedChallenge, setGeneratedChallenge] = useState<Challenge | null>(null);
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [savedChallengeId, setSavedChallengeId] = useState<string | null>(null);
+  const [previewLang, setPreviewLang] = useState<'python' | 'javascript' | 'typescript' | 'cpp'>('python');
   const [copiedCode, setCopiedCode] = useState(false);
 
   const topicsList = [
     'Machine Learning: Linear Regression from Scratch',
     'Machine Learning: Transformer Self-Attention',
-    'Machine Learning: Numerically Stable Softmax',
-    'Machine Learning: K-Means Clustering Algorithm',
     'Dynamic Programming & Memoization',
     'Graph Algorithms & BFS/DFS',
-    'Two Pointers & Sliding Window',
-    'System Design & In-Memory Cache',
+    'Sliding Window & Two Pointers',
+    'System Design & Rate Limiter',
   ];
 
   const handleGenerate = async () => {
     setError(null);
-    setSavedSuccess(false);
+    setSavedChallengeId(null);
     setLoading(true);
 
     try {
@@ -68,7 +61,7 @@ export const GeneratorPage: React.FC = () => {
         test_case_count: testCaseCount,
         time_limit_ms: timeLimit,
         custom_instructions: customInstructions,
-        api_key: user?.gemini_api_key,
+        model,
       });
 
       setGeneratedChallenge({
@@ -78,48 +71,63 @@ export const GeneratorPage: React.FC = () => {
         acceptance_rate: 74.0,
         total_submissions: 0,
       });
+      setPreviewLang((language as typeof previewLang) || 'python');
+      showToast(`Generated "${result.title}" successfully!`, 'success');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to generate challenge. Please try again.');
+      const msg = err instanceof Error ? err.message : 'Failed to generate challenge. Please try again.';
+      setError(msg);
+      showToast(msg, 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  const ensureSaved = async (): Promise<string | null> => {
+    if (!generatedChallenge) return null;
+    if (savedChallengeId) return savedChallengeId;
+
+    const saved = await api.createChallenge(generatedChallenge);
+    setGeneratedChallenge(saved);
+    setSavedChallengeId(saved.id);
+    return saved.id;
+  };
+
   const handleSaveToLibrary = async () => {
-    if (!generatedChallenge) return;
-    setError(null);
+    if (!generatedChallenge || savedChallengeId) return;
     try {
-      const saved = await api.createChallenge(generatedChallenge);
-      setGeneratedChallenge(saved);
-      setSavedSuccess(true);
+      await ensureSaved();
+      showToast('Saved challenge to library!', 'success');
     } catch (err: unknown) {
-      setSavedSuccess(false);
-      setError(err instanceof Error ? err.message : 'Failed to save challenge to library.');
+      const msg = err instanceof Error ? err.message : 'Failed to save challenge.';
+      showToast(msg, 'error');
     }
   };
 
   const handleOpenInWorkspace = async () => {
     if (!generatedChallenge) return;
-    let targetId = generatedChallenge.id;
-
-    // Save to database if not already saved
     try {
-      const saved = await api.createChallenge(generatedChallenge);
-      targetId = saved.id;
-    } catch {}
-
-    navigate(`/app/workspace/${targetId}`);
+      const targetId = await ensureSaved();
+      if (targetId) {
+        navigate(`/app/workspace/${targetId}`, {
+          state: { initialLanguage: language },
+        });
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not open workspace.';
+      showToast(msg, 'error');
+    }
   };
 
   const handleCopyStarter = () => {
     if (!generatedChallenge) return;
     const starter =
-      generatedChallenge.starter_code?.[language] ||
+      generatedChallenge.starter_code?.[previewLang] ||
       generatedChallenge.starter_code?.python ||
       '';
     navigator.clipboard.writeText(starter);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
+    showToast('Starter code copied.', 'info');
   };
 
   const handleExportJson = () => {
@@ -135,7 +143,6 @@ export const GeneratorPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-2">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
@@ -145,13 +152,12 @@ export const GeneratorPage: React.FC = () => {
           AI Task Generator
         </h1>
         <p className="text-sm text-slate-400 mt-1">
-          Synthesize original, production-grade coding problems with verified test cases and complexity constraints.
+          Synthesize original, production-grade coding problems with verified test cases and multi-language starter code.
         </p>
       </div>
 
-      {/* Main Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Form: Inputs */}
+        {/* Left Form */}
         <div className="lg:col-span-5 space-y-5">
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl space-y-5">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
@@ -159,7 +165,13 @@ export const GeneratorPage: React.FC = () => {
               Generation Parameters
             </h3>
 
-            {/* Topic input */}
+            {error && (
+              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Topic / Subject Domain
@@ -168,10 +180,9 @@ export const GeneratorPage: React.FC = () => {
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g. Dynamic Programming, Graph Traversal, LRU Cache"
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                placeholder="e.g. Dynamic Programming, Graph Traversal, Rate Limiter"
+                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
               />
-              {/* Quick suggestion pills */}
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {topicsList.map((t) => (
                   <button
@@ -179,9 +190,7 @@ export const GeneratorPage: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setTopic(t);
-                      if (t.includes('Machine Learning')) {
-                        setProblemType('Machine Learning');
-                      }
+                      if (t.includes('Machine Learning')) setProblemType('Machine Learning');
                     }}
                     className={`text-[10px] px-2 py-0.5 rounded-md border transition flex items-center gap-1 ${
                       t.includes('Machine Learning')
@@ -196,7 +205,29 @@ export const GeneratorPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Language & Difficulty */}
+            {/* Interactive Difficulty Chips */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                Difficulty Tier
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {['Easy', 'Medium', 'Hard', 'Expert'].map((diff) => (
+                  <button
+                    key={diff}
+                    type="button"
+                    onClick={() => setDifficulty(diff)}
+                    className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                      difficulty === diff
+                        ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-600/25'
+                        : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    {diff}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
@@ -205,7 +236,7 @@ export const GeneratorPage: React.FC = () => {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 >
                   <option value="python">Python 3</option>
                   <option value="javascript">JavaScript (Node)</option>
@@ -216,91 +247,70 @@ export const GeneratorPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Difficulty Level
-                </label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-                >
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                  <option value="Expert">Expert</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Problem Type & Test Cases */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Problem Type
                 </label>
                 <select
                   value={problemType}
                   onChange={(e) => setProblemType(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 >
                   <option value="Algorithm">Algorithm</option>
                   <option value="Machine Learning">Machine Learning</option>
                   <option value="Deep Learning">Deep Learning</option>
                   <option value="Data Structure">Data Structure</option>
-                  <option value="Real-world App">Real-world App</option>
-                  <option value="Bug Fix">Bug Fix</option>
+                  <option value="System Design">System Design</option>
                   <option value="Optimization">Performance Optimization</option>
                 </select>
               </div>
+            </div>
 
+            <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Unit Test Cases
+                  Test Cases
                 </label>
                 <select
                   value={testCaseCount}
                   onChange={(e) => setTestCaseCount(Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 >
-                  <option value={3}>3 test cases</option>
-                  <option value={5}>5 test cases (Standard)</option>
-                  <option value={10}>10 test cases (Stress suite)</option>
+                  <option value={3}>3 cases</option>
+                  <option value={5}>5 cases</option>
+                  <option value={8}>8 cases</option>
                 </select>
               </div>
-            </div>
 
-            {/* Time limit & Gemini Model */}
-            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Execution Timeout
+                  Timeout
                 </label>
                 <select
                   value={timeLimit}
                   onChange={(e) => setTimeLimit(Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
                 >
-                  <option value={1000}>1,000 ms (Strict)</option>
-                  <option value={2000}>2,000 ms (Standard)</option>
-                  <option value={5000}>5,000 ms (Relaxed)</option>
+                  <option value={1000}>1,000 ms</option>
+                  <option value={2000}>2,000 ms</option>
+                  <option value={5000}>5,000 ms</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  AI Model
+                  Model
                 </label>
                 <select
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono text-[11px]"
+                  className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
                 >
-                  <option value="gemini-1.5-flash">Gemini 1.5 Flash (Fast)</option>
-                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep)</option>
+                  <option value="gemini-2.0-flash">2.0 Flash</option>
+                  <option value="gemini-2.5-flash">2.5 Flash</option>
+                  <option value="gemini-1.5-pro">1.5 Pro</option>
                 </select>
               </div>
             </div>
 
-            {/* Custom Instructions */}
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Custom Instructions (Optional)
@@ -309,47 +319,38 @@ export const GeneratorPage: React.FC = () => {
                 rows={3}
                 value={customInstructions}
                 onChange={(e) => setCustomInstructions(e.target.value)}
-                placeholder="e.g. Include negative edge cases, focus on cache-line locality, enforce recursive approach..."
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                placeholder="e.g. Include negative edge cases, focus on O(1) space complexity..."
+                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
               />
             </div>
 
-            {/* Error Banner */}
-            {error && (
-              <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300">
-                {error}
-              </div>
-            )}
-
-            {/* Generate Action Button */}
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="w-full py-3.5 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-xl shadow-indigo-600/30 transition-all active:scale-98 flex items-center justify-center gap-2 border border-indigo-400/30"
+              className="w-full py-3.5 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-xl shadow-indigo-600/30 transition-all active:scale-95 flex items-center justify-center gap-2 border border-indigo-400/30 disabled:opacity-60"
             >
               {loading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Synthesizing Challenge with Gemini...</span>
+                  <span>Synthesizing Challenge...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-cyan-300" />
-                  Generate Challenge with AI
+                  <span>Generate Challenge with AI</span>
                 </>
               )}
             </button>
           </div>
         </div>
 
-        {/* Right Preview: Generated Challenge Output */}
+        {/* Right Preview */}
         <div className="lg:col-span-7">
           {generatedChallenge ? (
-            <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl space-y-6">
-              {/* Header & Badges */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl space-y-6 animate-fadeIn">
               <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span
                       className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
                         generatedChallenge.difficulty === 'Easy'
@@ -361,9 +362,7 @@ export const GeneratorPage: React.FC = () => {
                     >
                       {generatedChallenge.difficulty}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
-                      {generatedChallenge.category}
-                    </span>
+                    <span className="text-xs text-slate-400 font-mono">{generatedChallenge.category}</span>
                     <span className="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20 font-mono">
                       Target: {generatedChallenge.expected_complexity?.time || 'O(N)'}
                     </span>
@@ -373,26 +372,19 @@ export const GeneratorPage: React.FC = () => {
                   </h2>
                 </div>
 
-                {/* Primary Action Buttons */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleOpenInWorkspace}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition active:scale-95"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    Open in Workspace
-                  </button>
-                </div>
+                <button
+                  onClick={handleOpenInWorkspace}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition active:scale-95"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  Open in Workspace
+                </button>
               </div>
 
-              {/* Problem Description */}
-              <div className="prose prose-invert max-w-none text-xs text-slate-300 leading-relaxed space-y-3">
-                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 font-mono whitespace-pre-wrap">
-                  {generatedChallenge.description}
-                </div>
+              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
+                <MarkdownRenderer content={generatedChallenge.description} />
               </div>
 
-              {/* Constraints & Specs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs">
                   <h4 className="font-semibold text-white mb-2 flex items-center gap-1.5">
@@ -400,9 +392,9 @@ export const GeneratorPage: React.FC = () => {
                     Constraints
                   </h4>
                   <ul className="space-y-1 text-slate-400 font-mono text-[11px]">
-                    {generatedChallenge.constraints?.map((c, i) => (
-                      <li key={i}>• {c}</li>
-                    )) || <li>• Optimal time & space constraints</li>}
+                    {generatedChallenge.constraints?.map((c, i) => <li key={i}>• {c}</li>) || (
+                      <li>• Optimal time & space constraints</li>
+                    )}
                   </ul>
                 </div>
 
@@ -412,42 +404,60 @@ export const GeneratorPage: React.FC = () => {
                     Complexity Budget
                   </h4>
                   <div className="space-y-1 font-mono text-[11px] text-slate-300">
-                    <p>Time Complexity: <span className="text-indigo-400">{generatedChallenge.expected_complexity?.time || 'O(N)'}</span></p>
-                    <p>Space Complexity: <span className="text-cyan-400">{generatedChallenge.expected_complexity?.space || 'O(1)'}</span></p>
-                    <p>Time Limit: <span className="text-slate-400">{generatedChallenge.time_limit_ms} ms</span></p>
+                    <p>
+                      Time Complexity:{' '}
+                      <span className="text-indigo-400">{generatedChallenge.expected_complexity?.time || 'O(N)'}</span>
+                    </p>
+                    <p>
+                      Space Complexity:{' '}
+                      <span className="text-cyan-400">{generatedChallenge.expected_complexity?.space || 'O(1)'}</span>
+                    </p>
+                    <p>
+                      Time Limit: <span className="text-slate-400">{generatedChallenge.time_limit_ms} ms</span>
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Examples */}
               {generatedChallenge.examples && generatedChallenge.examples.length > 0 && (
-                <div className="space-y-3">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                    Examples
-                  </h4>
+                <div className="space-y-2.5">
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">Examples</h4>
                   {generatedChallenge.examples.map((ex, i) => (
                     <div
                       key={i}
                       className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-xs text-slate-300 space-y-1"
                     >
-                      <p><span className="text-indigo-400">Input:</span> {ex.input}</p>
-                      <p><span className="text-emerald-400">Output:</span> {ex.output}</p>
+                      <p className="whitespace-pre-wrap">
+                        <span className="text-indigo-400">Input:</span> {ex.input}
+                      </p>
+                      <p className="whitespace-pre-wrap">
+                        <span className="text-emerald-400">Output:</span> {ex.output}
+                      </p>
                       {ex.explanation && (
-                        <p className="text-slate-400 text-[11px] mt-1 font-sans">
-                          Explanation: {ex.explanation}
-                        </p>
+                        <p className="text-slate-400 text-[11px] mt-1 font-sans">Explanation: {ex.explanation}</p>
                       )}
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Starter Code Preview */}
+              {/* Starter Code Preview with Language Tabs */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                    Starter Code ({language})
-                  </h4>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
+                    {(['python', 'javascript', 'typescript', 'cpp'] as const).map((langKey) => (
+                      <button
+                        key={langKey}
+                        type="button"
+                        onClick={() => setPreviewLang(langKey)}
+                        className={`px-2.5 py-1 rounded-lg transition ${
+                          previewLang === langKey ? 'bg-indigo-600 text-white font-semibold' : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {langKey === 'cpp' ? 'C++' : langKey}
+                      </button>
+                    ))}
+                  </div>
                   <button
                     onClick={handleCopyStarter}
                     className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-white"
@@ -456,8 +466,8 @@ export const GeneratorPage: React.FC = () => {
                     {copiedCode ? 'Copied' : 'Copy'}
                   </button>
                 </div>
-                <pre className="p-4 rounded-xl bg-[#090C16] border border-slate-800 text-slate-300 font-mono text-xs overflow-x-auto max-h-48">
-                  {generatedChallenge.starter_code?.[language] ||
+                <pre className="p-4 rounded-xl bg-[#070A13] border border-slate-800 text-slate-300 font-mono text-xs overflow-x-auto max-h-52 custom-scrollbar">
+                  {generatedChallenge.starter_code?.[previewLang] ||
                     generatedChallenge.starter_code?.python ||
                     '// Starter code ready'}
                 </pre>
@@ -486,15 +496,19 @@ export const GeneratorPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Secondary Actions Toolbar */}
               <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleSaveToLibrary}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
+                    disabled={!!savedChallengeId}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+                      savedChallengeId
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                        : 'text-slate-300 bg-slate-800 hover:bg-slate-700 border-slate-700'
+                    }`}
                   >
-                    <Save className="w-3.5 h-3.5 text-indigo-400" />
-                    {savedSuccess ? 'Saved to Library!' : 'Save to Library'}
+                    <Save className="w-3.5 h-3.5" />
+                    {savedChallengeId ? 'Saved to Library ✓' : 'Save to Library'}
                   </button>
                   <button
                     onClick={handleExportJson}
@@ -507,6 +521,7 @@ export const GeneratorPage: React.FC = () => {
 
                 <button
                   onClick={handleGenerate}
+                  disabled={loading}
                   className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -515,21 +530,22 @@ export const GeneratorPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            /* Empty State */
             <div className="h-full min-h-[460px] p-8 rounded-3xl bg-slate-900/30 border border-dashed border-slate-800 flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center text-indigo-400 mb-4">
                 <Sparkles className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">No Challenge Generated Yet</h3>
               <p className="text-xs text-slate-400 max-w-sm leading-relaxed mb-6">
-                Configure your domain parameters on the left and click <strong>"Generate Challenge with AI"</strong> to craft a bespoke problem instantly with Google Gemini.
+                Configure your domain parameters on the left and click{' '}
+                <strong>&ldquo;Generate Challenge with AI&rdquo;</strong> to craft a bespoke problem with test suites.
               </p>
               <button
                 onClick={handleGenerate}
+                disabled={loading}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30"
               >
                 <Sparkles className="w-4 h-4 text-cyan-300" />
-                Generate Sample Dynamic Programming Challenge
+                Generate Sample Challenge
               </button>
             </div>
           )}

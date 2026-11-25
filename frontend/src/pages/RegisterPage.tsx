@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useContexts';
 import { BrandLogo } from '../components/common/BrandLogo';
+import { Footer } from '../components/layout/Footer';
 import {
   User,
   Mail,
   Lock,
   Eye,
   EyeOff,
-  Sparkles,
   ArrowRight,
   CheckCircle2,
   XCircle,
   AlertCircle,
   Shield,
   KeyRound,
-  Check
+  Check,
 } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
@@ -31,15 +31,13 @@ export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Granular Security Requirement Checks (NIST/OWASP Standard)
   const reqLength = password.length >= 10;
   const reqUpper = /[A-Z]/.test(password);
   const reqLower = /[a-z]/.test(password);
   const reqNumber = /[0-9]/.test(password);
-  const reqSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  const reqSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
   const reqMatch = password.length > 0 && confirmPassword.length > 0 && password === confirmPassword;
 
-  // Strength score calculation (0 to 5)
   const passedCount = [reqLength, reqUpper, reqLower, reqNumber, reqSpecial].filter(Boolean).length;
   const isUnhackable = passedCount === 5 && reqMatch;
 
@@ -78,19 +76,21 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
     try {
       await register(fullName.trim(), email.trim(), password);
-      // First-time signup routes directly into Onboarding Wizard
       navigate('/onboarding');
-    } catch (err: any) {
-      setError(err.message || 'Registration failed. That email might already be registered.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Registration failed. That email might already be registered.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#070A12] flex">
+    <div className="min-h-screen bg-[#05070E] flex flex-col">
+      <div className="flex-1 flex">
       {/* Left split screen - Showcase */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-gradient-to-br from-[#0B0F1E] via-[#080C17] to-[#0A0D18] border-r border-slate-800/80 overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-gradient-to-br from-[#0B1020] via-[#070B15] to-[#080B14] border-r border-slate-800/80 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-35 pointer-events-none" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <BrandLogo size="lg" />
@@ -108,7 +108,6 @@ export const RegisterPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Security Feature Pillars */}
         <div className="relative z-10 space-y-3 max-w-md">
           <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
@@ -171,7 +170,7 @@ export const RegisterPage: React.FC = () => {
                   placeholder="e.g. Alex Chen"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                  className="w-full bg-slate-900/70 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
                 />
               </div>
             </div>
@@ -188,7 +187,7 @@ export const RegisterPage: React.FC = () => {
                   placeholder="alex.chen@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                  className="w-full bg-slate-900/70 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
                 />
               </div>
             </div>
@@ -205,18 +204,18 @@ export const RegisterPage: React.FC = () => {
                   placeholder="Minimum 10 chars, Aa, 123, !@#"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                  className="w-full bg-slate-900/70 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  aria-label="Toggle password visibility"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
 
-              {/* Real-Time Password Strength Meter */}
               {password && (
                 <div className="mt-2.5 space-y-2">
                   <div className="flex gap-1.5 h-1.5">
@@ -224,78 +223,39 @@ export const RegisterPage: React.FC = () => {
                       <div
                         key={step}
                         className={`h-full flex-1 rounded-full transition-colors duration-300 ${
-                          passedCount >= step
-                            ? strengthColors[passedCount - 1]
-                            : 'bg-slate-800'
+                          passedCount >= step ? strengthColors[passedCount - 1] : 'bg-slate-800'
                         }`}
                       />
                     ))}
                   </div>
                   <div className="flex justify-between items-center text-[10px]">
                     <span className="text-slate-400 font-mono">Entropy Security Level:</span>
-                    <span className={`font-bold font-mono ${
-                      passedCount === 5 ? 'text-emerald-400' : passedCount >= 3 ? 'text-yellow-400' : 'text-rose-400'
-                    }`}>
+                    <span
+                      className={`font-bold font-mono ${
+                        passedCount === 5 ? 'text-emerald-400' : passedCount >= 3 ? 'text-yellow-400' : 'text-rose-400'
+                      }`}
+                    >
                       {strengthLabels[passedCount - 1] || 'Insecure'}
                     </span>
                   </div>
 
-                  {/* Security Requirement Checklist */}
                   <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/90 space-y-1.5 text-[11px] font-mono">
-                    <div className="flex items-center gap-2">
-                      {reqLength ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      )}
-                      <span className={reqLength ? 'text-slate-200' : 'text-slate-500'}>
-                        At least 10 characters length ({password.length}/10)
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {reqUpper ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      )}
-                      <span className={reqUpper ? 'text-slate-200' : 'text-slate-500'}>
-                        At least one uppercase letter (A-Z)
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {reqLower ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      )}
-                      <span className={reqLower ? 'text-slate-200' : 'text-slate-500'}>
-                        At least one lowercase letter (a-z)
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {reqNumber ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      )}
-                      <span className={reqNumber ? 'text-slate-200' : 'text-slate-500'}>
-                        At least one numeric digit (0-9)
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {reqSpecial ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      )}
-                      <span className={reqSpecial ? 'text-slate-200' : 'text-slate-500'}>
-                        At least one special symbol (!@#$%^&*...)
-                      </span>
-                    </div>
+                    {[
+                      { ok: reqLength, label: `At least 10 characters length (${password.length}/10)` },
+                      { ok: reqUpper, label: 'At least one uppercase letter (A-Z)' },
+                      { ok: reqLower, label: 'At least one lowercase letter (a-z)' },
+                      { ok: reqNumber, label: 'At least one numeric digit (0-9)' },
+                      { ok: reqSpecial, label: 'At least one special symbol (!@#$%^&*...)' },
+                    ].map((req) => (
+                      <div key={req.label} className="flex items-center gap-2">
+                        {req.ok ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        ) : (
+                          <XCircle className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                        )}
+                        <span className={req.ok ? 'text-slate-200' : 'text-slate-500'}>{req.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -313,8 +273,10 @@ export const RegisterPage: React.FC = () => {
                   placeholder="Re-enter your strong password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full bg-slate-900/60 border rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition ${
-                    confirmPassword && !reqMatch ? 'border-rose-500/80 focus:border-rose-500' : 'border-slate-700/80 focus:border-indigo-500'
+                  className={`w-full bg-slate-900/70 border rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition ${
+                    confirmPassword && !reqMatch
+                      ? 'border-rose-500/80 focus:border-rose-500'
+                      : 'border-slate-700/80 focus:border-indigo-500'
                   }`}
                 />
                 {confirmPassword && (
@@ -345,7 +307,7 @@ export const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading || (password.length > 0 && !isUnhackable)}
-              className={`w-full py-3 px-4 rounded-xl text-xs font-bold text-white transition active:scale-98 flex items-center justify-center gap-2 shadow-lg ${
+              className={`w-full py-3 px-4 rounded-xl text-xs font-bold text-white transition active:scale-95 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 ${
                 isUnhackable
                   ? 'bg-gradient-to-r from-emerald-600 via-indigo-600 to-violet-600 hover:from-emerald-500 hover:to-violet-500 shadow-emerald-600/20'
                   : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30'
@@ -371,6 +333,8 @@ export const RegisterPage: React.FC = () => {
           </p>
         </div>
       </div>
+      </div>
+      <Footer compact />
     </div>
   );
 };

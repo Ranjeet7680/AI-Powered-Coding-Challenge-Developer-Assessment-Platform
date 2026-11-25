@@ -1,25 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { Submission } from '../types';
+import { useToast } from '../context/useContexts';
 import {
-  History,
   CheckCircle2,
   AlertCircle,
-  Clock,
-  HardDrive,
-  Code2,
   Sparkles,
   X,
   FileCode,
   Copy,
   Check,
+  Search,
+  ArrowUpRight,
 } from 'lucide-react';
 
 export const SubmissionsPage: React.FC = () => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [search, setSearch] = useState('');
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     api.getSubmissions()
@@ -28,25 +33,75 @@ export const SubmissionsPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const filteredSubmissions = useMemo(
+    () =>
+      submissions.filter((sub) => {
+        const matchesStatus = statusFilter === 'All' || sub.status === statusFilter;
+        const matchesSearch =
+          !search.trim() ||
+          (sub.challenge_title || '').toLowerCase().includes(search.toLowerCase()) ||
+          sub.language.toLowerCase().includes(search.toLowerCase());
+        return matchesStatus && matchesSearch;
+      }),
+    [submissions, statusFilter, search]
+  );
+
   const handleCopyCode = (codeText: string) => {
     navigator.clipboard.writeText(codeText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    showToast('Submission source code copied.', 'info');
+  };
+
+  const handleOpenInWorkspace = (sub: Submission) => {
+    setSelectedSubmission(null);
+    navigate(`/app/workspace/${sub.challenge_id}`, {
+      state: {
+        initialCode: sub.code,
+        initialLanguage: sub.language,
+      },
+    });
   };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          My Submissions
-        </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Review your execution history, test vector performance, and AI code review audits.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            My Submissions
+          </h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Review execution history, test vector performance, and AI code review audits.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Filter challenge or language..."
+              className="bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {['All', 'Accepted', 'Wrong Answer'].map((st) => (
+            <button
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                statusFilter === st
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              }`}
+            >
+              {st}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Submissions Table Card */}
       <div className="rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -62,15 +117,21 @@ export const SubmissionsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
-              {submissions.length > 0 ? (
-                submissions.map((sub) => (
+              {loading ? (
+                [1, 2, 3].map((i) => (
+                  <tr key={i}>
+                    <td colSpan={7} className="py-5 px-6">
+                      <div className="h-4 bg-slate-800 rounded animate-pulse" />
+                    </td>
+                  </tr>
+                ))
+              ) : filteredSubmissions.length > 0 ? (
+                filteredSubmissions.map((sub) => (
                   <tr key={sub.id} className="hover:bg-slate-800/30 transition">
                     <td className="py-4 px-6 font-semibold text-white">
                       {sub.challenge_title || 'Custom Challenge'}
                     </td>
-                    <td className="py-4 px-4 font-mono text-slate-400 capitalize">
-                      {sub.language}
-                    </td>
+                    <td className="py-4 px-4 font-mono text-slate-400 capitalize">{sub.language}</td>
                     <td className="py-4 px-4">
                       <span
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-bold ${
@@ -87,21 +148,15 @@ export const SubmissionsPage: React.FC = () => {
                         {sub.status}
                       </span>
                     </td>
-                    <td className="py-4 px-4 font-mono text-slate-300">
-                      {sub.runtime_ms} ms
-                    </td>
-                    <td className="py-4 px-4 font-mono text-slate-300">
-                      {sub.memory_mb} MB
-                    </td>
-                    <td className="py-4 px-4 font-mono font-bold text-slate-200">
-                      {sub.score}%
-                    </td>
+                    <td className="py-4 px-4 font-mono text-slate-300">{sub.runtime_ms} ms</td>
+                    <td className="py-4 px-4 font-mono text-slate-300">{sub.memory_mb} MB</td>
+                    <td className="py-4 px-4 font-mono font-bold text-slate-200">{sub.score}%</td>
                     <td className="py-4 px-6 text-right">
                       <button
                         onClick={() => setSelectedSubmission(sub)}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 transition"
                       >
-                        Inspect Code & AI Review
+                        Inspect Code &amp; Review
                       </button>
                     </td>
                   </tr>
@@ -109,7 +164,7 @@ export const SubmissionsPage: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-500">
-                    No submissions recorded yet. Open a challenge from the library to test your code!
+                    No matching submissions found. Open a challenge from the library to test your code!
                   </td>
                 </tr>
               )}
@@ -118,11 +173,15 @@ export const SubmissionsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Code & Review Inspection Modal */}
       {selectedSubmission && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-3xl max-h-[85vh] bg-[#0A0D17] border border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-            {/* Header */}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setSelectedSubmission(null)}
+        >
+          <div
+            className="w-full max-w-3xl max-h-[85vh] bg-[#0A0D17] border border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/70">
               <div className="flex items-center gap-3">
                 <FileCode className="w-5 h-5 text-indigo-400" />
@@ -131,22 +190,33 @@ export const SubmissionsPage: React.FC = () => {
                     {selectedSubmission.challenge_title || 'Submission Details'}
                   </h3>
                   <p className="text-xs text-slate-400 font-mono">
-                    Status: <strong className={selectedSubmission.status === 'Accepted' ? 'text-emerald-400' : 'text-rose-400'}>{selectedSubmission.status}</strong> | Runtime: {selectedSubmission.runtime_ms}ms
+                    Status:{' '}
+                    <strong className={selectedSubmission.status === 'Accepted' ? 'text-emerald-400' : 'text-rose-400'}>
+                      {selectedSubmission.status}
+                    </strong>{' '}
+                    | Runtime: {selectedSubmission.runtime_ms}ms
                   </p>
                 </div>
               </div>
 
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleOpenInWorkspace(selectedSubmission)}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
+                >
+                  Open in Workspace
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setSelectedSubmission(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            {/* Content body */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar text-xs">
-              {/* AI Feedback Banner */}
               {selectedSubmission.ai_feedback && (
                 <div className="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 space-y-3">
                   <div className="flex items-center justify-between">
@@ -158,15 +228,15 @@ export const SubmissionsPage: React.FC = () => {
                       Score: {selectedSubmission.ai_feedback.overall_score || 94}/100
                     </span>
                   </div>
-                  <p className="text-slate-300 leading-relaxed">
-                    {selectedSubmission.ai_feedback.summary}
-                  </p>
+                  <p className="text-slate-300 leading-relaxed">{selectedSubmission.ai_feedback.summary}</p>
                   <div className="grid grid-cols-2 gap-3 font-mono text-[11px]">
                     <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
-                      Time Complexity: <strong className="text-indigo-400">{selectedSubmission.ai_feedback.time_complexity}</strong>
+                      Time Complexity:{' '}
+                      <strong className="text-indigo-400">{selectedSubmission.ai_feedback.time_complexity}</strong>
                     </div>
                     <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
-                      Space Complexity: <strong className="text-cyan-400">{selectedSubmission.ai_feedback.space_complexity}</strong>
+                      Space Complexity:{' '}
+                      <strong className="text-cyan-400">{selectedSubmission.ai_feedback.space_complexity}</strong>
                     </div>
                   </div>
                   {selectedSubmission.ai_feedback.highlights && (
@@ -182,7 +252,6 @@ export const SubmissionsPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Source Code Viewer */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-mono font-bold text-slate-300 uppercase tracking-wider text-[11px]">

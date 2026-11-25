@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, useToast } from '../context/useContexts';
 import { BrandLogo } from '../components/common/BrandLogo';
+import { Footer } from '../components/layout/Footer';
 import confetti from 'canvas-confetti';
 import {
   Sparkles,
@@ -25,9 +26,9 @@ export const OnboardingPage: React.FC = () => {
     'Prepare for interviews',
   ]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { updateOnboarding, user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const totalSteps = 5;
@@ -46,16 +47,7 @@ export const OnboardingPage: React.FC = () => {
     { id: 'Expert', label: 'Expert', desc: '6+ years. Staff/Principal level system design and optimization.' },
   ];
 
-  const languagesList = [
-    'Python',
-    'JavaScript',
-    'TypeScript',
-    'C++',
-    'Java',
-    'C',
-    'Go',
-    'Rust',
-  ];
+  const languagesList = ['Python', 'JavaScript', 'TypeScript', 'C++', 'Java', 'C', 'Go', 'Rust'];
 
   const goalsList = [
     'Improve problem-solving',
@@ -88,7 +80,6 @@ export const OnboardingPage: React.FC = () => {
 
   const handleFinish = async () => {
     setLoading(true);
-    setError(null);
     try {
       await updateOnboarding({
         role,
@@ -97,31 +88,28 @@ export const OnboardingPage: React.FC = () => {
         goals: selectedGoals,
       });
 
-      // Launch celebration confetti
       try {
-        confetti({
-          particleCount: 120,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      } catch {}
+        confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+      } catch {
+        // Confetti is decorative
+      }
 
+      showToast('Workspace personalized! Welcome aboard.', 'success');
       setTimeout(() => {
         navigate('/app/dashboard');
-      }, 700);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save onboarding preferences. Please try again.');
+      }, 600);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not save onboarding preferences.';
+      showToast(msg, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#070A12] flex flex-col justify-between p-6 sm:p-10 relative overflow-hidden">
-      {/* Background glow */}
+    <div className="min-h-screen bg-[#05070E] flex flex-col justify-between p-6 sm:p-10 relative overflow-hidden">
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-indigo-600/10 blur-[120px] pointer-events-none -z-10" />
 
-      {/* Header */}
       <div className="max-w-3xl mx-auto w-full flex items-center justify-between">
         <BrandLogo size="md" />
         <div className="text-xs font-mono text-slate-400">
@@ -129,9 +117,7 @@ export const OnboardingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main card */}
       <div className="max-w-2xl mx-auto w-full my-8">
-        {/* Progress bar */}
         <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mb-8 border border-slate-800">
           <div
             className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-300"
@@ -139,7 +125,6 @@ export const OnboardingPage: React.FC = () => {
           />
         </div>
 
-        {/* Screen 1: Welcome */}
         {currentStep === 1 && (
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl text-center">
             <div className="w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/40 flex items-center justify-center text-cyan-300 mx-auto mb-6 shadow-lg shadow-indigo-600/10">
@@ -155,13 +140,12 @@ export const OnboardingPage: React.FC = () => {
               onClick={() => setCurrentStep(2)}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition active:scale-95"
             >
-              Let's Personalize Your Workspace
+              Let&apos;s Personalize Your Workspace
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {/* Screen 2: Role */}
         {currentStep === 2 && (
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl">
             <h2 className="text-2xl font-bold text-white mb-2">Select Your Primary Role</h2>
@@ -194,11 +178,6 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
-            {error && (
-              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
-                {error}
-              </div>
-            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(1)}
@@ -216,12 +195,11 @@ export const OnboardingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Screen 3: Experience */}
         {currentStep === 3 && (
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl">
             <h2 className="text-2xl font-bold text-white mb-2">Select Your Programming Experience</h2>
             <p className="text-xs text-slate-400 mb-6">
-              We'll calibrate AI problem complexity and starter code hints to match your level.
+              We&apos;ll calibrate AI problem complexity and starter code hints to match your level.
             </p>
             <div className="space-y-3 mb-8">
               {experienceLevels.map((lvl) => {
@@ -245,11 +223,6 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
-            {error && (
-              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
-                {error}
-              </div>
-            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(2)}
@@ -267,7 +240,6 @@ export const OnboardingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Screen 4: Languages */}
         {currentStep === 4 && (
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl">
             <h2 className="text-2xl font-bold text-white mb-2">Choose Programming Languages</h2>
@@ -292,11 +264,6 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
-            {error && (
-              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
-                {error}
-              </div>
-            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(3)}
@@ -314,7 +281,6 @@ export const OnboardingPage: React.FC = () => {
           </div>
         )}
 
-        {/* Screen 5: Goals */}
         {currentStep === 5 && (
           <div className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl">
             <h2 className="text-2xl font-bold text-white mb-2">What Are Your Core Goals?</h2>
@@ -340,11 +306,6 @@ export const OnboardingPage: React.FC = () => {
                 );
               })}
             </div>
-            {error && (
-              <div className="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-xs text-rose-300">
-                {error}
-              </div>
-            )}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => setCurrentStep(4)}
@@ -371,9 +332,11 @@ export const OnboardingPage: React.FC = () => {
         )}
       </div>
 
-      {/* Footer info */}
-      <div className="text-center text-xs text-slate-500 font-mono">
-        You can always reconfigure your preferences inside Platform Settings.
+      <div className="space-y-4">
+        <div className="text-center text-xs text-slate-500 font-mono">
+          You can always reconfigure your preferences inside Platform Settings.
+        </div>
+        <Footer compact />
       </div>
     </div>
   );

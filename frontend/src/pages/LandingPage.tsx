@@ -8,8 +8,6 @@ import {
   ArrowRight,
   Code2,
   Cpu,
-  CheckCircle2,
-  Layers,
   BarChart3,
   Award,
   Play,
@@ -23,25 +21,19 @@ import {
   ChevronDown,
   Check,
   Star,
-  Quote,
-  Flame,
-  CheckCheck,
-  Video,
   BrainCircuit,
-  Clock,
-  Eye,
   X,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
   const [stats, setStats] = useState({
-    coding_challenges: '500+',
+    coding_challenges: '368+',
     active_developers: '14,200+',
     successful_submissions: '182,500+',
-    supported_languages: '12+',
+    supported_languages: '4 Core',
   });
 
-  const [activeTab, setActiveTab] = useState<'ide' | 'generator' | 'dashboard' | 'review'>('ide');
+  const [activeTab, setActiveTab] = useState<'ide' | 'generator' | 'dashboard' | 'review' | 'credentials'>('ide');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [annualBilling, setAnnualBilling] = useState(false);
   const [previewVideo, setPreviewVideo] = useState<{
@@ -64,6 +56,15 @@ export const LandingPage: React.FC = () => {
       .then(setStats)
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!previewVideo) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPreviewVideo(null);
+    };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [previewVideo]);
 
   const runHeroSimulation = () => {
     setSimState('running');
@@ -143,40 +144,40 @@ public:
 
   const features = [
     {
-      title: 'AI Challenge Generator',
-      description: 'Generate production-grade coding problems instantly with Google Gemini. Customize topics, difficulty levels, and realistic edge cases.',
+      title: '368+ Multi-Language Bank',
+      description: 'Master 368+ curated & synthesized problems across 10 CS & ML domains with Python, JavaScript, TypeScript, and C++ templates.',
+      icon: Code2,
+      color: 'from-cyan-500 to-teal-500',
+    },
+    {
+      title: 'AI Generator & Copilot',
+      description: 'Synthesize production-grade challenges with Google Gemini and ask a code-aware AI Copilot for hints, bug fixes, and complexity breakdowns.',
       icon: Sparkles,
       color: 'from-indigo-500 to-blue-500',
     },
     {
       title: 'Smart Code Evaluation',
-      description: 'Run automated test suites against isolated sandboxes. Verify time complexity, memory allocation, and hidden boundary conditions.',
+      description: 'Execute test suites across isolated subprocess runners verifying correctness, hidden boundary edge cases, runtime latency, and memory.',
       icon: Cpu,
       color: 'from-violet-500 to-purple-500',
     },
     {
-      title: 'Online Coding IDE',
-      description: 'A full-featured Monaco-powered browser IDE with intelligent auto-completion, multi-language support, custom test cases, and dark theme.',
-      icon: Code2,
-      color: 'from-cyan-500 to-teal-500',
-    },
-    {
-      title: 'AI Code Review',
-      description: 'Receive real-time algorithmic critiques, big-O time & space complexity breakdowns, and actionable refactoring suggestions.',
-      icon: Zap,
+      title: 'Vector PDF & QR Credentials',
+      description: 'Download landscape A4 ReportLab PDF diplomas complete with SHA-256 verification hashes, 15×15 QR matrices, and public /verify URLs.',
+      icon: ShieldCheck,
       color: 'from-amber-500 to-orange-500',
     },
     {
-      title: 'Developer Analytics',
-      description: 'Track coding velocity, problem-solving accuracy, language proficiencies, and streak heatmaps through interactive charts.',
-      icon: BarChart3,
-      color: 'from-emerald-500 to-green-500',
-    },
-    {
-      title: 'Technical Assessments',
-      description: 'Design timed candidate screenings, administer hackathons, and evaluate students with verifiable certificates and scoring rubrics.',
+      title: 'Social Post & Card Studio',
+      description: 'Publish achievements to LinkedIn, Instagram (1080×1080 PNG card), Facebook (1200×630 PNG card), and WhatsApp with tailored copy.',
       icon: Award,
       color: 'from-pink-500 to-rose-500',
+    },
+    {
+      title: 'Analytics & Assessments',
+      description: 'Deliver timed technical screeners, visualize skills radars & velocity heatmaps, and track global & weekly leaderboard standings.',
+      icon: BarChart3,
+      color: 'from-emerald-500 to-green-500',
     },
   ];
 
@@ -240,8 +241,8 @@ public:
       a: 'Yes! The Assessments module allows hiring managers and bootcamps to assemble multi-question timed assessments, set passing criteria, and receive comprehensive candidate scoring reports with AI code reviews.'
     },
     {
-      q: 'Are certificates verifiable by employers?',
-      a: 'Every completed certificate features a unique cryptographic Credential ID and issue date that can be independently verified on the platform.'
+      q: 'Are certificates verifiable and shareable on LinkedIn, Instagram, Facebook & WhatsApp?',
+      a: 'Yes! Every certificate includes a unique Credential ID, SHA-256 fingerprint, public /verify/:credentialId page, ReportLab landscape A4 vector PDF export, 1080×1080 & 1200×630 PNG social graphic cards, and pre-formatted messages for LinkedIn, Instagram, Facebook, and WhatsApp.'
     },
     {
       q: 'Can I connect my own Google Gemini API key?',
@@ -250,12 +251,13 @@ public:
   ];
 
   return (
-    <div className="min-h-screen bg-[#070A12] text-slate-100 flex flex-col selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-[#05070E] text-slate-100 flex flex-col selection:bg-indigo-500/30">
       <Navbar />
 
       {/* Hero Section */}
       <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-        {/* Background Gradients & Glows */}
+        {/* Background Grid & Ambient Spotlights */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-45 pointer-events-none -z-20" />
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] bg-gradient-to-tr from-indigo-600/20 via-violet-600/15 to-cyan-500/10 blur-[140px] pointer-events-none -z-10" />
         <div className="absolute top-10 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
@@ -263,9 +265,9 @@ public:
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-violet-500/15 to-cyan-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-8 backdrop-blur-md shadow-lg shadow-indigo-950/40">
             <Sparkles className="w-4 h-4 text-cyan-300 animate-pulse" />
-            <span>Next-Generation AI Developer Assessment Platform</span>
+            <span>368+ Coding Challenges • AI Copilot • Vector PDF Credentials</span>
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-            <span className="text-cyan-300 font-mono">v2.0 Active</span>
+            <span className="text-cyan-300 font-mono">v2.1 Live</span>
           </div>
 
           {/* Headline */}
@@ -298,7 +300,7 @@ public:
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800 rounded-xl border border-slate-700/80 hover:border-slate-600 transition-all duration-200"
             >
               <Code2 className="w-4 h-4 text-indigo-400" />
-              Demo Developer Login (Instant Access)
+              Sign In to Workstation
             </Link>
           </div>
 
@@ -571,15 +573,18 @@ public:
 
           {/* Tab Switcher */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-            {[
-              { id: 'ide', label: 'Coding Workspace IDE' },
-              { id: 'generator', label: 'AI Challenge Generator' },
-              { id: 'dashboard', label: 'Desktop Dashboard' },
-              { id: 'review', label: 'Evaluation Report' },
-            ].map((tab) => (
+            {(
+              [
+                { id: 'ide', label: 'Coding Workspace IDE' },
+                { id: 'generator', label: 'AI Challenge Generator' },
+                { id: 'dashboard', label: 'Desktop Dashboard' },
+                { id: 'review', label: 'Evaluation Report' },
+                { id: 'credentials', label: 'PDF & Social Credentials' },
+              ] as const
+            ).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition ${
                   activeTab === tab.id
                     ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
@@ -714,6 +719,46 @@ public:
                   </p>
                   <div className="p-3 bg-slate-900 rounded-xl text-slate-300 text-[11px]">
                     "Exemplary usage of OrderedDict to achieve constant-time eviction and retrieval."
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'credentials' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h4 className="text-xl font-bold text-white mb-2">Verified Vector PDFs &amp; Social Post Studio</h4>
+                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
+                    Every earned credential generates a crisp landscape A4 PDF diploma via ReportLab, a cryptographic SHA-256 verification URL, and ready-to-post copy &amp; PNG cards for LinkedIn, Instagram, Facebook, and WhatsApp.
+                  </p>
+                  <ul className="space-y-2 text-xs text-slate-300 font-mono mb-6">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Public /verify/:credentialId &amp; 15×15 QR code</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> LinkedIn Feed + Add-to-Profile deep links</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 1080×1080 Instagram &amp; 1200×630 FB PNG cards</li>
+                  </ul>
+                  <Link
+                    to="/app/certificates"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-lg shadow-amber-600/30"
+                  >
+                    Explore Credentials Hub <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-amber-500/35 text-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-amber-300 font-bold">OFFICIAL CREDENTIAL • A4 VECTOR PDF</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-mono text-[10px]">SHA-256 VERIFIED</span>
+                  </div>
+                  <p className="text-white font-bold text-sm">Mastery of Algorithmic Problem Solving</p>
+                  <div className="grid grid-cols-3 gap-2 text-center font-mono text-[11px]">
+                    <div className="p-2 rounded-lg bg-slate-900 text-indigo-300">98% Score</div>
+                    <div className="p-2 rounded-lg bg-slate-900 text-cyan-300">42+ Tasks</div>
+                    <div className="p-2 rounded-lg bg-slate-900 text-emerald-300">36 Hours</div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1 text-[10px] font-mono">
+                    <span className="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300">LinkedIn</span>
+                    <span className="px-2 py-0.5 rounded bg-pink-500/15 text-pink-300">Instagram</span>
+                    <span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-300">Facebook</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300">WhatsApp</span>
                   </div>
                 </div>
               </div>
@@ -1274,8 +1319,14 @@ public:
 
       {/* Video Modal Preview */}
       {previewVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-4xl rounded-3xl bg-[#090C16] border border-purple-500/40 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+          onClick={() => setPreviewVideo(null)}
+        >
+          <div
+            className="relative w-full max-w-4xl rounded-3xl bg-[#090C16] border border-purple-500/40 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">

@@ -1,44 +1,37 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User } from '../types';
 import { api } from '../services/api';
+import { AuthContext } from './useContexts';
 
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  demoLogin: () => Promise<void>;
-  logout: () => void;
-  updateOnboarding: (data: {
-    role: string;
-    experience: string;
-    preferred_languages: string[];
-    goals: string[];
-  }) => Promise<void>;
-  updateProfile: (data: Partial<User>) => Promise<void>;
+function readStoredUser(): User | null {
+  try {
+    const saved = localStorage.getItem('ctf_user');
+    return saved ? (JSON.parse(saved) as User) : null;
+  } catch {
+    localStorage.removeItem('ctf_user');
+    return null;
+  }
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('ctf_user');
-    if (!saved) return null;
-    try {
-      return JSON.parse(saved) as User;
-    } catch {
-      localStorage.removeItem('ctf_user');
-      localStorage.removeItem('ctf_token');
-      return null;
-    }
-  });
-  const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('ctf_token');
-  });
+  const [user, setUser] = useState<User | null>(readStoredUser);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('ctf_token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('ctf_token');
+    localStorage.removeItem('ctf_user');
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    const storedToken = localStorage.getItem('ctf_token');
+    if (!storedToken) return;
+    const freshUser = await api.getCurrentUser();
+    setUser(freshUser);
+    localStorage.setItem('ctf_user', JSON.stringify(freshUser));
+  }, []);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -49,18 +42,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(freshUser);
           localStorage.setItem('ctf_user', JSON.stringify(freshUser));
         } catch {
-          // Token expired or invalid
-          localStorage.removeItem('ctf_token');
-          localStorage.removeItem('ctf_user');
-          setUser(null);
-          setToken(null);
+          logout();
         }
       }
       setIsLoading(false);
     };
-
     initAuth();
-  }, []);
+  }, [logout]);
+
+  useEffect(() => {
+    const handleUnauthorized = () => logout();
+    window.addEventListener('ctf:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('ctf:unauthorized', handleUnauthorized);
+  }, [logout]);
 
   const handleAuthSuccess = (newToken: string, newUser: User) => {
     setToken(newToken);
@@ -89,33 +83,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const loginWithGoogle = async () => {
-    setIsLoading(true);
-    try {
-      const res = await api.loginWithGoogle();
-      handleAuthSuccess(res.token, res.user);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const demoLogin = async () => {
-    setIsLoading(true);
-    try {
-      const res = await api.login({ email: 'developer@codingtaskfactory.io', password: 'demo1234' });
-      handleAuthSuccess(res.token, res.user);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('ctf_token');
-    localStorage.removeItem('ctf_user');
-  };
-
   const updateOnboarding = async (data: {
     role: string;
     experience: string;
@@ -127,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('ctf_user', JSON.stringify(updated));
   };
 
-  const updateProfile = async (data: Partial<User>) => {
+  const updateProfile = async (data: Partial<User> & { gemini_api_key?: string }) => {
     const updated = await api.updateProfile(data);
     setUser(updated);
     localStorage.setItem('ctf_user', JSON.stringify(updated));
@@ -142,9 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         register,
-        loginWithGoogle,
-        demoLogin,
         logout,
+        refreshUser,
         updateOnboarding,
         updateProfile,
       }}
@@ -152,10 +118,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
-  return context;
 };
