@@ -19,10 +19,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Verify Frontend Types
         run: |
@@ -33,7 +33,7 @@ jobs:
       - name: Install Backend Core Dependencies
         run: |
           cd backend
-          pip install fastapi uvicorn pydantic pydantic-settings sqlalchemy
+          pip install -r requirements.txt
 
       - name: Verify Zero-Trust Security Suite
         run: |
