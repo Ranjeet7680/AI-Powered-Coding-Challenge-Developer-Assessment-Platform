@@ -11,8 +11,10 @@ if os.path.exists(env_path):
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
 
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from .database import engine, Base, SessionLocal, ensure_schema_migrations, get_db
@@ -138,3 +140,21 @@ def platform_stats(db: Session = Depends(get_db)):
         "successful_submissions": "182,500+",
         "supported_languages": "4 Core",
     }
+
+
+# Optional standalone container SPA static serving (used in Docker / GHCR package)
+_STATIC_FRONTEND_DIR = os.getenv("STATIC_FRONTEND_DIR", "").strip()
+if _STATIC_FRONTEND_DIR and os.path.isdir(_STATIC_FRONTEND_DIR):
+    _static_root = os.path.realpath(_STATIC_FRONTEND_DIR)
+    _assets_dir = os.path.join(_static_root, "assets")
+    if os.path.isdir(_assets_dir):
+        app.mount("/assets", StaticFiles(directory=_assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    def serve_spa(full_path: str):
+        if full_path == "api" or full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        candidate = os.path.realpath(os.path.join(_static_root, full_path))
+        if candidate.startswith(_static_root + os.sep) and os.path.isfile(candidate):
+            return FileResponse(candidate)
+        return FileResponse(os.path.join(_static_root, "index.html"))
