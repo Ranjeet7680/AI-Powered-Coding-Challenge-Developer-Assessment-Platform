@@ -150,17 +150,24 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Metric Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         {loading
-          ? [1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-28 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse p-5" />
+          ? [1, 2, 3, 4, 5].map((i, idx) => (
+              <div
+                key={i}
+                className={`h-28 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse p-4 sm:p-5 ${
+                  idx === 4 ? 'col-span-2 lg:col-span-1' : ''
+                }`}
+              />
             ))
-          : stats.map((s) => {
+          : stats.map((s, idx) => {
               const Icon = s.icon;
               return (
                 <div
                   key={s.label}
-                  className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition"
+                  className={`p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition ${
+                    idx === 4 ? 'col-span-2 lg:col-span-1' : ''
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-medium text-slate-400">{s.label}</span>
@@ -335,7 +342,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Recent Submissions Feed */}
-      <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800/80">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-900/50 border border-slate-800/80">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-bold text-white">Recent Submissions</h3>
@@ -346,7 +353,43 @@ export const DashboardPage: React.FC = () => {
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Card Stack (< sm) */}
+        <div className="sm:hidden space-y-2.5">
+          {submissions.length > 0 ? (
+            submissions.slice(0, 4).map((sub) => (
+              <Link
+                key={sub.id}
+                to="/app/submissions"
+                className="block p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-xs font-bold text-white line-clamp-1">
+                    {sub.challenge_title || 'Custom Challenge'}
+                  </span>
+                  <span
+                    className={`shrink-0 px-2 py-0.5 rounded font-mono text-[10px] font-bold ${
+                      sub.status === 'Accepted'
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                    }`}
+                  >
+                    {sub.status}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                  <span className="capitalize">{sub.language} · {sub.runtime_ms}ms</span>
+                  <span className="text-slate-200 font-bold">{sub.score}%</span>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p className="py-6 text-center text-xs text-slate-500">
+              No submissions yet — pick a challenge above and submit your first solution!
+            </p>
+          )}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-slate-800 text-slate-400 font-mono">

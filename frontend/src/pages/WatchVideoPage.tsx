@@ -496,7 +496,7 @@ export const WatchVideoPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="max-h-[600px] overflow-y-auto divide-y divide-slate-800/70">
+            <div className="max-h-[46dvh] xl:max-h-[600px] overflow-y-auto divide-y divide-slate-800/70 custom-scrollbar">
               {filteredQueue.length === 0 ? (
                 <div className="p-6 text-center text-xs text-slate-500">
                   No matching episodes found for &ldquo;{queueSearch}&rdquo;.

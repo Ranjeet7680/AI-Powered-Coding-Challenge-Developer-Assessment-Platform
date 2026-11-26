@@ -268,8 +268,8 @@ export const AssessmentsPage: React.FC = () => {
 
       {/* Interactive Assessment Session Runner Modal */}
       {activeAssessment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-6xl h-[90vh] bg-[#080B14] border border-indigo-500/35 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="w-full max-w-6xl h-[92dvh] sm:h-[90vh] bg-[#080B14] border border-indigo-500/35 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             {/* Session Header */}
             <div className="px-5 py-3.5 border-b border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">

@@ -126,8 +126,8 @@ export const LeaderboardPage: React.FC = () => {
 
       {/* Full Leaderboard Table */}
       <div className="rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl overflow-hidden">
-        <div className="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div className="relative w-72">
+        <div className="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="relative w-full sm:w-72">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -142,7 +142,45 @@ export const LeaderboardPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Card Stack (< sm) */}
+        <div className="sm:hidden divide-y divide-slate-800/70">
+          {filteredUsers.map((u) => {
+            const isCurrentUser = Boolean(u.is_current_user) || u.name.includes('(You)');
+            return (
+              <div
+                key={`mob-${u.rank}-${u.name}`}
+                className={`p-3.5 flex items-center justify-between gap-3 ${
+                  isCurrentUser ? 'bg-indigo-600/15 border-l-4 border-l-indigo-500' : ''
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="font-mono text-xs font-bold text-slate-400 w-7 shrink-0">#{u.rank}</span>
+                  <img
+                    src={u.avatar}
+                    alt={u.name}
+                    className="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-white truncate">{u.name}</p>
+                    <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400 mt-0.5">
+                      <span className="text-slate-300">{u.solved} solved</span>
+                      <span>·</span>
+                      <span className="text-amber-400">{u.streak}d</span>
+                      <span>·</span>
+                      <span className="text-emerald-400">{u.win_rate}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-xs font-mono font-extrabold text-indigo-300">{u.points.toLocaleString()}</p>
+                  <p className="text-[10px] text-slate-500 font-mono">PTS</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-mono">

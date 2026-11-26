@@ -210,7 +210,7 @@ export const GeneratorPage: React.FC = () => {
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Difficulty Tier
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {['Easy', 'Medium', 'Hard', 'Expert'].map((diff) => (
                   <button
                     key={diff}

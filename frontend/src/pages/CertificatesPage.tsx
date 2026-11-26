@@ -345,7 +345,7 @@ export const CertificatesPage: React.FC = () => {
           onClick={() => setSelectedCert(null)}
         >
           <div
-            className="w-full max-w-4xl max-h-[92vh] overflow-y-auto custom-scrollbar bg-[#080C16] border border-slate-700 rounded-3xl p-4 sm:p-8 shadow-2xl flex flex-col relative"
+            className="w-full max-w-4xl max-h-[92dvh] overflow-y-auto custom-scrollbar bg-[#080C16] border border-slate-700 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl flex flex-col relative"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header & Tab Switcher */}

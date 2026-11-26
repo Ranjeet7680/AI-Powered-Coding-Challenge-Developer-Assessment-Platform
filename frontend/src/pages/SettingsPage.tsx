@@ -134,7 +134,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs font-semibold overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs font-semibold overflow-x-auto no-scrollbar">
         {[
           { id: 'profile', label: 'Profile & Role', icon: User },
           { id: 'api', label: 'AI & Gemini API Key', icon: Key },
