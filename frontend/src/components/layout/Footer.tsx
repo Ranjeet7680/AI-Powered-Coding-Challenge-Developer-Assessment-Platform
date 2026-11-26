@@ -60,8 +60,8 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
   if (compact) {
     return (
-      <footer className="mt-10 rounded-2xl border border-slate-800/80 bg-[#070B14]/95 px-5 py-6 sm:px-7 no-print shadow-xl">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-5 border-b border-slate-800/75 text-xs">
+      <footer className="mt-8 sm:mt-10 rounded-2xl border border-slate-800/80 bg-[#070B14]/95 px-4 py-5 sm:px-7 no-print shadow-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 pb-5 border-b border-slate-800/75 text-xs">
           {/* Group 1: Workspace & Coding */}
           <div className="space-y-2.5">
             <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-300">

@@ -349,7 +349,7 @@ export const VideosPage: React.FC = () => {
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-2 w-full md:w-auto pb-1 sm:pb-0">
             <Filter className="w-4 h-4 text-slate-500 mr-1 hidden sm:block" />
             {DIFFICULTIES.map((diff) => (
               <button
@@ -359,7 +359,7 @@ export const VideosPage: React.FC = () => {
                   setDifficulty(diff);
                   setCurrentPage(1);
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   difficulty === diff
                     ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
                     : 'bg-slate-800/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
@@ -371,7 +371,7 @@ export const VideosPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/80">
+        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-2 pt-1 pb-1 sm:pb-0 border-t border-slate-800/80">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -380,7 +380,7 @@ export const VideosPage: React.FC = () => {
                 setCategory(cat);
                 setCurrentPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 category === cat
                   ? 'bg-slate-800 text-cyan-400 border border-cyan-500/30'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'

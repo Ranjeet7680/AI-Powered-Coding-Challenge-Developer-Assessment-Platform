@@ -53,6 +53,7 @@ export const WorkspacePage: React.FC = () => {
   const [code, setCode] = useState<string>('');
   const [activeLeftTab, setActiveLeftTab] = useState<'description' | 'hints' | 'assistant' | 'video'>('description');
   const [activeBottomTab, setActiveBottomTab] = useState<'tests' | 'custom' | 'console' | 'ai_review'>('tests');
+  const [mobilePane, setMobilePane] = useState<'problem' | 'editor' | 'output'>('problem');
   const [customInput, setCustomInput] = useState<string>('');
   const [relatedVideo, setRelatedVideo] = useState<VideoLesson | null>(null);
 
@@ -476,7 +477,10 @@ export const WorkspacePage: React.FC = () => {
           </button>
 
           <button
-            onClick={() => handleRunCode(false)}
+            onClick={() => {
+              setMobilePane('output');
+              handleRunCode(false);
+            }}
             disabled={isRunning || isSubmitting}
             title="Run Code (Ctrl+Enter)"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition active:scale-95 disabled:opacity-50"
@@ -490,7 +494,10 @@ export const WorkspacePage: React.FC = () => {
           </button>
 
           <button
-            onClick={handleSubmit}
+            onClick={() => {
+              setMobilePane('output');
+              handleSubmit();
+            }}
             disabled={isRunning || isSubmitting}
             title="Submit Solution (Ctrl+Shift+Enter)"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition active:scale-95 disabled:opacity-50"
@@ -513,10 +520,36 @@ export const WorkspacePage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile IDE Pane Switcher (< lg) so mobile coders never fight nested vertical scrolls */}
+      <div className="lg:hidden grid grid-cols-3 gap-1 p-1 bg-[#080B14] border-x border-b border-slate-800 text-xs font-bold">
+        {[
+          { id: 'problem' as const, label: 'Problem & AI' },
+          { id: 'editor' as const, label: 'Code Editor' },
+          { id: 'output' as const, label: 'Tests & Output' },
+        ].map((pane) => (
+          <button
+            key={pane.id}
+            type="button"
+            onClick={() => setMobilePane(pane.id)}
+            className={`py-2 rounded-xl transition ${
+              mobilePane === pane.id
+                ? 'bg-indigo-600 text-white shadow'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            {pane.label}
+          </button>
+        ))}
+      </div>
+
       {/* Main Workspace Split Panels */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0 border-x border-b border-slate-800 rounded-b-2xl overflow-hidden">
         {/* Left Panel */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-[#080B14] border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col min-h-[300px] lg:min-h-0">
+        <div
+          className={`lg:col-span-5 xl:col-span-4 bg-[#080B14] border-b lg:border-b-0 lg:border-r border-slate-800 flex-col min-h-[54dvh] lg:min-h-0 ${
+            mobilePane === 'problem' ? 'flex' : 'hidden lg:flex'
+          }`}
+        >
           <div className="flex items-center border-b border-slate-800 px-2 bg-slate-950/70 text-xs overflow-x-auto">
             {[
               { id: 'description', label: 'Problem', icon: null },
@@ -585,6 +618,7 @@ export const WorkspacePage: React.FC = () => {
                             onClick={() => {
                               setCustomInput(ex.input.replace(/\\n/g, '\n'));
                               setActiveBottomTab('custom');
+                              setMobilePane('output');
                               showToast(`Loaded Example #${i + 1} into Custom Input`, 'info');
                             }}
                             className="text-[10px] text-indigo-400 hover:text-indigo-300 font-sans font-semibold flex items-center gap-1"
@@ -799,8 +833,16 @@ export const WorkspacePage: React.FC = () => {
         </div>
 
         {/* Right Panel: Monaco Editor + Test Execution */}
-        <div className="lg:col-span-7 xl:col-span-8 flex flex-col min-h-[520px] lg:min-h-0 bg-[#090D18]">
-          <div className="flex-1 min-h-[260px] relative">
+        <div
+          className={`lg:col-span-7 xl:col-span-8 flex-col lg:min-h-0 bg-[#090D18] ${
+            mobilePane === 'problem' ? 'hidden lg:flex' : 'flex'
+          }`}
+        >
+          <div
+            className={`h-[56dvh] lg:h-auto lg:flex-1 lg:min-h-[260px] relative ${
+              mobilePane === 'editor' ? 'block' : 'hidden lg:block'
+            }`}
+          >
             <Editor
               height="100%"
               language={selectedLanguage === 'cpp' ? 'cpp' : selectedLanguage}
@@ -823,7 +865,11 @@ export const WorkspacePage: React.FC = () => {
           </div>
 
           {/* Bottom Execution Panel */}
-          <div className="h-64 border-t border-slate-800 bg-[#080B14] flex flex-col shrink-0">
+          <div
+            className={`h-[56dvh] lg:h-64 border-t border-slate-800 bg-[#080B14] flex-col shrink-0 ${
+              mobilePane === 'output' ? 'flex' : 'hidden lg:flex'
+            }`}
+          >
             <div className="flex flex-wrap items-center justify-between border-b border-slate-800 px-3 sm:px-4 bg-slate-950/80 text-xs gap-2">
               <div className="flex items-center gap-1 overflow-x-auto">
                 {[

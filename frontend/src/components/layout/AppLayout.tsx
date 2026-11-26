@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate, Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../../context/useContexts';
 import { BrandLogo } from '../common/BrandLogo';
 import { Footer } from './Footer';
@@ -233,7 +234,7 @@ export const AppLayout: React.FC = () => {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <div className="h-screen bg-[#05070E] text-slate-100 flex overflow-hidden">
+    <div className="h-dvh bg-[#05070E] text-slate-100 flex overflow-hidden">
       {searchModalOpen && (
         <GlobalSearchModal onClose={() => setSearchModalOpen(false)} />
       )}
@@ -429,22 +430,22 @@ export const AppLayout: React.FC = () => {
       {/* Main Content Area — independent internal scroll keeping Topbar & Sidebar fixed */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Navigation Bar */}
-        <header className="h-16 border-b border-slate-800/80 bg-[#080B14]/85 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 no-print">
+        <header className="h-14 sm:h-16 border-b border-slate-800/80 bg-[#080B14]/85 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between gap-2 z-20 shrink-0 no-print">
           {/* Left: Mobile toggle, Desktop Sidebar Toggle & Breadcrumbs */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg bg-slate-800/60"
+              className="md:hidden p-2 text-slate-300 hover:text-white rounded-xl bg-slate-800/70 border border-slate-700/70 shrink-0"
               aria-label="Open menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             <button
               type="button"
               onClick={toggleSidebar}
-              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/40 text-xs font-medium text-slate-300 transition"
+              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/40 text-xs font-medium text-slate-300 transition shrink-0"
               title={collapsed ? 'Expand Navigation (Ctrl+B)' : 'Collapse Navigation (Ctrl+B)'}
               aria-label={collapsed ? 'Expand Navigation' : 'Collapse Navigation'}
             >
@@ -458,20 +459,23 @@ export const AppLayout: React.FC = () => {
               )}
             </button>
 
-            <nav className="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <nav className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-400 min-w-0 truncate">
               {breadcrumbs.map((crumb, idx) => (
                 <React.Fragment key={crumb}>
                   {idx > 0 && <span className="text-slate-600">/</span>}
-                  <span className={idx === breadcrumbs.length - 1 ? 'text-white font-semibold' : ''}>
+                  <span className={idx === breadcrumbs.length - 1 ? 'text-white font-semibold truncate' : 'truncate'}>
                     {crumb}
                   </span>
                 </React.Fragment>
               ))}
             </nav>
+            <span className="sm:hidden text-xs font-bold text-white truncate max-w-[155px]">
+              {breadcrumbs[breadcrumbs.length - 1]}
+            </span>
           </div>
 
           {/* Right: Search, Status, Streak, Notifications, User Avatar */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             <button
               type="button"
               onClick={() => setSearchModalOpen(true)}
@@ -536,7 +540,7 @@ export const AppLayout: React.FC = () => {
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-[#0D1322] border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 animate-fadeIn">
+                <div className="fixed inset-x-3 top-16 sm:inset-x-auto sm:top-auto sm:absolute sm:right-0 sm:mt-2 sm:w-80 bg-[#0D1322] border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 animate-fadeIn">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
                     <p className="text-xs font-semibold text-white">Activity Feed</p>
                     <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-mono">
@@ -618,12 +622,54 @@ export const AppLayout: React.FC = () => {
         </header>
 
         {/* Scrollable Viewport Outlet */}
-        <main className="flex-1 overflow-y-auto bg-[#05070E] p-4 sm:p-6 lg:p-8 custom-scrollbar flex flex-col">
-          <div className="flex-1">
-            <Outlet />
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#05070E] p-3 sm:p-6 lg:p-8 pb-24 md:pb-8 custom-scrollbar flex flex-col">
+          <div className="flex-1 min-w-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname.split('/')[2] || 'dashboard'}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
           </div>
           <Footer compact />
         </main>
+
+        {/* Native-style Sticky Mobile Quick Bottom Bar */}
+        <nav
+          aria-label="Mobile quick navigation"
+          className="md:hidden fixed bottom-0 inset-x-0 z-30 border-t border-slate-800/90 bg-[#070A13]/95 backdrop-blur-xl px-1 pt-1.5 pb-safe grid grid-cols-5 gap-0.5 no-print shadow-[0_-8px_30px_rgba(0,0,0,0.45)]"
+        >
+          {[
+            { label: 'Home', path: '/app/dashboard', icon: LayoutDashboard },
+            { label: 'Tasks', path: '/app/challenges', icon: Layers },
+            { label: 'LMS', path: '/app/lms', icon: GraduationCap },
+            { label: 'Videos', path: '/app/videos', icon: Video },
+            { label: 'IDE', path: '/app/workspace/c2-lru-cache', icon: Code2 },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-[10px] font-bold transition ${
+                    isActive
+                      ? 'text-indigo-300 bg-indigo-500/15'
+                      : 'text-slate-400 active:text-white'
+                  }`
+                }
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span className="truncate max-w-full">{item.label}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
       </div>
 
       {/* Mobile Drawer Navigation (Grouped Expandable Sections) */}

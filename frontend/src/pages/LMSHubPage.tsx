@@ -137,10 +137,10 @@ export const LMSHubPage: React.FC = () => {
           <div className="text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
             Complete Guided End-to-End LMS Workflow
           </div>
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pb-1">
             {FLOW_STAGES.map((stage, idx) => (
               <React.Fragment key={stage}>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-800 text-[11px] font-semibold text-slate-200">
+                <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-800 text-[11px] font-semibold text-slate-200 whitespace-nowrap">
                   <span className="w-4 h-4 rounded bg-indigo-600/30 text-indigo-300 font-mono text-[10px] flex items-center justify-center font-bold">
                     {idx + 1}
                   </span>

@@ -245,8 +245,8 @@ export const ChallengesPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-800/80">
-          <span className="text-[11px] text-slate-500 font-semibold mr-1">Categories:</span>
+        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pt-2 pb-1 border-t border-slate-800/80">
+          <span className="text-[11px] text-slate-500 font-semibold mr-1 shrink-0">Categories:</span>
           {categories.map((cat) => {
             const catCount =
               cat === 'All' ? stats?.total : stats?.by_category?.[cat];
@@ -257,7 +257,7 @@ export const ChallengesPage: React.FC = () => {
                   setCategoryFilter(cat);
                   setPage(1);
                 }}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                className={`shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                   categoryFilter === cat
                     ? cat === 'Machine Learning'
                       ? 'bg-purple-600 text-white font-semibold shadow-md shadow-purple-600/30'

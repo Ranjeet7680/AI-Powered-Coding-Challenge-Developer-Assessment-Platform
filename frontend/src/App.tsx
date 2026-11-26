@@ -1,10 +1,12 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { useAuth } from './context/useContexts';
 import { AppLayout } from './components/layout/AppLayout';
+import { BootSplashPreloader, PageLoader } from './components/common/Preloader';
 
 // Code-split pages for fast initial load and smaller chunks
 const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
@@ -43,15 +45,6 @@ const VerifyCertificatePage = lazy(() =>
 );
 const WikiPage = lazy(() => import('./pages/WikiPage').then((m) => ({ default: m.WikiPage })));
 
-const PageLoader: React.FC = () => (
-  <div className="min-h-screen bg-[#05070E] flex items-center justify-center">
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      <span className="text-xs font-mono text-slate-400">Loading Coding Task Factory...</span>
-    </div>
-  </div>
-);
-
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
@@ -72,12 +65,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 export const App: React.FC = () => {
+  const [bootLoading, setBootLoading] = useState(true);
+
   return (
-    <BrowserRouter>
-      <ToastProvider>
-        <PreferencesProvider>
-          <AuthProvider>
-            <Suspense fallback={<PageLoader />}>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter>
+        <BootSplashPreloader
+          visible={bootLoading}
+          onComplete={() => setBootLoading(false)}
+        />
+        <ToastProvider>
+          <PreferencesProvider>
+            <AuthProvider>
+              <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
@@ -135,6 +135,7 @@ export const App: React.FC = () => {
         </PreferencesProvider>
       </ToastProvider>
     </BrowserRouter>
+    </MotionConfig>
   );
 };
 

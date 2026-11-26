@@ -124,11 +124,16 @@ export const VideoShareButton: React.FC<VideoShareButtonProps> = ({
       )}
 
       {open && (
-        <div
-          className={`absolute z-40 mt-2 w-80 sm:w-96 rounded-2xl border border-indigo-500/30 bg-[#0A0F1D] shadow-2xl p-4 space-y-3 ${
-            align === 'left' ? 'left-0' : 'right-0'
-          }`}
-        >
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/65 backdrop-blur-xs sm:hidden"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            className={`fixed inset-x-3 bottom-20 z-50 sm:inset-x-auto sm:bottom-auto sm:absolute sm:z-40 sm:mt-2 sm:w-96 rounded-2xl border border-indigo-500/35 bg-[#0A0F1D] shadow-2xl p-4 space-y-3 ${
+              align === 'left' ? 'sm:left-0' : 'sm:right-0'
+            }`}
+          >
           <div className="flex items-start justify-between gap-2">
             <div className="space-y-0.5">
               <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-emerald-300 font-bold">
@@ -210,6 +215,7 @@ export const VideoShareButton: React.FC<VideoShareButtonProps> = ({
             </button>
           )}
         </div>
+        </>
       )}
     </div>
   );

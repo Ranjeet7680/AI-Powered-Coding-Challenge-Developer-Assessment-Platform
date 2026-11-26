@@ -10,10 +10,13 @@
     --border-subtle: rgba(148, 163, 184, 0.12);
   }
 
+  html,
   body {
     font-family: var(--font-sans);
     background-color: var(--surface-canvas);
     color: #f1f5f9;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   code, pre, kbd {
@@ -24,7 +27,22 @@
   a[href],
   select:not(:disabled) {
     cursor: pointer;
+    touch-action: manipulation;
   }
+}
+
+/* Mobile-friendly utility helpers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
 /* Architectural Grid Backdrop */
@@ -110,6 +128,25 @@
 
 .animate-shake {
   animation: shakeX 0.32s ease-in-out;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-slow {
+  animation: floatSlow 4.5s ease-in-out infinite;
+}
+
+@keyframes shimmerSweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmerSweep 2.4s linear infinite;
 }
 
 /* Print Styles for Verified Certificates */

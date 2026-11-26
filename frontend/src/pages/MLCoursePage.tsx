@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
   ArrowLeft,
@@ -24,6 +25,7 @@ import {
   ShieldCheck,
   Sparkles,
   Trophy,
+  X,
   XCircle,
 } from 'lucide-react';
 import { api } from '../services/api';
@@ -87,9 +89,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string>('');
 
-  // Google Cloud Skills Boost style Page-by-Page Stepper State
+  // Google Cloud Skills Boost style Page-by-Page Stepper State (auto-collapsed on <1024px mobile)
   const [pageStage, setPageStage] = useState<LMSPageStage>('watch');
-  const [outlineOpen, setOutlineOpen] = useState<boolean>(true);
+  const [outlineOpen, setOutlineOpen] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
   const [selectedLessonId, setSelectedLessonId] = useState<string>(isDL ? 'dl-001' : 'ml-001');
   const [videoJustFinished, setVideoJustFinished] = useState<boolean>(false);
 
@@ -259,6 +263,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       setSelectedQuizOption(prevQ ? prevQ.selected : null);
       setQuizFeedback(null);
       navigate(`${basePath}/${lesson.id}`, { replace: true });
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+        setOutlineOpen(false);
+      }
       scrollToStageTop();
     },
     [basePath, navigate, notesByLesson, quizResults]
@@ -269,6 +276,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       stage: 'quiz-bank' | 'capstone' | 'final-exam' | 'reviews' | 'certificate' | 'goodies' | 'done'
     ) => {
       setPageStage(stage);
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+        setOutlineOpen(false);
+      }
       scrollToStageTop();
     },
     []
@@ -911,31 +921,56 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
       {/* Main Two-Column Guided Classroom Body */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left Collapsible Outline Rail */}
+        {/* Responsive Outline Rail: Slide-over Drawer on Mobile/Tablet, Sticky Sidebar on Desktop */}
         {outlineOpen && (
-          <div className="lg:col-span-3 lg:sticky lg:top-4">
-            <CourseOutlineRail
-              modules={course.modules}
-              lessons={course.lessons}
-              activeLessonId={activeLesson.id}
-              activeStage={pageStage}
-              completedLessons={completedLessons}
-              notesByLesson={notesByLesson}
-              quizResults={quizResults}
-              capstoneSubmittedCount={capstoneSubmissions.length}
-              examPassed={savedExamPassed}
-              hasFeedback={hasOwnReview}
-              certificateEarned={Boolean(earnedCertificate)}
-              goodiesClaimed={Boolean(goodiesClaim)}
-              isDL={isDL}
-              onSelectLessonActivity={openLessonStage}
-              onSelectMilestoneStage={openMilestoneStage}
+          <div className="fixed inset-0 z-50 flex lg:static lg:inset-auto lg:z-auto lg:block lg:col-span-3 lg:sticky lg:top-4">
+            <div
+              className="fixed inset-0 bg-black/75 backdrop-blur-xs lg:hidden"
+              onClick={() => setOutlineOpen(false)}
             />
+            <div className="relative z-10 w-[86vw] max-w-sm lg:w-full h-full lg:h-auto overflow-y-auto bg-[#05070E] lg:bg-transparent p-3 lg:p-0 border-r border-slate-800 lg:border-none">
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-800 lg:hidden">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-300">
+                  Curriculum Navigator
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setOutlineOpen(false)}
+                  className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                  aria-label="Close course outline"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <CourseOutlineRail
+                modules={course.modules}
+                lessons={course.lessons}
+                activeLessonId={activeLesson.id}
+                activeStage={pageStage}
+                completedLessons={completedLessons}
+                notesByLesson={notesByLesson}
+                quizResults={quizResults}
+                capstoneSubmittedCount={capstoneSubmissions.length}
+                examPassed={savedExamPassed}
+                hasFeedback={hasOwnReview}
+                certificateEarned={Boolean(earnedCertificate)}
+                goodiesClaimed={Boolean(goodiesClaim)}
+                isDL={isDL}
+                onSelectLessonActivity={openLessonStage}
+                onSelectMilestoneStage={openMilestoneStage}
+              />
+            </div>
           </div>
         )}
 
         {/* Right Single-Focus Page Canvas + Bottom Pager */}
-        <div className={`${outlineOpen ? 'lg:col-span-9' : 'lg:col-span-12'} space-y-4`}>
+        <motion.div
+          key={`${pageStage}-${pageStage === 'watch' || pageStage === 'notes' || pageStage === 'quiz' ? activeLesson.id : 'milestone'}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className={`${outlineOpen ? 'lg:col-span-9' : 'lg:col-span-12'} space-y-4`}
+        >
           {/* Sub-Stepper Pill Header when viewing any Lecture Activity (Watch / Notes / Quiz) */}
           {(pageStage === 'watch' || pageStage === 'notes' || pageStage === 'quiz') && (
             <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3">
@@ -965,11 +1000,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               </h1>
 
               {/* 3-Step Sequential Activity Switcher Inside Current Lecture */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/80">
+              <div className="flex items-center overflow-x-auto no-scrollbar gap-2 pt-1 pb-1 border-t border-slate-800/80">
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'watch')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
                     pageStage === 'watch'
                       ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
                       : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-indigo-500/40'
@@ -979,11 +1014,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   Step 1: Watch Video
                   {isLessonCompleted && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />}
                 </button>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-600" />
+                <ArrowRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'notes')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
                     pageStage === 'notes'
                       ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25'
                       : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-cyan-500/40'
@@ -992,11 +1027,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   <BookOpen className="w-3.5 h-3.5" />
                   Step 2: Study Notes &amp; Code
                 </button>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-600" />
+                <ArrowRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'quiz')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
                     pageStage === 'quiz'
                       ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
                       : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-emerald-500/40'
@@ -1781,7 +1816,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 )}
               </div>
 
-              <div className="xl:col-span-4 sticky top-4">
+              <div className="xl:col-span-4 xl:sticky xl:top-4 order-first xl:order-last">
                 <ProctorCameraGuard
                   active={examPhase === 'active'}
                   maxViolations={3}
@@ -1846,26 +1881,26 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           )}
 
           {/* Pinned Google Cloud Skills Boost Bottom Page-by-Page Navigator */}
-          <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] p-3.5 sm:px-5 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] p-3.5 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 shadow-lg">
             <button
               type="button"
               onClick={handlePagerPrev}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200 transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200 transition"
             >
-              <ChevronLeft className="w-4 h-4" />
-              {pagerMeta.prevText}
+              <ChevronLeft className="w-4 h-4 shrink-0" />
+              <span className="truncate">{pagerMeta.prevText.replace(/^←\s*/, '')}</span>
             </button>
 
             <span className="text-[11px] font-mono text-slate-400 text-center hidden md:inline">
               {pagerMeta.label}
             </span>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
               {pagerMeta.secondaryText && (
                 <button
                   type="button"
                   onClick={handlePagerSecondary}
-                  className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-cyan-300 transition"
+                  className="px-3.5 py-2.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-cyan-300 transition text-center"
                 >
                   {pagerMeta.secondaryText}
                 </button>
@@ -1873,13 +1908,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               <button
                 type="button"
                 onClick={handlePagerNext}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition shadow-lg shadow-indigo-500/20"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition shadow-lg shadow-indigo-500/20"
               >
-                {pagerMeta.nextText}
+                <span className="truncate">{pagerMeta.nextText.replace(/\s*→$/, '')}</span>
+                <ChevronRight className="w-4 h-4 shrink-0" />
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
