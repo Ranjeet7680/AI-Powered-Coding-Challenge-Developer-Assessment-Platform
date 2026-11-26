@@ -29,6 +29,12 @@ const MLCoursePage = lazy(() =>
 const DLCoursePage = lazy(() =>
   import('./pages/MLCoursePage').then((m) => ({ default: m.DLCoursePage }))
 );
+const LMSHubPage = lazy(() =>
+  import('./pages/LMSHubPage').then((m) => ({ default: m.LMSHubPage }))
+);
+const CourseDetailPage = lazy(() =>
+  import('./pages/CourseDetailPage').then((m) => ({ default: m.CourseDetailPage }))
+);
 const VerifyCertificatePage = lazy(() =>
   import('./pages/VerifyCertificatePage').then((m) => ({ default: m.VerifyCertificatePage }))
 );
@@ -98,6 +104,8 @@ export const App: React.FC = () => {
                 >
                   <Route index element={<Navigate to="/app/dashboard" replace />} />
                   <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="lms" element={<LMSHubPage />} />
+                  <Route path="lms/:track" element={<CourseDetailPage />} />
                   <Route path="ml-course" element={<MLCoursePage />} />
                   <Route path="ml-course/:lessonId" element={<MLCoursePage />} />
                   <Route path="dl-course" element={<DLCoursePage />} />

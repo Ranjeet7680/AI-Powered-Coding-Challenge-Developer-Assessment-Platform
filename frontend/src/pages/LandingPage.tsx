@@ -792,7 +792,15 @@ public:
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <Link
-                to="/app/ml-course"
+                to="/app/lms"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-emerald-600/25"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Explore LMS Academies</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/app/lms/ml"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/25"
               >
                 <BrainCircuit className="w-4 h-4" />
@@ -800,18 +808,11 @@ public:
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                to="/app/dl-course"
+                to="/app/lms/dl"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-rose-600/25"
               >
                 <GraduationCap className="w-4 h-4" />
-                <span>Stanford × CTF Deep Learning (21)</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                to="/app/videos"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition"
-              >
-                <span>All Masterclasses</span>
+                <span>Stanford × CTF DL (21)</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -820,7 +821,7 @@ public:
           {/* Official Featured LMS Course Thumbnails */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <Link
-              to="/app/ml-course"
+              to="/app/lms/ml"
               className="group relative rounded-3xl overflow-hidden border border-indigo-500/35 bg-[#080B15] hover:border-indigo-400 transition shadow-2xl"
             >
               <img
@@ -830,7 +831,7 @@ public:
               />
             </Link>
             <Link
-              to="/app/dl-course"
+              to="/app/lms/dl"
               className="group relative rounded-3xl overflow-hidden border border-rose-500/40 bg-[#080B15] hover:border-rose-400 transition shadow-2xl"
             >
               <img

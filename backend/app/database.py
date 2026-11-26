@@ -52,36 +52,49 @@ _CERTIFICATE_COLUMN_MIGRATIONS = {
 }
 
 
+_COURSE_REVIEW_COLUMN_MIGRATIONS = {
+    "content_rating": ("INTEGER DEFAULT 5", "INTEGER DEFAULT 5"),
+    "quiz_rating": ("INTEGER DEFAULT 5", "INTEGER DEFAULT 5"),
+    "nps_score": ("INTEGER DEFAULT 10", "INTEGER DEFAULT 10"),
+    "improvement_suggestion": ("TEXT DEFAULT ''", "TEXT DEFAULT ''"),
+}
+
+
+def _apply_column_migrations(conn, is_sqlite: bool, table_name: str, migrations: dict) -> None:
+    if is_sqlite:
+        table_exists = conn.execute(
+            text(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+        ).fetchone()
+        if not table_exists:
+            return
+        existing_cols = {
+            row[1]
+            for row in conn.execute(text(f"PRAGMA table_info({table_name})")).fetchall()
+        }
+        for col_name, (sqlite_def, _) in migrations.items():
+            if col_name not in existing_cols:
+                conn.execute(
+                    text(f"ALTER TABLE {table_name} ADD COLUMN {col_name} {sqlite_def}")
+                )
+    else:
+        table_exists = conn.execute(
+            text(f"SELECT to_regclass('public.{table_name}')")
+        ).scalar()
+        if not table_exists:
+            return
+        for col_name, (_, pg_def) in migrations.items():
+            conn.execute(
+                text(f"ALTER TABLE {table_name} ADD COLUMN IF NOT EXISTS {col_name} {pg_def}")
+            )
+
+
 def ensure_schema_migrations(target_engine=engine):
     """Idempotently add newly introduced columns on existing SQLite or Postgres databases."""
     url_str = str(target_engine.url)
     is_sqlite = url_str.startswith("sqlite")
     with target_engine.begin() as conn:
-        if is_sqlite:
-            table_exists = conn.execute(
-                text("SELECT name FROM sqlite_master WHERE type='table' AND name='certificates'")
-            ).fetchone()
-            if not table_exists:
-                return
-            existing_cols = {
-                row[1]
-                for row in conn.execute(text("PRAGMA table_info(certificates)")).fetchall()
-            }
-            for col_name, (sqlite_def, _) in _CERTIFICATE_COLUMN_MIGRATIONS.items():
-                if col_name not in existing_cols:
-                    conn.execute(
-                        text(f"ALTER TABLE certificates ADD COLUMN {col_name} {sqlite_def}")
-                    )
-        else:
-            table_exists = conn.execute(
-                text("SELECT to_regclass('public.certificates')")
-            ).scalar()
-            if not table_exists:
-                return
-            for col_name, (_, pg_def) in _CERTIFICATE_COLUMN_MIGRATIONS.items():
-                conn.execute(
-                    text(f"ALTER TABLE certificates ADD COLUMN IF NOT EXISTS {col_name} {pg_def}")
-                )
+        _apply_column_migrations(conn, is_sqlite, "certificates", _CERTIFICATE_COLUMN_MIGRATIONS)
+        _apply_column_migrations(conn, is_sqlite, "course_reviews", _COURSE_REVIEW_COLUMN_MIGRATIONS)
 
 
 def get_db():

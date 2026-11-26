@@ -83,6 +83,11 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
             </h4>
             <ul className="space-y-1.5 text-slate-400">
               <li>
+                <Link to="/app/lms" className="text-cyan-300 hover:text-cyan-200 font-semibold transition">
+                  LMS Academies Hub
+                </Link>
+              </li>
+              <li>
                 <Link to="/app/ml-course" className="text-emerald-300 hover:text-emerald-200 font-semibold transition">
                   ML Course LMS (106)
                 </Link>

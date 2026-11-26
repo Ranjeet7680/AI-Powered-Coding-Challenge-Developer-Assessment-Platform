@@ -348,6 +348,10 @@ export interface MLCourseReviewItem {
   author_name: string;
   author_role: string;
   rating: number;
+  content_rating?: number;
+  quiz_rating?: number;
+  nps_score?: number;
+  improvement_suggestion?: string;
   headline: string;
   comment: string;
   verified_learner: boolean;
@@ -363,6 +367,58 @@ export interface MLCourseReviewsOverview {
   total_reviews: number;
   rating_breakdown: Record<string, number>;
   reviews: MLCourseReviewItem[];
+}
+
+export interface MLCourseReviewSubmitPayload {
+  rating: number;
+  headline: string;
+  comment: string;
+  content_rating?: number;
+  quiz_rating?: number;
+  nps_score?: number;
+  improvement_suggestion?: string;
+}
+
+export interface MLCourseGoodiesClaimPayload {
+  full_name: string;
+  email: string;
+  phone?: string;
+  tshirt_size: string;
+  swag_bundle: string;
+  address_line: string;
+  city: string;
+  state?: string;
+  postal_code: string;
+  country: string;
+  linkedin_url?: string;
+  notes?: string;
+}
+
+export interface MLCourseGoodiesClaim {
+  id: string;
+  course_id: string;
+  dispatch_code: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  tshirt_size: string;
+  swag_bundle: string;
+  address_line: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  linkedin_url: string;
+  notes: string;
+  status: string;
+  points_awarded?: number;
+  created_at: string;
+}
+
+export interface MLCourseGoodiesStatus {
+  claimed: boolean;
+  certificate_earned: boolean;
+  claim: MLCourseGoodiesClaim | null;
 }
 
 export interface MLQuizAnswerResponse {

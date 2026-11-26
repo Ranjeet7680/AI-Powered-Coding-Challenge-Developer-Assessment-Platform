@@ -457,3 +457,77 @@ def test_lms_in_lms_player_advanced_syllabus_capstones_and_reviews(ml_client: Te
     vote2 = ml_client.post(f"/api/dl-course/reviews/{created_rev['id']}/helpful", headers=headers).json()
     assert vote2["viewer_has_voted"] is False
     assert vote2["helpful_count"] == 0
+
+
+def test_lms_feedback_certificate_goodies_claim_end_to_end(ml_client: TestClient):
+    headers = _register_and_auth(ml_client)
+
+    # 1. Certificate check before exam
+    cert_before = ml_client.get("/api/dl-course/certificate", headers=headers).json()
+    assert cert_before["earned"] is False
+    assert cert_before["certificate"] is None
+
+    # 2. Structured Feedback Survey Submission
+    fb_resp = ml_client.post(
+        "/api/dl-course/reviews",
+        json={
+            "rating": 5,
+            "content_rating": 5,
+            "quiz_rating": 5,
+            "nps_score": 10,
+            "headline": "End-to-end flow feels seamless",
+            "comment": "Detail -> syllabus -> lectures -> quiz -> exam -> certificate -> goodies worked cleanly.",
+            "improvement_suggestion": "Keep adding more PyTorch capstones!",
+        },
+        headers=headers,
+    )
+    assert fb_resp.status_code == 200, fb_resp.text
+    fb = fb_resp.json()
+    assert fb["content_rating"] == 5
+    assert fb["quiz_rating"] == 5
+    assert fb["nps_score"] == 10
+
+    # 3. Goodies Swag Claim Form Validation & Persistence (+50 XP)
+    bad_goodies = ml_client.post(
+        "/api/dl-course/goodies",
+        json={
+            "full_name": "",
+            "email": "test@example.com",
+            "swag_bundle": "Complete Graduate Swag Box",
+            "address_line": "",
+            "city": "",
+            "postal_code": "",
+            "country": "",
+        },
+        headers=headers,
+    )
+    assert bad_goodies.status_code == 400
+
+    good_res = ml_client.post(
+        "/api/dl-course/goodies",
+        json={
+            "full_name": "Ada Lovelace",
+            "email": "ada@example.com",
+            "phone": "+91 9876543210",
+            "tshirt_size": "M",
+            "swag_bundle": "Complete Graduate Swag Box",
+            "address_line": "42 Neural Network Blvd, Apt 7B",
+            "city": "Bengaluru",
+            "state": "KA",
+            "postal_code": "560001",
+            "country": "India",
+            "linkedin_url": "https://linkedin.com/in/ada-ml",
+            "notes": "Excited for the hoodie!",
+        },
+        headers=headers,
+    )
+    assert good_res.status_code == 200, good_res.text
+    claim = good_res.json()
+    assert claim["dispatch_code"].startswith("CTF-SWAG-")
+    assert claim["points_awarded"] == 50
+    assert claim["swag_bundle"] == "Complete Graduate Swag Box"
+
+    # Second status check confirms persistence
+    status_res = ml_client.get("/api/dl-course/goodies", headers=headers).json()
+    assert status_res["claimed"] is True
+    assert status_res["claim"]["dispatch_code"] == claim["dispatch_code"]

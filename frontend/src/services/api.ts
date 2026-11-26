@@ -25,6 +25,10 @@ import {
   MLCapstoneSubmitPayload,
   MLCourseReviewsOverview,
   MLCourseReviewItem,
+  MLCourseReviewSubmitPayload,
+  MLCourseGoodiesClaimPayload,
+  MLCourseGoodiesClaim,
+  MLCourseGoodiesStatus,
 } from '../types';
 
 const API_BASE = '/api';
@@ -373,7 +377,7 @@ function createCourseClient(basePath: '/ml-course' | '/dl-course') {
 
     getReviews: () => request<MLCourseReviewsOverview>(`${basePath}/reviews`),
 
-    submitReview: (payload: { rating: number; headline: string; comment: string }) =>
+    submitReview: (payload: MLCourseReviewSubmitPayload) =>
       request<MLCourseReviewItem>(`${basePath}/reviews`, {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -384,5 +388,16 @@ function createCourseClient(basePath: '/ml-course' | '/dl-course') {
         `${basePath}/reviews/${encodeURIComponent(reviewId)}/helpful`,
         { method: 'POST' }
       ),
+
+    getEarnedCertificate: () =>
+      request<{ earned: boolean; certificate: Certificate | null }>(`${basePath}/certificate`),
+
+    getGoodies: () => request<MLCourseGoodiesStatus>(`${basePath}/goodies`),
+
+    submitGoodies: (payload: MLCourseGoodiesClaimPayload) =>
+      request<MLCourseGoodiesClaim>(`${basePath}/goodies`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
   };
 }

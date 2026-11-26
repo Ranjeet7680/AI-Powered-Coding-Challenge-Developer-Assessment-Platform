@@ -413,6 +413,10 @@ class CourseReviewCreateRequest(BaseModel):
     rating: int
     headline: str
     comment: str
+    content_rating: int = 5
+    quiz_rating: int = 5
+    nps_score: int = 10
+    improvement_suggestion: str = ""
 
 
 class CourseReviewItem(BaseModel):
@@ -421,6 +425,10 @@ class CourseReviewItem(BaseModel):
     author_name: str
     author_role: str
     rating: int
+    content_rating: int = 5
+    quiz_rating: int = 5
+    nps_score: int = 10
+    improvement_suggestion: str = ""
     headline: str
     comment: str
     verified_learner: bool = False
@@ -436,6 +444,44 @@ class CourseReviewsOverviewResponse(BaseModel):
     total_reviews: int
     rating_breakdown: Dict[str, int]
     reviews: List[CourseReviewItem]
+
+
+class CourseGoodiesClaimRequest(BaseModel):
+    full_name: str
+    email: str
+    phone: str = ""
+    tshirt_size: str = "L"
+    swag_bundle: str
+    address_line: str
+    city: str
+    state: str = ""
+    postal_code: str
+    country: str
+    linkedin_url: str = ""
+    notes: str = ""
+
+
+class CourseGoodiesClaimResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    course_id: str
+    dispatch_code: str
+    full_name: str
+    email: str
+    phone: str = ""
+    tshirt_size: str = "L"
+    swag_bundle: str
+    address_line: str
+    city: str
+    state: str = ""
+    postal_code: str
+    country: str
+    linkedin_url: str = ""
+    notes: str = ""
+    status: str
+    points_awarded: int = 0
+    created_at: datetime.datetime
 
 
 AssessmentCompleteResponse.model_rebuild()

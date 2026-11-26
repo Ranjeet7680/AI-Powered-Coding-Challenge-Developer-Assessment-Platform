@@ -20,6 +20,7 @@ import {
   MLCapstoneSubmission,
   MLCapstoneSubmitPayload,
   MLCourseReviewsOverview,
+  MLCourseReviewSubmitPayload,
   MLLessonItem,
   MLModuleInfo,
   MLQuizResultRecord,
@@ -523,13 +524,14 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
 };
 
 /* ============================================================================
- * 3. COURSE PEER REVIEWS & RATINGS SYSTEM PANEL
+ * 3. COURSE FEEDBACK PAGE, SURVEY METRICS & PEER REVIEWS SYSTEM PANEL
  * ==========================================================================*/
 interface CourseReviewsPanelProps {
   courseTitle: string;
   reviewsData: MLCourseReviewsOverview | null;
-  onSubmitReview: (payload: { rating: number; headline: string; comment: string }) => Promise<void>;
+  onSubmitReview: (payload: MLCourseReviewSubmitPayload) => Promise<void>;
   onToggleHelpful: (reviewId: string) => Promise<void>;
+  onProceedToCertificate?: () => void;
   isSubmittingReview: boolean;
 }
 
@@ -538,18 +540,34 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
   reviewsData,
   onSubmitReview,
   onToggleHelpful,
+  onProceedToCertificate,
   isSubmittingReview,
 }) => {
   const [rating, setRating] = useState<number>(5);
+  const [contentRating, setContentRating] = useState<number>(5);
+  const [quizRating, setQuizRating] = useState<number>(5);
+  const [npsScore, setNpsScore] = useState<number>(10);
   const [headline, setHeadline] = useState<string>('');
   const [comment, setComment] = useState<string>('');
+  const [improvementSuggestion, setImprovementSuggestion] = useState<string>('');
+  const [submittedJustNow, setSubmittedJustNow] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!headline.trim() || !comment.trim()) return;
-    await onSubmitReview({ rating, headline, comment });
+    await onSubmitReview({
+      rating,
+      content_rating: contentRating,
+      quiz_rating: quizRating,
+      nps_score: npsScore,
+      headline,
+      comment,
+      improvement_suggestion: improvementSuggestion,
+    });
     setHeadline('');
     setComment('');
+    setImprovementSuggestion('');
+    setSubmittedJustNow(true);
   };
 
   const total = reviewsData?.total_reviews || 0;
@@ -557,20 +575,20 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      {/* Left: Rating Summary + Breakdown + Write Review Form */}
+      {/* Left: Rating Summary + Structured Feedback Survey Form */}
       <div className="lg:col-span-5 space-y-5">
         <div className="rounded-2xl border border-amber-500/25 bg-slate-900/80 p-5 space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-amber-300">
-                Verified Learner Rating
+                Course Feedback &amp; Verified Ratings
               </div>
               <div className="text-4xl font-black text-white mt-1 flex items-center gap-2">
                 {avg}
                 <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
               </div>
               <div className="text-xs text-slate-400 mt-1">
-                Based on {total} peer reviews for {courseTitle}
+                Based on {total} learner feedback submissions for {courseTitle}
               </div>
             </div>
           </div>
@@ -599,25 +617,99 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
           onSubmit={handleSubmit}
           className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4"
         >
-          <h3 className="text-sm font-bold text-white">Write or Update Your Course Review</h3>
-
-          <div className="flex items-center gap-1.5">
-            {[1, 2, 3, 4, 5].map((starVal) => (
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-white">Submit Course Feedback &amp; Review</h3>
+            {submittedJustNow && onProceedToCertificate && (
               <button
-                key={starVal}
                 type="button"
-                onClick={() => setRating(starVal)}
-                aria-label={`Rate ${starVal} stars`}
-                className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400/50 transition"
+                onClick={onProceedToCertificate}
+                className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
               >
-                <Star
-                  className={`w-5 h-5 ${
-                    starVal <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'
-                  }`}
-                />
+                Next: Certificate →
               </button>
-            ))}
-            <span className="ml-2 text-xs font-bold text-amber-300">{rating}.0 / 5.0</span>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <span className="text-[11px] font-semibold text-slate-400">Overall Rating</span>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((starVal) => (
+                <button
+                  key={starVal}
+                  type="button"
+                  onClick={() => setRating(starVal)}
+                  aria-label={`Rate ${starVal} stars`}
+                  className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400/50 transition"
+                >
+                  <Star
+                    className={`w-5 h-5 ${
+                      starVal <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'
+                    }`}
+                  />
+                </button>
+              ))}
+              <span className="ml-2 text-xs font-bold text-amber-300">{rating}.0 / 5.0</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-[11px]">
+            <div className="rounded-xl bg-slate-950/75 border border-slate-800 p-2.5 space-y-1.5">
+              <div className="text-slate-400 font-semibold">Lecture Clarity ({contentRating}/5)</div>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setContentRating(v)}
+                    className={`flex-1 py-1 rounded text-[10px] font-bold ${
+                      v <= contentRating ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'
+                    }`}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-xl bg-slate-950/75 border border-slate-800 p-2.5 space-y-1.5">
+              <div className="text-slate-400 font-semibold">Quizzes &amp; Exam ({quizRating}/5)</div>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setQuizRating(v)}
+                    className={`flex-1 py-1 rounded text-[10px] font-bold ${
+                      v <= quizRating ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400'
+                    }`}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex justify-between text-[11px]">
+              <span className="text-slate-400 font-semibold">Recommend Score (NPS)</span>
+              <span className="font-mono font-bold text-emerald-300">{npsScore}/10</span>
+            </div>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val) => (
+                <button
+                  key={val}
+                  type="button"
+                  onClick={() => setNpsScore(val)}
+                  className={`flex-1 py-1 rounded text-[10px] font-mono font-bold ${
+                    val <= npsScore
+                      ? 'bg-emerald-600/80 text-white'
+                      : 'bg-slate-950 border border-slate-800 text-slate-500'
+                  }`}
+                >
+                  {val}
+                </button>
+              ))}
+            </div>
           </div>
 
           <input
@@ -625,27 +717,46 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
             required
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
-            placeholder="Summary headline (e.g. Crystal clear derivations & capstones)"
+            placeholder="Feedback headline (e.g. Crystal clear derivations & capstones)"
             className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-400 focus:outline-none text-xs text-white"
           />
 
           <textarea
             required
-            rows={4}
+            rows={3}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share what helped you most in the video lectures, notes, quizzes, capstone projects, or proctored exam..."
+            placeholder="Share your experience across lectures, after-video quizzes, capstone & camera exam..."
             className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-400 focus:outline-none text-xs text-slate-200 leading-relaxed"
           />
 
-          <button
-            type="submit"
-            disabled={isSubmittingReview}
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 text-xs font-extrabold transition"
-          >
-            <Send className="w-3.5 h-3.5" />
-            {isSubmittingReview ? 'Publishing Review...' : 'Publish Review (+20 XP)'}
-          </button>
+          <input
+            type="text"
+            value={improvementSuggestion}
+            onChange={(e) => setImprovementSuggestion(e.target.value)}
+            placeholder="What could make future cohorts even better? (optional)"
+            className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-400 focus:outline-none text-xs text-slate-300"
+          />
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button
+              type="submit"
+              disabled={isSubmittingReview}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 text-xs font-extrabold transition"
+            >
+              <Send className="w-3.5 h-3.5" />
+              {isSubmittingReview ? 'Submitting Feedback...' : 'Submit Feedback (+20 XP)'}
+            </button>
+            {onProceedToCertificate && (
+              <button
+                type="button"
+                onClick={onProceedToCertificate}
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+              >
+                Next: Certificate <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -672,7 +783,7 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
                   )}
                   {rev.is_own_review && (
                     <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">
-                      Your Review
+                      Your Feedback
                     </span>
                   )}
                 </div>
@@ -692,6 +803,16 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed">{rev.comment}</p>
+
+            {(rev.content_rating || rev.quiz_rating) && (
+              <div className="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400">
+                <span>Clarity: {rev.content_rating ?? 5}/5</span>
+                <span>•</span>
+                <span>Quizzes: {rev.quiz_rating ?? 5}/5</span>
+                <span>•</span>
+                <span>NPS: {rev.nps_score ?? 10}/10</span>
+              </div>
+            )}
 
             <div className="flex items-center justify-between pt-2 border-t border-slate-800/70 text-[11px]">
               <span className="text-slate-500 font-mono">

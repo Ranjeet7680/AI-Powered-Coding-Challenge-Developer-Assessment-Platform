@@ -22,6 +22,7 @@ from ..database import get_db
 from ..models import (
     Certificate,
     CourseCapstoneSubmission,
+    CourseGoodiesClaim,
     CourseLMSProgress,
     CourseReview,
     MLCourseProgress,
@@ -31,6 +32,8 @@ from ..schemas import (
     CapstoneSubmissionResponse,
     CapstoneSubmitRequest,
     CertificateResponse,
+    CourseGoodiesClaimRequest,
+    CourseGoodiesClaimResponse,
     CourseReviewCreateRequest,
     CourseReviewItem,
     CourseReviewsOverviewResponse,
@@ -328,6 +331,10 @@ def _serialize_review(r: CourseReview, viewer_id: Optional[str]) -> CourseReview
         author_name=r.author_name,
         author_role=r.author_role or "Developer",
         rating=int(r.rating),
+        content_rating=int(getattr(r, "content_rating", None) or 5),
+        quiz_rating=int(getattr(r, "quiz_rating", None) or 5),
+        nps_score=int(getattr(r, "nps_score", None) or 10),
+        improvement_suggestion=getattr(r, "improvement_suggestion", "") or "",
         headline=r.headline,
         comment=r.comment,
         verified_learner=bool(r.verified_learner),
@@ -668,6 +675,10 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
         )
         if existing:
             existing.rating = payload.rating
+            existing.content_rating = max(1, min(5, payload.content_rating))
+            existing.quiz_rating = max(1, min(5, payload.quiz_rating))
+            existing.nps_score = max(0, min(10, payload.nps_score))
+            existing.improvement_suggestion = payload.improvement_suggestion.strip()
             existing.headline = headline
             existing.comment = comment
             existing.author_name = user.full_name or existing.author_name
@@ -685,6 +696,10 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
             author_name=user.full_name or "Developer",
             author_role=user.role or "AI / ML Engineer",
             rating=payload.rating,
+            content_rating=max(1, min(5, payload.content_rating)),
+            quiz_rating=max(1, min(5, payload.quiz_rating)),
+            nps_score=max(0, min(10, payload.nps_score)),
+            improvement_suggestion=payload.improvement_suggestion.strip(),
             headline=headline,
             comment=comment,
             verified_learner=is_verified,
@@ -847,6 +862,119 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
             message=msg,
             certificate=cert_resp,
         )
+
+    @course_router.get("/certificate")
+    def get_course_earned_certificate(
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db),
+    ):
+        cert = (
+            db.query(Certificate)
+            .filter(Certificate.user_id == user.id, Certificate.title == track.course_title)
+            .first()
+        )
+        return {
+            "earned": bool(cert),
+            "certificate": CertificateResponse.model_validate(cert) if cert else None,
+        }
+
+    @course_router.get("/goodies")
+    def get_course_goodies_status(
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db),
+    ):
+        claim = (
+            db.query(CourseGoodiesClaim)
+            .filter(
+                CourseGoodiesClaim.user_id == user.id,
+                CourseGoodiesClaim.course_id == track.course_id,
+            )
+            .first()
+        )
+        cert_exists = (
+            db.query(Certificate)
+            .filter(Certificate.user_id == user.id, Certificate.title == track.course_title)
+            .first()
+            is not None
+        )
+        return {
+            "claimed": bool(claim),
+            "certificate_earned": cert_exists,
+            "claim": CourseGoodiesClaimResponse.model_validate(claim) if claim else None,
+        }
+
+    @course_router.post("/goodies", response_model=CourseGoodiesClaimResponse)
+    def submit_course_goodies_claim(
+        payload: CourseGoodiesClaimRequest,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db),
+    ):
+        if not payload.full_name.strip() or not payload.address_line.strip() or not payload.city.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Recipient name, street address, and city are required to dispatch goodies.",
+            )
+        if not payload.postal_code.strip() or not payload.country.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Postal code and country are required for goodies delivery.",
+            )
+
+        existing = (
+            db.query(CourseGoodiesClaim)
+            .filter(
+                CourseGoodiesClaim.user_id == user.id,
+                CourseGoodiesClaim.course_id == track.course_id,
+            )
+            .first()
+        )
+        if existing:
+            existing.full_name = payload.full_name.strip()
+            existing.email = payload.email.strip()
+            existing.phone = payload.phone.strip()
+            existing.tshirt_size = payload.tshirt_size.strip() or "L"
+            existing.swag_bundle = payload.swag_bundle.strip()
+            existing.address_line = payload.address_line.strip()
+            existing.city = payload.city.strip()
+            existing.state = payload.state.strip()
+            existing.postal_code = payload.postal_code.strip()
+            existing.country = payload.country.strip()
+            existing.linkedin_url = payload.linkedin_url.strip()
+            existing.notes = payload.notes.strip()
+            db.commit()
+            db.refresh(existing)
+            resp = CourseGoodiesClaimResponse.model_validate(existing)
+            resp.points_awarded = 0
+            return resp
+
+        dispatch_code = f"CTF-SWAG-{uuid.uuid4().hex[:6].upper()}"
+        claim = CourseGoodiesClaim(
+            id=str(uuid.uuid4()),
+            user_id=user.id,
+            course_id=track.course_id,
+            dispatch_code=dispatch_code,
+            full_name=payload.full_name.strip(),
+            email=payload.email.strip(),
+            phone=payload.phone.strip(),
+            tshirt_size=payload.tshirt_size.strip() or "L",
+            swag_bundle=payload.swag_bundle.strip(),
+            address_line=payload.address_line.strip(),
+            city=payload.city.strip(),
+            state=payload.state.strip(),
+            postal_code=payload.postal_code.strip(),
+            country=payload.country.strip(),
+            linkedin_url=payload.linkedin_url.strip(),
+            notes=payload.notes.strip(),
+            status="Confirmed — Preparing Dispatch",
+        )
+        db.add(claim)
+        awarded = 50
+        user.points = (user.points or 0) + awarded
+        db.commit()
+        db.refresh(claim)
+        resp = CourseGoodiesClaimResponse.model_validate(claim)
+        resp.points_awarded = awarded
+        return resp
 
     return course_router
 

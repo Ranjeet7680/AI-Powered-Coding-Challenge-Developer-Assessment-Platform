@@ -202,10 +202,37 @@ class CourseReview(Base):
     author_name = Column(String, nullable=False)
     author_role = Column(String, default="AI / ML Engineer")
     rating = Column(Integer, nullable=False)
+    content_rating = Column(Integer, default=5)
+    quiz_rating = Column(Integer, default=5)
+    nps_score = Column(Integer, default=10)
+    improvement_suggestion = Column(Text, default="")
     headline = Column(String, nullable=False)
     comment = Column(Text, nullable=False)
     verified_learner = Column(Boolean, default=False)
     helpful_count = Column(Integer, default=0)
     helpful_voters = Column(JSON, default=list)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class CourseGoodiesClaim(Base):
+    __tablename__ = "course_goodies_claims"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), index=True, nullable=False)
+    course_id = Column(String, index=True, nullable=False)
+    dispatch_code = Column(String, unique=True, nullable=False)
+    full_name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    phone = Column(String, default="")
+    tshirt_size = Column(String, default="L")
+    swag_bundle = Column(String, nullable=False)
+    address_line = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, default="")
+    postal_code = Column(String, nullable=False)
+    country = Column(String, nullable=False)
+    linkedin_url = Column(String, default="")
+    notes = Column(Text, default="")
+    status = Column(String, default="Confirmed — Preparing Dispatch")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 

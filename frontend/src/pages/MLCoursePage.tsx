@@ -17,6 +17,7 @@ import {
   Download,
   FileEdit,
   Filter,
+  Gift,
   HelpCircle,
   Layers,
   ListChecks,
@@ -43,11 +44,20 @@ import {
   CourseSyllabusRoadmapPanel,
 } from '../components/lms/CourseAdvancedPanels';
 import {
+  CourseCertificateStagePanel,
+  CourseCompletionDonePanel,
+  CourseGoodiesFormPanel,
+} from '../components/lms/CourseEndToEndPanels';
+import {
+  Certificate,
   MLCapstoneProject,
   MLCapstoneSubmission,
   MLCapstoneSubmitPayload,
+  MLCourseGoodiesClaim,
+  MLCourseGoodiesClaimPayload,
   MLCourseOverview,
   MLCourseReviewsOverview,
+  MLCourseReviewSubmitPayload,
   MLFinalExamResponse,
   MLFinalExamResultResponse,
   MLLessonItem,
@@ -59,7 +69,16 @@ import {
   MLViolationEvent,
 } from '../types';
 
-type TopTab = 'course' | 'syllabus' | 'quiz-bank' | 'capstone' | 'reviews' | 'final-exam';
+type TopTab =
+  | 'course'
+  | 'syllabus'
+  | 'quiz-bank'
+  | 'capstone'
+  | 'final-exam'
+  | 'reviews'
+  | 'certificate'
+  | 'goodies'
+  | 'done';
 type LessonDeckTab = 'notes' | 'my-notes' | 'quiz';
 type ExamPhase = 'preflight' | 'active' | 'submitted';
 type CourseTrack = 'ml' | 'dl';
@@ -92,6 +111,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [isSubmittingCapstone, setIsSubmittingCapstone] = useState<boolean>(false);
   const [reviewsData, setReviewsData] = useState<MLCourseReviewsOverview | null>(null);
   const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
+  const [earnedCertificate, setEarnedCertificate] = useState<Certificate | null>(null);
+  const [goodiesClaim, setGoodiesClaim] = useState<MLCourseGoodiesClaim | null>(null);
+  const [isSubmittingGoodies, setIsSubmittingGoodies] = useState<boolean>(false);
 
   // Navigation & Player State
   const [activeTab, setActiveTab] = useState<TopTab>('course');
@@ -175,8 +197,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       courseClient.getFinalExam().catch(() => null),
       courseClient.getCapstone().catch(() => null),
       courseClient.getReviews().catch(() => null),
+      courseClient.getEarnedCertificate().catch(() => null),
+      courseClient.getGoodies().catch(() => null),
     ])
-      .then(([overview, bankRes, examRes, capstoneRes, revRes]) => {
+      .then(([overview, bankRes, examRes, capstoneRes, revRes, certRes, goodiesRes]) => {
         if (cancelled) return;
         setCourse(overview);
         setQuizBank(bankRes.questions || []);
@@ -185,6 +209,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         setCapstoneSubmissions(capstoneRes?.submissions || []);
         if (revRes) {
           setReviewsData(revRes);
+        }
+        if (certRes?.certificate) {
+          setEarnedCertificate(certRes.certificate);
+        }
+        if (goodiesRes?.claim) {
+          setGoodiesClaim(goodiesRes.claim);
         }
 
         const prog = overview.progress;
@@ -357,23 +387,45 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     }
   };
 
-  const handleSubmitReview = async (payload: {
-    rating: number;
-    headline: string;
-    comment: string;
-  }) => {
+  const handleSubmitReview = async (payload: MLCourseReviewSubmitPayload) => {
     setIsSubmittingReview(true);
     try {
       await courseClient.submitReview(payload);
       const updated = await courseClient.getReviews();
       setReviewsData(updated);
       refreshUser().catch(() => {});
-      showToast('Published your course review! Thank you for the feedback.', 'success');
+      showToast('Published your course feedback! Proceed to your Certificate.', 'success');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to publish review.';
+      const msg = err instanceof Error ? err.message : 'Failed to publish feedback.';
       showToast(msg, 'error');
     } finally {
       setIsSubmittingReview(false);
+    }
+  };
+
+  const handleSubmitGoodies = async (payload: MLCourseGoodiesClaimPayload) => {
+    setIsSubmittingGoodies(true);
+    try {
+      const claim = await courseClient.submitGoodies(payload);
+      setGoodiesClaim(claim);
+      if ((claim.points_awarded || 0) > 0) {
+        refreshUser().catch(() => {});
+      }
+      setActiveTab('done');
+      showToast(
+        `Goodies order confirmed (${claim.dispatch_code})! Course flow complete.`,
+        'success'
+      );
+      try {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      } catch {
+        // decorative
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to claim goodies bundle.';
+      showToast(msg, 'error');
+    } finally {
+      setIsSubmittingGoodies(false);
     }
   };
 
@@ -491,6 +543,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         setSavedExamScore(res.score_percent);
         if (res.passed) {
           setSavedExamPassed(true);
+          if (res.certificate) {
+            setEarnedCertificate(res.certificate);
+          }
           refreshUser().catch(() => {});
           showToast('Passed Proctored Final Exam! Official Certificate issued.', 'success');
           try {
@@ -763,100 +818,148 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           )}
         </div>
 
-        {/* Overall Course Progress Bar + Primary Mode Tabs */}
-        <div className="mt-5 pt-5 border-t border-slate-800/80 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex flex-wrap gap-2">
+        {/* End-to-End LMS Progress Pipeline Stepper */}
+        <div className="mt-5 pt-5 border-t border-slate-800/80 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-300">
+              End-to-End Guided LMS Path · Detail → Lectures → Quizzes → Exam → Feedback → Certificate → Goodies → Done
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-36 sm:w-48">
+                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Progress</span>
+                  <span className="font-bold text-indigo-300">{completionPct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 transition-all duration-300"
+                    style={{ width: `${completionPct}%` }}
+                  />
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-950/90 border border-emerald-500/30 text-[10px] font-bold text-emerald-300">
+                <Lock className="w-3 h-3" />
+                LMS-Only Stream
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5">
+            <Link
+              to={`/app/lms/${track}`}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-indigo-500/40 hover:text-white transition"
+            >
+              <span className="text-[10px] font-mono text-indigo-400">01</span>
+              Course Detail
+            </Link>
             <button
               type="button"
               onClick={() => setActiveTab('course')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
                 activeTab === 'course'
                   ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
                   : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
               }`}
             >
-              <PlayCircle className="w-4 h-4" />
-              Course Player &amp; Notes ({totalLessons})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('syllabus')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
-                activeTab === 'syllabus'
-                  ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-violet-500/40'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              Syllabus &amp; Roadmap
+              <PlayCircle className="w-3.5 h-3.5" />
+              02. Lectures ({totalLessons})
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('quiz-bank')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
                 activeTab === 'quiz-bank'
                   ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25'
                   : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-cyan-500/40'
               }`}
             >
-              <ListChecks className="w-4 h-4" />
-              {isDL ? '20+ Quiz Bank' : '100+ Quiz Bank'}
+              <ListChecks className="w-3.5 h-3.5" />
+              03. Quiz Page ({isDL ? '20+' : '100+'})
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('capstone')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
                 activeTab === 'capstone'
                   ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
                   : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
               }`}
             >
-              <Code2 className="w-4 h-4" />
-              Capstone Projects ({capstoneProjects.length})
+              <Code2 className="w-3.5 h-3.5" />
+              04. Capstone ({capstoneProjects.length})
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab('reviews')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
-                activeTab === 'reviews'
-                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-amber-500/40'
+              onClick={() => setActiveTab('syllabus')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'syllabus'
+                  ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-violet-500/40'
               }`}
             >
-              <Star className="w-4 h-4" />
-              Reviews ({reviewsData ? `${reviewsData.average_rating.toFixed(1)}★` : '5.0★'})
+              <Layers className="w-3.5 h-3.5" />
+              Syllabus
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('final-exam')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
                 activeTab === 'final-exam'
                   ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
                   : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
               }`}
             >
-              <ShieldCheck className="w-4 h-4" />
-              Proctored Final Exam (Camera Guard)
+              <ShieldCheck className="w-3.5 h-3.5" />
+              05. Final Exam
             </button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="w-40 sm:w-52">
-              <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                <span>Curriculum Progress</span>
-                <span className="font-bold text-indigo-300">{completionPct}%</span>
-              </div>
-              <div className="h-2 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 transition-all duration-300"
-                  style={{ width: `${completionPct}%` }}
-                />
-              </div>
-            </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950/90 border border-emerald-500/30 text-[11px] font-bold text-emerald-300">
-              <Lock className="w-3.5 h-3.5" />
-              LMS-Only Playback
-            </span>
+            <button
+              type="button"
+              onClick={() => setActiveTab('reviews')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'reviews'
+                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-amber-500/40'
+              }`}
+            >
+              <Star className="w-3.5 h-3.5" />
+              06. Feedback ({reviewsData ? `${reviewsData.average_rating.toFixed(1)}★` : '5.0★'})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('certificate')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'certificate'
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5" />
+              07. Certificate {earnedCertificate ? '✓' : ''}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('goodies')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'goodies'
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-rose-500/40'
+              }`}
+            >
+              <Gift className="w-3.5 h-3.5" />
+              08. Goodies Form {goodiesClaim ? '✓' : ''}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('done')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'done'
+                  ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-lg'
+                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              09. Done
+            </button>
           </div>
         </div>
       </div>
@@ -955,6 +1058,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                     {theaterMode ? 'Standard View' : 'Theater Mode'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('quiz-bank')}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
+                  >
+                    <ListChecks className="w-3.5 h-3.5" />
+                    Go to Quiz Page →
                   </button>
                   <button
                     type="button"
@@ -1450,13 +1561,22 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setActiveTab('final-exam')}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
-              >
-                Ready for Proctored Final Exam →
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('capstone')}
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
+                >
+                  Next Stage: Capstone Lab →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('final-exam')}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                >
+                  Skip to Proctored Final Exam →
+                </button>
+              </div>
             </div>
           )}
 
@@ -1626,14 +1746,52 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         />
       )}
 
-      {/* ================= TAB: PEER REVIEWS & RATINGS ================= */}
+      {/* ================= TAB: PEER REVIEWS & FEEDBACK PAGE ================= */}
       {activeTab === 'reviews' && (
         <CourseReviewsPanel
           courseTitle={course.title}
           reviewsData={reviewsData}
           onSubmitReview={handleSubmitReview}
           onToggleHelpful={handleToggleReviewHelpful}
+          onProceedToCertificate={() => setActiveTab('certificate')}
           isSubmittingReview={isSubmittingReview}
+        />
+      )}
+
+      {/* ================= TAB: CERTIFICATE & VECTOR PDF ================= */}
+      {activeTab === 'certificate' && (
+        <CourseCertificateStagePanel
+          courseTitle={course.title}
+          certificate={earnedCertificate}
+          onGoToExam={() => setActiveTab('final-exam')}
+          onGoToGoodies={() => setActiveTab('goodies')}
+        />
+      )}
+
+      {/* ================= TAB: GRADUATE GOODIES & SWAG CLAIM FORM ================= */}
+      {activeTab === 'goodies' && (
+        <CourseGoodiesFormPanel
+          courseTitle={course.title}
+          defaultName={user?.full_name || ''}
+          defaultEmail={user?.email || ''}
+          existingClaim={goodiesClaim}
+          onSubmitClaim={handleSubmitGoodies}
+          isSubmitting={isSubmittingGoodies}
+          onProceedToDone={() => setActiveTab('done')}
+        />
+      )}
+
+      {/* ================= TAB: END-TO-END COMPLETION DONE SCREEN ================= */}
+      {activeTab === 'done' && (
+        <CourseCompletionDonePanel
+          courseTitle={course.title}
+          completedLessonsCount={completedCount}
+          totalLessonsCount={totalLessons}
+          quizzesPassedCount={quizzesPassedCount}
+          capstoneCount={capstoneSubmissions.length}
+          examScore={savedExamScore}
+          certificate={earnedCertificate}
+          goodiesClaim={goodiesClaim}
         />
       )}
 
@@ -1958,6 +2116,21 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       >
                         Open Certificates &amp; Social Share
                       </Link>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('reviews')}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition"
+                      >
+                        Next Stage: Course Feedback →
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('goodies')}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition"
+                      >
+                        <Gift className="w-3.5 h-3.5" />
+                        Claim Goodies Form →
+                      </button>
                     </div>
                   </div>
                 )}

@@ -66,6 +66,7 @@ const NAV_SECTIONS: NavSectionConfig[] = [
     id: 'lms',
     label: 'AI & DL Academies',
     items: [
+      { name: 'LMS Courses Hub', path: '/app/lms', icon: BookOpen, badge: 'ALL', badgeTone: 'emerald' },
       { name: 'ML Course LMS', path: '/app/ml-course', icon: BrainCircuit, badge: '106', badgeTone: 'cyan' },
       { name: 'Stanford × CTF DL', path: '/app/dl-course', icon: GraduationCap, badge: '21', badgeTone: 'rose' },
       { name: 'Video Masterclasses', path: '/app/videos', icon: Video, badge: 'HUB', badgeTone: 'purple' },
@@ -211,6 +212,9 @@ export const AppLayout: React.FC = () => {
   const getBreadcrumbs = () => {
     const path = location.pathname;
     if (path.includes('/dashboard')) return ['Workspace', 'Overview'];
+    if (path.includes('/lms/dl')) return ['Workspace', 'LMS Hub', 'Stanford × CTF Deep Learning'];
+    if (path.includes('/lms/ml')) return ['Workspace', 'LMS Hub', 'ML Course Detail'];
+    if (path.includes('/lms')) return ['Workspace', 'LMS Academies Hub'];
     if (path.includes('/ml-course')) return ['Workspace', 'Academies', 'ML Course (106)'];
     if (path.includes('/dl-course')) return ['Workspace', 'Academies', 'Stanford × CTF Deep Learning'];
     if (path.includes('/videos')) return ['Workspace', 'Academies', 'Video Masterclasses'];
