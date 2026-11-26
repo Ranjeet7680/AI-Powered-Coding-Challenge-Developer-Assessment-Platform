@@ -6,10 +6,12 @@ import { PipelineDiagrams } from '../components/wiki/PipelineDiagrams';
 import { SolutionWireframesAndArch } from '../components/wiki/SolutionWireframesAndArch';
 import { ChallengeExecutionDiagrams } from '../components/wiki/ChallengeExecutionDiagrams';
 import { ExtraWikiDiagram } from '../components/wiki/ExtraWikiDiagrams';
+import { MLWikiBigDiagrams } from '../components/wiki/MLWikiBigDiagrams';
 import {
   ArrowRight,
   Award,
   BookOpen,
+  BrainCircuit,
   Code2,
   Cpu,
   Database,
@@ -33,6 +35,7 @@ type WikiSectionId =
   | 'process-flow'
   | 'architecture'
   | 'challenge-bank'
+  | 'ml-lms'
   | 'security-credentials'
   | 'taskforge';
 
@@ -79,6 +82,13 @@ const WIKI_NAV: WikiNavItem[] = [
     shortTitle: 'Challenges & Runner',
     subtitle: '10 CS/ML domains, PY/JS/TS/C++ execution & AI Copilot',
     icon: Code2,
+  },
+  {
+    id: 'ml-lms',
+    title: 'ML (106) & DL (21) LMS + AI Proctoring (3 Big Diagrams)',
+    shortTitle: 'ML LMS (3 Big Diagrams)',
+    subtitle: '9-stage ML journey, MediaPipe AI camera guard & backend curriculum telemetry',
+    icon: BrainCircuit,
   },
   {
     id: 'security-credentials',
@@ -462,6 +472,19 @@ export const WikiPage: React.FC = () => {
                   </div>
 
                   <ChallengeExecutionDiagrams />
+                </div>
+              )}
+
+              {activeSection === 'ml-lms' && (
+                <div className="space-y-6">
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Full architectural walkthrough of the{' '}
+                    <strong className="text-white">Applied ML Course LMS (106 lectures, 7 modules)</strong> and{' '}
+                    <strong className="text-white">Stanford × CTF Deep Learning Track (21 lectures, 4 modules)</strong>, including Google-Cloud-Skills-style page-by-page video + quiz flow, the 4-tier{' '}
+                    <code className="text-rose-300 font-mono">MediaPipe</code> AI Camera Proctor engine, and FastAPI LMS credential telemetry.
+                  </p>
+
+                  <MLWikiBigDiagrams />
                 </div>
               )}
 
