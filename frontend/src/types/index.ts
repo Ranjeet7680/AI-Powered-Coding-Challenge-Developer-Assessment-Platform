@@ -200,16 +200,40 @@ export interface VideoLesson {
   video_url: string;
   thumbnail_url: string;
   duration_minutes: number;
+  duration_label?: string;
   category: string;
   difficulty: string;
   instructor: string;
   instructor_avatar?: string;
   related_challenge_id?: string;
+  playlist_id?: string;
+  playlist_title?: string;
+  episode_order?: number;
   chapters: VideoChapter[];
   key_takeaways: string[];
   code_snippet?: string;
   views_count: number;
   created_at?: string;
+}
+
+export interface VideoPlaylistSummary {
+  playlist_id: string;
+  title: string;
+  channel: string;
+  category: string;
+  difficulty: string;
+  video_count: number;
+  first_video_id?: string;
+  thumbnail_url: string;
+}
+
+export interface VideoWatchContextResponse {
+  video: VideoLesson;
+  series?: VideoPlaylistSummary | null;
+  series_videos: VideoLesson[];
+  prev_video?: VideoLesson | null;
+  next_video?: VideoLesson | null;
+  platform_share_path: string;
 }
 
 export interface CopilotResponse {

@@ -41,6 +41,7 @@ import {
 } from '../components/lms/CourseEndToEndPanels';
 import { CourseOutlineRail, LMSPageStage } from '../components/lms/CourseOutlineRail';
 import { InLMSVideoPlayer } from '../components/lms/InLMSVideoPlayer';
+import { VideoShareButton } from '../components/videos/VideoShareButton';
 import {
   Certificate,
   MLCapstoneProject,
@@ -1057,6 +1058,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                     <BookOpen className="w-3.5 h-3.5" />
                     Next: Read Notes &amp; Code
                   </button>
+                  <VideoShareButton
+                    title={activeLesson.title}
+                    sharePath={`/app/${track}-course/${activeLesson.id}`}
+                    subtitle={course.title}
+                    align="left"
+                  />
                 </div>
 
                 <button

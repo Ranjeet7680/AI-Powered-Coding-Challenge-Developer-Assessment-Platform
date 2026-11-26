@@ -11,6 +11,8 @@ import {
   ExecutionResult,
   User,
   VideoLesson,
+  VideoPlaylistSummary,
+  VideoWatchContextResponse,
   CopilotResponse,
   TestCase,
   MLCourseOverview,
@@ -282,16 +284,22 @@ export const api = {
     URL.revokeObjectURL(url);
   },
 
-  // Video Masterclasses
-  getVideos: (params?: { search?: string; category?: string; difficulty?: string }) => {
+  // Video Masterclasses & Multi-Playlist Library
+  getVideoPlaylists: () => request<VideoPlaylistSummary[]>('/videos/playlists'),
+
+  getVideos: (params?: { search?: string; category?: string; difficulty?: string; playlist_id?: string }) => {
     const q = new URLSearchParams();
     if (params?.search) q.append('search', params.search);
     if (params?.category) q.append('category', params.category);
     if (params?.difficulty) q.append('difficulty', params.difficulty);
+    if (params?.playlist_id) q.append('playlist_id', params.playlist_id);
     return request<VideoLesson[]>(`/videos?${q.toString()}`);
   },
 
-  getVideo: (id: string) => request<VideoLesson>(`/videos/${id}`),
+  getVideo: (id: string) => request<VideoLesson>(`/videos/${encodeURIComponent(id)}`),
+
+  getVideoWatchContext: (id: string) =>
+    request<VideoWatchContextResponse>(`/videos/${encodeURIComponent(id)}/watch-context`),
 
   // Parameterized LMS Course Client (supports both ML 106-video and Stanford X CTF DL 21-video)
   courseLms: (track: 'ml' | 'dl') => createCourseClient(track === 'dl' ? '/dl-course' : '/ml-course'),

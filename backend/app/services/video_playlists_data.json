@@ -1,0 +1,3598 @@
+[
+  {
+    "playlist_id": "PLZ2ps__7DhBb2cXAu5PevO_mzgS3Fj3Fs",
+    "title": "Programming in Python",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "Yg6xzi2ie5s",
+        "title": "L1: A quick introduction to variables | programming in python",
+        "duration": "6:16",
+        "order": 1
+      },
+      {
+        "video_id": "8ndsDXohLMQ",
+        "title": "L2: Introduction to programming basics in python",
+        "duration": "6:02",
+        "order": 2
+      },
+      {
+        "video_id": "NgZZ0HIUqbs",
+        "title": "L3: Introduction to REPLIT | programming in python",
+        "duration": "8:22",
+        "order": 3
+      },
+      {
+        "video_id": "As7_aq6XGfI",
+        "title": "L4: More on REPLIT, print command & common python mistakes",
+        "duration": "10:17",
+        "order": 4
+      },
+      {
+        "video_id": "tDaXdoKfX0k",
+        "title": "L5: Variables & literals in python",
+        "duration": "9:18",
+        "order": 5
+      },
+      {
+        "video_id": "8n4MBjuDBu4",
+        "title": "L6: Data types part 1 | programming in python",
+        "duration": "11:22",
+        "order": 6
+      },
+      {
+        "video_id": "xQXxufhEJHw",
+        "title": "L7: Data types part 2 | programming in python",
+        "duration": "9:54",
+        "order": 7
+      },
+      {
+        "video_id": "sS89tiDuqoM",
+        "title": "L8: Introduction to strings & string slicing in python",
+        "duration": "9:45",
+        "order": 8
+      },
+      {
+        "video_id": "8pu73HKzNOE",
+        "title": "L9: Operators & expressions | part 1 | programming in python",
+        "duration": "9:02",
+        "order": 9
+      },
+      {
+        "video_id": "Y53K9FFu97Q",
+        "title": "L10: Operators & expressions | part 2 | programming in python",
+        "duration": "12:07",
+        "order": 10
+      },
+      {
+        "video_id": "e45MVXwya7A",
+        "title": "L11: More on strings | programming in python",
+        "duration": "13:45",
+        "order": 11
+      },
+      {
+        "video_id": "XZSnqseRbZY",
+        "title": "L12: Variables - a programmer's perspective | programming in python",
+        "duration": "7:53",
+        "order": 12
+      },
+      {
+        "video_id": "ruQb8jzkGyQ",
+        "title": "L13: Variables & input statement | programming in python",
+        "duration": "8:15",
+        "order": 13
+      },
+      {
+        "video_id": "2OFZY77eOjw",
+        "title": "L15: Variables revisited dynamic typing | programming in python",
+        "duration": "6:20",
+        "order": 14
+      },
+      {
+        "video_id": "aEPFZSzZ6VQ",
+        "title": "L16: Introduction | programming in python",
+        "duration": "4:16",
+        "order": 15
+      },
+      {
+        "video_id": "-f833WH_cVo",
+        "title": "More on Variables, Operators and Expressions",
+        "duration": "17:30",
+        "order": 16
+      },
+      {
+        "video_id": "bRAo6TJJjCU",
+        "title": "L17: Mastering string methods in python",
+        "duration": "11:40",
+        "order": 17
+      },
+      {
+        "video_id": "4vWM2oTGEio",
+        "title": "L18: Escape characters & types of quotes in python strings",
+        "duration": "13:00",
+        "order": 18
+      },
+      {
+        "video_id": "_Ccezy5hlc8",
+        "title": "L19: Conclusion | FAQs & tips for beginner python programmers",
+        "duration": "10:12",
+        "order": 19
+      },
+      {
+        "video_id": "oxFYdHVNpg8",
+        "title": "L20: An interesting cipher | more on strings | programming in python",
+        "duration": "22:29",
+        "order": 20
+      },
+      {
+        "video_id": "FTX5wF_3J9Q",
+        "title": "L21: Introduction to the if statement | programming in python",
+        "duration": "9:08",
+        "order": 21
+      },
+      {
+        "video_id": "-dBqiRCHbNw",
+        "title": "Tutorial on if, else and else-if (elif) conditions",
+        "duration": "25:10",
+        "order": 22
+      },
+      {
+        "video_id": "eW58_ky7oc8",
+        "title": "L23: Different ways to import a library | programming in python",
+        "duration": "11:55",
+        "order": 23
+      },
+      {
+        "video_id": "xiEzc_m2izc",
+        "title": "L24: Introduction | programming in python",
+        "duration": "3:40",
+        "order": 24
+      },
+      {
+        "video_id": "DK16M8EvOLE",
+        "title": "L25: Conclusion python syntax variables if statements & libraries",
+        "duration": "3:13",
+        "order": 25
+      },
+      {
+        "video_id": "KTvVNN7ia8o",
+        "title": "L26: Introduction to while loop | programming in python",
+        "duration": "13:06",
+        "order": 26
+      },
+      {
+        "video_id": "OdjXL5U95eI",
+        "title": "L27: Introduction to import library | programming in python",
+        "duration": "15:45",
+        "order": 27
+      },
+      {
+        "video_id": "-ZMw8D-Xapk",
+        "title": "while to Compute Factorial",
+        "duration": "13:00",
+        "order": 28
+      },
+      {
+        "video_id": "lrbqrxIZcaQ",
+        "title": "L28: FOR loop to calculate sum of first n numbers in python",
+        "duration": "10:05",
+        "order": 29
+      },
+      {
+        "video_id": "lvXuQ_x7EsI",
+        "title": "L30: Introduction to for loop in python with examples",
+        "duration": "10:54",
+        "order": 30
+      },
+      {
+        "video_id": "SqMeT9caxpE",
+        "title": "Tutorial on while loop | programming in python",
+        "duration": "28:11",
+        "order": 31
+      },
+      {
+        "video_id": "SMASd0rbt0g",
+        "title": "L32: For loop for multiplication tables | programming in python",
+        "duration": "5:04",
+        "order": 32
+      },
+      {
+        "video_id": "ihL3Eac9tFc",
+        "title": "L33: More on range & for loop without range | programming in python",
+        "duration": "10:11",
+        "order": 33
+      },
+      {
+        "video_id": "-4MRaWABCuo",
+        "title": "L34: Nested for loops & string operations in python",
+        "duration": "10:39",
+        "order": 34
+      },
+      {
+        "video_id": "7D2SFKSiiLg",
+        "title": "Tutorial on for loop & difference between while loop & for loop",
+        "duration": "20:15",
+        "order": 35
+      },
+      {
+        "video_id": "DhjvmkGgw8U",
+        "title": "L36: Conclusion | programming in python",
+        "duration": "2:14",
+        "order": 36
+      },
+      {
+        "video_id": "590mjTALkj0",
+        "title": "Tutorial on nested loops | programming in python",
+        "duration": "20:56",
+        "order": 37
+      },
+      {
+        "video_id": "DR0BhSzGnPo",
+        "title": "L38: Formatted printing",
+        "duration": "21:12",
+        "order": 38
+      },
+      {
+        "video_id": "02BCThws054",
+        "title": "L39: Introduction to problem solving practice in python",
+        "duration": "2:48",
+        "order": 39
+      },
+      {
+        "video_id": "toMhJJHSIYk",
+        "title": "L40: Warmup with lists | programming in python",
+        "duration": "12:17",
+        "order": 40
+      },
+      {
+        "video_id": "SVAVQHfJbE0",
+        "title": "L41: Break continue & pass in python explained with examples",
+        "duration": "12:58",
+        "order": 41
+      },
+      {
+        "video_id": "wpM41ZYLt0k",
+        "title": "L42: Birthday paradox in python with random module",
+        "duration": "25:39",
+        "order": 42
+      },
+      {
+        "video_id": "qSOoiWNplGo",
+        "title": "L43: Dot product of vectors in python using for loops",
+        "duration": "8:41",
+        "order": 43
+      },
+      {
+        "video_id": "hkDAafi09yo",
+        "title": "L44: The obvious sorting in python",
+        "duration": "14:11",
+        "order": 44
+      },
+      {
+        "video_id": "CRhUooqcvcU",
+        "title": "L45: Matrix addition in python from scratch",
+        "duration": "10:47",
+        "order": 45
+      },
+      {
+        "video_id": "seYP1F6Ct2g",
+        "title": "L46: Matrix multiplication | part 1 in python step by step",
+        "duration": "10:11",
+        "order": 46
+      },
+      {
+        "video_id": "3huwiAPi-_I",
+        "title": "L47: Naive search in a list | programming in python",
+        "duration": "17:34",
+        "order": 47
+      },
+      {
+        "video_id": "mtRRS_ssl3s",
+        "title": "L48: Matrix multiplication | part 2 | programming in python",
+        "duration": "12:03",
+        "order": 48
+      },
+      {
+        "video_id": "TBFTFusLIco",
+        "title": "L49: More examples of functions | programming in pPython",
+        "duration": "14:32",
+        "order": 49
+      },
+      {
+        "video_id": "8MQBieBCRFA",
+        "title": "L50: Sorting in python using functions refactoring the obvious sort",
+        "duration": "11:20",
+        "order": 50
+      },
+      {
+        "video_id": "zDZRfWWetg0",
+        "title": "L51: Introduction to functions | hands-on coding with examples",
+        "duration": "15:32",
+        "order": 51
+      },
+      {
+        "video_id": "Z-1CxNrmRR4",
+        "title": "L52: Conclusion | mastering fundamentals & preparing for challenges",
+        "duration": "2:42",
+        "order": 52
+      },
+      {
+        "video_id": "WQNxG2B85rc",
+        "title": "L53: Lists & sets | understanding trade-offs & efficiency",
+        "duration": "28:05",
+        "order": 53
+      },
+      {
+        "video_id": "z-n9yQaWr7o",
+        "title": "L54: Tuples | immutable data structures explained",
+        "duration": "20:28",
+        "order": 54
+      },
+      {
+        "video_id": "X8Nj5cxaP9E",
+        "title": "L55: Dictionaries | efficient data storage & retrieval",
+        "duration": "47:06",
+        "order": 55
+      },
+      {
+        "video_id": "HJetH-CCOGY",
+        "title": "L56: Matrix multiplication using functions | modular & clean approach",
+        "duration": "34:19",
+        "order": 56
+      },
+      {
+        "video_id": "aaaENpVGS5U",
+        "title": "L57: More on lists | advanced operations & methods",
+        "duration": "21:40",
+        "order": 57
+      },
+      {
+        "video_id": "V7r6DB3a6_o",
+        "title": "L58: More on tuples | immutability, packing & hashable tuples",
+        "duration": "10:36",
+        "order": 58
+      },
+      {
+        "video_id": "gTpPI3SMnAA",
+        "title": "L59: More on dictionaries | keys, values & essential methods",
+        "duration": "6:16",
+        "order": 59
+      },
+      {
+        "video_id": "qoV4tdDD8zE",
+        "title": "L60: More on sets | operations, properties & methods",
+        "duration": "5:40",
+        "order": 60
+      },
+      {
+        "video_id": "NqjnCY2qQWU",
+        "title": "L61: Types of function arguments",
+        "duration": "15:20",
+        "order": 61
+      },
+      {
+        "video_id": "MNe03MfOLto",
+        "title": "L62: Functional programming | part 2 | inline statements & list comprehensions",
+        "duration": "11:07",
+        "order": 62
+      },
+      {
+        "video_id": "F9xeVMToUJ8",
+        "title": "L63: Types of functions | built-in, library, string & user-defined",
+        "duration": "11:39",
+        "order": 63
+      },
+      {
+        "video_id": "4q5rGHfR-ic",
+        "title": "L64: Scope of variables",
+        "duration": "12:17",
+        "order": 64
+      },
+      {
+        "video_id": "mkAbfQM2OJY",
+        "title": "Tutorial on functions",
+        "duration": "49:54",
+        "order": 65
+      },
+      {
+        "video_id": "4HgUCharOBw",
+        "title": "L66: Introduction | advanced concepts & exception handling",
+        "duration": "2:27",
+        "order": 66
+      },
+      {
+        "video_id": "rYLJaAdgLhI",
+        "title": "L67: Reading & writing to a file | basics of file handling",
+        "duration": "13:57",
+        "order": 67
+      },
+      {
+        "video_id": "29A7HhnzxPU",
+        "title": "L68: Functional programming | part 1 | iterators, generators, & yield",
+        "duration": "12:41",
+        "order": 68
+      },
+      {
+        "video_id": "ueIignqReDY",
+        "title": "L69: Functional programming | part 3 | lambda, enumerate, zip, map, filter",
+        "duration": "21:17",
+        "order": 69
+      },
+      {
+        "video_id": "NwFpo_KGvOA",
+        "title": "L70: Very big files a tip",
+        "duration": "5:19",
+        "order": 70
+      },
+      {
+        "video_id": "MkqFvnC2naE",
+        "title": "L71: Caesar cipher | file encryption example with sherlock holmes",
+        "duration": "16:31",
+        "order": 71
+      },
+      {
+        "video_id": "9eOxi7smTKg",
+        "title": "L72: Big text file handling | searching & error management",
+        "duration": "13:18",
+        "order": 72
+      },
+      {
+        "video_id": "o5MBF0yo6lA",
+        "title": "L73: Introduction to file handling | basics & pandas overview",
+        "duration": "11:45",
+        "order": 73
+      },
+      {
+        "video_id": "df8FxNd27Dg",
+        "title": "L74: File handling, genetic sequences | f.seek, f.read & knuth morris pratt algorithm",
+        "duration": "12:26",
+        "order": 74
+      },
+      {
+        "video_id": "SGCy1yBLbsg",
+        "title": "L75: Introduction to the week & recursion | concepts & applications",
+        "duration": "10:09",
+        "order": 75
+      },
+      {
+        "video_id": "htu4ZCW7hzA",
+        "title": "L76: Theoretical introduction to recursion",
+        "duration": "10:21",
+        "order": 76
+      },
+      {
+        "video_id": "PAUlGa9wAxA",
+        "title": "L77: Recursion - an illustration | sum of n numbers, factorial & more",
+        "duration": "15:24",
+        "order": 77
+      },
+      {
+        "video_id": "wkglgM6uUmI",
+        "title": "L78: Recursion: a simple question | checking lLists with recursive logic",
+        "duration": "5:27",
+        "order": 78
+      },
+      {
+        "video_id": "eNARY_uyLqo",
+        "title": "L79: Recursion: find 0 in a list | practical example & vim/ipython setup",
+        "duration": "10:57",
+        "order": 79
+      },
+      {
+        "video_id": "vRajQuHdlBE",
+        "title": "L80: Sorting recursively | recursive sorting algorithm explained",
+        "duration": "11:15",
+        "order": 80
+      },
+      {
+        "video_id": "1l83L1ZKF5k",
+        "title": "L81: Binary search implementation | efficient searching explained",
+        "duration": "46:41",
+        "order": 81
+      },
+      {
+        "video_id": "me3_XR7Iz60",
+        "title": "L82: Exception handling | try, except, finally & custom errors",
+        "duration": "33:29",
+        "order": 82
+      },
+      {
+        "video_id": "v_WYTBhHONo",
+        "title": "L83: Binary search recursion way | recursive algorithm explained",
+        "duration": "23:24",
+        "order": 83
+      },
+      {
+        "video_id": "X1mOrCwZUgQ",
+        "title": "L84: Introduction to OOP | object-oriented programming basics",
+        "duration": "4:05",
+        "order": 84
+      },
+      {
+        "video_id": "Bb7oymEgX_I",
+        "title": "L85: Warm up for binary search | obvious search & time complexity",
+        "duration": "26:15",
+        "order": 85
+      },
+      {
+        "video_id": "WEJt1L7YTpM",
+        "title": "L86: Introduction to binary search | halving technique & real-world examples",
+        "duration": "14:41",
+        "order": 86
+      },
+      {
+        "video_id": "RrFvcDjJptY",
+        "title": "L87: Inheritance & method overriding | types of inheritance & file importing",
+        "duration": "31:36",
+        "order": 87
+      },
+      {
+        "video_id": "O0IrNk1qoUE",
+        "title": "L88: Introduction to numpy library | arrays vs lists explained",
+        "duration": "10:23",
+        "order": 88
+      },
+      {
+        "video_id": "HCxhHo8tV4U",
+        "title": "L89: Why pandas | data analysis made easy",
+        "duration": "19:39",
+        "order": 89
+      },
+      {
+        "video_id": "n_jPQlWhGhM",
+        "title": "L90: Attributes & methods | OOP, init, self, and behavior explained",
+        "duration": "22:51",
+        "order": 90
+      },
+      {
+        "video_id": "ZPtRsQrZLcE",
+        "title": "L91: Classes & objects | object oriented programming fundamentals explained",
+        "duration": "17:04",
+        "order": 91
+      },
+      {
+        "video_id": "aPjiMs7CR7s",
+        "title": "L92: Pandas series, dataframe & more | data analysis made easy",
+        "duration": "30:28",
+        "order": 92
+      },
+      {
+        "video_id": "XYDiGqzVKyo",
+        "title": "L93: Course summary | review of core python concepts & next steps",
+        "duration": "25:34",
+        "order": 93
+      },
+      {
+        "video_id": "hk6NsCfvftY",
+        "title": "L94: Introduction to matplotlib library | data visualization with charts & plots",
+        "duration": "7:03",
+        "order": 94
+      },
+      {
+        "video_id": "5XFoXlIwNe0",
+        "title": "L95: How to submit a programming assignment",
+        "duration": "6:00",
+        "order": 95
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLZ2ps__7DhBammhVmBE9f5eezTj2kDfTN",
+    "title": "Machine Learning Foundations",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "zuS1WZQGhAs",
+        "title": "W1.L1. What is machine learning? | intro to machine learning & its applications",
+        "duration": "30:52",
+        "order": 1
+      },
+      {
+        "video_id": "zssr9nOZlVg",
+        "title": "W1_L2: Data, models & machine learning task",
+        "duration": "19:14",
+        "order": 2
+      },
+      {
+        "video_id": "iVcrCdEaJ7A",
+        "title": "W1_L3: Supervised learning: regression",
+        "duration": "24:21",
+        "order": 3
+      },
+      {
+        "video_id": "QtOrjs0Fzzc",
+        "title": "W1_L4: Supervised learning: classification",
+        "duration": "24:56",
+        "order": 4
+      },
+      {
+        "video_id": "EuNPsw9zA1k",
+        "title": "W1_L5: Unsupervised learning: dimensionality reduction",
+        "duration": "17:12",
+        "order": 5
+      },
+      {
+        "video_id": "Gj6-61UDeMs",
+        "title": "W1_L6: Unsupervised learning: density estimation",
+        "duration": "18:27",
+        "order": 6
+      },
+      {
+        "video_id": "5G4klfCCoIs",
+        "title": "W1_T1: To machine learning or not to machine learning",
+        "duration": "15:17",
+        "order": 7
+      },
+      {
+        "video_id": "T7vdFVC6DOo",
+        "title": "W1_T2: Illustration with a real world dataset",
+        "duration": "15:12",
+        "order": 8
+      },
+      {
+        "video_id": "JG5Z9np4Tbs",
+        "title": "W1_T3: Dimensionality reduction & density estimation with applications",
+        "duration": "17:08",
+        "order": 9
+      },
+      {
+        "video_id": "Gi9nUcrZAJs",
+        "title": "W2_L1: Sets & functions",
+        "duration": "38:30",
+        "order": 10
+      },
+      {
+        "video_id": "yvaPORg2w9c",
+        "title": "W2_L2: Univariate calculus: continuity & differentiability",
+        "duration": "24:10",
+        "order": 11
+      },
+      {
+        "video_id": "AG2fQvxEpbE",
+        "title": "W2_L3: Univariate calculus: derivatives & linear approximations",
+        "duration": "20:51",
+        "order": 12
+      },
+      {
+        "video_id": "En15LA59Fsw",
+        "title": "W2_L4: Univariate calculus: applications & advanced rules",
+        "duration": "24:59",
+        "order": 13
+      },
+      {
+        "video_id": "O5jrvVi05wA",
+        "title": "W2_L5: Multivariate calculus: lines & planes in higher dimensional space",
+        "duration": "24:34",
+        "order": 14
+      },
+      {
+        "video_id": "dLLbl0vucCc",
+        "title": "W2_L6: Multivariate calculus: linear approximation & applications",
+        "duration": "35:11",
+        "order": 15
+      },
+      {
+        "video_id": "YNJMUyNlqFQ",
+        "title": "Week 2: Tutorial",
+        "duration": "23:41",
+        "order": 16
+      },
+      {
+        "video_id": "9Ynm5oJRjxY",
+        "title": "W3_L1: Four fundamental subspaces",
+        "duration": "32:37",
+        "order": 17
+      },
+      {
+        "video_id": "fHorO_JCaYA",
+        "title": "W3_L2: Orthogonal vectors & subspaces",
+        "duration": "27:53",
+        "order": 18
+      },
+      {
+        "video_id": "kVYR7II5KUA",
+        "title": "W3_L3: Projections",
+        "duration": "20:15",
+        "order": 19
+      },
+      {
+        "video_id": "_QRlIQBwIk8",
+        "title": "W3_L4: Least squares & projections onto a subspace",
+        "duration": "32:36",
+        "order": 20
+      },
+      {
+        "video_id": "wZlwod57blE",
+        "title": "W3_L5: Example of least squares",
+        "duration": "22:05",
+        "order": 21
+      },
+      {
+        "video_id": "rbBiDiFC584",
+        "title": "W3_T1: Four fundamental vector subspaces",
+        "duration": "18:02",
+        "order": 22
+      },
+      {
+        "video_id": "kRJIiQXiOqU",
+        "title": "W3_T2: Row space computation using reduced row echelon form & solution to ax = b",
+        "duration": "4:39",
+        "order": 23
+      },
+      {
+        "video_id": "Ijn-HGlVifU",
+        "title": "W3_T3: Orthogonality, projections & least squares method",
+        "duration": "7:09",
+        "order": 24
+      },
+      {
+        "video_id": "x7UJYkGHVJw",
+        "title": "W4_L1: Linear & polynomial regression",
+        "duration": "34:01",
+        "order": 25
+      },
+      {
+        "video_id": "GA6m_T4d_d0",
+        "title": "W4_L2: Eigenvalues & Eigenvectors",
+        "duration": "33:16",
+        "order": 26
+      },
+      {
+        "video_id": "WKZUxnrLmRk",
+        "title": "W4_L3: Diagonalization of a matrix",
+        "duration": "28:28",
+        "order": 27
+      },
+      {
+        "video_id": "ISB87lDKOVE",
+        "title": "W4_L4: Solving fibonacci sequence using diagonalization",
+        "duration": "19:49",
+        "order": 28
+      },
+      {
+        "video_id": "f0hVL9xhL94",
+        "title": "W4_L5: Orthogonality diagonalizable matrices",
+        "duration": "13:58",
+        "order": 29
+      },
+      {
+        "video_id": "EF85-fHy-m0",
+        "title": "W4_T1: Polynomial regression",
+        "duration": "6:18",
+        "order": 30
+      },
+      {
+        "video_id": "SPF2ovt7uYg",
+        "title": "W4_T2: Tutorial on eigenvalues & eigenvectors",
+        "duration": "7:44",
+        "order": 31
+      },
+      {
+        "video_id": "G6A3PDivChQ",
+        "title": "W5_L1: Complex matrices",
+        "duration": "17:33",
+        "order": 32
+      },
+      {
+        "video_id": "aHykfDdjDiw",
+        "title": "W5_L2: Hermitian matrices",
+        "duration": "27:38",
+        "order": 33
+      },
+      {
+        "video_id": "2DAG0I1NKiI",
+        "title": "W5_L3: Unitary matrices",
+        "duration": "18:49",
+        "order": 34
+      },
+      {
+        "video_id": "qG1tlEa2Zn0",
+        "title": "W5_L4: Diagonalization of hermitian matrices | part 1",
+        "duration": "34:01",
+        "order": 35
+      },
+      {
+        "video_id": "u9uFJNrCL0E",
+        "title": "W5_L5: Diagonalization of hermitian matrices | part 2",
+        "duration": "17:42",
+        "order": 36
+      },
+      {
+        "video_id": "__TUd8Sq-wU",
+        "title": "W5_T1: Some problems to think & solve",
+        "duration": "36:17",
+        "order": 37
+      },
+      {
+        "video_id": "fTErMgNIKHQ",
+        "title": "W6_L1: Singular value decomposition",
+        "duration": "37:41",
+        "order": 38
+      },
+      {
+        "video_id": "lP1UKRK4h5k",
+        "title": "W6_L2: Example of singular value decomposition (SVD)",
+        "duration": "12:27",
+        "order": 39
+      },
+      {
+        "video_id": "HspdIGCore0",
+        "title": "W6_L3: Positive definiteness",
+        "duration": "25:14",
+        "order": 40
+      },
+      {
+        "video_id": "N-iBr_r9jic",
+        "title": "W6_L4: Positive definite matrices",
+        "duration": "12:22",
+        "order": 41
+      },
+      {
+        "video_id": "SYFGwuf-v9k",
+        "title": "W6_T1: Real world application of SVD",
+        "duration": "28:48",
+        "order": 42
+      },
+      {
+        "video_id": "BHIpHagNcgw",
+        "title": "W6_T2: Geometric interpretation of SVD",
+        "duration": "22:22",
+        "order": 43
+      },
+      {
+        "video_id": "0vb0c-0waik",
+        "title": "W6_T3: Positive definite functions & matrices",
+        "duration": "15:11",
+        "order": 44
+      },
+      {
+        "video_id": "K5vOOARxVyU",
+        "title": "W7_L1: Principal component analysis(PCA)",
+        "duration": "33:01",
+        "order": 45
+      },
+      {
+        "video_id": "TDlSb1-QhhA",
+        "title": "W7_L2: Principal component analysis (contd.)",
+        "duration": "20:48",
+        "order": 46
+      },
+      {
+        "video_id": "BHovu_rftQA",
+        "title": "W7_L3: PCA as maximizing variance",
+        "duration": "25:15",
+        "order": 47
+      },
+      {
+        "video_id": "d0Ch0S1hAs8",
+        "title": "W7_L4: PCA in higher dimensions",
+        "duration": "14:24",
+        "order": 48
+      },
+      {
+        "video_id": "XrDPtTvuYz4",
+        "title": "W7_T1: Tutorial | principal component analysis",
+        "duration": "10:34",
+        "order": 49
+      },
+      {
+        "video_id": "LYZPWUppGGc",
+        "title": "W8_L1: Pillars of machine learning",
+        "duration": "10:18",
+        "order": 50
+      },
+      {
+        "video_id": "-2bXHwSNwTc",
+        "title": "W8_L2: Introduction to optimization",
+        "duration": "25:02",
+        "order": 51
+      },
+      {
+        "video_id": "CkxFp_ZPqAw",
+        "title": "W8_L3: Solving an unconstrained optimization problem | part 1",
+        "duration": "28:46",
+        "order": 52
+      },
+      {
+        "video_id": "-bXrog1dbrM",
+        "title": "W8_L4: Solving an unconstrained optimization problem | part 2",
+        "duration": "17:01",
+        "order": 53
+      },
+      {
+        "video_id": "3rxDd68TE3o",
+        "title": "W8_L5: Basic algorithm for unconstrained optimization: gradient descent",
+        "duration": "21:18",
+        "order": 54
+      },
+      {
+        "video_id": "X35txJMlYsc",
+        "title": "W8_L6: Gradient descent & taylor series",
+        "duration": "17:26",
+        "order": 55
+      },
+      {
+        "video_id": "DLYQu-r7TKI",
+        "title": "W8_L7: Gradient descent for multivariate functions",
+        "duration": "13:15",
+        "order": 56
+      },
+      {
+        "video_id": "ohQfHMpjTlQ",
+        "title": "W8_L8: Taylor series in higher dimensions",
+        "duration": "16:33",
+        "order": 57
+      },
+      {
+        "video_id": "fFJHsQBo6NE",
+        "title": "W9_L1: Constrained optimization | part -1",
+        "duration": "18:11",
+        "order": 58
+      },
+      {
+        "video_id": "q9JJc3Zj_js",
+        "title": "W9_L2: Constrained optimization | part -2",
+        "duration": "15:47",
+        "order": 59
+      },
+      {
+        "video_id": "PoAPXmDlk4U",
+        "title": "W9_L3: Method of lagrange multiplier, projected gradient descent",
+        "duration": "28:30",
+        "order": 60
+      },
+      {
+        "video_id": "_qlBaMTiVXk",
+        "title": "W9_L4: Introduction to convexity",
+        "duration": "14:38",
+        "order": 61
+      },
+      {
+        "video_id": "PfDvKJ2UTPg",
+        "title": "W9_L5: Properties of convex sets",
+        "duration": "17:58",
+        "order": 62
+      },
+      {
+        "video_id": "xExRalp3eY8",
+        "title": "W9_L6: Convex functions",
+        "duration": "25:23",
+        "order": 63
+      },
+      {
+        "video_id": "gqUwsig0geA",
+        "title": "W9_L7: Properties of convex functions",
+        "duration": "15:17",
+        "order": 64
+      },
+      {
+        "video_id": "TQc50S0alsA",
+        "title": "W9_T1: Constrained optimization, lagrange multpliers, convex sets & convex functions",
+        "duration": "27:59",
+        "order": 65
+      },
+      {
+        "video_id": "c9LZ0Uw9wpE",
+        "title": "W10_L1: Properties of convex functions",
+        "duration": "41:05",
+        "order": 66
+      },
+      {
+        "video_id": "4jN8XhwGa48",
+        "title": "W10_L2: Applications of optimization in machine learning",
+        "duration": "42:07",
+        "order": 67
+      },
+      {
+        "video_id": "eM17jHQwrOY",
+        "title": "W10_L3: Revisiting constrained optimization",
+        "duration": "24:27",
+        "order": 68
+      },
+      {
+        "video_id": "JiHrrqdMWAM",
+        "title": "W10_L4: Relation between primal & dual problem, karush-kuhn-tucker(KKT) conditions",
+        "duration": "38:51",
+        "order": 69
+      },
+      {
+        "video_id": "SItUaM_X4C4",
+        "title": "W10_L5: Karush-kuhn-tucker (KKT) conditions continued",
+        "duration": "7:08",
+        "order": 70
+      },
+      {
+        "video_id": "M2qvsHZxlI0",
+        "title": "W10_T1: Linear programming, KKT conditions, relationship between primal & dual problem",
+        "duration": "20:16",
+        "order": 71
+      },
+      {
+        "video_id": "DpYlIh_3ttY",
+        "title": "Probability space",
+        "duration": "36:15",
+        "order": 72
+      },
+      {
+        "video_id": "mDPni6P0uAQ",
+        "title": "Conditioning",
+        "duration": "27:21",
+        "order": 73
+      },
+      {
+        "video_id": "nYC6DPjbuDM",
+        "title": "Random variables",
+        "duration": "20:32",
+        "order": 74
+      },
+      {
+        "video_id": "J8X2DDu_ue0",
+        "title": "Expectation:definition & properties",
+        "duration": "29:06",
+        "order": 75
+      },
+      {
+        "video_id": "KV5WOeqtbgs",
+        "title": "Multiple random variables",
+        "duration": "37:03",
+        "order": 76
+      },
+      {
+        "video_id": "n1rrbgWwY6I",
+        "title": "Bernoulli, binomial, poisson & geometric random variables",
+        "duration": "20:12",
+        "order": 77
+      },
+      {
+        "video_id": "fdignY8Q-Ls",
+        "title": "Solved examples",
+        "duration": "33:28",
+        "order": 78
+      },
+      {
+        "video_id": "K1-JKrms2SU",
+        "title": "W11_L1: Continuous random variables",
+        "duration": "28:39",
+        "order": 79
+      },
+      {
+        "video_id": "cjCJIUOCwAs",
+        "title": "W11_L2: Conditional pdf",
+        "duration": "17:22",
+        "order": 80
+      },
+      {
+        "video_id": "XFYz9KyPU48",
+        "title": "W11_L3: Expectation",
+        "duration": "27:44",
+        "order": 81
+      },
+      {
+        "video_id": "-dyVWffZlRE",
+        "title": "W11_L4: Multiple random variables",
+        "duration": "26:05",
+        "order": 82
+      },
+      {
+        "video_id": "734WLw-fb5Y",
+        "title": "W11_L5: Independent random variables",
+        "duration": "21:38",
+        "order": 83
+      },
+      {
+        "video_id": "aWbs8AGk5zM",
+        "title": "W11_L6: Transformed random variables",
+        "duration": "19:39",
+        "order": 84
+      },
+      {
+        "video_id": "vo3f56Gc1i8",
+        "title": "W11_L7: Uniform, exponential, normal",
+        "duration": "33:25",
+        "order": 85
+      },
+      {
+        "video_id": "sBT-TWoCMj4",
+        "title": "W11_T1: Examples on continuous random variables",
+        "duration": "17:55",
+        "order": 86
+      },
+      {
+        "video_id": "yNPMeKXjISQ",
+        "title": "W12_L1: Bivariate & multivariate normal",
+        "duration": "44:08",
+        "order": 87
+      },
+      {
+        "video_id": "gbqYl44DdX0",
+        "title": "W12_L2: Estimation of parameters using machine learning",
+        "duration": "33:05",
+        "order": 88
+      },
+      {
+        "video_id": "6Zk77RKcI2Q",
+        "title": "W12_L3: Gaussian mixture models & expectation maximization",
+        "duration": "42:53",
+        "order": 89
+      },
+      {
+        "video_id": "iwidPQHOe_I",
+        "title": "W12_L4: Laws of large numbers: markov, chebyshev, hoeffding, central limit",
+        "duration": "34:47",
+        "order": 90
+      },
+      {
+        "video_id": "UExuNuc8IKo",
+        "title": "W12_T1: Solved examples",
+        "duration": "31:13",
+        "order": 91
+      },
+      {
+        "video_id": "WbLg1drl2UY",
+        "title": "Revisiting Constrained Optimization",
+        "duration": "24:11",
+        "order": 92
+      },
+      {
+        "video_id": "tywEGBtZTu0",
+        "title": "Week 7: Tutorial",
+        "duration": "20:39",
+        "order": 93
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLZ2ps__7DhBb3ovNQam2c_WcGeiW9OhQo",
+    "title": "Machine Learning Practice Course",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "MdnmbjKM7a0",
+        "title": "W1_L1: Pandas series & dataframe | part 1",
+        "duration": "21:21",
+        "order": 1
+      },
+      {
+        "video_id": "b-dMycr7SGU",
+        "title": "W1_L2: Pandas series & dataframe | part 2",
+        "duration": "21:41",
+        "order": 2
+      },
+      {
+        "video_id": "CbAiwXBgzfw",
+        "title": "W1_L3: Data selection using pandas | part 1",
+        "duration": "30:59",
+        "order": 3
+      },
+      {
+        "video_id": "N6YZuEpDNY4",
+        "title": "W1_L4: Data selection using pandas | part 2",
+        "duration": "24:39",
+        "order": 4
+      },
+      {
+        "video_id": "GjGqrjFiIuM",
+        "title": "W1_L5: Drop in dataframe",
+        "duration": "36:57",
+        "order": 5
+      },
+      {
+        "video_id": "zQ7JXNnCS7A",
+        "title": "W1_L6: Apply statistics using pandas",
+        "duration": "33:45",
+        "order": 6
+      },
+      {
+        "video_id": "4Lo10fugSOE",
+        "title": "W2_L1: Introduction to scikit-learn",
+        "duration": "14:18",
+        "order": 7
+      },
+      {
+        "video_id": "kCxlP1tXc_0",
+        "title": "W2_L2: Data loading",
+        "duration": "14:23",
+        "order": 8
+      },
+      {
+        "video_id": "bCxOHmIKDqQ",
+        "title": "W2_L3: Demonstration of sklearn dataset api",
+        "duration": "28:22",
+        "order": 9
+      },
+      {
+        "video_id": "_PcVkfVsjuo",
+        "title": "W2_L4: Data preprocessing",
+        "duration": "21:08",
+        "order": 10
+      },
+      {
+        "video_id": "YQxX6TGNfgQ",
+        "title": "W2_L4.2: Handling missing data",
+        "duration": "8:46",
+        "order": 11
+      },
+      {
+        "video_id": "QQtBTFqpv24",
+        "title": "W2_L5: Categorical transformers",
+        "duration": "14:43",
+        "order": 12
+      },
+      {
+        "video_id": "c85P93At8DQ",
+        "title": "W2_L6: Numeric transformers",
+        "duration": "15:53",
+        "order": 13
+      },
+      {
+        "video_id": "qNylDF6LnHk",
+        "title": "W2_L6.2: Feature scaling",
+        "duration": "31:53",
+        "order": 14
+      },
+      {
+        "video_id": "A5KmNHYSctA",
+        "title": "W2_L6.3: Outliers",
+        "duration": "8:01",
+        "order": 15
+      },
+      {
+        "video_id": "D-Bz9qXnLac",
+        "title": "W2_L7: Filter based feature selection",
+        "duration": "11:53",
+        "order": 16
+      },
+      {
+        "video_id": "q8Z1mf7Nu0U",
+        "title": "W2_L8: Wrapper based feature selection",
+        "duration": "11:12",
+        "order": 17
+      },
+      {
+        "video_id": "nmhaq1rdsHk",
+        "title": "W2_L9: Heterogeneous features transformations",
+        "duration": "7:19",
+        "order": 18
+      },
+      {
+        "video_id": "UVYuejgzVW0",
+        "title": "W2_L10: Dimensionality reduction by PCA",
+        "duration": "6:28",
+        "order": 19
+      },
+      {
+        "video_id": "wVrWAnOm0iY",
+        "title": "W3_L1: Chaining transformers",
+        "duration": "17:43",
+        "order": 20
+      },
+      {
+        "video_id": "_lxhnV8Ucy8",
+        "title": "W3_L2: Demonstration of data extraction, imputation, scaling, visualizing feature distribution",
+        "duration": "29:44",
+        "order": 21
+      },
+      {
+        "video_id": "Nn1Gi5mfIv8",
+        "title": "W3_L3: Demonstration of Data transformation, composite transformers",
+        "duration": "24:32",
+        "order": 22
+      },
+      {
+        "video_id": "C700yzE_X4Q",
+        "title": "W3_L4: Demonstration of feature selection demonstration, PCA, pipelines, handling class imbalance",
+        "duration": "26:11",
+        "order": 23
+      },
+      {
+        "video_id": "SFYn4UnZaSQ",
+        "title": "W4_L1: Linear regression",
+        "duration": "28:08",
+        "order": 24
+      },
+      {
+        "video_id": "TvtBGjcjdak",
+        "title": "W4_L2: Model evaluation",
+        "duration": "31:48",
+        "order": 25
+      },
+      {
+        "video_id": "dMHECW-BkIM",
+        "title": "W4_L3: Polynomial regression",
+        "duration": "4:33",
+        "order": 26
+      },
+      {
+        "video_id": "Tj8XetBzmVE",
+        "title": "W4_L4: Regularization",
+        "duration": "8:49",
+        "order": 27
+      },
+      {
+        "video_id": "2Ef12zzy9q8",
+        "title": "W4_L5: Hyper parameter tuning",
+        "duration": "14:29",
+        "order": 28
+      },
+      {
+        "video_id": "-AIkfX41Mgc",
+        "title": "W4_L6:Multi Learning Classification",
+        "duration": "18:47",
+        "order": 29
+      },
+      {
+        "video_id": "uM-MNko46Zo",
+        "title": "W4_L7: Naive bayes classifier",
+        "duration": "2:29",
+        "order": 30
+      },
+      {
+        "video_id": "gKiFTMLgZy4",
+        "title": "W4_L8: K nearest neighbours",
+        "duration": "7:18",
+        "order": 31
+      },
+      {
+        "video_id": "5erlKOqL8Xk",
+        "title": "W4_L9: Support vector machines in scikit-learn",
+        "duration": "9:55",
+        "order": 32
+      },
+      {
+        "video_id": "5OZc2zWS2cY",
+        "title": "W4_L10: Decision trees",
+        "duration": "7:52",
+        "order": 33
+      },
+      {
+        "video_id": "EZ5szvjQgWw",
+        "title": "W4_L11: Voting, bagging & random forest",
+        "duration": "8:34",
+        "order": 34
+      },
+      {
+        "video_id": "ZIMlYAKgGTg",
+        "title": "W4_L12: Boosting: adaboost, gradient boosting",
+        "duration": "4:11",
+        "order": 35
+      },
+      {
+        "video_id": "wphku4k1e90",
+        "title": "W4_L13: Neural networks: multi-layer perceptron(mlp)",
+        "duration": "10:23",
+        "order": 36
+      },
+      {
+        "video_id": "rM1h2CI_Cjw",
+        "title": "W5_L1: Explore california housing dataset",
+        "duration": "20:04",
+        "order": 37
+      },
+      {
+        "video_id": "SkL5TyjBiHQ",
+        "title": "W5_L2: Linear regression on california housing dataset",
+        "duration": "34:49",
+        "order": 38
+      },
+      {
+        "video_id": "ddRlrZ_2JvU",
+        "title": "W5_L3: Linear regression demonstration",
+        "duration": "31:28",
+        "order": 39
+      },
+      {
+        "video_id": "PWhK5gePJ_g",
+        "title": "W5_L4: Baseline model",
+        "duration": "9:10",
+        "order": 40
+      },
+      {
+        "video_id": "fzX55uQs4Sg",
+        "title": "W5_L5: SGDregressor demonstration",
+        "duration": "21:35",
+        "order": 41
+      },
+      {
+        "video_id": "QCrEPEqkRII",
+        "title": "W5_L6: Demonstration: K-NN with california housing dataset",
+        "duration": "12:39",
+        "order": 42
+      },
+      {
+        "video_id": "wjVCvwgwSSg",
+        "title": "W5_L7: Decision trees for regression",
+        "duration": "8:30",
+        "order": 43
+      },
+      {
+        "video_id": "cjf5b1dx6Tk",
+        "title": "W5_L8: Bagging & random forest regressor on california housing dataset",
+        "duration": "7:53",
+        "order": 44
+      },
+      {
+        "video_id": "yJjCDkjNNaM",
+        "title": "W5_L9: Adaboost & gradient Boost regressor on california housing",
+        "duration": "7:02",
+        "order": 45
+      },
+      {
+        "video_id": "zsPNGpLFqgg",
+        "title": "W5_L10: MLP regressor on california housing dataset",
+        "duration": "5:31",
+        "order": 46
+      },
+      {
+        "video_id": "dhYydFzxfes",
+        "title": "W6_L1: Classification functions in scikit learn",
+        "duration": "35:18",
+        "order": 47
+      },
+      {
+        "video_id": "yDKol1MkXag",
+        "title": "W6_L2: Evaluating classifiers",
+        "duration": "10:29",
+        "order": 48
+      },
+      {
+        "video_id": "i9tCqiNkdLA",
+        "title": "W6_L3: Demonstration: binary class image classification with perceptron",
+        "duration": "26:05",
+        "order": 49
+      },
+      {
+        "video_id": "cB0ObIWlEEs",
+        "title": "W6_L4: Demonstration: multi class image classification with perceptron",
+        "duration": "13:23",
+        "order": 50
+      },
+      {
+        "video_id": "wnWmmmjKaTo",
+        "title": "W6_L5: Demonstration: MNIST digits classification using SGDregressor",
+        "duration": "33:44",
+        "order": 51
+      },
+      {
+        "video_id": "Gy-TZWTsKRw",
+        "title": "W6_L6: Demonstration: MNIST digits classification using logistic regression",
+        "duration": "12:49",
+        "order": 52
+      },
+      {
+        "video_id": "qrwPx41Q22c",
+        "title": "W6_L7: Demonstration: Zero detector with ridge classifier",
+        "duration": "9:15",
+        "order": 53
+      },
+      {
+        "video_id": "v9jAO44KG7M",
+        "title": "W6_L8: Demonstration: multiclass classifier on MNIST dataset",
+        "duration": "7:07",
+        "order": 54
+      },
+      {
+        "video_id": "eyPYs5jJFys",
+        "title": "W6_L9: Demonstration: naive bayes classifier",
+        "duration": "10:11",
+        "order": 55
+      },
+      {
+        "video_id": "_zWJhbFQBQI",
+        "title": "W6_L10: Demonstration: softmax regression with MNIST",
+        "duration": "7:09",
+        "order": 56
+      },
+      {
+        "video_id": "nbOcdzyPulA",
+        "title": "W6_L11: Demonstration: KNN with MNIST",
+        "duration": "11:23",
+        "order": 57
+      },
+      {
+        "video_id": "pDmRNHjCZRE",
+        "title": "W6_L12: Demonstration: SVC on MNIST dataset",
+        "duration": "9:32",
+        "order": 58
+      },
+      {
+        "video_id": "SBnT0B2e5kc",
+        "title": "W6_L13: Decision trees for classification - abalone",
+        "duration": "19:06",
+        "order": 59
+      },
+      {
+        "video_id": "3Lc7sD1Dj4Q",
+        "title": "W6_L14: Decision trees for classification - iris",
+        "duration": "10:45",
+        "order": 60
+      },
+      {
+        "video_id": "fy7AhpixJ-A",
+        "title": "W6_L15: Bagging & random forest classifier on MNIST",
+        "duration": "10:07",
+        "order": 61
+      },
+      {
+        "video_id": "DhftGTaoFDI",
+        "title": "W6_L16: Adaboost & gradientboost classifier on MNIST",
+        "duration": "8:11",
+        "order": 62
+      },
+      {
+        "video_id": "lvS2ZHJeyng",
+        "title": "W6_L17: MLP classifier on MNIST dataset",
+        "duration": "6:44",
+        "order": 63
+      },
+      {
+        "video_id": "CodUuMNLHyc",
+        "title": "W7_L1: Large scale machine learning",
+        "duration": "31:56",
+        "order": 64
+      },
+      {
+        "video_id": "feypiLEbhr8",
+        "title": "W7_L2: Confusion matrix",
+        "duration": "8:18",
+        "order": 65
+      },
+      {
+        "video_id": "j7yRrf3IYXc",
+        "title": "W7_L3: Accuracy",
+        "duration": "3:53",
+        "order": 66
+      },
+      {
+        "video_id": "TJ1kghIlhto",
+        "title": "W7_L4: Precision",
+        "duration": "2:54",
+        "order": 67
+      },
+      {
+        "video_id": "wrfrxQNMIyQ",
+        "title": "W7_L5: F1 score",
+        "duration": "1:47",
+        "order": 68
+      },
+      {
+        "video_id": "6hayjB0TugY",
+        "title": "W7_L6: Recall",
+        "duration": "2:35",
+        "order": 69
+      },
+      {
+        "video_id": "IdCzHOouck0",
+        "title": "W7_L7: Multiclass",
+        "duration": "4:46",
+        "order": 70
+      },
+      {
+        "video_id": "-tPSKI9nUf0",
+        "title": "W9_L1:K-means clustering on digit dataset",
+        "duration": "7:43",
+        "order": 71
+      },
+      {
+        "video_id": "GG6yYMO91FQ",
+        "title": "W9_L2: HAC demo",
+        "duration": "6:32",
+        "order": 72
+      },
+      {
+        "video_id": "c3fKU3H4VDM",
+        "title": "W9_L4: Introduction: looking at the big picture",
+        "duration": "29:37",
+        "order": 73
+      },
+      {
+        "video_id": "kIyxumBVo6o",
+        "title": "W9_L5: Data visualization",
+        "duration": "8:12",
+        "order": 74
+      },
+      {
+        "video_id": "R3V0hVHggwo",
+        "title": "W9_L6: Data preparation",
+        "duration": "20:28",
+        "order": 75
+      },
+      {
+        "video_id": "TKqS2Pd1U7o",
+        "title": "W9_L7: Selection & training of machine learning models",
+        "duration": "14:16",
+        "order": 76
+      },
+      {
+        "video_id": "oa7QlR8kzIA",
+        "title": "W9_L8: Finetuning machine learning models",
+        "duration": "18:44",
+        "order": 77
+      },
+      {
+        "video_id": "Ba87ZXtCkbE",
+        "title": "W10_L1 Recommender Systems",
+        "duration": "39:34",
+        "order": 78
+      },
+      {
+        "video_id": "S540AbZX4-0",
+        "title": "W10_L2 Movie Lens EDA",
+        "duration": "29:42",
+        "order": 79
+      },
+      {
+        "video_id": "j83A-VnXwrk",
+        "title": "W10_L3 Content Based Filtering",
+        "duration": "27:59",
+        "order": 80
+      },
+      {
+        "video_id": "F2WHY2oWNaA",
+        "title": "W10_L4 Content Based Filtering Example 2",
+        "duration": "12:35",
+        "order": 81
+      },
+      {
+        "video_id": "LLiA2Li7Wpc",
+        "title": "W10_L5 item - item Collaborative Filtering",
+        "duration": "36:30",
+        "order": 82
+      },
+      {
+        "video_id": "KiVNFhq0KhY",
+        "title": "W10_L6 user - user collaborative filtering",
+        "duration": "9:59",
+        "order": 83
+      },
+      {
+        "video_id": "yH-MWfwytco",
+        "title": "W10_L7 Matrix Factorization",
+        "duration": "36:59",
+        "order": 84
+      },
+      {
+        "video_id": "KygCkwCm1Zo",
+        "title": "W11_L1 Time series using pandas",
+        "duration": "14:04",
+        "order": 85
+      },
+      {
+        "video_id": "vKR2BzOz1to",
+        "title": "W11_L2 Time Resampling",
+        "duration": "10:28",
+        "order": 86
+      },
+      {
+        "video_id": "VouvSAKc16A",
+        "title": "W11_L3 Classical Decomposition",
+        "duration": "14:49",
+        "order": 87
+      },
+      {
+        "video_id": "Vx3E7rphH2E",
+        "title": "W11_L4 STL Decomposition",
+        "duration": "4:09",
+        "order": 88
+      },
+      {
+        "video_id": "UUWb5-lf9pk",
+        "title": "W11_L5 Stationarity",
+        "duration": "15:51",
+        "order": 89
+      },
+      {
+        "video_id": "tE1lIAW50cU",
+        "title": "W11_L6 Make data stationary",
+        "duration": "14:46",
+        "order": 90
+      },
+      {
+        "video_id": "OoCAtgDxx4A",
+        "title": "W12_L1: What is transfer learning",
+        "duration": "22:13",
+        "order": 91
+      },
+      {
+        "video_id": "bd6Fwc9L4bk",
+        "title": "W12_L2: Practical implementation of transfer learning",
+        "duration": "58:24",
+        "order": 92
+      },
+      {
+        "video_id": "G0Tzd9n6M5k",
+        "title": "W12_L3: Quick recap of neural networks",
+        "duration": "43:39",
+        "order": 93
+      },
+      {
+        "video_id": "SF41dPUKJ44",
+        "title": "W12_L4: Transfer learning theoretical implementation",
+        "duration": "23:14",
+        "order": 94
+      },
+      {
+        "video_id": "0iP8PH1-WcI",
+        "title": "Intro to kaggle assignments 1",
+        "duration": "13:57",
+        "order": 95
+      },
+      {
+        "video_id": "pTa9ew-E6OY",
+        "title": "Introduction: Looking at the big picture",
+        "duration": "28:34",
+        "order": 96
+      },
+      {
+        "video_id": "F7OurnqDifY",
+        "title": "Intro to Kaggle Platform",
+        "duration": "10:37",
+        "order": 97
+      },
+      {
+        "video_id": "vh8Si-T9iUk",
+        "title": "KA sample notebook tutorial",
+        "duration": "19:09",
+        "order": 98
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLZ2ps__7DhBZVxMrSkTIcG6zZBDKUXCnM",
+    "title": "Deep Learning",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "zdmEzqpAG70",
+        "title": "L2: Brief history of deep learning",
+        "duration": "28:01",
+        "order": 1
+      },
+      {
+        "video_id": "EifcfTLIzxc",
+        "title": "L1: The deep revival | from cats to convnet | tracing the evolution",
+        "duration": "10:24",
+        "order": 2
+      },
+      {
+        "video_id": "csM_nCAhIQk",
+        "title": "L3: Faster-higher-stronger | the rise of deep learning",
+        "duration": "17:39",
+        "order": 3
+      },
+      {
+        "video_id": "m2tyQC2qTDQ",
+        "title": "L5: Madness and the rise of transformers",
+        "duration": "20:47",
+        "order": 4
+      },
+      {
+        "video_id": "49F3moGjuwc",
+        "title": "L4: Call for sanity in artificial intelligence | efficient deep learning | interpretability",
+        "duration": "23:13",
+        "order": 5
+      },
+      {
+        "video_id": "KjMvUwq7PdQ",
+        "title": "L6: Motivation from biological neuron:foundations of neural nets",
+        "duration": "8:44",
+        "order": 6
+      },
+      {
+        "video_id": "-bxOadOFNYc",
+        "title": "L10: McCulloch Pitts neuron & thresholding logic",
+        "duration": "23:47",
+        "order": 7
+      },
+      {
+        "video_id": "Ydd9TMyoG6k",
+        "title": "L9: Perceptrons:from mcculloch-pitts to weighted inputs, & real-world classification",
+        "duration": "21:15",
+        "order": 8
+      },
+      {
+        "video_id": "oIjsEzG6zR0",
+        "title": "L7: Errors & error surfaces | perceptron learning,weight Impact & linear separability",
+        "duration": "9:30",
+        "order": 9
+      },
+      {
+        "video_id": "HPfZ9lEZOj4",
+        "title": "L8: Perceptron learning algorithm | geometry & real-world example",
+        "duration": "22:48",
+        "order": 10
+      },
+      {
+        "video_id": "9AmGI-tVCSQ",
+        "title": "L12: Proof of convergence: perceptron learning algorithm",
+        "duration": "21:19",
+        "order": 11
+      },
+      {
+        "video_id": "VYnzTwx3lpk",
+        "title": "L16: Linearly separable functions | boolean complexity & limitations of perceptron",
+        "duration": "8:35",
+        "order": 12
+      },
+      {
+        "video_id": "dFnNoZeuKzQ",
+        "title": "L11: Representation power of a petwork of perceptrons | mlps & neural architectures",
+        "duration": "21:22",
+        "order": 13
+      },
+      {
+        "video_id": "ay402XiRrzc",
+        "title": "L18: Sigmoid neuron | real-valued outputs, probability & foundations for training",
+        "duration": "20:21",
+        "order": 14
+      },
+      {
+        "video_id": "Evhb4HxI32I",
+        "title": "L13: A typical supervised machine learning setup | models, & loss functions explained",
+        "duration": "26:04",
+        "order": 15
+      },
+      {
+        "video_id": "LbPKf7UVkyU",
+        "title": "L14: Learning parameters | (infeasible) | guess work | loss, sigmoid & error surface",
+        "duration": "18:33",
+        "order": 16
+      },
+      {
+        "video_id": "HEx-q6fkCbo",
+        "title": "L15: Gradient descent | weight update rule | learning rate & convergence demo",
+        "duration": "23:58",
+        "order": 17
+      },
+      {
+        "video_id": "qyn6RERiIIY",
+        "title": "L19: Learning parameters: taylor series approximation | navigating error surfaces",
+        "duration": "24:22",
+        "order": 18
+      },
+      {
+        "video_id": "o2pT74Nplq0",
+        "title": "L17: Learning parameters:gradient descent | taylor series, gradients & optimization",
+        "duration": "16:19",
+        "order": 19
+      },
+      {
+        "video_id": "xHSErLWAlbU",
+        "title": "L23: Representation power of sigmoid neural networks:1d functions approximation",
+        "duration": "23:15",
+        "order": 20
+      },
+      {
+        "video_id": "BUGi6AH1D2c",
+        "title": "L20: Modeling 2d functions with sigmoid networks | representation power",
+        "duration": "21:10",
+        "order": 21
+      },
+      {
+        "video_id": "HHv6Ndo9VBU",
+        "title": "L25: Feed forward neural networks explained | backpropagation intuition",
+        "duration": "26:35",
+        "order": 22
+      },
+      {
+        "video_id": "0Me1ywSlJE8",
+        "title": "L22: Learning parameters (intuition) | scaling gradient descent in neural nets",
+        "duration": "8:49",
+        "order": 23
+      },
+      {
+        "video_id": "1hefEWZHvJg",
+        "title": "L21: Output functions & loss functions | representation power explained",
+        "duration": "24:38",
+        "order": 24
+      },
+      {
+        "video_id": "i0YC2jZuxUI",
+        "title": "L24: Backpropagation (intuition) | how neural nets learn",
+        "duration": "14:02",
+        "order": 25
+      },
+      {
+        "video_id": "T6kfyQ3_JQ8",
+        "title": "L26: Gradient w.r.t output units with softmax & loss derivatives",
+        "duration": "25:39",
+        "order": 26
+      },
+      {
+        "video_id": "7g-THFmBpRA",
+        "title": "L28: Gradient w.r.t Hidden Units | chain rule & matrix calculus",
+        "duration": "28:44",
+        "order": 27
+      },
+      {
+        "video_id": "7TL_9QUIL0g",
+        "title": "L27: Gradient w.r.t parameters using outer product derivation",
+        "duration": "13:44",
+        "order": 28
+      },
+      {
+        "video_id": "1f22ZAS-YGE",
+        "title": "L29: Backpropagation: pseudocode for Forward & Backward Pass",
+        "duration": "9:27",
+        "order": 29
+      },
+      {
+        "video_id": "gupSH0MU7vs",
+        "title": "L30: Gradient descent & derivatives | quick recap",
+        "duration": "31:31",
+        "order": 30
+      },
+      {
+        "video_id": "fGzJOBIxXdg",
+        "title": "L31: Plotting contours | visualizing error surfaces & slope",
+        "duration": "15:18",
+        "order": 31
+      },
+      {
+        "video_id": "R3jlvdclAHI",
+        "title": "L32: Momneum based gradient descent",
+        "duration": "19:42",
+        "order": 32
+      },
+      {
+        "video_id": "dIYDPtHWBNA",
+        "title": "L35: Nesterov accelarated gradient descent",
+        "duration": "14:05",
+        "order": 33
+      },
+      {
+        "video_id": "hXK16fgWjsc",
+        "title": "L36: Stochastic vs batch gradient",
+        "duration": "22:53",
+        "order": 34
+      },
+      {
+        "video_id": "-7ET3TUWi8M",
+        "title": "L34: Scheduling learning rate using decay & line search",
+        "duration": "19:26",
+        "order": 35
+      },
+      {
+        "video_id": "oqkfhBf71gc",
+        "title": "L33: Gradient descent with adaptive learning rate in neural networks",
+        "duration": "12:56",
+        "order": 36
+      },
+      {
+        "video_id": "WSvxne3oGr0",
+        "title": "L42: AdaGrad: adaptive learning for sparse features",
+        "duration": "25:26",
+        "order": 37
+      },
+      {
+        "video_id": "ubOy0NPI2cY",
+        "title": "L38: RMSProp | adaptive learning with exponential decay",
+        "duration": "32:00",
+        "order": 38
+      },
+      {
+        "video_id": "EcX0rqjHR9k",
+        "title": "L37: Adadelta | adaptive optimization without initial learning rate",
+        "duration": "19:50",
+        "order": 39
+      },
+      {
+        "video_id": "m9g9Hij1h1A",
+        "title": "L39: Adam | adaptive optimization with bias correction",
+        "duration": "30:22",
+        "order": 40
+      },
+      {
+        "video_id": "d2mSof7c4Jo",
+        "title": "L40: Adamax & maxprop | optimization with max norms",
+        "duration": "19:37",
+        "order": 41
+      },
+      {
+        "video_id": "fsTRJeWpZ_o",
+        "title": "L44: Nadam (Nesterov-accelerated adaptive moment estimation)",
+        "duration": "18:28",
+        "order": 42
+      },
+      {
+        "video_id": "Lqauh9dJzNc",
+        "title": "L41: Learning rate schemes explained with warmup & cosine annealing",
+        "duration": "13:59",
+        "order": 43
+      },
+      {
+        "video_id": "Wrscc4tVmVs",
+        "title": "L45: Introduction to bias & variance",
+        "duration": "27:48",
+        "order": 44
+      },
+      {
+        "video_id": "RKo-jONCjjU",
+        "title": "L43: Training error vs test error | bias-variance & generalization",
+        "duration": "9:49",
+        "order": 45
+      },
+      {
+        "video_id": "nu6x-L04CG4",
+        "title": "L47: Estimate error from test data | mean squared error & generalization",
+        "duration": "18:09",
+        "order": 46
+      },
+      {
+        "video_id": "YNAq1X8b-r4",
+        "title": "L49: True error vs model complexity",
+        "duration": "18:47",
+        "order": 47
+      },
+      {
+        "video_id": "eqATcLh_X64",
+        "title": "L46: L2 regularization | balancing error & complexity",
+        "duration": "38:14",
+        "order": 48
+      },
+      {
+        "video_id": "in9ZdGxGhW8",
+        "title": "L50: Dataset augmentation & parameter sharing: improving generalization",
+        "duration": "6:52",
+        "order": 49
+      },
+      {
+        "video_id": "S1KKaCrg0G8",
+        "title": "L48: Injecting noise at inputs | explained with robustness & weight decay",
+        "duration": "12:20",
+        "order": 50
+      },
+      {
+        "video_id": "sUnsawJ5-zw",
+        "title": "L52: Injecting noise at outputs | label smoothing for regularization",
+        "duration": "4:49",
+        "order": 51
+      },
+      {
+        "video_id": "CrO__rzk9hU",
+        "title": "L53: Early stopping: preventing overfitting with validation monitoring",
+        "duration": "23:44",
+        "order": 52
+      },
+      {
+        "video_id": "Njytanc4oHY",
+        "title": "L51: Ensemble methods | bagging & model averaging",
+        "duration": "12:44",
+        "order": 53
+      },
+      {
+        "video_id": "WzScUPDGFVA",
+        "title": "L57: Dropout explained regularization in deep neural networks",
+        "duration": "17:44",
+        "order": 54
+      },
+      {
+        "video_id": "_wK-MOylRtw",
+        "title": "L54: Summary: regularization techniques & loss landscape",
+        "duration": "5:43",
+        "order": 55
+      },
+      {
+        "video_id": "PwKAEs9uuZw",
+        "title": "L56: Deep learning revival | the role of unsupervised pretraining",
+        "duration": "8:55",
+        "order": 56
+      },
+      {
+        "video_id": "TNcZ5l54pLc",
+        "title": "L58: Unsupervised pre-training | autoencoders & layerwise learning",
+        "duration": "22:12",
+        "order": 57
+      },
+      {
+        "video_id": "n5ZP4Ek9cxE",
+        "title": "L55: Optimization or regularization | pre-training & initialization",
+        "duration": "14:29",
+        "order": 58
+      },
+      {
+        "video_id": "4eQiXN69FdQ",
+        "title": "L61: Better Activation Functions for stable training & gradient flow",
+        "duration": "34:11",
+        "order": 59
+      },
+      {
+        "video_id": "oW7ZBLss2L0",
+        "title": "L62: Maxout: generalizing relu via dropout & model averaging",
+        "duration": "19:42",
+        "order": 60
+      },
+      {
+        "video_id": "srcPpAV6Yfs",
+        "title": "L59: Gelu to silu: activation functions for modern neural nets",
+        "duration": "20:59",
+        "order": 61
+      },
+      {
+        "video_id": "Dsq-fSb_lj4",
+        "title": "L40: Convolutional neural networks | intro | part 1 | stride, padding & filters",
+        "duration": "2:55",
+        "order": 62
+      },
+      {
+        "video_id": "cVbGNL0N2RI",
+        "title": "L1: Introduction to transformer architecture",
+        "duration": "20:40",
+        "order": 63
+      },
+      {
+        "video_id": "MVeOwsggkt4",
+        "title": "L4: Attention is all you need transformer architecture explained",
+        "duration": "21:01",
+        "order": 64
+      },
+      {
+        "video_id": "MLdUzA6ltEQ",
+        "title": "L3: Self-attention in transformers encoder & contextual word embeddings",
+        "duration": "21:31",
+        "order": 65
+      },
+      {
+        "video_id": "VN2Bfi0_pbw",
+        "title": "L2: Multi-headed attention in transformers explained",
+        "duration": "21:17",
+        "order": 66
+      },
+      {
+        "video_id": "cVuyWE4yMBU",
+        "title": "L65: Decoder block in transformers | masked & cross attention",
+        "duration": "18:28",
+        "order": 67
+      },
+      {
+        "video_id": "_yFMy5WrKSk",
+        "title": "5.3 : Analysis of K-Maps In Complex Boolean Logic Minimization",
+        "duration": "25:38",
+        "order": 68
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLZ2ps__7DhBbDiVplM2I9q2XNso1Qfj62",
+    "title": "Special topics in ML (Reinforcement Learning)",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "o1ZqDbTQE6Q",
+        "title": "W1_L1: Introduction to RL",
+        "duration": "50:33",
+        "order": 1
+      },
+      {
+        "video_id": "wV_WygG-RTs",
+        "title": "W1_L2: Tic-tac-toe and TD learning",
+        "duration": "32:53",
+        "order": 2
+      },
+      {
+        "video_id": "KMnAXw_WTNw",
+        "title": "W1_L3: Immediate RL and bandits",
+        "duration": "41:32",
+        "order": 3
+      },
+      {
+        "video_id": "zl8jo94fSYY",
+        "title": "W1_L4: Regret and (probably Approximately Correct) frameworks",
+        "duration": "23:41",
+        "order": 4
+      },
+      {
+        "video_id": "pmV8a5yfPH8",
+        "title": "W1_L5: Upper Confidence Bound (UCB) Algorithm",
+        "duration": "13:14",
+        "order": 5
+      },
+      {
+        "video_id": "p4WAawrMJTo",
+        "title": "W1_L6: Contextual bandits",
+        "duration": "13:01",
+        "order": 6
+      },
+      {
+        "video_id": "meDFT4hcXtU",
+        "title": "W2_L1: Full RL problem",
+        "duration": "32:43",
+        "order": 7
+      },
+      {
+        "video_id": "faNdiZFKtxQ",
+        "title": "W2_L2: Markov decision process (MDP)",
+        "duration": "17:46",
+        "order": 8
+      },
+      {
+        "video_id": "884Vmrg3y-Y",
+        "title": "W2_L3: Markov decision process (MDP): problem to formulation",
+        "duration": "33:32",
+        "order": 9
+      },
+      {
+        "video_id": "NZJrSd_LPj0",
+        "title": "W2_L4: Returns",
+        "duration": "11:34",
+        "order": 10
+      },
+      {
+        "video_id": "l8m7jfFQf08",
+        "title": "W2_L5: Value functions",
+        "duration": "13:42",
+        "order": 11
+      },
+      {
+        "video_id": "CHpR3KVMLzU",
+        "title": "W2_L6: Markov decision process (MDP) example: recycling robot",
+        "duration": "34:12",
+        "order": 12
+      },
+      {
+        "video_id": "gb4Qcz-ilGU",
+        "title": "W2_L7: Markov decision process (MDP) example: haunted house",
+        "duration": "22:10",
+        "order": 13
+      },
+      {
+        "video_id": "JxupzRqTbuM",
+        "title": "W3_L1: Bellman equations",
+        "duration": "32:36",
+        "order": 14
+      },
+      {
+        "video_id": "HWANu65jwis",
+        "title": "W3_L2: Bellman optimality equations",
+        "duration": "34:12",
+        "order": 15
+      },
+      {
+        "video_id": "TzIiK2nv7hw",
+        "title": "W3_L3: Dynamic programming (DP), poilcy iteration (policy evaluation)",
+        "duration": "36:43",
+        "order": 16
+      },
+      {
+        "video_id": "ZFAIpD2e_pU",
+        "title": "W3_L4: Dynamic programming (DP): policy iteration (policy improvement)",
+        "duration": "21:30",
+        "order": 17
+      },
+      {
+        "video_id": "bQMNscMKGXg",
+        "title": "W4_L1: Dynamic programming (DP): value iteration",
+        "duration": "19:40",
+        "order": 18
+      },
+      {
+        "video_id": "8ge4wL7CRjw",
+        "title": "W4_L2: More on dynamic programming (DP)",
+        "duration": "19:47",
+        "order": 19
+      },
+      {
+        "video_id": "P0ZvxeQqv0A",
+        "title": "W4_L3: Monte carlo methods",
+        "duration": "20:37",
+        "order": 20
+      },
+      {
+        "video_id": "rmhFVp1SHQ4",
+        "title": "W4_L4: Comparison of dynamic programming (DP), MC and TD",
+        "duration": "12:10",
+        "order": 21
+      },
+      {
+        "video_id": "Udzp_KDLYUo",
+        "title": "W5_L1: Temporal difference learning (TD)",
+        "duration": "16:31",
+        "order": 22
+      },
+      {
+        "video_id": "JMbUwB2VICU",
+        "title": "W5_L2: MC vs TD updates",
+        "duration": "12:42",
+        "order": 23
+      },
+      {
+        "video_id": "Mx2nxKkfwd4",
+        "title": "W5_L3: SARSA",
+        "duration": "20:26",
+        "order": 24
+      },
+      {
+        "video_id": "1jbJWL_-ogc",
+        "title": "W5_L4: Q-learning",
+        "duration": "18:36",
+        "order": 25
+      },
+      {
+        "video_id": "RcOyMkcOP0E",
+        "title": "W5_L5: Off-policy learning",
+        "duration": "16:30",
+        "order": 26
+      },
+      {
+        "video_id": "kcdUIkKY2aw",
+        "title": "W6_L1: N-step prediction and TD-lambda",
+        "duration": "40:02",
+        "order": 27
+      },
+      {
+        "video_id": "S49XJD5jhJE",
+        "title": "W6_L2: Double Q learning",
+        "duration": "22:18",
+        "order": 28
+      },
+      {
+        "video_id": "a1CBLl3yHHw",
+        "title": "W7_L1: Introduction to function approximation",
+        "duration": "12:18",
+        "order": 29
+      },
+      {
+        "video_id": "4m0zWarmS7g",
+        "title": "W7_L2: Linear function approximation",
+        "duration": "18:52",
+        "order": 30
+      },
+      {
+        "video_id": "3UfCBFqHnyo",
+        "title": "W7_L3: State and action representation",
+        "duration": "12:19",
+        "order": 31
+      },
+      {
+        "video_id": "TXcB4mgJzP8",
+        "title": "W7_L4: More on representations",
+        "duration": "30:41",
+        "order": 32
+      },
+      {
+        "video_id": "_CFRDwfzw6E",
+        "title": "W7_L5: DQN: deep Q-network",
+        "duration": "36:49",
+        "order": 33
+      },
+      {
+        "video_id": "RiBGsaYlaJc",
+        "title": "W7_L6: Advanced value based methods",
+        "duration": "36:04",
+        "order": 34
+      },
+      {
+        "video_id": "H6ltfKWz2wk",
+        "title": "W8_L1: Policy gradient algorithms",
+        "duration": "46:07",
+        "order": 35
+      },
+      {
+        "video_id": "LcizfxWPYek",
+        "title": "W8_L2: Reinforce",
+        "duration": "18:46",
+        "order": 36
+      },
+      {
+        "video_id": "JtP2vsZshBc",
+        "title": "W8_L3: Policy gradient theorem",
+        "duration": "19:17",
+        "order": 37
+      },
+      {
+        "video_id": "mLnM86_BG5o",
+        "title": "W10_L1: Reinforce: MC policy gradient",
+        "duration": "17:42",
+        "order": 38
+      },
+      {
+        "video_id": "vDMH-ByxN-o",
+        "title": "W10_L2: Actor critic methods | part 1",
+        "duration": "13:09",
+        "order": 39
+      },
+      {
+        "video_id": "fVYzgl41Ri4",
+        "title": "W10_L3: Actor critic methods | part 2",
+        "duration": "36:46",
+        "order": 40
+      },
+      {
+        "video_id": "PK1PqEogkXo",
+        "title": "W10_L4: Deterministic policy gradient (DPG) and deep deterministic policy gradient (DDPG)",
+        "duration": "29:55",
+        "order": 41
+      },
+      {
+        "video_id": "GBWS1EOQm-s",
+        "title": "W12_L1: Monte carlo tree search",
+        "duration": "28:21",
+        "order": 42
+      },
+      {
+        "video_id": "hKs3OzdI01Y",
+        "title": "Special topics in ML (reinforcement learning) | policy iteration (tutorial)",
+        "duration": "45:25",
+        "order": 43
+      },
+      {
+        "video_id": "64RljWXMpko",
+        "title": "Special topics in ML (reinforcement learning) | value iteration (tutorial)",
+        "duration": "27:38",
+        "order": 44
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLZ2ps__7DhBaXTORd_OKXZRXCMh3dGnBZ",
+    "title": "Programming Concepts using Java",
+    "channel": "IIT Madras BS Data Science",
+    "videos": [
+      {
+        "video_id": "3a1FXBR6QXY",
+        "title": "1.1 : Introduction",
+        "duration": "24:48",
+        "order": 1
+      },
+      {
+        "video_id": "0Gl9ygUk4K8",
+        "title": "1.2 : Types",
+        "duration": "18:57",
+        "order": 2
+      },
+      {
+        "video_id": "b4nsGWXNm2c",
+        "title": "1.3 : Memory Management",
+        "duration": "21:58",
+        "order": 3
+      },
+      {
+        "video_id": "8ciDI5cUhSs",
+        "title": "1.4 : Abstraction and modularity",
+        "duration": "18:30",
+        "order": 4
+      },
+      {
+        "video_id": "NmYcNMPUlzY",
+        "title": "1.5 : Object-Oriented Programming",
+        "duration": "25:23",
+        "order": 5
+      },
+      {
+        "video_id": "TJC0WhS6FNo",
+        "title": "1.6 : Classes and Objects",
+        "duration": "26:18",
+        "order": 6
+      },
+      {
+        "video_id": "ULpvhw2hmSg",
+        "title": "2.1 : A first taste of Java",
+        "duration": "27:57",
+        "order": 7
+      },
+      {
+        "video_id": "IwTdVsLxz04",
+        "title": "2.2 : Basic datatypes in Java",
+        "duration": "35:12",
+        "order": 8
+      },
+      {
+        "video_id": "0RHDEourhdo",
+        "title": "2.3 : Control flow in Java",
+        "duration": "27:17",
+        "order": 9
+      },
+      {
+        "video_id": "XB-PcJJpKXg",
+        "title": "2.4 : Defining classes and objects in Java",
+        "duration": "24:06",
+        "order": 10
+      },
+      {
+        "video_id": "zvtvQcUhFxo",
+        "title": "2.5 : Basic Input and Output in Java",
+        "duration": "5:35",
+        "order": 11
+      },
+      {
+        "video_id": "PF6bAB-d9hI",
+        "title": "3.1 : The philosophy of OO programming",
+        "duration": "12:37",
+        "order": 12
+      },
+      {
+        "video_id": "6tDGUnETvv4",
+        "title": "3.2 : Subclasses and inheritance",
+        "duration": "16:20",
+        "order": 13
+      },
+      {
+        "video_id": "zN-6WryuloU",
+        "title": "3.3 : Dynamic dispatch and polymorphism",
+        "duration": "25:41",
+        "order": 14
+      },
+      {
+        "video_id": "WRN3QWICaag",
+        "title": "3.4 : The Java class hierarchy",
+        "duration": "21:29",
+        "order": 15
+      },
+      {
+        "video_id": "CYY7IT-YHVA",
+        "title": "3.5 : Subtyping vs inheritance",
+        "duration": "7:26",
+        "order": 16
+      },
+      {
+        "video_id": "IO-K87_QXGs",
+        "title": "3.6 : Java modifiers",
+        "duration": "20:06",
+        "order": 17
+      },
+      {
+        "video_id": "RiGkT9NDof4",
+        "title": "4.1 : Abstract Classes and Interfaces",
+        "duration": "19:38",
+        "order": 18
+      },
+      {
+        "video_id": "adkU2TMbJfk",
+        "title": "4.2 : Interfaces",
+        "duration": "15:03",
+        "order": 19
+      },
+      {
+        "video_id": "6eZ9mNX-GQ8",
+        "title": "4.3 : Private Classes",
+        "duration": "6:29",
+        "order": 20
+      },
+      {
+        "video_id": "YefHD5_AGiw",
+        "title": "4.4 : Controlled Interaction with Objects",
+        "duration": "14:46",
+        "order": 21
+      },
+      {
+        "video_id": "CKjGnZCvlng",
+        "title": "4.5 : CallBacks",
+        "duration": "13:10",
+        "order": 22
+      },
+      {
+        "video_id": "BG_Btui0K1o",
+        "title": "4.6 : Iterators",
+        "duration": "16:29",
+        "order": 23
+      },
+      {
+        "video_id": "xvzxGV3pdMM",
+        "title": "5.1 : Polymorphism Revisited",
+        "duration": "22:26",
+        "order": 24
+      },
+      {
+        "video_id": "wqqOMQb0ft0",
+        "title": "5.2 : Generic Programming in Java",
+        "duration": "19:41",
+        "order": 25
+      },
+      {
+        "video_id": "Dd9rAJo5H9s",
+        "title": "5.3 : Java Generics and Subtyping",
+        "duration": "18:31",
+        "order": 26
+      },
+      {
+        "video_id": "bPpWwY6YLyg",
+        "title": "5.4 : Reflection",
+        "duration": "26:40",
+        "order": 27
+      },
+      {
+        "video_id": "V7l0pVIIaEU",
+        "title": "5.5 : Java Generics at Run Time",
+        "duration": "18:45",
+        "order": 28
+      },
+      {
+        "video_id": "LY7TRCI3z24",
+        "title": "6.1 : The Benefits of Indirection",
+        "duration": "17:19",
+        "order": 29
+      },
+      {
+        "video_id": "-EwtNZTsOVw",
+        "title": "6.2 : Collection",
+        "duration": "24:03",
+        "order": 30
+      },
+      {
+        "video_id": "XPzVy2DyO6E",
+        "title": "6.3 : Concrete Collections",
+        "duration": "32:07",
+        "order": 31
+      },
+      {
+        "video_id": "fWXf5aI3Cr0",
+        "title": "6.4 : Maps",
+        "duration": "31:42",
+        "order": 32
+      },
+      {
+        "video_id": "5t0UPIdDYo4",
+        "title": "7.1 : Dealing With Errors",
+        "duration": "16:02",
+        "order": 33
+      },
+      {
+        "video_id": "hsVEjkYKjpg",
+        "title": "7.2 : Exceptions in Java",
+        "duration": "31:53",
+        "order": 34
+      },
+      {
+        "video_id": "U_rxCLyJHgw",
+        "title": "7.3 : Packages",
+        "duration": "10:20",
+        "order": 35
+      },
+      {
+        "video_id": "hKl3tCQdfTI",
+        "title": "7.4 : Assertions",
+        "duration": "12:34",
+        "order": 36
+      },
+      {
+        "video_id": "fkGfOzVC8zI",
+        "title": "7.5 : Logging",
+        "duration": "9:56",
+        "order": 37
+      },
+      {
+        "video_id": "aJxPvy1poaU",
+        "title": "8.1 : Cloning",
+        "duration": "22:44",
+        "order": 38
+      },
+      {
+        "video_id": "o1cQO3iB2Ok",
+        "title": "8.2 : Type Inference",
+        "duration": "16:47",
+        "order": 39
+      },
+      {
+        "video_id": "4nrbgx0e4RA",
+        "title": "8.3 : Higher Order Functions",
+        "duration": "24:53",
+        "order": 40
+      },
+      {
+        "video_id": "xs94mCRwqVQ",
+        "title": "8.4 : Streams in java | stream API, operations & lazy evaluation",
+        "duration": "28:29",
+        "order": 41
+      },
+      {
+        "video_id": "3Q7Rp6sxE_M",
+        "title": "9.1 : Optional Types",
+        "duration": "25:28",
+        "order": 42
+      },
+      {
+        "video_id": "v0fNOGui3Wg",
+        "title": "9.2 : Collecting Results From Streams",
+        "duration": "24:05",
+        "order": 43
+      },
+      {
+        "video_id": "FFdDai4qf8w",
+        "title": "9.3 : Input/Output Streams",
+        "duration": "27:53",
+        "order": 44
+      },
+      {
+        "video_id": "oweQzNSHA5I",
+        "title": "9.4 : Serialization",
+        "duration": "13:22",
+        "order": 45
+      },
+      {
+        "video_id": "dR0_7AmJKKk",
+        "title": "10.1 : Concurrency: Threads and Processes",
+        "duration": "21:26",
+        "order": 46
+      },
+      {
+        "video_id": "a9PZhjCKm9k",
+        "title": "10.2 : Race Conditions",
+        "duration": "14:19",
+        "order": 47
+      },
+      {
+        "video_id": "i6FNvH3ULMU",
+        "title": "10.3 : Mutual Exclusion",
+        "duration": "18:20",
+        "order": 48
+      },
+      {
+        "video_id": "MbFbJy3mkqI",
+        "title": "10.4 : Test and Set",
+        "duration": "12:11",
+        "order": 49
+      },
+      {
+        "video_id": "sK1-Qkeh8mE",
+        "title": "10.5 : Monitors",
+        "duration": "23:48",
+        "order": 50
+      },
+      {
+        "video_id": "Srz0mewFaEg",
+        "title": "11.1 : Monitors in Java",
+        "duration": "24:51",
+        "order": 51
+      },
+      {
+        "video_id": "htwvFDP5t5I",
+        "title": "11.2 : Thread in Java",
+        "duration": "14:36",
+        "order": 52
+      },
+      {
+        "video_id": "yI_WSIaFbFQ",
+        "title": "11.3 : Concurrent Programming: An Example",
+        "duration": "17:44",
+        "order": 53
+      },
+      {
+        "video_id": "yDmnozJBKic",
+        "title": "11.4 : Thread Safe Collection",
+        "duration": "22:08",
+        "order": 54
+      },
+      {
+        "video_id": "A_BV43krS2I",
+        "title": "12.1 : Graphical Interfaces and Event-Driven Programming",
+        "duration": "17:19",
+        "order": 55
+      },
+      {
+        "video_id": "sV4ItidrL8s",
+        "title": "12.2 : The Swing ToolKit",
+        "duration": "20:11",
+        "order": 56
+      },
+      {
+        "video_id": "c6Z8BNSv9zY",
+        "title": "12.3 : More Swing Examples",
+        "duration": "20:54",
+        "order": 57
+      },
+      {
+        "video_id": "T5OuDBNCiZ0",
+        "title": "Tutorial part 1",
+        "duration": "27:54",
+        "order": 58
+      },
+      {
+        "video_id": "7NmnbNTnrNQ",
+        "title": "Tutorial part 2",
+        "duration": "12:30",
+        "order": 59
+      },
+      {
+        "video_id": "ZrkwN_CBYjs",
+        "title": "Tutorial - code walk through",
+        "duration": "12:53",
+        "order": 60
+      },
+      {
+        "video_id": "ejsIXEVNaTs",
+        "title": "Tutorial-Week 5",
+        "duration": "1:05:41",
+        "order": 61
+      },
+      {
+        "video_id": "uQt0RrR08fw",
+        "title": "Java - Tutorial - Week 8",
+        "duration": "2:23:31",
+        "order": 62
+      },
+      {
+        "video_id": "2BRAgwZamIU",
+        "title": "L14: Dynamic dispatch & polymorphism in java | overriding, overloading & reflection",
+        "duration": "25:41",
+        "order": 63
+      },
+      {
+        "video_id": "3N1GBpxmr4g",
+        "title": "L18: Java - activity questions - week 3",
+        "duration": "2:04:10",
+        "order": 64
+      },
+      {
+        "video_id": "rT0aUzLS2fI",
+        "title": "L20: Java - practice session - week 3",
+        "duration": "2:56:55",
+        "order": 65
+      },
+      {
+        "video_id": "aM2Ew6JxMTo",
+        "title": "L21: Java - open session - week 3",
+        "duration": "2:18:07",
+        "order": 66
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLqu1LEUz3ju04dXn0JOgKYPHHnV2at-lG",
+    "title": "NPTEL | 2022 | *new* Programming In Modern C++ | + Notes + pdf | Prof. Partha Pratim Das | IIT Kharagpur | ( Full 12 Week Course ) HD 1080p",
+    "channel": "NPTEL · IIT Kharagpur",
+    "videos": [
+      {
+        "video_id": "vmxTUhn2fBg",
+        "title": "Lecture 00 Course Outline",
+        "duration": "31:18",
+        "order": 1
+      },
+      {
+        "video_id": "mXlVMWkeLfE",
+        "title": "Quick Recap 01 Recap of C 1",
+        "duration": "27:25",
+        "order": 2
+      },
+      {
+        "video_id": "ksl5GEU7HJc",
+        "title": "Quick Recap 02 Recap of C 2",
+        "duration": "35:12",
+        "order": 3
+      },
+      {
+        "video_id": "kgjTBwv_fz0",
+        "title": "Lecture 01 Course Overview",
+        "duration": "32:45",
+        "order": 4
+      },
+      {
+        "video_id": "R9byHM7vzn8",
+        "title": "Lecture 02 IO & Loop",
+        "duration": "31:27",
+        "order": 5
+      },
+      {
+        "video_id": "rDTY6525iGM",
+        "title": "Lecture 03 Arrays and Strings",
+        "duration": "28:43",
+        "order": 6
+      },
+      {
+        "video_id": "x_IAtg8ChH8",
+        "title": "Lecture 04 Sorting and Searching",
+        "duration": "30:35",
+        "order": 7
+      },
+      {
+        "video_id": "WWRbIPpChKk",
+        "title": "Lecture 05 Stack and Common Data Structures   Containers",
+        "duration": "31:06",
+        "order": 8
+      },
+      {
+        "video_id": "v4MBJVzmWFE",
+        "title": "Tutorial 01 How to build a C C++ program Part 1 C Preprocessor CPP",
+        "duration": "32:01",
+        "order": 9
+      },
+      {
+        "video_id": "Z4AfBIzmA1U",
+        "title": "Lecture 06 Constants and Inline Functions",
+        "duration": "31:55",
+        "order": 10
+      },
+      {
+        "video_id": "U9K1sl91fdE",
+        "title": "Lecture 07 Reference & Pointer",
+        "duration": "31:23",
+        "order": 11
+      },
+      {
+        "video_id": "brDoyOJiPbw",
+        "title": "Lecture 08 Default Parameters & Function Overloading",
+        "duration": "32:36",
+        "order": 12
+      },
+      {
+        "video_id": "Jcb4EBSw4mc",
+        "title": "Lecture 09 Operator Overloading",
+        "duration": "28:15",
+        "order": 13
+      },
+      {
+        "video_id": "UZUiJMz5kVI",
+        "title": "Lecture 10 Dynamic Memory Management",
+        "duration": "33:57",
+        "order": 14
+      },
+      {
+        "video_id": "4_-zDH8d7a0",
+        "title": "Tutorial 02 How to build a C C++ program Part 2 Build Pipeline",
+        "duration": "33:57",
+        "order": 15
+      },
+      {
+        "video_id": "ZA7wbEGAb5E",
+        "title": "Lecture 11 Classes and Objects",
+        "duration": "32:07",
+        "order": 16
+      },
+      {
+        "video_id": "B-zC8UDlbeY",
+        "title": "Lecture 12  Access Specifiers",
+        "duration": "33:43",
+        "order": 17
+      },
+      {
+        "video_id": "u3KOigKj7AU",
+        "title": "Lecture 13 Constructors, Destructors & Object Lifetime",
+        "duration": "31:18",
+        "order": 18
+      },
+      {
+        "video_id": "taKBdlRac44",
+        "title": "Lecture 14 Copy Constructor and Copy Assignment Operator",
+        "duration": "35:53",
+        "order": 19
+      },
+      {
+        "video_id": "IqlEuL0fXCc",
+        "title": "Lecture 15 Const ness",
+        "duration": "36:28",
+        "order": 20
+      },
+      {
+        "video_id": "eyXFnCEE9AU",
+        "title": "Lecture 16 Static Members",
+        "duration": "34:13",
+        "order": 21
+      },
+      {
+        "video_id": "4hpXdEkRQm4",
+        "title": "Tutorial 03 How to build a C C++ program Part 3 make Utility",
+        "duration": "40:17",
+        "order": 22
+      },
+      {
+        "video_id": "DQ-DEZ2OcwI",
+        "title": "Lecture 17 Friend Function and Friend Class",
+        "duration": "30:58",
+        "order": 23
+      },
+      {
+        "video_id": "n2nO08IRtww",
+        "title": "Lecture 18 Overloading Operator for User Defined Types Part 1",
+        "duration": "26:14",
+        "order": 24
+      },
+      {
+        "video_id": "wOzAz46zExY",
+        "title": "Lecture 19 Overloading Operator for User Defined Types Part 2",
+        "duration": "31:29",
+        "order": 25
+      },
+      {
+        "video_id": "t_bM2qSjzF0",
+        "title": "Lecture 20 Namespace",
+        "duration": "33:09",
+        "order": 26
+      },
+      {
+        "video_id": "seIiT3x7cPk",
+        "title": "Tutorial 04 How to build a C C++ program Part 4 Static and Dynamic Library",
+        "duration": "52:57",
+        "order": 27
+      },
+      {
+        "video_id": "M1PnRlvBWgw",
+        "title": "Lecture 21 Inheritance Part 1 Inheritance Semantics",
+        "duration": "27:40",
+        "order": 28
+      },
+      {
+        "video_id": "Litu5ySt22o",
+        "title": "Lecture 22 Inheritance Part 2 Data Member & Member Function   Override & Overload",
+        "duration": "25:07",
+        "order": 29
+      },
+      {
+        "video_id": "t79x8cHinao",
+        "title": "Lecture 23  Inheritance Part 3 Constructor & Destructor   Object Lifetime",
+        "duration": "31:37",
+        "order": 30
+      },
+      {
+        "video_id": "WDVYppfTv5M",
+        "title": "Lecture 24 Inheritance Part 4 Phone Hierarchy",
+        "duration": "33:16",
+        "order": 31
+      },
+      {
+        "video_id": "_87S7vBG7_8",
+        "title": "Lecture 25 Inheritance Part 5 private & protected Inheritance",
+        "duration": "33:38",
+        "order": 32
+      },
+      {
+        "video_id": "z28T4APPASU",
+        "title": "Tutorial 05 Mixing C and C++ Code Part 1 Issues and Resolutions",
+        "duration": "48:57",
+        "order": 33
+      },
+      {
+        "video_id": "etCxBQ91kd4",
+        "title": "Lecture 26 Polymorphism Part 1 Type Casting",
+        "duration": "30:28",
+        "order": 34
+      },
+      {
+        "video_id": "5m4BsgMf-4k",
+        "title": "Lecture 27 Polymorphism Part 2 Static and Dynamic Binding",
+        "duration": "32:32",
+        "order": 35
+      },
+      {
+        "video_id": "Q0aWF96Nnag",
+        "title": "Lecture 28 Polymorphism Part 3 Abstract Base Class",
+        "duration": "28:38",
+        "order": 36
+      },
+      {
+        "video_id": "udTtcEbmYkE",
+        "title": "Lecture 29 Polymorphism Part 4 Staff Salary Processing using C",
+        "duration": "27:52",
+        "order": 37
+      },
+      {
+        "video_id": "e4dRLWohpZg",
+        "title": "Lecture 30 Polymorphism Part 5 Staff Salary Processing using C++",
+        "duration": "35:02",
+        "order": 38
+      },
+      {
+        "video_id": "msX5DB18jOo",
+        "title": "Tutorial 06 Mixing C and C++ Code Part 2 Project Example",
+        "duration": "35:30",
+        "order": 39
+      },
+      {
+        "video_id": "JFJZGEOvXeE",
+        "title": "Lecture 31 Virtual Function Table",
+        "duration": "32:49",
+        "order": 40
+      },
+      {
+        "video_id": "JYfm1p16Cq4",
+        "title": "Lecture 32 Type Casting & Cast Operators Part 1",
+        "duration": "36:44",
+        "order": 41
+      },
+      {
+        "video_id": "lu2gKnH9fUY",
+        "title": "Lecture 33 Type Casting & Cast Operators Part 2",
+        "duration": "31:10",
+        "order": 42
+      },
+      {
+        "video_id": "by_LKIArNHc",
+        "title": "Lecture 34 Type Casting & Cast Operators Part 3",
+        "duration": "34:33",
+        "order": 43
+      },
+      {
+        "video_id": "b0S98vMcpRk",
+        "title": "Lecture 35 Multiple Inheritance",
+        "duration": "35:45",
+        "order": 44
+      },
+      {
+        "video_id": "NLo4V2jGCmU",
+        "title": "Tutorial 07 How to design a UDT like built in types Part 1 Fraction UDT",
+        "duration": "34:54",
+        "order": 45
+      },
+      {
+        "video_id": "S322GolfN90",
+        "title": "Lecture 36 Exceptions Error handling in C Part 1",
+        "duration": "34:49",
+        "order": 46
+      },
+      {
+        "video_id": "-kiafRegO1E",
+        "title": "Lecture 37 Exceptions Error handling in C++ Part 2",
+        "duration": "35:19",
+        "order": 47
+      },
+      {
+        "video_id": "hnI6ruerr1c",
+        "title": "Lecture 38 Template Function Template Part 1",
+        "duration": "35:36",
+        "order": 48
+      },
+      {
+        "video_id": "CiQ1EGVrgdM",
+        "title": "Lecture 39 Template Class Template Part 2",
+        "duration": "34:48",
+        "order": 49
+      },
+      {
+        "video_id": "i7-jWzWOBbk",
+        "title": "Lecture 40 Functors Function Objects",
+        "duration": "35:09",
+        "order": 50
+      },
+      {
+        "video_id": "EUm0Vj25pBo",
+        "title": "Tutorial 08 How to design a UDT like built in types Part 2 Int and Poly UDT",
+        "duration": "34:55",
+        "order": 51
+      },
+      {
+        "video_id": "qZQdG99LFxw",
+        "title": "Lecture 41 Input Output File Handling in C",
+        "duration": "34:31",
+        "order": 52
+      },
+      {
+        "video_id": "Z1RNykxXJ9c",
+        "title": "Lecture 42 Input Output Streams in C++",
+        "duration": "34:44",
+        "order": 53
+      },
+      {
+        "video_id": "CFanNFUX_AY",
+        "title": "Lecture 43 C++ Standard Library Part 1 Generic Programming",
+        "duration": "32:49",
+        "order": 54
+      },
+      {
+        "video_id": "7M6YC7VPaR0",
+        "title": "Lecture 44 C++ Standard Library Part 2 STL",
+        "duration": "35:47",
+        "order": 55
+      },
+      {
+        "video_id": "aiLBH62QhYk",
+        "title": "Lecture 45 C++ Standard Library Part 3 STL",
+        "duration": "35:33",
+        "order": 56
+      },
+      {
+        "video_id": "xnNheaLhTdk",
+        "title": "Tutorial 09 How to design a UDT like built in types Part 3 Updates and Mixes of UDTs",
+        "duration": "39:16",
+        "order": 57
+      },
+      {
+        "video_id": "_afza_mKut4",
+        "title": "Lecture 46 C++11 and beyond General Features Part 1",
+        "duration": "35:50",
+        "order": 58
+      },
+      {
+        "video_id": "C9glvMHp0B4",
+        "title": "Lecture 47 C++11 and beyond General Features Part 2",
+        "duration": "31:28",
+        "order": 59
+      },
+      {
+        "video_id": "Kn2g_wR_xMU",
+        "title": "Lecture 48 C++11 and beyond General Features Part 3",
+        "duration": "37:25",
+        "order": 60
+      },
+      {
+        "video_id": "QqGvsRPi9jI",
+        "title": "Lecture 49 C++11 and beyond General Features Part 4 Rvalue and Move 1",
+        "duration": "38:03",
+        "order": 61
+      },
+      {
+        "video_id": "hLj-Lu5gyXY",
+        "title": "Lecture 50 C++11 and beyond General Features Part 5 Rvalue and Move 2",
+        "duration": "38:43",
+        "order": 62
+      },
+      {
+        "video_id": "eUHI7kvB2ys",
+        "title": "Tutorial 10 How to optimize C++11 programs using Rvalue and Move Semantics",
+        "duration": "36:58",
+        "order": 63
+      },
+      {
+        "video_id": "bc6Eib-XRqE",
+        "title": "Lecture 51 C++11 and beyond General Features Part 6 Rvalue & Perfect Forwarding",
+        "duration": "36:26",
+        "order": 64
+      },
+      {
+        "video_id": "9nAkD1JJFYI",
+        "title": "Lecture 52 C++11 and beyond General Features Part 7 Lambda in C++ 1",
+        "duration": "36:45",
+        "order": 65
+      },
+      {
+        "video_id": "Q0v-8NZBWM8",
+        "title": "Lecture 53 C++11 and beyond General Features Part 8 Lambda in C++ 2",
+        "duration": "34:17",
+        "order": 66
+      },
+      {
+        "video_id": "qDudKcQhIj0",
+        "title": "Lecture 54 C++11 and beyond Class Features",
+        "duration": "39:23",
+        "order": 67
+      },
+      {
+        "video_id": "CbxMW6QEIms",
+        "title": "Lecture 55 C++11 and beyond Non class Types and Template Features",
+        "duration": "40:01",
+        "order": 68
+      },
+      {
+        "video_id": "-YzjdyKmiQg",
+        "title": "Tutorial 11 Compatibility of C and C++ Part 1 Significant Features",
+        "duration": "28:05",
+        "order": 69
+      },
+      {
+        "video_id": "hMUVhy63QEg",
+        "title": "Lecture 56 C++11 and beyond Resource Management by Smart Pointers Part 1",
+        "duration": "34:55",
+        "order": 70
+      },
+      {
+        "video_id": "0-0yCp13_1k",
+        "title": "Lecture 57 C++11 and beyond Resource Management by Smart Pointers Part 2",
+        "duration": "34:38",
+        "order": 71
+      },
+      {
+        "video_id": "-Ukw4CiEwxA",
+        "title": "Lecture 58 C++11 and beyond Concurrency Part 1",
+        "duration": "38:04",
+        "order": 72
+      },
+      {
+        "video_id": "yQ_audjY3iM",
+        "title": "Lecture 59 C++11 and beyond Concurrency Part 2",
+        "duration": "31:39",
+        "order": 73
+      },
+      {
+        "video_id": "QjHvGtrNJUw",
+        "title": "Lecture 60 Closing Comments",
+        "duration": "29:41",
+        "order": 74
+      },
+      {
+        "video_id": "IEJBoNdZGN8",
+        "title": "Tutorial 12 Compatibility of C and C++ Part 2 Summary",
+        "duration": "27:26",
+        "order": 75
+      },
+      {
+        "video_id": "4vyAOL9Jzp8",
+        "title": "NPTEL | July-2022 | Programming in Modern C++  Solution | Week 1 Quiz / Programming Answers | Swayam",
+        "duration": "3:06",
+        "order": 76
+      },
+      {
+        "video_id": "zBfSYZIwBc4",
+        "title": "NPTEL | July-2022 | Programming in Modern C++  Solution | Week 2 Quiz / Programming Answers | Swayam",
+        "duration": "3:36",
+        "order": 77
+      }
+    ]
+  },
+  {
+    "playlist_id": "PLUQpHm_JtukII_8U9pucV61MX2YE2CSUt",
+    "title": "Embedded C Programming",
+    "channel": "IIT Madras BS Electronic Systems",
+    "videos": [
+      {
+        "video_id": "3cqu_xnuPnw",
+        "title": "L1: Introduction to embedded systems & embedded c programming",
+        "duration": "35:14",
+        "order": 1
+      },
+      {
+        "video_id": "SQJYqcqAg_w",
+        "title": "L2: Microcontollers vs mircoprocessor in modern embedded systems",
+        "duration": "18:17",
+        "order": 2
+      },
+      {
+        "video_id": "zyiJIgYrnqg",
+        "title": "L3: Microcontollers famillies strengths, limitations & architecture of popular embedded systems",
+        "duration": "32:10",
+        "order": 3
+      },
+      {
+        "video_id": "L93DB48DNXc",
+        "title": "L4: Language choices | selecting the best programming language for embedded systems",
+        "duration": "18:45",
+        "order": 4
+      },
+      {
+        "video_id": "6KVgKWnGqJA",
+        "title": "L5: Basics of embedded C | core c concepts & optimization for embedded systems",
+        "duration": "28:24",
+        "order": 5
+      },
+      {
+        "video_id": "DQ2cnYWQHD8",
+        "title": "L6: Strategies for efficiency | low power in embedded systems",
+        "duration": "24:37",
+        "order": 6
+      },
+      {
+        "video_id": "_KwtU1EzPS0",
+        "title": "L7: Memory management | optimizing static & dynamic memory use in embedded systems",
+        "duration": "33:10",
+        "order": 7
+      },
+      {
+        "video_id": "WhGOuV5VsV4",
+        "title": "L8: Bit manipulation | controlling hardware with efficient bit-level operations",
+        "duration": "38:02",
+        "order": 8
+      },
+      {
+        "video_id": "D8-wnzT6MQQ",
+        "title": "L9: Embedded C programming | three ways to blink an led & control hardware on microcontrollers",
+        "duration": "45:54",
+        "order": 9
+      },
+      {
+        "video_id": "A4a18iJ48oE",
+        "title": "L10: General purpose input output in a microcontroller",
+        "duration": "32:57",
+        "order": 10
+      },
+      {
+        "video_id": "SE3_88-sN7A",
+        "title": "L11: General purpose input/output (GPIO) Usage",
+        "duration": "22:36",
+        "order": 11
+      },
+      {
+        "video_id": "RbrNDDwNhPk",
+        "title": "L12: Serial communication | Universal asynchronous receiver/transmitter(UART)",
+        "duration": "23:50",
+        "order": 12
+      },
+      {
+        "video_id": "JeioUM7OGXQ",
+        "title": "L13: Datasheets reading & interpreting electronic component specifications for embedded systems",
+        "duration": "21:35",
+        "order": 13
+      },
+      {
+        "video_id": "76fR60p294g",
+        "title": "L14: Analog to digital conversion",
+        "duration": "36:41",
+        "order": 14
+      },
+      {
+        "video_id": "dTwtdY0tocE",
+        "title": "L15: Pulse width modulation | generating analog-like signals & control in embedded systems",
+        "duration": "23:17",
+        "order": 15
+      },
+      {
+        "video_id": "yjVw0hwQsBc",
+        "title": "L16: Clocking in microcontroller & frequency control in embedded systems",
+        "duration": "46:06",
+        "order": 16
+      },
+      {
+        "video_id": "rox5q8nYz4E",
+        "title": "L17: Timers using timer peripherals for precise control & measurement in embedded systems",
+        "duration": "15:32",
+        "order": 17
+      },
+      {
+        "video_id": "mw19J0wPXG8",
+        "title": "L18: Importance of communication protocols",
+        "duration": "13:35",
+        "order": 18
+      },
+      {
+        "video_id": "kAMUOV8xvbU",
+        "title": "L19: Parallel communication",
+        "duration": "10:35",
+        "order": 19
+      },
+      {
+        "video_id": "njpQ5BNDl4c",
+        "title": "L20: Serial communication",
+        "duration": "37:49",
+        "order": 20
+      },
+      {
+        "video_id": "W7QqjWhw0pY",
+        "title": "L21: Networking concepts",
+        "duration": "36:33",
+        "order": 21
+      },
+      {
+        "video_id": "uj4zEHayxio",
+        "title": "L22: Wireless communication | technologies & their applications overview",
+        "duration": "19:14",
+        "order": 22
+      },
+      {
+        "video_id": "ltNN72gfRNU",
+        "title": "L23: Fieldbus protocols for real time control in embedded & automation",
+        "duration": "9:21",
+        "order": 23
+      },
+      {
+        "video_id": "flQAM6jxLJE",
+        "title": "L24: Compilation in embedded systems | cross compilation in embedded systems",
+        "duration": "1:00:14",
+        "order": 24
+      },
+      {
+        "video_id": "YzP-RHp3B4k",
+        "title": "L25: Linking in embedded systems",
+        "duration": "33:07",
+        "order": 25
+      },
+      {
+        "video_id": "wIAkKnFMTj0",
+        "title": "L26: Run time in embedded systems",
+        "duration": "10:11",
+        "order": 26
+      },
+      {
+        "video_id": "Behxy9LRrjI",
+        "title": "L27: Interrupts and exception in microcontrollers for embedded systems",
+        "duration": "13:07",
+        "order": 27
+      },
+      {
+        "video_id": "zce5UqrbGzI",
+        "title": "L28: Power managments",
+        "duration": "9:13",
+        "order": 28
+      },
+      {
+        "video_id": "ZKfvlI_jVeM",
+        "title": "L29: Software architecture",
+        "duration": "28:28",
+        "order": 29
+      },
+      {
+        "video_id": "nRvtcxvC54c",
+        "title": "L30: Design patterns for embedded systems & software development",
+        "duration": "31:46",
+        "order": 30
+      },
+      {
+        "video_id": "mvhO2365Mac",
+        "title": "L31: Architecture patterns for modular & scalable embedded software design",
+        "duration": "26:04",
+        "order": 31
+      },
+      {
+        "video_id": "0h2j1_zw4e8",
+        "title": "L32: Error handling & debugging strategies in embedded systems",
+        "duration": "25:13",
+        "order": 32
+      },
+      {
+        "video_id": "o8SAeVTCE18",
+        "title": "L33: Real time operating system basics for embedded systems",
+        "duration": "19:04",
+        "order": 33
+      },
+      {
+        "video_id": "cmUpMuG8AS0",
+        "title": "L34: Operating system concept",
+        "duration": "24:00",
+        "order": 34
+      },
+      {
+        "video_id": "qxy3ZqZgj6U",
+        "title": "L35: Tasks in real-time operating systems(RTOS)",
+        "duration": "24:44",
+        "order": 35
+      },
+      {
+        "video_id": "Yx59nJOqcTg",
+        "title": "L36: Scheduling in real-time operating systems (RTOS)",
+        "duration": "18:58",
+        "order": 36
+      },
+      {
+        "video_id": "fFmcyIX5YZc",
+        "title": "L37: Communication & synchronization in real-time operating systems (RTOS)",
+        "duration": "30:56",
+        "order": 37
+      },
+      {
+        "video_id": "70sN4ZE2BSc",
+        "title": "L38: Interrupts in real-time operating systems (RTOS)",
+        "duration": "18:58",
+        "order": 38
+      },
+      {
+        "video_id": "taoCQMs2TUE",
+        "title": "L39: Efficient embedded systems",
+        "duration": "34:01",
+        "order": 39
+      },
+      {
+        "video_id": "N2rTOGrM7zM",
+        "title": "L40: Direct memory access(DMA)",
+        "duration": "17:33",
+        "order": 40
+      },
+      {
+        "video_id": "oZxT8K7YrII",
+        "title": "L41: Power in electronics systems",
+        "duration": "29:26",
+        "order": 41
+      },
+      {
+        "video_id": "6mB5kWBKJ4Q",
+        "title": "L42: Optimization strategies for performance & efficiency in embedded systems",
+        "duration": "27:03",
+        "order": 42
+      },
+      {
+        "video_id": "wYS-aRNq_yM",
+        "title": "L43: Testing strategies & best practices in embedded software development",
+        "duration": "19:05",
+        "order": 43
+      },
+      {
+        "video_id": "rIL08viqTvk",
+        "title": "L44: Static analysis techniques",
+        "duration": "24:39",
+        "order": 44
+      },
+      {
+        "video_id": "08zu6ZX4XMU",
+        "title": "L45: Debug & test | techniques & tools for debugging & testing in embedded systems",
+        "duration": "32:39",
+        "order": 45
+      },
+      {
+        "video_id": "UAd6HvBrlhg",
+        "title": "L46: Profiling | tools for performance optimization",
+        "duration": "27:59",
+        "order": 46
+      },
+      {
+        "video_id": "n8hcYdXa29o",
+        "title": "L47: Ethics in embedded system | security principles, threats & safeguards for embedded systems",
+        "duration": "21:56",
+        "order": 47
+      },
+      {
+        "video_id": "MSquHpe37pE",
+        "title": "L48: Security in embedded system | principles, threats, and protection methods for resilient systems",
+        "duration": "26:08",
+        "order": 48
+      },
+      {
+        "video_id": "bUZaeQRuoFw",
+        "title": "L49: Safety standards & risk mitigation in embedded safety critical systems",
+        "duration": "25:57",
+        "order": 49
+      }
+    ]
+  }
+]

@@ -531,3 +531,49 @@ def test_lms_feedback_certificate_goodies_claim_end_to_end(ml_client: TestClient
     status_res = ml_client.get("/api/dl-course/goodies", headers=headers).json()
     assert status_res["claimed"] is True
     assert status_res["claim"]["dispatch_code"] == claim["dispatch_code"]
+
+
+def test_eight_video_playlists_watch_context_and_platform_embeds(ml_client: TestClient):
+    pl_resp = ml_client.get("/api/videos/playlists")
+    assert pl_resp.status_code == 200, pl_resp.text
+    playlists = pl_resp.json()
+    assert len(playlists) == 8
+
+    expected_counts = {
+        "PLZ2ps__7DhBb2cXAu5PevO_mzgS3Fj3Fs": 95,
+        "PLZ2ps__7DhBammhVmBE9f5eezTj2kDfTN": 93,
+        "PLZ2ps__7DhBb3ovNQam2c_WcGeiW9OhQo": 98,
+        "PLZ2ps__7DhBZVxMrSkTIcG6zZBDKUXCnM": 68,
+        "PLZ2ps__7DhBbDiVplM2I9q2XNso1Qfj62": 44,
+        "PLZ2ps__7DhBaXTORd_OKXZRXCMh3dGnBZ": 66,
+        "PLqu1LEUz3ju04dXn0JOgKYPHHnV2at-lG": 77,
+        "PLUQpHm_JtukII_8U9pucV61MX2YE2CSUt": 49,
+    }
+    actual_counts = {p["playlist_id"]: p["video_count"] for p in playlists}
+    assert actual_counts == expected_counts
+    assert sum(actual_counts.values()) == 590
+
+    all_resp = ml_client.get("/api/videos")
+    assert all_resp.status_code == 200, all_resp.text
+    all_videos = all_resp.json()
+    assert len(all_videos) >= 596
+    for v in all_videos:
+        assert v["video_url"].startswith("https://www.youtube-nocookie.com/embed/")
+        assert "youtube.com/watch" not in v["video_url"]
+
+    emb_resp = ml_client.get("/api/videos?playlist_id=PLUQpHm_JtukII_8U9pucV61MX2YE2CSUt")
+    assert emb_resp.status_code == 200, emb_resp.text
+    emb_videos = emb_resp.json()
+    assert len(emb_videos) == 49
+    assert [v["episode_order"] for v in emb_videos] == list(range(1, 50))
+
+    ctx_resp = ml_client.get("/api/videos/pl-embc-001/watch-context")
+    assert ctx_resp.status_code == 200, ctx_resp.text
+    ctx = ctx_resp.json()
+    assert ctx["video"]["id"] == "pl-embc-001"
+    assert ctx["series"]["playlist_id"] == "PLUQpHm_JtukII_8U9pucV61MX2YE2CSUt"
+    assert len(ctx["series_videos"]) == 49
+    assert ctx["prev_video"] is None
+    assert ctx["next_video"]["id"] == "pl-embc-002"
+    assert ctx["platform_share_path"] == "/app/videos/pl-embc-001"
+    assert "youtube.com" not in ctx["platform_share_path"]

@@ -317,16 +317,40 @@ class VideoLessonResponse(BaseModel):
     video_url: str
     thumbnail_url: str
     duration_minutes: int
+    duration_label: Optional[str] = None
     category: str
     difficulty: str
     instructor: str
     instructor_avatar: Optional[str] = None
     related_challenge_id: Optional[str] = None
+    playlist_id: Optional[str] = None
+    playlist_title: Optional[str] = None
+    episode_order: Optional[int] = None
     chapters: List[Dict[str, Any]] = []
     key_takeaways: List[str] = []
     code_snippet: Optional[str] = None
     views_count: int
-    created_at: datetime.datetime
+    created_at: Optional[datetime.datetime] = None
+
+
+class VideoPlaylistSummaryResponse(BaseModel):
+    playlist_id: str
+    title: str
+    channel: str
+    category: str
+    difficulty: str
+    video_count: int
+    first_video_id: Optional[str] = None
+    thumbnail_url: str
+
+
+class VideoWatchContextResponse(BaseModel):
+    video: VideoLessonResponse
+    series: Optional[VideoPlaylistSummaryResponse] = None
+    series_videos: List[VideoLessonResponse] = []
+    prev_video: Optional[VideoLessonResponse] = None
+    next_video: Optional[VideoLessonResponse] = None
+    platform_share_path: str
 
 
 # ML LMS Course Schemas

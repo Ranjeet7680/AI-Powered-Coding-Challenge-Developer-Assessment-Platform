@@ -3,10 +3,14 @@ import { CheckCircle2, Lock, Play, ShieldCheck } from 'lucide-react';
 import { MLLessonItem } from '../../types';
 
 interface InLMSVideoPlayerProps {
-  lesson: MLLessonItem;
+  lesson: Pick<MLLessonItem, 'id' | 'order' | 'video_id' | 'video_url' | 'thumbnail_url' | 'title' | 'duration_label'>;
   isCompleted: boolean;
   isDL: boolean;
   onVideoEnded: () => void;
+  playerModeLabel?: string;
+  seriesBadge?: string;
+  badgeVariant?: 'lecture' | 'episode';
+  autoPlay?: boolean;
 }
 
 export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
@@ -14,8 +18,12 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
   isCompleted,
   isDL,
   onVideoEnded,
+  playerModeLabel = 'LOCKED IN-LMS PLAYER',
+  seriesBadge,
+  badgeVariant = 'lecture',
+  autoPlay = false,
 }) => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
 
   // Listen to YouTube IFrame postMessage state changes (state 0 === ended)
   useEffect(() => {
@@ -50,7 +58,12 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
     return () => window.removeEventListener('message', handleMessage);
   }, [isPlaying, onVideoEnded]);
 
-  const embedSrc = `${lesson.video_url}&autoplay=1&enablejsapi=1`;
+  const joiner = lesson.video_url.includes('?') ? '&' : '?';
+  const embedSrc = `${lesson.video_url}${joiner}autoplay=1&enablejsapi=1`;
+  const badgeText =
+    seriesBadge ||
+    `${badgeVariant === 'episode' ? 'Episode' : 'Lecture'} #${lesson.order} · ${lesson.duration_label}`;
+  const streamTag = badgeVariant === 'episode' ? `CTF WATCH · #${lesson.order}` : `IN-LMS STREAM · #${lesson.order}`;
 
   return (
     <div
@@ -81,11 +94,11 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
                   : 'bg-indigo-950/80 border-indigo-500/40 text-indigo-200'
               }`}
             >
-              Lecture #{lesson.order} · {lesson.duration_label}
+              {badgeText}
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-950/90 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-300 backdrop-blur-md">
               <Lock className="w-3 h-3" />
-              LOCKED IN-LMS PLAYER
+              {playerModeLabel}
             </span>
           </div>
 
@@ -141,7 +154,7 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
             title="Playback locked inside LMS classroom"
           >
             <Lock className="w-3 h-3 text-emerald-400" />
-            IN-LMS STREAM · #{lesson.order}
+            {streamTag}
           </div>
         </>
       )}

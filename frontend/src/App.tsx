@@ -23,6 +23,9 @@ const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage').then((m) =>
 const CertificatesPage = lazy(() => import('./pages/CertificatesPage').then((m) => ({ default: m.CertificatesPage })));
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const VideosPage = lazy(() => import('./pages/VideosPage').then((m) => ({ default: m.VideosPage })));
+const WatchVideoPage = lazy(() =>
+  import('./pages/WatchVideoPage').then((m) => ({ default: m.WatchVideoPage }))
+);
 const MLCoursePage = lazy(() =>
   import('./pages/MLCoursePage').then((m) => ({ default: m.MLCoursePage }))
 );
@@ -111,7 +114,7 @@ export const App: React.FC = () => {
                   <Route path="dl-course" element={<DLCoursePage />} />
                   <Route path="dl-course/:lessonId" element={<DLCoursePage />} />
                   <Route path="videos" element={<VideosPage />} />
-                  <Route path="videos/:videoId" element={<VideosPage />} />
+                  <Route path="videos/:videoId" element={<WatchVideoPage />} />
                   <Route path="generator" element={<GeneratorPage />} />
                   <Route path="challenges" element={<ChallengesPage />} />
                   <Route path="workspace" element={<Navigate to="/app/workspace/c2-lru-cache" replace />} />
