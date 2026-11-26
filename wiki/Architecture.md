@@ -158,3 +158,31 @@ erDiagram
     json chapters
   }
 ```
+
+---
+
+## Multi-Environment Deployment, C++20 JsonCpp & CI/CD Architecture
+
+Shows how the platform deploys consistently across Local/Docker sandboxes (including C++20 `open-source-parsers/jsoncpp`), GitHub Actions CI + live Wiki mirror, and Vercel Edge/Serverless production.
+
+```mermaid
+flowchart LR
+  subgraph LocalDocker["1. Local & Container Sandbox"]
+    DEV["Local Dev / CLI<br/>uvicorn · vite · run_factory.py"]
+    DOCK["Dockerfile Runtime<br/>Python 3.11 · g++ C++20 · cmake"]
+    JSON["Vendored JsonCpp<br/>backend/vendor/jsoncpp + libjsoncpp.a"]
+  end
+
+  subgraph CI["2. GitHub Actions CI & Live Wiki"]
+    GHA[".github/workflows/ci.yml<br/>g++ Check · pytest (15/15) · vite build"]
+    WIKI[".wiki.git Mirror<br/>Live GitHub Wiki Pages + SVG Assets"]
+  end
+
+  subgraph Prod["3. Vercel Cloud Production"]
+    CDN["Edge CDN (frontend/dist)<br/>React 19 SPA · Monaco · /wiki"]
+    API["Serverless Python (/api/index.py)<br/>FastAPI · ReportLab PDFs · /api/health"]
+  end
+
+  DEV & DOCK & JSON --> GHA
+  GHA --> CDN & API & WIKI
+```

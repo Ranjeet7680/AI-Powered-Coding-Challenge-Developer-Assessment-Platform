@@ -39,4 +39,26 @@ All evidence artifacts live in [`validation_evidence/`](../validation_evidence/)
 | **`click-feature-parameter-deprecation`** | Lifecycle warnings (`core.py`, `exceptions.py`) | `0.0` | `1.0` | 100% (2/2) | 0 errors |
 | **`click-feature-password-minlen-validator`** | Input validation (`termui.py`, `core.py`) | `0.0` | `1.0` | 100% (2/2) | 0 errors |
 
+---
+
+## Harbor 0.25 Mutation Testing & Zero-Leakage Validation Matrix
+
+Details the automated integrity gates executed by [`validate_tasks.py`](../validate_tasks.py) and [`run_mutation_testing.py`](../run_mutation_testing.py) to ensure zero pre-patch solution leakage, deterministic oracle passes, and 100% mutant kill rates.
+
+```mermaid
+flowchart TD
+  Start["Generated Task Package<br/>(task_packages/<id>/)"] --> Schema["Gate 1: Harbor 0.25 Schema &amp; Prompt Audit<br/>task.toml · instruction.md (0 spoilers) · Dockerfile"]
+
+  Schema --> Base["Gate 2: Baseline Trial (nop)<br/>Clean pallets/click @ 934813e"]
+  Schema --> Oracle["Gate 3: Oracle Trial (solve.sh)<br/>Apply Reference Solution Patch"]
+
+  Base -->|"F2P MUST FAIL = 0.0<br/>Upstream P2P = 0 Regressions"| BaseOK["Baseline Verified ✓"]
+  Oracle -->|"F2P MUST PASS = 1.0<br/>Upstream P2P = 0 Regressions"| OracleOK["Oracle Verified ✓"]
+
+  BaseOK & OracleOK --> Mutants["Gate 4: Mutation Sweep (run_mutation_testing.py)<br/>Inject MUT-1.1 .. MUT-5.2 Faults"]
+  Mutants --> KillCheck{"Every Mutant Caught by<br/>tests/test_outputs.py?"}
+  KillCheck -->|"10/10 Killed (100%)"| Evidence["Emit validation_evidence/<br/>validation_report.json · logs · summary.md"]
+  KillCheck -->|"Surviving Mutant"| Strengthen["Tighten Reference Tests &amp; Re-run"] --> Mutants
+```
+
 For full architectural rationale and Harbor schema guarantees, see [`docs/TECHNICAL_EXPLANATION.md`](../docs/TECHNICAL_EXPLANATION.md) and [`docs/WALKTHROUGH_DEMO.md`](../docs/WALKTHROUGH_DEMO.md).

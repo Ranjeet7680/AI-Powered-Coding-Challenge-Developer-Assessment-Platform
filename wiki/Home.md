@@ -14,10 +14,10 @@ Welcome to the technical wiki for the **AI-Powered Coding Challenge & Developer 
 | :--- | :--- | :--- |
 | [**Proposed Solution Architecture & Wireframes**](Proposed-Solution-Architecture-and-Wireframes.md) | Lightweight CLI + Web Dashboard wireframes (trigger pipeline, inspect packages, view reports) & full solution architecture | Solution Architecture (`SVG` + `flowchart TB`) + CLI & Dashboard Wireframes (`SVG` + ASCII) |
 | [**Process Flow, Use-Case & Architecture**](Process-Flow-and-Use-Case.md) | Repo specs/image params -> task packages + reference tests -> target AI models -> validated outputs | Process Flow (`flowchart TD`) + UML Use-Case (`flowchart LR`) + Architecture (`flowchart TB`) |
-| [**System Architecture & ER Schema**](Architecture.md) | Full-stack topology, lazy UI chunks, FastAPI routers, SQLite migrations & models | High-Level Component Graph (`flowchart TB`) + Database Schema (`erDiagram`) |
-| [**Challenge Bank & Execution Sandbox**](Challenge-Bank-and-Execution.md) | 368+ curated challenges across 10 domains, Python/JS/TS/C++ runner, Gemini Copilot | Multi-Lang Runner Pipeline (`flowchart TD`) + AI Synthesis Flow |
+| [**System Architecture & ER Schema**](Architecture.md) | Full-stack topology, lazy UI chunks, FastAPI routers, SQLite migrations & multi-env deployment | System Topology (`flowchart TB`) + Database Schema (`erDiagram`) + CI/CD Deployment (`flowchart LR`) |
+| [**Challenge Bank & Execution Sandbox**](Challenge-Bank-and-Execution.md) | 368+ curated challenges across 10 domains, Python/JS/TS/C++20 JsonCpp runner, Gemini Copilot | 3 Proposed Solution Architecture Diagrams + IDE Wireframe SVG + Copilot Sequence |
 | [**Zero-Trust Security, PDF & Social Credentials**](Security-and-Credentials.md) | PBKDF2-HMAC-SHA256, HS256 JWT, ReportLab vector PDFs, public `/verify/:id`, LinkedIn/IG/FB/WA cards | Auth Sequence Diagram + Certificate Issuance & Verification Sequence |
-| [**Track 1 TaskForge Harbor Pipeline**](TaskForge-Pipeline.md) | Autonomous feature synthesis on `pallets/click` v8.1.8, Harbor 0.25 linting & mutation testing | TaskForge Synthesis & Grading Flow (`flowchart LR`) |
+| [**Track 1 TaskForge Harbor Pipeline**](TaskForge-Pipeline.md) | Autonomous feature synthesis on `pallets/click` v8.1.8, Harbor 0.25 linting & mutation testing | TaskForge Synthesis Flow (`flowchart LR`) + Mutation & Zero-Leakage Validation Matrix (`flowchart TD`) |
 
 ---
 

@@ -5,6 +5,7 @@ import { Footer } from '../components/layout/Footer';
 import { PipelineDiagrams } from '../components/wiki/PipelineDiagrams';
 import { SolutionWireframesAndArch } from '../components/wiki/SolutionWireframesAndArch';
 import { ChallengeExecutionDiagrams } from '../components/wiki/ChallengeExecutionDiagrams';
+import { ExtraWikiDiagram } from '../components/wiki/ExtraWikiDiagrams';
 import {
   ArrowRight,
   Award,
@@ -419,6 +420,8 @@ export const WikiPage: React.FC = () => {
                       </tbody>
                     </table>
                   </div>
+
+                  <ExtraWikiDiagram variant="deployment" />
                 </div>
               )}
 
@@ -570,6 +573,8 @@ export const WikiPage: React.FC = () => {
                       Harbor 0.25: 0 Errors
                     </span>
                   </div>
+
+                  <ExtraWikiDiagram variant="mutation" />
                 </div>
               )}
             </article>
