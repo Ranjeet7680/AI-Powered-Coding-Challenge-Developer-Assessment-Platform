@@ -27,16 +27,16 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   return (
     <Link
       to="/"
-      className={`inline-flex items-center gap-3 group transition-transform duration-200 active:scale-95 ${className}`}
+      className={`inline-flex items-center gap-2.5 sm:gap-3 shrink-0 whitespace-nowrap group transition-transform duration-200 active:scale-95 ${className}`}
     >
       {/* Bespoke Coding Task Factory Hex-Forge Emblem */}
       <div className={`relative flex items-center justify-center shrink-0 ${iconSizes[size]}`}>
-        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-cyan-400 blur opacity-35 group-hover:opacity-80 transition duration-300" />
+        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-cyan-400 blur opacity-40 group-hover:opacity-85 transition duration-300" />
         <svg
           viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="relative w-full h-full drop-shadow-md"
+          className="relative w-full h-full drop-shadow-md transition-transform duration-300 group-hover:scale-105"
           aria-hidden="true"
         >
           <defs>
@@ -93,19 +93,19 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       </div>
 
       {!iconOnly && (
-        <div className="flex flex-col text-left leading-tight">
-          <span className={`font-bold tracking-tight text-white flex items-center gap-1.5 ${textSizes[size]}`}>
+        <div className="flex flex-col text-left leading-tight whitespace-nowrap shrink-0">
+          <span className={`font-bold tracking-tight text-white inline-flex items-center gap-1.5 whitespace-nowrap ${textSizes[size]}`}>
             Coding Task{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-300 to-cyan-400 font-extrabold">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-300 to-cyan-400 font-extrabold whitespace-nowrap">
               Factory
             </span>
           </span>
           {size === 'lg' ? (
-            <span className="text-[11px] text-slate-400 font-mono tracking-widest uppercase mt-0.5">
+            <span className="text-[11px] text-slate-400 font-mono tracking-widest uppercase mt-0.5 whitespace-nowrap">
               AI Challenge &amp; Assessment Cloud
             </span>
           ) : (
-            <span className="text-[9.5px] text-indigo-300/80 font-mono tracking-[0.18em] uppercase hidden sm:inline">
+            <span className="text-[9.5px] text-indigo-300/80 font-mono tracking-[0.18em] uppercase hidden sm:inline whitespace-nowrap">
               AI CODE FORGE
             </span>
           )}

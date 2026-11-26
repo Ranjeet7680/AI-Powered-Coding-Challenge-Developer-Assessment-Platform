@@ -149,6 +149,16 @@
   animation: shimmerSweep 2.4s linear infinite;
 }
 
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient-text {
+  background-size: 200% auto;
+  animation: gradientShift 5s ease infinite;
+}
+
 /* Print Styles for Verified Certificates */
 @media print {
   body {
