@@ -4,6 +4,7 @@ import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { PipelineDiagrams } from '../components/wiki/PipelineDiagrams';
 import { SolutionWireframesAndArch } from '../components/wiki/SolutionWireframesAndArch';
+import { ChallengeExecutionDiagrams } from '../components/wiki/ChallengeExecutionDiagrams';
 import {
   ArrowRight,
   Award,
@@ -456,6 +457,8 @@ export const WikiPage: React.FC = () => {
                       Incoming code runs in isolated temporary directories via <code className="text-emerald-300 font-mono">code_runner.py</code>: Python invokes <code className="font-mono">sys.executable</code>, JavaScript executes Node <code className="font-mono">.mjs</code>, TypeScript utilizes Node <code className="font-mono">--experimental-strip-types</code>, and C++20 compiles with <code className="font-mono">g++/clang++</code> bundled with amalgamated <code className="text-cyan-300 font-mono">open-source-parsers/jsoncpp</code> (<code className="font-mono">#include &lt;json/json.h&gt;</code>).
                     </p>
                   </div>
+
+                  <ChallengeExecutionDiagrams />
                 </div>
               )}
 
