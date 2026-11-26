@@ -29,7 +29,7 @@ import {
 import { api } from '../services/api';
 import { useAuth, useToast } from '../context/useContexts';
 import { MarkdownRenderer } from '../components/common/MarkdownRenderer';
-import { ProctorCameraGuard } from '../components/lms/ProctorCameraGuard';
+import { ProctorCameraGuard, ProctorIntegrityState } from '../components/lms/ProctorCameraGuard';
 import {
   CapstoneWorkspacePanel,
   CourseReviewsPanel,
@@ -125,6 +125,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   // Proctored Final Exam State
   const [examPhase, setExamPhase] = useState<ExamPhase>('preflight');
   const [cameraReady, setCameraReady] = useState<boolean>(false);
+  const [proctorIntegrity, setProctorIntegrity] = useState<ProctorIntegrityState>({
+    status: 'ok',
+    headline: 'Awaiting Webcam',
+    reason: '',
+    engineMode: 'initializing',
+    faceCount: null,
+    detectedObjects: [],
+  });
   const [examQuestionIdx, setExamQuestionIdx] = useState<number>(0);
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
   const [examRemainingSec, setExamRemainingSec] = useState<number>(45 * 60);
@@ -1549,8 +1557,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                         }`}
                       >
                         {cameraReady
-                          ? '✓ Webcam Verified — Ready to begin'
-                          : 'Enable Webcam Guard in the side panel first'}
+                          ? '✓ AI Face & Object Guard Verified — Ready to begin'
+                          : proctorIntegrity.status !== 'ok' && proctorIntegrity.faceCount !== null
+                          ? `⚠ ${proctorIntegrity.headline}: Center uncovered face in camera to unlock`
+                          : 'Enable Webcam Guard and center your uncovered face in the side panel first'}
                       </span>
                       <button
                         type="button"
@@ -1590,9 +1600,29 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       const q = finalExam.questions[examQuestionIdx];
                       if (!q) return null;
                       const picked = examAnswers[q.id];
+                      const shieldLocked = proctorIntegrity.status !== 'ok';
 
                       return (
-                        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 space-y-4">
+                        <div
+                          onDragStart={(e) => e.preventDefault()}
+                          className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-5 space-y-4 select-none overflow-hidden"
+                        >
+                          {shieldLocked && (
+                            <div className="absolute inset-0 z-20 bg-[#050814]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center space-y-3 border-2 border-rose-500/50 rounded-2xl">
+                              <ShieldAlert className="w-10 h-10 text-rose-400 animate-pulse" />
+                              <div className="space-y-1 max-w-md">
+                                <div className="text-xs font-mono uppercase tracking-wider text-rose-300 font-bold">
+                                  Anti-Cheat Shield Locked · Strikes {examViolations}/3
+                                </div>
+                                <h3 className="text-lg font-extrabold text-white">
+                                  {proctorIntegrity.headline}
+                                </h3>
+                                <p className="text-xs text-slate-300 leading-relaxed">
+                                  {proctorIntegrity.reason} Questions remain blurred until your uncovered face is centered cleanly in camera view.
+                                </p>
+                              </div>
+                            </div>
+                          )}
                           <div className="flex items-center justify-between text-xs">
                             <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-300 font-bold">
                               Question {examQuestionIdx + 1} / {finalExam.questions.length}
@@ -1758,6 +1788,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   violationsCount={examViolations}
                   violationLog={examViolationLog}
                   onCameraReadyChange={setCameraReady}
+                  onIntegrityStateChange={setProctorIntegrity}
                   onViolation={handleProctorViolation}
                   onMaxViolationsReached={handleMaxViolationsReached}
                 />

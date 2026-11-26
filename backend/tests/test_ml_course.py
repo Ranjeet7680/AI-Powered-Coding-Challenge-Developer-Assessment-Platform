@@ -580,3 +580,33 @@ def test_eight_video_playlists_watch_context_and_platform_embeds(ml_client: Test
     assert ctx["next_video"]["id"] == "pl-embc-002"
     assert ctx["platform_share_path"] == "/app/videos/pl-embc-001"
     assert "youtube.com" not in ctx["platform_share_path"]
+
+
+def test_proctor_log_tamper_resistance(ml_client: TestClient):
+    headers = _register_and_auth(ml_client)
+    exam_truth = get_dl_final_exam_questions(include_answers=True)
+    perfect = {q["id"]: q["correct_index"] for q in exam_truth}
+
+    # Client sends tampered violations=0 alongside 3 recorded log violations -> must still disqualify
+    tampered_res = ml_client.post(
+        "/api/dl-course/final-exam/submit",
+        json={
+            "answers": perfect,
+            "violations": 0,
+            "violation_log": [
+                {"timestamp": "2026-11-26T00:00:01Z", "type": "PROHIBITED_OBJECT", "detail": "cell phone detected"},
+                {"timestamp": "2026-11-26T00:00:03Z", "type": "FACE_OCCLUDED_OR_MISSING", "detail": "face covered"},
+                {"timestamp": "2026-11-26T00:00:06Z", "type": "SPLIT_SCREEN_DETECTED", "detail": "resized window"},
+            ],
+            "elapsed_seconds": 300,
+            "camera_verified": True,
+            "auto_terminated": False,
+        },
+        headers=headers,
+    )
+    assert tampered_res.status_code == 200, tampered_res.text
+    data = tampered_res.json()
+    assert data["disqualified"] is True
+    assert data["violations"] == 3
+    assert data["passed"] is False
+    assert data["certificate"] is None

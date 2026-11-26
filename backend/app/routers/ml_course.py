@@ -776,12 +776,13 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
 
         total_q = len(questions)
         score_pct = round((correct_count / max(total_q, 1)) * 100)
-        disqualified = payload.auto_terminated or payload.violations >= 3
+        effective_violations = max(payload.violations, len(payload.violation_log))
+        disqualified = payload.auto_terminated or effective_violations >= 3
         passed = (not disqualified) and score_pct >= 70 and payload.camera_verified
 
         prog = _get_or_create_progress(track, user.id, db)
         prog.final_exam_score = score_pct
-        prog.final_exam_violations = payload.violations
+        prog.final_exam_violations = effective_violations
         prog.final_exam_log = payload.violation_log[-25:]
         if passed:
             prog.final_exam_passed = True
@@ -825,7 +826,7 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
                     completion_hours=track.completion_hours,
                     summary=(
                         f"Awarded after completing the {total_lectures}-lecture {track.course_title} curriculum and passing "
-                        f"the camera-proctored final examination ({score_pct}% score, {payload.violations} proctoring alerts)."
+                        f"the camera-proctored final examination ({score_pct}% score, {effective_violations} proctoring alerts)."
                     ),
                     credential_hash=compute_credential_hash(
                         cred_id,
@@ -858,7 +859,7 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
             total_questions=total_q,
             passed=passed,
             disqualified=disqualified,
-            violations=payload.violations,
+            violations=effective_violations,
             message=msg,
             certificate=cert_resp,
         )
