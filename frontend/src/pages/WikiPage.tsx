@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { PipelineDiagrams } from '../components/wiki/PipelineDiagrams';
+import { SolutionWireframesAndArch } from '../components/wiki/SolutionWireframesAndArch';
 import {
   ArrowRight,
   Award,
@@ -14,6 +15,7 @@ import {
   FileText,
   GitBranch,
   Layers,
+  LayoutDashboard,
   Lock,
   Search,
   Share2,
@@ -25,6 +27,7 @@ import {
 
 type WikiSectionId =
   | 'overview'
+  | 'wireframes-architecture'
   | 'process-flow'
   | 'architecture'
   | 'challenge-bank'
@@ -46,6 +49,13 @@ const WIKI_NAV: WikiNavItem[] = [
     shortTitle: 'Overview & Map',
     subtitle: 'End-to-end architecture & dual-engine workflow',
     icon: BookOpen,
+  },
+  {
+    id: 'wireframes-architecture',
+    title: 'Proposed Solution Architecture & CLI / Web Wireframes',
+    shortTitle: 'CLI & Web Wireframes',
+    subtitle: 'Trigger pipelines, inspect packages, view evaluation reports & solution architecture',
+    icon: LayoutDashboard,
   },
   {
     id: 'process-flow',
@@ -291,6 +301,45 @@ export const WikiPage: React.FC = () => {
                   </div>
 
                   <PipelineDiagrams defaultTab="process-flow" />
+
+                  <SolutionWireframesAndArch defaultTab="web" />
+                </div>
+              )}
+
+              {activeSection === 'wireframes-architecture' && (
+                <div className="space-y-6">
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Architectural blueprint and interactive interface wireframes pairing a{' '}
+                    <strong className="text-white">lightweight command-line runner</strong> (
+                    <code className="font-mono text-cyan-300">run_factory.py</code>,{' '}
+                    <code className="font-mono text-cyan-300">validate_tasks.py</code>,{' '}
+                    <code className="font-mono text-cyan-300">run_mutation_testing.py</code>) with a{' '}
+                    <strong className="text-white">Web Dashboard interface</strong> for triggering generation pipelines, inspecting Harbor 0.25 task packages, and reviewing evaluation reports.
+                  </p>
+
+                  <SolutionWireframesAndArch defaultTab="architecture" />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-indigo-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-indigo-300">01. TRIGGER PIPELINES</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        Submit repository specs or Docker image params via CLI or the Web Dashboard form to synthesize Harbor task packages.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-cyan-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-cyan-300">02. INSPECT TASK PACKAGES</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        Browse <code className="font-mono text-cyan-300">instruction.md</code>,{' '}
+                        <code className="font-mono text-cyan-300">task.toml</code>, Dockerfiles, oracle patches, and <code className="font-mono text-cyan-300">tests/</code> with schema verification.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-emerald-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-emerald-300">03. VIEW EVAL REPORTS</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        Inspect Baseline <code className="font-mono">0.0</code>, Oracle <code className="font-mono">1.0</code>, <code className="font-mono">100%</code> mutant kills, and JSON/PDF evidence artifacts.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 

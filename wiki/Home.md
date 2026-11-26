@@ -12,6 +12,7 @@ Welcome to the technical wiki for the **AI-Powered Coding Challenge & Developer 
 
 | Wiki Page | Focus Area | Diagrams Included |
 | :--- | :--- | :--- |
+| [**Proposed Solution Architecture & Wireframes**](Proposed-Solution-Architecture-and-Wireframes.md) | Lightweight CLI + Web Dashboard wireframes (trigger pipeline, inspect packages, view reports) & full solution architecture | Solution Architecture (`SVG` + `flowchart TB`) + CLI & Dashboard Wireframes (`SVG` + ASCII) |
 | [**Process Flow, Use-Case & Architecture**](Process-Flow-and-Use-Case.md) | Repo specs/image params -> task packages + reference tests -> target AI models -> validated outputs | Process Flow (`flowchart TD`) + UML Use-Case (`flowchart LR`) + Architecture (`flowchart TB`) |
 | [**System Architecture & ER Schema**](Architecture.md) | Full-stack topology, lazy UI chunks, FastAPI routers, SQLite migrations & models | High-Level Component Graph (`flowchart TB`) + Database Schema (`erDiagram`) |
 | [**Challenge Bank & Execution Sandbox**](Challenge-Bank-and-Execution.md) | 368+ curated challenges across 10 domains, Python/JS/TS/C++ runner, Gemini Copilot | Multi-Lang Runner Pipeline (`flowchart TD`) + AI Synthesis Flow |

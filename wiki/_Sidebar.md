@@ -1,6 +1,7 @@
 ### Coding Task Factory Wiki
 
 - [Home Overview](Home.md)
+- [Proposed Solution Arch & Wireframes](Proposed-Solution-Architecture-and-Wireframes.md)
 - [Process Flow & Use-Case Diagrams](Process-Flow-and-Use-Case.md)
 - [System Architecture & ER Schema](Architecture.md)
 - [Challenge Bank & Execution Sandbox](Challenge-Bank-and-Execution.md)
