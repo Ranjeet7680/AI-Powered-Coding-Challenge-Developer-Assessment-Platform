@@ -2,35 +2,27 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import {
+  ArrowLeft,
+  ArrowRight,
   Award,
   BookOpen,
-  BrainCircuit,
-  Camera,
   CheckCircle2,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
   Clock,
   Code2,
   Copy,
-  Download,
   FileEdit,
-  Filter,
   Gift,
   HelpCircle,
-  Layers,
-  ListChecks,
-  Lock,
-  Maximize2,
+  PanelLeftClose,
+  PanelLeftOpen,
   PlayCircle,
   RotateCcw,
   Save,
-  Search,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
-  Star,
   Trophy,
   XCircle,
 } from 'lucide-react';
@@ -41,13 +33,14 @@ import { ProctorCameraGuard } from '../components/lms/ProctorCameraGuard';
 import {
   CapstoneWorkspacePanel,
   CourseReviewsPanel,
-  CourseSyllabusRoadmapPanel,
 } from '../components/lms/CourseAdvancedPanels';
 import {
   CourseCertificateStagePanel,
   CourseCompletionDonePanel,
   CourseGoodiesFormPanel,
 } from '../components/lms/CourseEndToEndPanels';
+import { CourseOutlineRail, LMSPageStage } from '../components/lms/CourseOutlineRail';
+import { InLMSVideoPlayer } from '../components/lms/InLMSVideoPlayer';
 import {
   Certificate,
   MLCapstoneProject,
@@ -69,19 +62,8 @@ import {
   MLViolationEvent,
 } from '../types';
 
-type TopTab =
-  | 'course'
-  | 'syllabus'
-  | 'quiz-bank'
-  | 'capstone'
-  | 'final-exam'
-  | 'reviews'
-  | 'certificate'
-  | 'goodies'
-  | 'done';
-type LessonDeckTab = 'notes' | 'my-notes' | 'quiz';
-type ExamPhase = 'preflight' | 'active' | 'submitted';
 type CourseTrack = 'ml' | 'dl';
+type ExamPhase = 'preflight' | 'active' | 'submitted';
 
 export const MLCoursePage: React.FC = () => <CourseLMSView key="ml" track="ml" />;
 
@@ -103,27 +85,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [finalExam, setFinalExam] = useState<MLFinalExamResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string>('');
-  const [theaterMode, setTheaterMode] = useState<boolean>(false);
 
-  // Capstone & Reviews State
-  const [capstoneProjects, setCapstoneProjects] = useState<MLCapstoneProject[]>([]);
-  const [capstoneSubmissions, setCapstoneSubmissions] = useState<MLCapstoneSubmission[]>([]);
-  const [isSubmittingCapstone, setIsSubmittingCapstone] = useState<boolean>(false);
-  const [reviewsData, setReviewsData] = useState<MLCourseReviewsOverview | null>(null);
-  const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
-  const [earnedCertificate, setEarnedCertificate] = useState<Certificate | null>(null);
-  const [goodiesClaim, setGoodiesClaim] = useState<MLCourseGoodiesClaim | null>(null);
-  const [isSubmittingGoodies, setIsSubmittingGoodies] = useState<boolean>(false);
-
-  // Navigation & Player State
-  const [activeTab, setActiveTab] = useState<TopTab>('course');
-  const [lessonDeckTab, setLessonDeckTab] = useState<LessonDeckTab>('notes');
+  // Google Cloud Skills Boost style Page-by-Page Stepper State
+  const [pageStage, setPageStage] = useState<LMSPageStage>('watch');
+  const [outlineOpen, setOutlineOpen] = useState<boolean>(true);
   const [selectedLessonId, setSelectedLessonId] = useState<string>(isDL ? 'dl-001' : 'ml-001');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [incompleteOnly, setIncompleteOnly] = useState<boolean>(false);
-  const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
+  const [videoJustFinished, setVideoJustFinished] = useState<boolean>(false);
 
-  // Progress & Per-Lesson State
+  // Per-Lesson Progress, Notes & Quiz State
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [notesByLesson, setNotesByLesson] = useState<Record<string, string>>({});
   const [draftNote, setDraftNote] = useState<string>('');
@@ -134,13 +103,23 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [quizFeedback, setQuizFeedback] = useState<MLQuizAnswerResponse | null>(null);
   const [isSubmittingLessonQuiz, setIsSubmittingLessonQuiz] = useState<boolean>(false);
 
-  // 100+ Practice Quiz Bank State
+  // Practice Quiz Bank State
   const [practiceModuleFilter, setPracticeModuleFilter] = useState<string>('ALL');
   const [practicePage, setPracticePage] = useState<number>(0);
   const [practiceAnswers, setPracticeAnswers] = useState<Record<string, number>>({});
   const [practiceResult, setPracticeResult] = useState<MLPracticeQuizResultResponse | null>(null);
   const [bestPracticeScore, setBestPracticeScore] = useState<number>(0);
   const [isSubmittingPractice, setIsSubmittingPractice] = useState<boolean>(false);
+
+  // Capstone, Feedback, Certificate & Goodies State
+  const [capstoneProjects, setCapstoneProjects] = useState<MLCapstoneProject[]>([]);
+  const [capstoneSubmissions, setCapstoneSubmissions] = useState<MLCapstoneSubmission[]>([]);
+  const [isSubmittingCapstone, setIsSubmittingCapstone] = useState<boolean>(false);
+  const [reviewsData, setReviewsData] = useState<MLCourseReviewsOverview | null>(null);
+  const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
+  const [earnedCertificate, setEarnedCertificate] = useState<Certificate | null>(null);
+  const [goodiesClaim, setGoodiesClaim] = useState<MLCourseGoodiesClaim | null>(null);
+  const [isSubmittingGoodies, setIsSubmittingGoodies] = useState<boolean>(false);
 
   // Proctored Final Exam State
   const [examPhase, setExamPhase] = useState<ExamPhase>('preflight');
@@ -155,7 +134,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [savedExamPassed, setSavedExamPassed] = useState<boolean>(false);
   const [isSubmittingExam, setIsSubmittingExam] = useState<boolean>(false);
 
-  const playerTopRef = useRef<HTMLDivElement | null>(null);
+  const stageTopRef = useRef<HTMLDivElement | null>(null);
   const examAnswersRef = useRef(examAnswers);
   const examViolationsRef = useRef(examViolations);
   const examViolationLogRef = useRef(examViolationLog);
@@ -207,15 +186,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         setFinalExam(examRes);
         setCapstoneProjects(capstoneRes?.projects || overview.capstone_projects || []);
         setCapstoneSubmissions(capstoneRes?.submissions || []);
-        if (revRes) {
-          setReviewsData(revRes);
-        }
-        if (certRes?.certificate) {
-          setEarnedCertificate(certRes.certificate);
-        }
-        if (goodiesRes?.claim) {
-          setGoodiesClaim(goodiesRes.claim);
-        }
+        if (revRes) setReviewsData(revRes);
+        if (certRes?.certificate) setEarnedCertificate(certRes.certificate);
+        if (goodiesRes?.claim) setGoodiesClaim(goodiesRes.claim);
 
         const prog = overview.progress;
         const completed = prog?.completed_lessons || [];
@@ -237,7 +210,6 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
         if (initialLesson) {
           setSelectedLessonId(initialLesson.id);
-          setExpandedModules({ [initialLesson.module_id]: true });
           setDraftNote(notes[initialLesson.id] ?? '');
           const prevQ = qResults[initialLesson.id];
           setSelectedQuizOption(prevQ ? prevQ.selected : null);
@@ -264,41 +236,83 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     return course.lessons.find((l) => l.id === selectedLessonId) || course.lessons[0];
   }, [course, selectedLessonId]);
 
-  const selectLesson = useCallback(
-    (lesson: MLLessonItem) => {
+  const scrollToStageTop = () => {
+    stageTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const openLessonStage = useCallback(
+    (lesson: MLLessonItem, stage: 'watch' | 'notes' | 'quiz') => {
       setSelectedLessonId(lesson.id);
-      setExpandedModules((prev) => ({ ...prev, [lesson.module_id]: true }));
+      setPageStage(stage);
+      setVideoJustFinished(false);
       setDraftNote(notesByLesson[lesson.id] ?? '');
       const prevQ = quizResults[lesson.id];
       setSelectedQuizOption(prevQ ? prevQ.selected : null);
       setQuizFeedback(null);
       navigate(`${basePath}/${lesson.id}`, { replace: true });
-      playerTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToStageTop();
     },
     [basePath, navigate, notesByLesson, quizResults]
   );
 
-  const handleMarkComplete = async () => {
-    if (!activeLesson) return;
-    setIsCompletingLesson(true);
-    try {
-      const res = await courseClient.completeLesson(activeLesson.id);
-      setCompletedLessons(res.completed_lessons);
-      if (res.points_awarded > 0) {
-        refreshUser().catch(() => {});
-        showToast(
-          `Lecture #${activeLesson.order} completed! +${res.points_awarded} XP earned.`,
-          'success'
-        );
-      } else {
-        showToast(`Lecture #${activeLesson.order} marked completed.`, 'info');
+  const openMilestoneStage = useCallback(
+    (
+      stage: 'quiz-bank' | 'capstone' | 'final-exam' | 'reviews' | 'certificate' | 'goodies' | 'done'
+    ) => {
+      setPageStage(stage);
+      scrollToStageTop();
+    },
+    []
+  );
+
+  const markLessonWatched = useCallback(
+    async (silent = false) => {
+      if (!activeLesson) return;
+      if (completedLessons.includes(activeLesson.id)) {
+        if (!silent) {
+          showToast(`Lecture #${activeLesson.order} already watched.`, 'info');
+        }
+        return;
       }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Could not update lesson status.';
-      showToast(msg, 'error');
-    } finally {
-      setIsCompletingLesson(false);
+      setIsCompletingLesson(true);
+      try {
+        const res = await courseClient.completeLesson(activeLesson.id);
+        setCompletedLessons(res.completed_lessons);
+        if (res.points_awarded > 0) {
+          refreshUser().catch(() => {});
+          showToast(
+            `Lecture #${activeLesson.order} watched! +${res.points_awarded} XP earned.`,
+            'success'
+          );
+        }
+      } catch (err: unknown) {
+        if (!silent) {
+          const msg = err instanceof Error ? err.message : 'Could not update lesson status.';
+          showToast(msg, 'error');
+        }
+      } finally {
+        setIsCompletingLesson(false);
+      }
+    },
+    [activeLesson, completedLessons, courseClient, refreshUser, showToast]
+  );
+
+  const handleVideoEnded = useCallback(() => {
+    if (!activeLesson) return;
+    setVideoJustFinished(true);
+    markLessonWatched(true);
+    showToast(
+      `Lecture #${activeLesson.order} finished! Click Next to read Notes or solve Quiz.`,
+      'success'
+    );
+  }, [activeLesson, markLessonWatched, showToast]);
+
+  const handleWatchNextAction = async (target: 'notes' | 'quiz') => {
+    if (activeLesson && !completedLessons.includes(activeLesson.id)) {
+      await markLessonWatched(true);
     }
+    setPageStage(target);
+    scrollToStageTop();
   };
 
   const handleSaveNotes = async () => {
@@ -307,7 +321,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     try {
       const res = await courseClient.saveLessonNotes(activeLesson.id, draftNote);
       setNotesByLesson(res.lesson_notes);
-      showToast(`Saved personal study notes for Lecture #${activeLesson.order}.`, 'success');
+      showToast(`Saved personal notes for Lecture #${activeLesson.order}.`, 'success');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to save notes.';
       showToast(msg, 'error');
@@ -341,12 +355,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         refreshUser().catch(() => {});
         showToast(
           res.points_awarded > 0
-            ? `Correct! +${res.points_awarded} XP awarded & lecture marked complete.`
-            : 'Correct! Concept mastered.',
+            ? `Correct! +${res.points_awarded} XP — ready for the next lecture!`
+            : 'Quiz passed! Continue to the next lecture.',
           'success'
         );
       } else {
-        showToast('Not quite right — review the explanation and try again.', 'info');
+        showToast('Not quite right — review the explanation below.', 'info');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not grade quiz answer.';
@@ -394,38 +408,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       const updated = await courseClient.getReviews();
       setReviewsData(updated);
       refreshUser().catch(() => {});
-      showToast('Published your course feedback! Proceed to your Certificate.', 'success');
+      showToast('Published your feedback! Next: Claim Certificate or Goodies.', 'success');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to publish feedback.';
       showToast(msg, 'error');
     } finally {
       setIsSubmittingReview(false);
-    }
-  };
-
-  const handleSubmitGoodies = async (payload: MLCourseGoodiesClaimPayload) => {
-    setIsSubmittingGoodies(true);
-    try {
-      const claim = await courseClient.submitGoodies(payload);
-      setGoodiesClaim(claim);
-      if ((claim.points_awarded || 0) > 0) {
-        refreshUser().catch(() => {});
-      }
-      setActiveTab('done');
-      showToast(
-        `Goodies order confirmed (${claim.dispatch_code})! Course flow complete.`,
-        'success'
-      );
-      try {
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-      } catch {
-        // decorative
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to claim goodies bundle.';
-      showToast(msg, 'error');
-    } finally {
-      setIsSubmittingGoodies(false);
     }
   };
 
@@ -454,14 +442,41 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     }
   };
 
-  // Filtered Quiz Bank pagination (20 per page)
+  const handleSubmitGoodies = async (payload: MLCourseGoodiesClaimPayload) => {
+    setIsSubmittingGoodies(true);
+    try {
+      const claim = await courseClient.submitGoodies(payload);
+      setGoodiesClaim(claim);
+      if ((claim.points_awarded || 0) > 0) {
+        refreshUser().catch(() => {});
+      }
+      setPageStage('done');
+      scrollToStageTop();
+      showToast(`Goodies order confirmed (${claim.dispatch_code})!`, 'success');
+      try {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      } catch {
+        // decorative
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to claim goodies bundle.';
+      showToast(msg, 'error');
+    } finally {
+      setIsSubmittingGoodies(false);
+    }
+  };
+
+  // Practice Quiz Bank pagination
   const filteredPracticeQuestions = useMemo(() => {
     if (practiceModuleFilter === 'ALL') return quizBank;
     return quizBank.filter((q) => q.module_id === practiceModuleFilter);
   }, [quizBank, practiceModuleFilter]);
 
   const PRACTICE_PAGE_SIZE = 20;
-  const totalPracticePages = Math.max(1, Math.ceil(filteredPracticeQuestions.length / PRACTICE_PAGE_SIZE));
+  const totalPracticePages = Math.max(
+    1,
+    Math.ceil(filteredPracticeQuestions.length / PRACTICE_PAGE_SIZE)
+  );
   const safePracticePage = Math.min(practicePage, totalPracticePages - 1);
   const currentPracticeSlice = useMemo(() => {
     const start = safePracticePage * PRACTICE_PAGE_SIZE;
@@ -543,9 +558,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         setSavedExamScore(res.score_percent);
         if (res.passed) {
           setSavedExamPassed(true);
-          if (res.certificate) {
-            setEarnedCertificate(res.certificate);
-          }
+          if (res.certificate) setEarnedCertificate(res.certificate);
           refreshUser().catch(() => {});
           showToast('Passed Proctored Final Exam! Official Certificate issued.', 'success');
           try {
@@ -567,7 +580,6 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     [courseClient, refreshUser, showToast]
   );
 
-  // Countdown timer when examPhase === 'active'
   useEffect(() => {
     if (examPhase !== 'active') return;
     const timer = window.setInterval(() => {
@@ -618,26 +630,6 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     submitFinalExam(true);
   }, [showToast, submitFinalExam]);
 
-  // Derived counters
-  const totalLessons = course?.total_lessons || 106;
-  const completedCount = completedLessons.length;
-  const quizzesPassedCount = Object.values(quizResults).filter((r) => r.correct).length;
-  const completionPct = Math.round((completedCount / Math.max(1, totalLessons)) * 100);
-
-  const filteredSidebarLessons = useMemo(() => {
-    if (!course) return [];
-    const q = searchQuery.trim().toLowerCase();
-    return course.lessons.filter((l) => {
-      if (incompleteOnly && completedLessons.includes(l.id)) return false;
-      if (!q) return true;
-      return (
-        l.title.toLowerCase().includes(q) ||
-        l.module_title.toLowerCase().includes(q) ||
-        `#${l.order}`.includes(q)
-      );
-    });
-  }, [course, searchQuery, incompleteOnly, completedLessons]);
-
   const formatCountdown = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -646,1526 +638,1211 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
-        <div className="h-36 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+      <div className="max-w-7xl mx-auto p-6 space-y-5">
+        <div className="h-16 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 h-[460px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
-          <div className="lg:col-span-4 h-[460px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+          <div className="lg:col-span-3 h-[540px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+          <div className="lg:col-span-9 h-[540px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
         </div>
       </div>
     );
   }
 
-  if (loadError || !course) {
+  if (loadError || !course || !activeLesson) {
     return (
       <div className="max-w-3xl mx-auto p-8 text-center">
         <div className="rounded-2xl border border-rose-500/30 bg-rose-950/20 p-8">
           <ShieldAlert className="w-10 h-10 text-rose-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-white mb-2">Unable to load ML Course LMS</h2>
+          <h2 className="text-xl font-bold text-white mb-2">Unable to load LMS Course</h2>
           <p className="text-sm text-slate-400 mb-5">{loadError || 'Catalog unavailable.'}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
             className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition"
           >
-            Reload Curriculum
+            Reload Classroom
           </button>
         </div>
       </div>
     );
   }
 
-  const activeIndex = activeLesson
-    ? course.lessons.findIndex((l) => l.id === activeLesson.id)
-    : 0;
+  const totalLessons = course.total_lessons;
+  const completedCount = completedLessons.length;
+  const quizzesPassedCount = Object.values(quizResults).filter((r) => r.correct).length;
+  const completionPct = Math.round((completedCount / Math.max(1, totalLessons)) * 100);
+  const activeIndex = course.lessons.findIndex((l) => l.id === activeLesson.id);
   const prevLesson = activeIndex > 0 ? course.lessons[activeIndex - 1] : null;
   const nextLesson =
     activeIndex >= 0 && activeIndex < course.lessons.length - 1
       ? course.lessons[activeIndex + 1]
       : null;
 
-  const isLessonCompleted = activeLesson ? completedLessons.includes(activeLesson.id) : false;
-  const activeQuizRecord = activeLesson ? quizResults[activeLesson.id] : undefined;
+  const isLessonCompleted = completedLessons.includes(activeLesson.id);
+  const activeQuizRecord = quizResults[activeLesson.id];
+  const hasOwnReview = Boolean(reviewsData?.reviews.some((r) => r.is_own_review));
+
+  // Pure metadata descriptor for Google Cloud Skills Boost Bottom Stepper Pager (event handlers kept out of render values)
+  const pagerMeta = (() => {
+    if (pageStage === 'watch') {
+      return {
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 1 of 3 (Watch Video)`,
+        prevText: prevLesson ? `← Lecture #${prevLesson.order} Quiz` : '← Course Detail',
+        nextText: `Next: Solve Quiz #${activeLesson.order} →`,
+        secondaryText: 'Study Notes & Code →',
+      };
+    }
+    if (pageStage === 'notes') {
+      return {
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 2 of 3 (Study Notes & Code)`,
+        prevText: '← Watch Video',
+        nextText: `Next: Solve Quiz #${activeLesson.order} →`,
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'quiz') {
+      return {
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 3 of 3 (Comprehension Quiz)`,
+        prevText: '← Study Notes',
+        nextText: nextLesson
+          ? `Next: Watch Lecture #${nextLesson.order} →`
+          : 'Next: Full Quiz Practice Bank →',
+        secondaryText: 'Back to Video',
+      };
+    }
+    if (pageStage === 'quiz-bank') {
+      return {
+        label: `Milestone 1 · Cumulative Quiz Practice (${quizBank.length} Questions)`,
+        prevText: `← Lecture #${activeLesson.order}`,
+        nextText: 'Next: Capstone Project Lab →',
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'capstone') {
+      return {
+        label: 'Milestone 2 · Graded Capstone Lab',
+        prevText: '← Quiz Practice Bank',
+        nextText: 'Next: Camera Final Exam →',
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'final-exam') {
+      return {
+        label: 'Milestone 3 · Camera Cheat-Protected Final Exam',
+        prevText: '← Capstone Lab',
+        nextText: 'Next: Course Feedback →',
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'reviews') {
+      return {
+        label: 'Milestone 4 · Course Feedback Survey',
+        prevText: '← Final Exam',
+        nextText: 'Next: Verified Certificate →',
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'certificate') {
+      return {
+        label: 'Milestone 5 · Verified Certificate & Vector PDF',
+        prevText: '← Feedback Survey',
+        nextText: 'Next: Claim Goodies Form →',
+        secondaryText: '',
+      };
+    }
+    if (pageStage === 'goodies') {
+      return {
+        label: 'Milestone 6 · Graduate Goodies Dispatch Form',
+        prevText: '← Certificate',
+        nextText: 'Next: Done Summary →',
+        secondaryText: '',
+      };
+    }
+    return {
+      label: 'Graduation Complete!',
+      prevText: '← Goodies Form',
+      nextText: 'Browse All Courses →',
+      secondaryText: '',
+    };
+  })();
+
+  const handlePagerPrev = () => {
+    if (pageStage === 'watch') {
+      if (prevLesson) openLessonStage(prevLesson, 'quiz');
+      else navigate(`/app/lms/${track}`);
+    } else if (pageStage === 'notes') {
+      setPageStage('watch');
+      scrollToStageTop();
+    } else if (pageStage === 'quiz') {
+      setPageStage('notes');
+      scrollToStageTop();
+    } else if (pageStage === 'quiz-bank') {
+      openLessonStage(activeLesson, 'quiz');
+    } else if (pageStage === 'capstone') {
+      openMilestoneStage('quiz-bank');
+    } else if (pageStage === 'final-exam') {
+      openMilestoneStage('capstone');
+    } else if (pageStage === 'reviews') {
+      openMilestoneStage('final-exam');
+    } else if (pageStage === 'certificate') {
+      openMilestoneStage('reviews');
+    } else if (pageStage === 'goodies') {
+      openMilestoneStage('certificate');
+    } else {
+      openMilestoneStage('goodies');
+    }
+  };
+
+  const handlePagerNext = () => {
+    if (pageStage === 'watch') {
+      handleWatchNextAction('quiz');
+    } else if (pageStage === 'notes') {
+      setPageStage('quiz');
+      scrollToStageTop();
+    } else if (pageStage === 'quiz') {
+      if (nextLesson) openLessonStage(nextLesson, 'watch');
+      else openMilestoneStage('quiz-bank');
+    } else if (pageStage === 'quiz-bank') {
+      openMilestoneStage('capstone');
+    } else if (pageStage === 'capstone') {
+      openMilestoneStage('final-exam');
+    } else if (pageStage === 'final-exam') {
+      openMilestoneStage('reviews');
+    } else if (pageStage === 'reviews') {
+      openMilestoneStage('certificate');
+    } else if (pageStage === 'certificate') {
+      openMilestoneStage('goodies');
+    } else if (pageStage === 'goodies') {
+      openMilestoneStage('done');
+    } else {
+      navigate('/app/lms');
+    }
+  };
+
+  const handlePagerSecondary = () => {
+    if (pageStage === 'watch') {
+      handleWatchNextAction('notes');
+    } else if (pageStage === 'quiz') {
+      setPageStage('watch');
+      scrollToStageTop();
+    }
+  };
 
   return (
-    <div ref={playerTopRef} className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
-      {/* Top LMS Hero Header */}
-      <div
-        className={`relative overflow-hidden rounded-3xl border p-5 sm:p-7 shadow-2xl ${
-          isDL
-            ? 'border-rose-500/30 bg-gradient-to-br from-slate-900 via-rose-950/25 to-slate-900'
-            : 'border-indigo-500/25 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900'
-        }`}
-      >
-        {/* Track Switcher Strip */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-800/70">
-          <div className="inline-flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Select LMS Track:
-            </span>
+    <div ref={stageTopRef} className="max-w-7xl mx-auto p-3 sm:p-5 space-y-4">
+      {/* Compact Google Cloud Skills Boost Classroom Top Bar */}
+      <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+        <div className="flex flex-wrap items-center gap-2.5 min-w-0">
+          <Link
+            to={`/app/lms/${track}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/40 text-xs font-bold text-slate-300 hover:text-white transition"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Course Detail
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setOutlineOpen((prev) => !prev)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
+          >
+            {outlineOpen ? (
+              <>
+                <PanelLeftClose className="w-3.5 h-3.5" />
+                Hide Outline
+              </>
+            ) : (
+              <>
+                <PanelLeftOpen className="w-3.5 h-3.5" />
+                Show Outline
+              </>
+            )}
+          </button>
+
+          <div className="hidden sm:block h-4 w-px bg-slate-800" />
+          <span className="text-xs sm:text-sm font-extrabold text-white truncate max-w-xs md:max-w-md">
+            {course.title}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px]">
             <Link
               to="/app/ml-course"
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                !isDL
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25'
-                  : 'bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
+              className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                !isDL ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
-              ML Mastery (106 Videos)
+              ML (106)
             </Link>
             <Link
               to="/app/dl-course"
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                isDL
-                  ? 'bg-rose-600 text-white shadow-md shadow-rose-500/25'
-                  : 'bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-rose-500/40'
+              className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                isDL ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
-              Stanford × CTF Deep Learning (21 Videos)
+              Stanford DL (21)
             </Link>
           </div>
-          {course.thumbnail_url && (
-            <a
-              href={course.thumbnail_url}
-              download={isDL ? 'stanford-ctf-deep-learning-thumbnail.svg' : 'ml-ctf-course-thumbnail.svg'}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Download Course Thumbnail
-            </a>
-          )}
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-          <div className="lg:col-span-8 space-y-3">
-            <div className="inline-flex flex-wrap items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
-                  isDL
-                    ? 'bg-rose-500/15 border-rose-500/35 text-rose-300'
-                    : 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300'
-                }`}
-              >
-                <BrainCircuit className="w-3.5 h-3.5" />
-                {isDL ? 'STANFORD × CODING TASK FACTORY ACADEMY' : 'FULL ML LMS CURRICULUM'}
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
-                {course.total_lessons} Videos · {course.modules.length} Modules · {isDL ? '20+' : `${course.total_quizzes}+`} Quizzes
-              </span>
+          <div className="w-32 hidden md:block">
+            <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
+              <span>{completedCount}/{totalLessons}</span>
+              <span className="text-emerald-400 font-bold">{completionPct}%</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              {course.title}
-            </h1>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Curated from <span className="text-indigo-300 font-semibold">{course.instructor}</span>.{' '}
-              {isDL
-                ? 'Master optimization, GLMs, SVMs & Mercer kernels, neural networks, backpropagation, EM, PCA/ICA, MDPs, LQR & RL diagnostics with structured notes, personal notebooks, 20+ comprehension quizzes, and a camera-proctored certification exam.'
-                : `Master regression, PCA, trees, boosting, neural nets, transformers, PyTorch & RLHF with structured notes, personal notebooks, ${course.total_quizzes}+ comprehension quizzes, and a camera-proctored final certification exam.`}
-            </p>
-
-            {/* Live Mastery Telemetry Box */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
-                <div className="text-[11px] text-slate-400">Lectures Done</div>
-                <div className="text-base sm:text-lg font-extrabold text-white">
-                  {completedCount}
-                  <span className="text-xs font-semibold text-slate-500">/{totalLessons}</span>
-                </div>
-              </div>
-              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
-                <div className="text-[11px] text-slate-400">Quizzes Passed</div>
-                <div className="text-base sm:text-lg font-extrabold text-emerald-400">
-                  {quizzesPassedCount}
-                  <span className="text-xs font-semibold text-slate-500">/{course.total_quizzes}</span>
-                </div>
-              </div>
-              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
-                <div className="text-[11px] text-slate-400">
-                  {isDL ? '20+ Quiz Best' : '100+ Quiz Best'}
-                </div>
-                <div className="text-base sm:text-lg font-extrabold text-cyan-400">
-                  {bestPracticeScore}%
-                </div>
-              </div>
-              <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-3.5 py-2.5">
-                <div className="text-[11px] text-slate-400">Final Exam</div>
-                <div className="text-base sm:text-lg font-extrabold text-amber-300">
-                  {savedExamPassed
-                    ? `Passed (${savedExamScore ?? 100}%)`
-                    : savedExamScore !== null
-                    ? `${savedExamScore}%`
-                    : 'Proctored'}
-                </div>
-              </div>
+            <div className="h-1.5 rounded-full bg-slate-950 overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400"
+                style={{ width: `${completionPct}%` }}
+              />
             </div>
-          </div>
-
-          {/* Official Co-Branded Course Thumbnail Artwork Preview */}
-          {course.thumbnail_url && (
-            <div className="lg:col-span-4">
-              <div className="group relative rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950 shadow-2xl">
-                <img
-                  src={course.thumbnail_url}
-                  alt={`${course.title} Official Thumbnail`}
-                  className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-300"
-                />
-                <div className="px-3 py-2 bg-slate-950/90 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-300">
-                  <span className="font-mono font-semibold text-cyan-300">OFFICIAL COURSE THUMBNAIL</span>
-                  <span>1280×720 HD</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* End-to-End LMS Progress Pipeline Stepper */}
-        <div className="mt-5 pt-5 border-t border-slate-800/80 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-300">
-              End-to-End Guided LMS Path · Detail → Lectures → Quizzes → Exam → Feedback → Certificate → Goodies → Done
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-36 sm:w-48">
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Progress</span>
-                  <span className="font-bold text-indigo-300">{completionPct}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 transition-all duration-300"
-                    style={{ width: `${completionPct}%` }}
-                  />
-                </div>
-              </div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-950/90 border border-emerald-500/30 text-[10px] font-bold text-emerald-300">
-                <Lock className="w-3 h-3" />
-                LMS-Only Stream
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-1.5">
-            <Link
-              to={`/app/lms/${track}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-950/75 text-slate-300 border border-slate-800 hover:border-indigo-500/40 hover:text-white transition"
-            >
-              <span className="text-[10px] font-mono text-indigo-400">01</span>
-              Course Detail
-            </Link>
-            <button
-              type="button"
-              onClick={() => setActiveTab('course')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'course'
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
-              }`}
-            >
-              <PlayCircle className="w-3.5 h-3.5" />
-              02. Lectures ({totalLessons})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('quiz-bank')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'quiz-bank'
-                  ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-cyan-500/40'
-              }`}
-            >
-              <ListChecks className="w-3.5 h-3.5" />
-              03. Quiz Page ({isDL ? '20+' : '100+'})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('capstone')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'capstone'
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-indigo-500/40'
-              }`}
-            >
-              <Code2 className="w-3.5 h-3.5" />
-              04. Capstone ({capstoneProjects.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('syllabus')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'syllabus'
-                  ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-violet-500/40'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              Syllabus
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('final-exam')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'final-exam'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              05. Final Exam
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('reviews')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'reviews'
-                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-amber-500/40'
-              }`}
-            >
-              <Star className="w-3.5 h-3.5" />
-              06. Feedback ({reviewsData ? `${reviewsData.average_rating.toFixed(1)}★` : '5.0★'})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('certificate')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'certificate'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
-              }`}
-            >
-              <Award className="w-3.5 h-3.5" />
-              07. Certificate {earnedCertificate ? '✓' : ''}
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('goodies')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'goodies'
-                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-rose-500/40'
-              }`}
-            >
-              <Gift className="w-3.5 h-3.5" />
-              08. Goodies Form {goodiesClaim ? '✓' : ''}
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('done')}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
-                activeTab === 'done'
-                  ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-lg'
-                  : 'bg-slate-950/70 text-slate-300 border border-slate-800 hover:border-emerald-500/40'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              09. Done
-            </button>
           </div>
         </div>
       </div>
 
-      {/* ================= TAB 1: COURSE PLAYER, STUDY NOTES & AFTER-VIDEO QUIZ ================= */}
-      {activeTab === 'course' && activeLesson && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Main Player & Interactive Learning Deck */}
-          <div className={`${theaterMode ? 'lg:col-span-12' : 'lg:col-span-8'} space-y-5`}>
-            {/* Lecture Metadata Bar */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 sm:p-5 space-y-4">
+      {/* Main Two-Column Guided Classroom Body */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Left Collapsible Outline Rail */}
+        {outlineOpen && (
+          <div className="lg:col-span-3 lg:sticky lg:top-4">
+            <CourseOutlineRail
+              modules={course.modules}
+              lessons={course.lessons}
+              activeLessonId={activeLesson.id}
+              activeStage={pageStage}
+              completedLessons={completedLessons}
+              notesByLesson={notesByLesson}
+              quizResults={quizResults}
+              capstoneSubmittedCount={capstoneSubmissions.length}
+              examPassed={savedExamPassed}
+              hasFeedback={hasOwnReview}
+              certificateEarned={Boolean(earnedCertificate)}
+              goodiesClaimed={Boolean(goodiesClaim)}
+              isDL={isDL}
+              onSelectLessonActivity={openLessonStage}
+              onSelectMilestoneStage={openMilestoneStage}
+            />
+          </div>
+        )}
+
+        {/* Right Single-Focus Page Canvas + Bottom Pager */}
+        <div className={`${outlineOpen ? 'lg:col-span-9' : 'lg:col-span-12'} space-y-4`}>
+          {/* Sub-Stepper Pill Header when viewing any Lecture Activity (Watch / Notes / Quiz) */}
+          {(pageStage === 'watch' || pageStage === 'notes' || pageStage === 'quiz') && (
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold">
                     Module {activeLesson.module_order}: {activeLesson.module_title}
                   </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-mono">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-slate-800 text-slate-300 font-mono">
                     Lecture #{activeLesson.order} / {totalLessons}
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">
-                    <Clock className="w-3 h-3 text-cyan-400" />
+                  <span className="inline-flex items-center gap-1 text-slate-400">
+                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     {activeLesson.duration_label}
                   </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 font-semibold">
-                    {activeLesson.difficulty}
-                  </span>
                 </div>
-                {isLessonCompleted && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+                {isLessonCompleted && activeQuizRecord?.correct && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    Completed
+                    Lecture Completed
                   </span>
                 )}
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+              <h1 className="text-lg sm:text-2xl font-extrabold text-white leading-snug">
                 {activeLesson.title}
-              </h2>
+              </h1>
 
-              {/* Responsive 16:9 Locked In-LMS Player Shell */}
-              <div
-                onContextMenu={(e) => e.preventDefault()}
-                className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl"
-              >
-                <iframe
-                  key={activeLesson.video_id}
-                  src={activeLesson.video_url}
-                  title={activeLesson.title}
-                  className="w-full h-full"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                  allowFullScreen
-                />
-                {/* Top-right In-LMS Lock Overlay covering YouTube share/watch-later outbound chrome */}
-                <div
-                  className="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-xl bg-slate-950/90 border border-indigo-500/40 text-[10px] font-mono font-bold text-cyan-300 flex items-center gap-1.5 backdrop-blur-md shadow-lg select-none"
-                  title="Playback locked to LMS workspace"
-                >
-                  <Lock className="w-3 h-3 text-emerald-400" />
-                  IN-LMS SECURE STREAM · #{activeLesson.order}
-                </div>
-              </div>
-
-              {/* Player Controls Footer (Strictly In-LMS Controls — Zero External Redirects) */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={!prevLesson}
-                    onClick={() => prevLesson && selectLesson(prevLesson)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-slate-200 transition"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!nextLesson}
-                    onClick={() => nextLesson && selectLesson(nextLesson)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-slate-200 transition"
-                  >
-                    Next Lecture
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setTheaterMode((prev) => !prev)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition ${
-                      theaterMode
-                        ? 'bg-cyan-600/20 border-cyan-400 text-cyan-200'
-                        : 'bg-slate-950 border-slate-800 hover:border-slate-600 text-slate-300'
-                    }`}
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    {theaterMode ? 'Standard View' : 'Theater Mode'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('quiz-bank')}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
-                  >
-                    <ListChecks className="w-3.5 h-3.5" />
-                    Go to Quiz Page →
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('capstone')}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500/40 text-xs font-semibold text-indigo-300 transition"
-                  >
-                    <Code2 className="w-3.5 h-3.5" />
-                    Capstone Lab
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isCompletingLesson}
-                    onClick={handleMarkComplete}
-                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition ${
-                      isLessonCompleted
-                        ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
-                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    {isLessonCompleted
-                      ? 'Lecture Completed'
-                      : isCompletingLesson
-                      ? 'Saving...'
-                      : 'Mark Completed (+15 XP)'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Study Notes, Personal Notebook & After-Video Quiz Deck */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden">
-              <div className="flex flex-wrap border-b border-slate-800 bg-slate-950/60 p-2 gap-2">
+              {/* 3-Step Sequential Activity Switcher Inside Current Lecture */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/80">
                 <button
                   type="button"
-                  onClick={() => setLessonDeckTab('notes')}
+                  onClick={() => openLessonStage(activeLesson, 'watch')}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                    lessonDeckTab === 'notes'
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                    pageStage === 'watch'
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-indigo-500/40'
+                  }`}
+                >
+                  <PlayCircle className="w-3.5 h-3.5" />
+                  Step 1: Watch Video
+                  {isLessonCompleted && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />}
+                </button>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-600" />
+                <button
+                  type="button"
+                  onClick={() => openLessonStage(activeLesson, 'notes')}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                    pageStage === 'notes'
+                      ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25'
+                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-cyan-500/40'
                   }`}
                 >
                   <BookOpen className="w-3.5 h-3.5" />
-                  Study Notes &amp; Code
+                  Step 2: Study Notes &amp; Code
                 </button>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-600" />
                 <button
                   type="button"
-                  onClick={() => setLessonDeckTab('my-notes')}
+                  onClick={() => openLessonStage(activeLesson, 'quiz')}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                    lessonDeckTab === 'my-notes'
-                      ? 'bg-cyan-600 text-white'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
-                  }`}
-                >
-                  <FileEdit className="w-3.5 h-3.5" />
-                  My Personal Notes
-                  {notesByLesson[activeLesson.id]?.trim() && (
-                    <span className="w-2 h-2 rounded-full bg-cyan-300" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLessonDeckTab('quiz')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                    lessonDeckTab === 'quiz'
-                      ? 'bg-emerald-600 text-white'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                    pageStage === 'quiz'
+                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
+                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-emerald-500/40'
                   }`}
                 >
                   <HelpCircle className="w-3.5 h-3.5" />
-                  After-Video Quiz #{activeLesson.order}
+                  Step 3: Solve Quiz #{activeLesson.order}
                   {activeQuizRecord?.correct && (
-                    <span className="px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-200 text-[10px]">
-                      Passed
-                    </span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
                   )}
-                </button>
-              </div>
-
-              <div className="p-5">
-                {/* Subtab 1: Curated Study Notes + Math + Python Snippet */}
-                {lessonDeckTab === 'notes' && (
-                  <div className="space-y-5">
-                    <div className="rounded-2xl border border-indigo-500/25 bg-indigo-950/20 p-4">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mb-1">
-                        Core Formula / Intuition Anchor
-                      </div>
-                      <div className="text-sm font-mono text-white break-words">
-                        <MarkdownRenderer content={activeLesson.key_formula} />
-                      </div>
-                    </div>
-
-                    <div className="prose prose-invert max-w-none text-sm text-slate-200">
-                      <MarkdownRenderer content={activeLesson.notes_markdown} />
-                    </div>
-
-                    {activeLesson.code_snippet && (
-                      <div className="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden">
-                        <div className="px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300">
-                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                            Python Reference Implementation
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleCopySnippet(activeLesson.code_snippet)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition"
-                            >
-                              <Copy className="w-3 h-3" />
-                              Copy
-                            </button>
-                            <Link
-                              to="/app/challenges"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600/20 border border-indigo-500/30 hover:bg-indigo-600/30 text-[11px] font-semibold text-indigo-300 transition"
-                            >
-                              Practice Challenges
-                            </Link>
-                          </div>
-                        </div>
-                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                          <code>{activeLesson.code_snippet}</code>
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Subtab 2: Persistent Personal Notes */}
-                {lessonDeckTab === 'my-notes' && (
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <h3 className="text-sm font-bold text-white">
-                          Personal Study Notebook — Lecture #{activeLesson.order}
-                        </h3>
-                        <p className="text-xs text-slate-400">
-                          Saved directly to your cloud account ({user?.email || 'session'}) for exam revision.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setDraftNote((prev) =>
-                            prev.trim()
-                              ? prev
-                              : `# ${activeLesson.title}\n- Key Formula: \n- Edge Cases & Assumptions: \n- Real-world Interview Tip: `
-                          )
-                        }
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
-                      >
-                        Insert Template
-                      </button>
-                    </div>
-                    <textarea
-                      value={draftNote}
-                      onChange={(e) => setDraftNote(e.target.value)}
-                      rows={8}
-                      placeholder={`Write your personal takeaways, formulas, or exam reminders for "${activeLesson.title}"...`}
-                      className="w-full rounded-2xl bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:outline-none p-4 text-sm text-slate-200 placeholder:text-slate-600 font-mono leading-relaxed"
-                    />
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-xs text-slate-500">{draftNote.length} characters</span>
-                      <button
-                        type="button"
-                        disabled={isSavingNote}
-                        onClick={handleSaveNotes}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-cyan-500/20"
-                      >
-                        <Save className="w-3.5 h-3.5" />
-                        {isSavingNote ? 'Saving to Cloud...' : 'Save My Notes'}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Subtab 3: After-Video Comprehension Quiz */}
-                {lessonDeckTab === 'quiz' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-                        Comprehension Check #{activeLesson.order}
-                      </span>
-                      {activeQuizRecord && (
-                        <span className="text-xs text-slate-400">
-                          Attempts: {activeQuizRecord.attempts} · Status:{' '}
-                          <span
-                            className={
-                              activeQuizRecord.correct
-                                ? 'text-emerald-400 font-bold'
-                                : 'text-amber-300 font-semibold'
-                            }
-                          >
-                            {activeQuizRecord.correct ? 'Mastered ✓' : 'Needs Review'}
-                          </span>
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-base font-bold text-white leading-snug">
-                      {activeLesson.quiz.question}
-                    </h3>
-
-                    <div className="space-y-2.5">
-                      {activeLesson.quiz.options.map((opt, idx) => {
-                        const isSelected = selectedQuizOption === idx;
-                        const revealCorrect = quizFeedback && quizFeedback.correct_index === idx;
-                        const revealWrong =
-                          quizFeedback && isSelected && !quizFeedback.correct;
-
-                        return (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => {
-                              setSelectedQuizOption(idx);
-                              setQuizFeedback(null);
-                            }}
-                            className={`w-full text-left p-3.5 rounded-xl border text-sm transition flex items-start gap-3 ${
-                              revealCorrect
-                                ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
-                                : revealWrong
-                                ? 'bg-rose-500/15 border-rose-500 text-rose-100'
-                                : isSelected
-                                ? 'bg-indigo-600/20 border-indigo-400 text-white'
-                                : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'
-                            }`}
-                          >
-                            <span
-                              className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                                isSelected
-                                  ? 'bg-indigo-500 text-white'
-                                  : 'bg-slate-800 text-slate-400'
-                              }`}
-                            >
-                              {String.fromCharCode(65 + idx)}
-                            </span>
-                            <span className="leading-relaxed">{opt}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {quizFeedback && (
-                      <div
-                        className={`rounded-2xl border p-4 text-sm ${
-                          quizFeedback.correct
-                            ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
-                            : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 font-bold mb-1">
-                          {quizFeedback.correct ? (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                          ) : (
-                            <XCircle className="w-4 h-4 text-amber-400" />
-                          )}
-                          {quizFeedback.correct
-                            ? 'Correct Answer!'
-                            : 'Incorrect — Review Explanation'}
-                        </div>
-                        <p className="text-xs leading-relaxed opacity-90">
-                          {quizFeedback.explanation}
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                      <button
-                        type="button"
-                        disabled={selectedQuizOption === null || isSubmittingLessonQuiz}
-                        onClick={handleSubmitLessonQuiz}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 text-white text-xs font-bold transition shadow-lg shadow-emerald-500/20"
-                      >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        {isSubmittingLessonQuiz ? 'Checking...' : 'Check Answer (+10 XP)'}
-                      </button>
-                      {nextLesson && (
-                        <button
-                          type="button"
-                          onClick={() => selectLesson(nextLesson)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition"
-                        >
-                          Continue to Lecture #{nextLesson.order}
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Sidebar: Module & Lecture Navigator */}
-          <div
-            className={`${
-              theaterMode ? 'lg:col-span-12' : 'lg:col-span-4'
-            } rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden sticky top-4`}
-          >
-            <div className="p-4 border-b border-slate-800 space-y-3 bg-slate-950/60">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-white">
-                  Curriculum ({totalLessons} Lectures)
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setIncompleteOnly((prev) => !prev)}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition ${
-                    incompleteOnly
-                      ? 'bg-indigo-600/20 border-indigo-400 text-indigo-300'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Filter className="w-3 h-3" />
-                  {incompleteOnly ? 'Incomplete' : 'All'}
-                </button>
-              </div>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={
-                    isDL
-                      ? 'Search 21 lectures (GLM, SVM, Backprop, EM, MDP)...'
-                      : 'Search 106 topics (PCA, XGBoost, GPT)...'
-                  }
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-slate-200 placeholder:text-slate-500"
-                />
-              </div>
-            </div>
-
-            <div className="max-h-[680px] overflow-y-auto divide-y divide-slate-800/80">
-              {course.modules.map((mod) => {
-                const modLessons = filteredSidebarLessons.filter((l) => l.module_id === mod.id);
-                if (modLessons.length === 0) return null;
-
-                const allModLessons = course.lessons.filter((l) => l.module_id === mod.id);
-                const modCompleted = allModLessons.filter((l) =>
-                  completedLessons.includes(l.id)
-                ).length;
-                const isExpanded =
-                  Boolean(searchQuery.trim()) ||
-                  Boolean(expandedModules[mod.id]) ||
-                  activeLesson.module_id === mod.id;
-
-                return (
-                  <div key={mod.id} className="bg-slate-900/40">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpandedModules((prev) => ({
-                          ...prev,
-                          [mod.id]: !isExpanded,
-                        }))
-                      }
-                      className="w-full px-4 py-3 flex items-center justify-between gap-2 text-left hover:bg-slate-800/50 transition"
-                    >
-                      <div>
-                        <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">
-                          Module {mod.order} · Lectures {mod.lesson_start}–{mod.lesson_end}
-                        </div>
-                        <div className="text-xs font-bold text-slate-200">{mod.title}</div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[11px] font-mono text-slate-400">
-                          {modCompleted}/{mod.lesson_count}
-                        </span>
-                        {isExpanded ? (
-                          <ChevronUp className="w-4 h-4 text-slate-400" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-slate-400" />
-                        )}
-                      </div>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="bg-slate-950/50 divide-y divide-slate-800/50">
-                        {modLessons.map((lesson) => {
-                          const isCurrent = lesson.id === activeLesson.id;
-                          const isDone = completedLessons.includes(lesson.id);
-                          const quizDone = quizResults[lesson.id]?.correct;
-
-                          return (
-                            <button
-                              key={lesson.id}
-                              type="button"
-                              onClick={() => selectLesson(lesson)}
-                              className={`w-full px-4 py-2.5 flex items-start gap-2.5 text-left transition ${
-                                isCurrent
-                                  ? 'bg-indigo-600/20 border-l-2 border-indigo-400'
-                                  : 'hover:bg-slate-800/40'
-                              }`}
-                            >
-                              <div className="pt-0.5 shrink-0">
-                                {isDone ? (
-                                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                ) : (
-                                  <PlayCircle
-                                    className={`w-4 h-4 ${
-                                      isCurrent ? 'text-indigo-400' : 'text-slate-500'
-                                    }`}
-                                  />
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div
-                                  className={`text-xs leading-snug line-clamp-2 ${
-                                    isCurrent ? 'font-bold text-white' : 'font-medium text-slate-300'
-                                  }`}
-                                >
-                                  {lesson.order}. {lesson.title}
-                                </div>
-                                <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-500">
-                                  <span>{lesson.duration_label}</span>
-                                  {quizDone && (
-                                    <span className="text-emerald-400 font-semibold">Quiz ✓</span>
-                                  )}
-                                  {notesByLesson[lesson.id]?.trim() && (
-                                    <span className="text-cyan-400 font-semibold">Notes</span>
-                                  )}
-                                </div>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= TAB 2: 100+ QUIZ MASTERY PRACTICE BANK ================= */}
-      {activeTab === 'quiz-bank' && (
-        <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold text-white">
-                {quizBank.length} {isDL ? 'Deep Learning' : 'Machine Learning'} Comprehension Quizzes (
-                {isDL ? '20+ Bank' : '100+ Bank'})
-              </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Every lecture has a dedicated conceptual check. Practice across all modules or focus on a weak area.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                Answered:{' '}
-                <span className="font-bold text-cyan-300">
-                  {Object.keys(practiceAnswers).length}/{quizBank.length}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setPracticeAnswers({});
-                  setPracticeResult(null);
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Reset
-              </button>
-              <button
-                type="button"
-                disabled={isSubmittingPractice}
-                onClick={handleSubmitPracticeBank}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-cyan-500/20"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                {isSubmittingPractice ? 'Grading...' : 'Grade Practice Submission'}
-              </button>
-            </div>
-          </div>
-
-          {practiceResult && (
-            <div className="rounded-2xl border border-cyan-500/35 bg-cyan-950/25 p-5 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-cyan-400" />
-                <div>
-                  <div className="text-base font-bold text-white">
-                    Practice Score: {practiceResult.score_percent}% ({practiceResult.correct_count}/
-                    {practiceResult.total_answered} correct)
-                  </div>
-                  <div className="text-xs text-cyan-200/80">
-                    All-time Best Recorded Score: {practiceResult.best_score}%
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('capstone')}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
-                >
-                  Next Stage: Capstone Lab →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('final-exam')}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
-                >
-                  Skip to Proctored Final Exam →
                 </button>
               </div>
             </div>
           )}
 
-          {/* Module Filter Pills & Pagination */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setPracticeModuleFilter('ALL');
-                  setPracticePage(0);
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                  practiceModuleFilter === 'ALL'
-                    ? 'bg-cyan-600 text-white'
-                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                All ({quizBank.length})
-              </button>
-              {course.modules.map((m) => (
+          {/* ===================== PAGE 1: WATCH VIDEO ===================== */}
+          {pageStage === 'watch' && (
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 sm:p-5 space-y-4">
+              <InLMSVideoPlayer
+                key={activeLesson.id}
+                lesson={activeLesson}
+                isCompleted={isLessonCompleted}
+                isDL={isDL}
+                onVideoEnded={handleVideoEnded}
+              />
+
+              {videoJustFinished && (
+                <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/30 p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 text-xs sm:text-sm font-bold text-emerald-200">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    Video finished! Continue to read the study notes or solve Quiz #{activeLesson.order}.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleWatchNextAction('quiz')}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition"
+                  >
+                    Solve Quiz #{activeLesson.order} Now →
+                  </button>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={isCompletingLesson}
+                    onClick={() => markLessonWatched(false)}
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition ${
+                      isLessonCompleted
+                        ? 'bg-emerald-500/15 border border-emerald-500/35 text-emerald-300'
+                        : 'bg-slate-800 hover:bg-slate-700 text-white'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {isLessonCompleted
+                      ? 'Video Watched ✓'
+                      : isCompletingLesson
+                      ? 'Saving...'
+                      : 'Mark Video Watched (+15 XP)'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleWatchNextAction('notes')}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600/20 border border-cyan-500/35 hover:bg-cyan-600/30 text-cyan-200 text-xs font-bold transition"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    Next: Read Notes &amp; Code
+                  </button>
+                </div>
+
                 <button
-                  key={m.id}
                   type="button"
-                  onClick={() => {
-                    setPracticeModuleFilter(m.id);
-                    setPracticePage(0);
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                    practiceModuleFilter === m.id
-                      ? 'bg-cyan-600 text-white'
-                      : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                  onClick={() => handleWatchNextAction('quiz')}
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
+                >
+                  After Watch: Next Solve Quiz #{activeLesson.order}
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ===================== PAGE 2: STUDY NOTES & CODE ===================== */}
+          {pageStage === 'notes' && (
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 sm:p-6 space-y-5">
+                <div className="rounded-2xl border border-indigo-500/25 bg-indigo-950/25 p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mb-1">
+                    Core Formula &amp; Conceptual Anchor
+                  </div>
+                  <div className="text-sm font-mono text-white break-words">
+                    <MarkdownRenderer content={activeLesson.key_formula} />
+                  </div>
+                </div>
+
+                <div className="prose prose-invert max-w-none text-sm text-slate-200">
+                  <MarkdownRenderer content={activeLesson.notes_markdown} />
+                </div>
+
+                {activeLesson.code_snippet && (
+                  <div className="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        Python Reference Implementation
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopySnippet(activeLesson.code_snippet)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition"
+                      >
+                        <Copy className="w-3 h-3" />
+                        Copy Code
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                      <code>{activeLesson.code_snippet}</code>
+                    </pre>
+                  </div>
+                )}
+              </div>
+
+              {/* Personal Cloud Notebook */}
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <FileEdit className="w-4 h-4 text-cyan-400" />
+                    My Personal Study Notes — Lecture #{activeLesson.order}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDraftNote((prev) =>
+                        prev.trim()
+                          ? prev
+                          : `# ${activeLesson.title}\n- Key Equation: \n- Edge Cases: \n- Summary: `
+                      )
+                    }
+                    className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
+                  >
+                    Insert Template
+                  </button>
+                </div>
+                <textarea
+                  value={draftNote}
+                  onChange={(e) => setDraftNote(e.target.value)}
+                  rows={5}
+                  placeholder={`Record your personal notes for "${activeLesson.title}"...`}
+                  className="w-full rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:outline-none p-3.5 text-xs text-slate-200 font-mono leading-relaxed"
+                />
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-500">{draftNote.length} chars</span>
+                  <button
+                    type="button"
+                    disabled={isSavingNote}
+                    onClick={handleSaveNotes}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    {isSavingNote ? 'Saving...' : 'Save Notes to Cloud'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===================== PAGE 3: SOLVE QUIZ #X ===================== */}
+          {pageStage === 'quiz' && (
+            <div className="rounded-2xl border border-emerald-500/25 bg-slate-900/80 p-5 sm:p-7 space-y-5 shadow-xl">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+                  After-Video Quiz #{activeLesson.order} · {activeLesson.module_title}
+                </span>
+                {activeQuizRecord && (
+                  <span className="text-xs text-slate-400">
+                    Attempts: {activeQuizRecord.attempts} ·{' '}
+                    <strong
+                      className={activeQuizRecord.correct ? 'text-emerald-400' : 'text-amber-300'}
+                    >
+                      {activeQuizRecord.correct ? 'Passed ✓' : 'Try Again'}
+                    </strong>
+                  </span>
+                )}
+              </div>
+
+              <h2 className="text-lg sm:text-xl font-extrabold text-white leading-snug">
+                {activeLesson.quiz.question}
+              </h2>
+
+              <div className="space-y-2.5">
+                {activeLesson.quiz.options.map((opt, idx) => {
+                  const isSelected = selectedQuizOption === idx;
+                  const revealCorrect = quizFeedback && quizFeedback.correct_index === idx;
+                  const revealWrong = quizFeedback && isSelected && !quizFeedback.correct;
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setSelectedQuizOption(idx);
+                        setQuizFeedback(null);
+                      }}
+                      className={`w-full text-left p-4 rounded-xl border text-sm transition flex items-start gap-3 ${
+                        revealCorrect
+                          ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
+                          : revealWrong
+                          ? 'bg-rose-500/15 border-rose-500 text-rose-100'
+                          : isSelected
+                          ? 'bg-indigo-600/20 border-indigo-400 text-white'
+                          : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
+                      }`}
+                    >
+                      <span
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                          isSelected
+                            ? 'bg-indigo-500 text-white'
+                            : 'bg-slate-800 text-slate-400'
+                        }`}
+                      >
+                        {String.fromCharCode(65 + idx)}
+                      </span>
+                      <span className="leading-relaxed">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {quizFeedback && (
+                <div
+                  className={`rounded-2xl border p-4 text-sm space-y-1.5 ${
+                    quizFeedback.correct
+                      ? 'bg-emerald-950/35 border-emerald-500/40 text-emerald-200'
+                      : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
                   }`}
                 >
-                  M{m.order}: {m.lesson_count}Q
-                </button>
-              ))}
-            </div>
+                  <div className="flex items-center gap-2 font-bold">
+                    {quizFeedback.correct ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                      <XCircle className="w-4 h-4 text-amber-400" />
+                    )}
+                    {quizFeedback.correct
+                      ? `Correct! Lecture #${activeLesson.order} Quiz Mastered.`
+                      : 'Review the explanation and select the right option'}
+                  </div>
+                  <p className="text-xs leading-relaxed opacity-90">{quizFeedback.explanation}</p>
+                </div>
+              )}
 
-            {totalPracticePages > 1 && (
-              <div className="flex items-center gap-1.5">
-                {Array.from({ length: totalPracticePages }).map((_, idx) => (
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  disabled={selectedQuizOption === null || isSubmittingLessonQuiz}
+                  onClick={handleSubmitLessonQuiz}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 text-white text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {isSubmittingLessonQuiz ? 'Checking Answer...' : 'Check Quiz Answer (+10 XP)'}
+                </button>
+
+                {nextLesson ? (
                   <button
-                    key={idx}
                     type="button"
-                    onClick={() => setPracticePage(idx)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition ${
-                      safePracticePage === idx
-                        ? 'bg-indigo-600 text-white'
+                    onClick={() => openLessonStage(nextLesson, 'watch')}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition ${
+                      quizFeedback?.correct || activeQuizRecord?.correct
+                        ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                    }`}
+                  >
+                    Next: Watch Lecture #{nextLesson.order} ({nextLesson.title.slice(0, 28)}...)
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => openMilestoneStage('quiz-bank')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition"
+                  >
+                    Next Milestone: Full Quiz Practice Bank →
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ===================== MILESTONE: QUIZ PRACTICE BANK ===================== */}
+          {pageStage === 'quiz-bank' && (
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white">
+                    {quizBank.length} Comprehension Quizzes ({isDL ? '20+ Bank' : '100+ Bank'})
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Best Mastery Score: <strong className="text-cyan-300">{bestPracticeScore}%</strong> · Answer &amp; grade all modules before your Capstone &amp; Final Exam.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                    Answered:{' '}
+                    <span className="font-bold text-cyan-300">
+                      {Object.keys(practiceAnswers).length}/{quizBank.length}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPracticeAnswers({});
+                      setPracticeResult(null);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Reset
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSubmittingPractice}
+                    onClick={handleSubmitPracticeBank}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-cyan-500/20"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {isSubmittingPractice ? 'Grading...' : 'Grade Practice Submission'}
+                  </button>
+                </div>
+              </div>
+
+              {practiceResult && (
+                <div className="rounded-2xl border border-cyan-500/35 bg-cyan-950/25 p-5 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <Trophy className="w-8 h-8 text-cyan-400" />
+                    <div>
+                      <div className="text-base font-bold text-white">
+                        Practice Score: {practiceResult.score_percent}% ({practiceResult.correct_count}/
+                        {practiceResult.total_answered} correct)
+                      </div>
+                      <div className="text-xs text-cyan-200/80">
+                        All-time Best Score: {practiceResult.best_score}%
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openMilestoneStage('capstone')}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
+                  >
+                    Continue to Capstone Project Lab →
+                  </button>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPracticeModuleFilter('ALL');
+                      setPracticePage(0);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      practiceModuleFilter === 'ALL'
+                        ? 'bg-cyan-600 text-white'
                         : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
                     }`}
                   >
-                    {idx * PRACTICE_PAGE_SIZE + 1}–
-                    {Math.min((idx + 1) * PRACTICE_PAGE_SIZE, filteredPracticeQuestions.length)}
+                    All ({quizBank.length})
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Question Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {currentPracticeSlice.map((q) => {
-              const selectedIdx = practiceAnswers[q.id];
-              const graded = practiceDetailMap[q.id];
-
-              return (
-                <div
-                  key={q.id}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3 flex flex-col justify-between"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2 text-[11px]">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 font-bold">
-                        Q#{q.lesson_order} · {q.module_title}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const target = course.lessons.find((l) => l.id === q.lesson_id);
-                          if (target) {
-                            setActiveTab('course');
-                            selectLesson(target);
-                          }
-                        }}
-                        className="text-cyan-400 hover:underline font-semibold"
-                      >
-                        Review Video →
-                      </button>
-                    </div>
-                    <h4 className="text-sm font-bold text-white leading-snug">{q.question}</h4>
-                    <div className="space-y-1.5">
-                      {q.options.map((opt, idx) => {
-                        const isPicked = selectedIdx === idx;
-                        const isRight = graded && graded.correct_index === idx;
-                        const isWrong = graded && isPicked && !graded.correct;
-                        return (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() =>
-                              setPracticeAnswers((prev) => ({
-                                ...prev,
-                                [q.id]: idx,
-                              }))
-                            }
-                            className={`w-full text-left px-3 py-2 rounded-xl border text-xs transition ${
-                              isRight
-                                ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
-                                : isWrong
-                                ? 'bg-rose-500/15 border-rose-500 text-rose-100'
-                                : isPicked
-                                ? 'bg-cyan-600/20 border-cyan-400 text-white'
-                                : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'
-                            }`}
-                          >
-                            <span className="font-bold mr-2">{String.fromCharCode(65 + idx)}.</span>
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {graded && (
-                    <div
-                      className={`text-[11px] rounded-xl p-2.5 border ${
-                        graded.correct
-                          ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200'
-                          : 'bg-rose-950/30 border-rose-500/30 text-rose-200'
+                  {course.modules.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => {
+                        setPracticeModuleFilter(m.id);
+                        setPracticePage(0);
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        practiceModuleFilter === m.id
+                          ? 'bg-cyan-600 text-white'
+                          : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
                       }`}
                     >
-                      {graded.explanation}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ================= TAB: ADVANCED SYLLABUS & ROADMAP ================= */}
-      {activeTab === 'syllabus' && (
-        <CourseSyllabusRoadmapPanel
-          modules={course.modules}
-          lessons={course.lessons}
-          completedLessons={completedLessons}
-          quizResults={quizResults}
-          capstoneCount={capstoneSubmissions.length}
-          examPassed={savedExamPassed}
-          onJumpToLesson={(lesson) => {
-            setActiveTab('course');
-            selectLesson(lesson);
-          }}
-          onJumpToTab={(targetTab) => setActiveTab(targetTab)}
-        />
-      )}
-
-      {/* ================= TAB: CAPSTONE PROJECTS & RUBRIC GRADING ================= */}
-      {activeTab === 'capstone' && (
-        <CapstoneWorkspacePanel
-          courseTitle={course.title}
-          projects={capstoneProjects}
-          submissions={capstoneSubmissions}
-          onSubmitCapstone={handleCapstoneSubmit}
-          isSubmitting={isSubmittingCapstone}
-        />
-      )}
-
-      {/* ================= TAB: PEER REVIEWS & FEEDBACK PAGE ================= */}
-      {activeTab === 'reviews' && (
-        <CourseReviewsPanel
-          courseTitle={course.title}
-          reviewsData={reviewsData}
-          onSubmitReview={handleSubmitReview}
-          onToggleHelpful={handleToggleReviewHelpful}
-          onProceedToCertificate={() => setActiveTab('certificate')}
-          isSubmittingReview={isSubmittingReview}
-        />
-      )}
-
-      {/* ================= TAB: CERTIFICATE & VECTOR PDF ================= */}
-      {activeTab === 'certificate' && (
-        <CourseCertificateStagePanel
-          courseTitle={course.title}
-          certificate={earnedCertificate}
-          onGoToExam={() => setActiveTab('final-exam')}
-          onGoToGoodies={() => setActiveTab('goodies')}
-        />
-      )}
-
-      {/* ================= TAB: GRADUATE GOODIES & SWAG CLAIM FORM ================= */}
-      {activeTab === 'goodies' && (
-        <CourseGoodiesFormPanel
-          courseTitle={course.title}
-          defaultName={user?.full_name || ''}
-          defaultEmail={user?.email || ''}
-          existingClaim={goodiesClaim}
-          onSubmitClaim={handleSubmitGoodies}
-          isSubmitting={isSubmittingGoodies}
-          onProceedToDone={() => setActiveTab('done')}
-        />
-      )}
-
-      {/* ================= TAB: END-TO-END COMPLETION DONE SCREEN ================= */}
-      {activeTab === 'done' && (
-        <CourseCompletionDonePanel
-          courseTitle={course.title}
-          completedLessonsCount={completedCount}
-          totalLessonsCount={totalLessons}
-          quizzesPassedCount={quizzesPassedCount}
-          capstoneCount={capstoneSubmissions.length}
-          examScore={savedExamScore}
-          certificate={earnedCertificate}
-          goodiesClaim={goodiesClaim}
-        />
-      )}
-
-      {/* ================= TAB 3: CAMERA CHEAT-PROTECTED FINAL EXAM ================= */}
-      {activeTab === 'final-exam' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Exam Workspace */}
-          <div className="lg:col-span-8 space-y-5">
-            {examPhase === 'preflight' && (
-              <div className="rounded-3xl border border-emerald-500/25 bg-slate-900/80 p-6 sm:p-8 space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                      Proctored Certification Assessment
-                    </span>
-                    <h2 className="text-2xl font-extrabold text-white mt-0.5">
-                      {finalExam?.title || `${course.title} — Proctored Final Exam`}
-                    </h2>
-                    <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-                      Earn an official cryptographically signed{' '}
-                      <strong className="text-white">
-                        {isDL
-                          ? '[Stanford X Coding Task Factory Academy] Deep Learning Certificate'
-                          : 'Coding Task Factory ML Certificate'}
-                      </strong>{' '}
-                      with Downloadable Landscape A4 Vector PDF &amp; Public Verification URL.
-                    </p>
-                  </div>
+                      M{m.order} ({m.lesson_count}Q)
+                    </button>
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
-                    <div className="text-[11px] text-slate-400">Exam Length</div>
-                    <div className="text-lg font-extrabold text-white">
-                      {finalExam?.total_questions || (isDL ? 20 : 35)} Questions
-                    </div>
+                {totalPracticePages > 1 && (
+                  <div className="flex items-center gap-1.5">
+                    {Array.from({ length: totalPracticePages }).map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setPracticePage(idx)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition ${
+                          safePracticePage === idx
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {idx * PRACTICE_PAGE_SIZE + 1}–
+                        {Math.min(
+                          (idx + 1) * PRACTICE_PAGE_SIZE,
+                          filteredPracticeQuestions.length
+                        )}
+                      </button>
+                    ))}
                   </div>
-                  <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
-                    <div className="text-[11px] text-slate-400">Time Limit</div>
-                    <div className="text-lg font-extrabold text-white">
-                      {finalExam?.duration_minutes || (isDL ? 30 : 45)} Minutes
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
-                    <div className="text-[11px] text-slate-400">Pass Score</div>
-                    <div className="text-lg font-extrabold text-emerald-400">
-                      {finalExam?.passing_score || 70}%
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3.5">
-                    <div className="text-[11px] text-slate-400">Cheat Limit</div>
-                    <div className="text-lg font-extrabold text-rose-400">3 Strikes Max</div>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2 text-xs text-slate-300">
-                  <div className="font-bold text-white text-sm mb-1">
-                    Camera Cheat-Protection Rules
-                  </div>
-                  <p>
-                    1. Click <strong>Enable Webcam Guard</strong> in the right panel until{' '}
-                    <span className="text-emerald-400 font-semibold">CAM READY</span> appears.
-                  </p>
-                  <p>
-                    2. Covering your webcam, leaving the camera frame, or having multiple faces
-                    triggers a strike.
-                  </p>
-                  <p>
-                    3. Switching tabs, minimizing the browser, exiting fullscreen, right-clicking, or
-                    copy/pasting adds a strike. Reaching <strong>3 strikes</strong> automatically
-                    terminates and disqualifies the attempt.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                  <div className="text-xs">
-                    {cameraReady ? (
-                      <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Webcam Verified — Ready to begin proctored session
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 text-amber-300 font-semibold">
-                        <Camera className="w-4 h-4" />
-                        Enable Webcam Guard on the right to unlock the start button
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    disabled={!cameraReady}
-                    onClick={handleStartExam}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 disabled:cursor-not-allowed text-white text-sm font-extrabold transition shadow-xl shadow-emerald-500/25"
-                  >
-                    <ShieldCheck className="w-4 h-4" />
-                    Start Proctored Final Exam
-                  </button>
-                </div>
+                )}
               </div>
-            )}
 
-            {examPhase === 'active' && finalExam && finalExam.questions.length > 0 && (
-              <div className="space-y-4">
-                {/* Sticky Timer & Submit Bar */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-sm font-bold text-cyan-300">
-                      {formatCountdown(examRemainingSec)}
-                    </span>
-                    <span className="text-xs text-slate-300 font-semibold">
-                      Answered {Object.keys(examAnswers).length} / {finalExam.questions.length}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={isSubmittingExam}
-                    onClick={() => submitFinalExam(false)}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-emerald-500/20"
-                  >
-                    {isSubmittingExam ? 'Submitting...' : 'Submit Final Exam'}
-                  </button>
-                </div>
-
-                {/* Focused Question Card */}
-                {(() => {
-                  const q = finalExam.questions[examQuestionIdx];
-                  if (!q) return null;
-                  const picked = examAnswers[q.id];
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {currentPracticeSlice.map((q) => {
+                  const selectedIdx = practiceAnswers[q.id];
+                  const graded = practiceDetailMap[q.id];
 
                   return (
-                    <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-6 space-y-5">
-                      <div className="flex items-center justify-between gap-2 text-xs">
-                        <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold">
-                          Exam Question {examQuestionIdx + 1} of {finalExam.questions.length}
-                        </span>
-                        <span className="text-slate-400">{q.module_title}</span>
-                      </div>
-
-                      <h3 className="text-lg font-bold text-white leading-snug">{q.question}</h3>
-
-                      <div className="space-y-2.5">
-                        {q.options.map((opt, idx) => (
+                    <div
+                      key={q.id}
+                      className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3 flex flex-col justify-between"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-2 text-[11px]">
+                          <span className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 font-bold">
+                            Q#{q.lesson_order} · {q.module_title}
+                          </span>
                           <button
-                            key={idx}
                             type="button"
-                            onClick={() =>
-                              setExamAnswers((prev) => ({
-                                ...prev,
-                                [q.id]: idx,
-                              }))
-                            }
-                            className={`w-full text-left p-4 rounded-xl border text-sm transition flex items-start gap-3 ${
-                              picked === idx
-                                ? 'bg-indigo-600/20 border-indigo-400 text-white'
-                                : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
-                            }`}
+                            onClick={() => {
+                              const target = course.lessons.find((l) => l.id === q.lesson_id);
+                              if (target) openLessonStage(target, 'watch');
+                            }}
+                            className="text-cyan-400 hover:underline font-semibold"
                           >
-                            <span
-                              className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                                picked === idx
-                                  ? 'bg-indigo-500 text-white'
-                                  : 'bg-slate-800 text-slate-400'
-                              }`}
-                            >
-                              {String.fromCharCode(65 + idx)}
-                            </span>
-                            <span>{opt}</span>
+                            Review Video →
                           </button>
-                        ))}
+                        </div>
+                        <h4 className="text-sm font-bold text-white leading-snug">{q.question}</h4>
+                        <div className="space-y-1.5">
+                          {q.options.map((opt, idx) => {
+                            const isPicked = selectedIdx === idx;
+                            const isRight = graded && graded.correct_index === idx;
+                            const isWrong = graded && isPicked && !graded.correct;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() =>
+                                  setPracticeAnswers((prev) => ({
+                                    ...prev,
+                                    [q.id]: idx,
+                                  }))
+                                }
+                                className={`w-full text-left px-3 py-2 rounded-xl border text-xs transition ${
+                                  isRight
+                                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
+                                    : isWrong
+                                    ? 'bg-rose-500/15 border-rose-500 text-rose-100'
+                                    : isPicked
+                                    ? 'bg-cyan-600/20 border-cyan-400 text-white'
+                                    : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'
+                                }`}
+                              >
+                                <span className="font-bold mr-2">
+                                  {String.fromCharCode(65 + idx)}.
+                                </span>
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-
-                      <div className="flex items-center justify-between pt-2">
-                        <button
-                          type="button"
-                          disabled={examQuestionIdx === 0}
-                          onClick={() => setExamQuestionIdx((i) => Math.max(0, i - 1))}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-slate-200 transition"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                          Previous
-                        </button>
-                        <button
-                          type="button"
-                          disabled={examQuestionIdx >= finalExam.questions.length - 1}
-                          onClick={() =>
-                            setExamQuestionIdx((i) =>
-                              Math.min(finalExam.questions.length - 1, i + 1)
-                            )
-                          }
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-xs font-bold text-white transition"
-                        >
-                          Save &amp; Next
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Question Palette */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                    Question Navigator
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {finalExam.questions.map((q, idx) => {
-                      const isAnswered = examAnswers[q.id] !== undefined;
-                      const isCurrent = idx === examQuestionIdx;
-                      return (
-                        <button
-                          key={q.id}
-                          type="button"
-                          onClick={() => setExamQuestionIdx(idx)}
-                          className={`w-8 h-8 rounded-lg text-xs font-mono font-bold transition border ${
-                            isCurrent
-                              ? 'bg-indigo-600 border-indigo-300 text-white'
-                              : isAnswered
-                              ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                              : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-600'
+                      {graded && (
+                        <div
+                          className={`text-[11px] rounded-xl p-2.5 border ${
+                            graded.correct
+                              ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200'
+                              : 'bg-rose-950/30 border-rose-500/30 text-rose-200'
                           }`}
                         >
-                          {idx + 1}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                          {graded.explanation}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
+          )}
 
-            {examPhase === 'submitted' && examResult && (
-              <div
-                className={`rounded-3xl border p-6 sm:p-8 space-y-6 ${
-                  examResult.passed
-                    ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-950/35 to-slate-900'
-                    : 'border-rose-500/40 bg-gradient-to-br from-rose-950/30 to-slate-900'
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  {examResult.passed ? (
-                    <Award className="w-12 h-12 text-emerald-400 shrink-0" />
-                  ) : (
-                    <ShieldAlert className="w-12 h-12 text-rose-400 shrink-0" />
-                  )}
-                  <div>
-                    <h2 className="text-2xl font-extrabold text-white">
-                      {examResult.disqualified
-                        ? 'Exam Disqualified — Anti-Cheat Triggered'
-                        : examResult.passed
-                        ? 'Final Exam Passed! Certificate Earned'
-                        : 'Final Exam Not Passed Yet'}
-                    </h2>
-                    <p className="text-sm text-slate-300 mt-1">{examResult.message}</p>
-                  </div>
-                </div>
+          {/* ===================== MILESTONE: CAPSTONE LAB ===================== */}
+          {pageStage === 'capstone' && (
+            <CapstoneWorkspacePanel
+              courseTitle={course.title}
+              projects={capstoneProjects}
+              submissions={capstoneSubmissions}
+              onSubmitCapstone={handleCapstoneSubmit}
+              isSubmitting={isSubmittingCapstone}
+            />
+          )}
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4">
-                    <div className="text-xs text-slate-400">Final Score</div>
-                    <div className="text-2xl font-extrabold text-white">
-                      {examResult.score_percent}%
+          {/* ===================== MILESTONE: CAMERA FINAL EXAM ===================== */}
+          {pageStage === 'final-exam' && (
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+              <div className="xl:col-span-8 space-y-5">
+                {examPhase === 'preflight' && (
+                  <div className="rounded-3xl border border-emerald-500/25 bg-slate-900/80 p-6 sm:p-7 space-y-5">
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                        Proctored Certification Exam
+                      </span>
+                      <h2 className="text-2xl font-extrabold text-white mt-0.5">
+                        {finalExam?.title || `${course.title} — Final Exam`}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-300 mt-2">
+                        Pass with ≥{finalExam?.passing_score || 70}% under active webcam guard to
+                        unlock your SHA-256 Vector PDF Certificate &amp; Graduate Goodies Bundle.
+                      </p>
                     </div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4">
-                    <div className="text-xs text-slate-400">Correct Answers</div>
-                    <div className="text-2xl font-extrabold text-cyan-300">
-                      {examResult.correct_count}/{examResult.total_questions}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4">
-                    <div className="text-xs text-slate-400">Proctor Strikes</div>
-                    <div className="text-2xl font-extrabold text-amber-300">
-                      {examResult.violations}/3
-                    </div>
-                  </div>
-                </div>
 
-                {examResult.passed && examResult.certificate && (
-                  <div className="rounded-2xl bg-slate-950/85 border border-emerald-500/35 p-5 space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                          Verified Credential Issued
-                        </div>
-                        <div className="text-lg font-bold text-white">
-                          {examResult.certificate.title}
-                        </div>
-                        <div className="text-xs font-mono text-slate-400 mt-0.5">
-                          ID: {examResult.certificate.credential_id} · Hash:{' '}
-                          {examResult.certificate.credential_hash?.slice(0, 12)}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
+                        <div className="text-[11px] text-slate-400">Length</div>
+                        <div className="text-base font-extrabold text-white">
+                          {finalExam?.total_questions || (isDL ? 20 : 35)} Qs
                         </div>
                       </div>
-                      <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-                        {examResult.certificate.grade}
-                      </span>
+                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
+                        <div className="text-[11px] text-slate-400">Timer</div>
+                        <div className="text-base font-extrabold text-white">
+                          {finalExam?.duration_minutes || (isDL ? 30 : 45)} Min
+                        </div>
+                      </div>
+                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
+                        <div className="text-[11px] text-slate-400">Pass Score</div>
+                        <div className="text-base font-extrabold text-emerald-400">
+                          {finalExam?.passing_score || 70}%
+                        </div>
+                      </div>
+                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
+                        <div className="text-[11px] text-slate-400">Strike Limit</div>
+                        <div className="text-base font-extrabold text-rose-400">3 Max</div>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2.5">
+
+                    <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-800">
+                      <span
+                        className={`text-xs font-bold ${
+                          cameraReady ? 'text-emerald-400' : 'text-amber-300'
+                        }`}
+                      >
+                        {cameraReady
+                          ? '✓ Webcam Verified — Ready to begin'
+                          : 'Enable Webcam Guard in the side panel first'}
+                      </span>
                       <button
                         type="button"
-                        onClick={() =>
-                          examResult.certificate &&
-                          api.downloadCertificatePdf(examResult.certificate.credential_id)
-                        }
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                        disabled={!cameraReady}
+                        onClick={handleStartExam}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 text-white text-xs sm:text-sm font-extrabold transition shadow-xl shadow-emerald-500/20"
                       >
-                        <Download className="w-3.5 h-3.5" />
-                        Download Official PDF
-                      </button>
-                      <Link
-                        to={`/verify/${examResult.certificate.credential_id}`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition"
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                        Verify Credential
-                      </Link>
-                      <Link
-                        to="/app/certificates"
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
-                      >
-                        Open Certificates &amp; Social Share
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab('reviews')}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition"
-                      >
-                        Next Stage: Course Feedback →
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab('goodies')}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition"
-                      >
-                        <Gift className="w-3.5 h-3.5" />
-                        Claim Goodies Form →
+                        <ShieldCheck className="w-4 h-4" />
+                        Start Proctored Final Exam
                       </button>
                     </div>
                   </div>
                 )}
 
+                {examPhase === 'active' && finalExam && finalExam.questions.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-sm font-bold text-cyan-300">
+                          {formatCountdown(examRemainingSec)}
+                        </span>
+                        <span className="text-xs text-slate-300 font-semibold">
+                          {Object.keys(examAnswers).length} / {finalExam.questions.length} Answered
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={isSubmittingExam}
+                        onClick={() => submitFinalExam(false)}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition"
+                      >
+                        {isSubmittingExam ? 'Submitting...' : 'Submit Final Exam'}
+                      </button>
+                    </div>
+
+                    {(() => {
+                      const q = finalExam.questions[examQuestionIdx];
+                      if (!q) return null;
+                      const picked = examAnswers[q.id];
+
+                      return (
+                        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 space-y-4">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-300 font-bold">
+                              Question {examQuestionIdx + 1} / {finalExam.questions.length}
+                            </span>
+                            <span className="text-slate-400">{q.module_title}</span>
+                          </div>
+                          <h3 className="text-base sm:text-lg font-bold text-white">{q.question}</h3>
+                          <div className="space-y-2">
+                            {q.options.map((opt, idx) => (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() =>
+                                  setExamAnswers((prev) => ({
+                                    ...prev,
+                                    [q.id]: idx,
+                                  }))
+                                }
+                                className={`w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm transition flex items-start gap-3 ${
+                                  picked === idx
+                                    ? 'bg-indigo-600/20 border-indigo-400 text-white'
+                                    : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
+                                }`}
+                              >
+                                <span
+                                  className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                                    picked === idx
+                                      ? 'bg-indigo-500 text-white'
+                                      : 'bg-slate-800 text-slate-400'
+                                  }`}
+                                >
+                                  {String.fromCharCode(65 + idx)}
+                                </span>
+                                <span>{opt}</span>
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex items-center justify-between pt-2">
+                            <button
+                              type="button"
+                              disabled={examQuestionIdx === 0}
+                              onClick={() => setExamQuestionIdx((i) => Math.max(0, i - 1))}
+                              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-white"
+                            >
+                              ← Previous
+                            </button>
+                            <button
+                              type="button"
+                              disabled={examQuestionIdx >= finalExam.questions.length - 1}
+                              onClick={() =>
+                                setExamQuestionIdx((i) =>
+                                  Math.min(finalExam.questions.length - 1, i + 1)
+                                )
+                              }
+                              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-xs font-bold text-white"
+                            >
+                              Save &amp; Next →
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 flex flex-wrap gap-1.5">
+                      {finalExam.questions.map((q, idx) => {
+                        const isAnswered = examAnswers[q.id] !== undefined;
+                        const isCurrent = idx === examQuestionIdx;
+                        return (
+                          <button
+                            key={q.id}
+                            type="button"
+                            onClick={() => setExamQuestionIdx(idx)}
+                            className={`w-8 h-8 rounded-lg text-xs font-mono font-bold border ${
+                              isCurrent
+                                ? 'bg-indigo-600 border-indigo-300 text-white'
+                                : isAnswered
+                                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                                : 'bg-slate-950 border-slate-800 text-slate-400'
+                            }`}
+                          >
+                            {idx + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {examPhase === 'submitted' && examResult && (
+                  <div
+                    className={`rounded-3xl border p-6 space-y-5 ${
+                      examResult.passed
+                        ? 'border-emerald-500/40 bg-emerald-950/25'
+                        : 'border-rose-500/40 bg-rose-950/25'
+                    }`}
+                  >
+                    <div className="flex items-start gap-4">
+                      {examResult.passed ? (
+                        <Award className="w-10 h-10 text-emerald-400 shrink-0" />
+                      ) : (
+                        <ShieldAlert className="w-10 h-10 text-rose-400 shrink-0" />
+                      )}
+                      <div>
+                        <h2 className="text-xl font-extrabold text-white">
+                          {examResult.disqualified
+                            ? 'Disqualified — Anti-Cheat Triggered'
+                            : examResult.passed
+                            ? `Passed (${examResult.score_percent}%) — Certificate Earned!`
+                            : `Scored ${examResult.score_percent}% — Review & Retry`}
+                        </h2>
+                        <p className="text-xs sm:text-sm text-slate-300 mt-1">{examResult.message}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2.5">
+                      {examResult.passed && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => openMilestoneStage('reviews')}
+                            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition"
+                          >
+                            Next Page: Submit Course Feedback →
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openMilestoneStage('certificate')}
+                            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                          >
+                            View Certificate Stage →
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openMilestoneStage('goodies')}
+                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition"
+                          >
+                            <Gift className="w-3.5 h-3.5" />
+                            Claim Goodies Form →
+                          </button>
+                        </>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setExamPhase('preflight');
+                          setExamResult(null);
+                          setExamViolations(0);
+                          setExamViolationLog([]);
+                        }}
+                        className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white"
+                      >
+                        Retake Exam
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="xl:col-span-4 sticky top-4">
+                <ProctorCameraGuard
+                  active={examPhase === 'active'}
+                  maxViolations={3}
+                  violationsCount={examViolations}
+                  violationLog={examViolationLog}
+                  onCameraReadyChange={setCameraReady}
+                  onViolation={handleProctorViolation}
+                  onMaxViolationsReached={handleMaxViolationsReached}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* ===================== MILESTONE: FEEDBACK PAGE ===================== */}
+          {pageStage === 'reviews' && (
+            <CourseReviewsPanel
+              courseTitle={course.title}
+              reviewsData={reviewsData}
+              onSubmitReview={handleSubmitReview}
+              onToggleHelpful={handleToggleReviewHelpful}
+              onProceedToCertificate={() => openMilestoneStage('certificate')}
+              isSubmittingReview={isSubmittingReview}
+            />
+          )}
+
+          {/* ===================== MILESTONE: CERTIFICATE PAGE ===================== */}
+          {pageStage === 'certificate' && (
+            <CourseCertificateStagePanel
+              courseTitle={course.title}
+              certificate={earnedCertificate}
+              onGoToExam={() => openMilestoneStage('final-exam')}
+              onGoToGoodies={() => openMilestoneStage('goodies')}
+            />
+          )}
+
+          {/* ===================== MILESTONE: GOODIES CLAIM FORM ===================== */}
+          {pageStage === 'goodies' && (
+            <CourseGoodiesFormPanel
+              courseTitle={course.title}
+              defaultName={user?.full_name || ''}
+              defaultEmail={user?.email || ''}
+              existingClaim={goodiesClaim}
+              onSubmitClaim={handleSubmitGoodies}
+              isSubmitting={isSubmittingGoodies}
+              onProceedToDone={() => openMilestoneStage('done')}
+            />
+          )}
+
+          {/* ===================== MILESTONE: DONE GRADUATION SCREEN ===================== */}
+          {pageStage === 'done' && (
+            <CourseCompletionDonePanel
+              courseTitle={course.title}
+              completedLessonsCount={completedCount}
+              totalLessonsCount={totalLessons}
+              quizzesPassedCount={quizzesPassedCount}
+              capstoneCount={capstoneSubmissions.length}
+              examScore={savedExamScore}
+              certificate={earnedCertificate}
+              goodiesClaim={goodiesClaim}
+            />
+          )}
+
+          {/* Pinned Google Cloud Skills Boost Bottom Page-by-Page Navigator */}
+          <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] p-3.5 sm:px-5 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <button
+              type="button"
+              onClick={handlePagerPrev}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200 transition"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              {pagerMeta.prevText}
+            </button>
+
+            <span className="text-[11px] font-mono text-slate-400 text-center hidden md:inline">
+              {pagerMeta.label}
+            </span>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {pagerMeta.secondaryText && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setExamPhase('preflight');
-                    setExamResult(null);
-                    setExamViolations(0);
-                    setExamViolationLog([]);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white transition"
+                  onClick={handlePagerSecondary}
+                  className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-cyan-300 transition"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  Return to Pre-Flight Check
+                  {pagerMeta.secondaryText}
                 </button>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Live Camera Proctor Guard */}
-          <div className="lg:col-span-4 sticky top-4">
-            <ProctorCameraGuard
-              active={examPhase === 'active'}
-              maxViolations={3}
-              violationsCount={examViolations}
-              violationLog={examViolationLog}
-              onCameraReadyChange={setCameraReady}
-              onViolation={handleProctorViolation}
-              onMaxViolationsReached={handleMaxViolationsReached}
-            />
+              )}
+              <button
+                type="button"
+                onClick={handlePagerNext}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition shadow-lg shadow-indigo-500/20"
+              >
+                {pagerMeta.nextText}
+              </button>
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
