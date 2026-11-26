@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 
@@ -21,6 +22,7 @@ def _execute_subprocess_cases(
     time_limit_sec: float,
     base_memory_mb: float,
     cleanup_paths: Optional[List[str]] = None,
+    env: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     """Run a prepared executable or script across all test cases with timeout & isolation."""
     results: List[Dict[str, Any]] = []
@@ -55,6 +57,7 @@ def _execute_subprocess_cases(
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
+                    env=env,
                     text=True,
                 )
                 stdout, stderr = process.communicate(input=input_data, timeout=time_limit_sec)
@@ -213,12 +216,43 @@ def run_node_code(
     )
 
 
+_JSONCPP_DIR = Path(__file__).resolve().parents[2] / "vendor" / "jsoncpp"
+
+
+def _find_cpp_compiler() -> Optional[str]:
+    direct = shutil.which("g++") or shutil.which("clang++")
+    if direct:
+        return direct
+    if os.name == "nt":
+        # Check common WinLibs / MinGW user installs when PATH hasn't reloaded yet
+        local_app = os.environ.get("LOCALAPPDATA", "")
+        candidates = []
+        if local_app:
+            pkg_root = Path(local_app) / "Microsoft" / "WinGet" / "Packages"
+            if pkg_root.exists():
+                candidates.extend(pkg_root.glob("BrechtSanders.WinLibs*/*/bin/g++.exe"))
+                candidates.extend(pkg_root.glob("BrechtSanders.WinLibs*/*/*/bin/g++.exe"))
+            candidates.append(Path(local_app) / "Programs" / "WinLibs" / "mingw64" / "bin" / "g++.exe")
+            candidates.append(Path(local_app) / "Programs" / "w64devkit" / "bin" / "g++.exe")
+            candidates.append(Path(local_app) / "Programs" / "w64devkit" / "w64devkit" / "bin" / "g++.exe")
+        for fixed_dir in (Path("C:/mingw64/bin/g++.exe"), Path("C:/msys64/ucrt64/bin/g++.exe")):
+            candidates.append(fixed_dir)
+        for cand in candidates:
+            if cand.exists():
+                return str(cand)
+    return None
+
+
+def _uses_jsoncpp(code: str) -> bool:
+    return "json/json.h" in code or "jsoncpp" in code.lower()
+
+
 def run_cpp_code(
     code: str,
     test_cases: List[Dict[str, Any]],
     time_limit_sec: float = 3.0,
 ) -> Dict[str, Any]:
-    compiler = shutil.which("g++") or shutil.which("clang++")
+    compiler = _find_cpp_compiler()
     if not compiler:
         return _failure_result(
             "Compilation Error",
@@ -233,12 +267,29 @@ def run_cpp_code(
     exe_suffix = ".exe" if os.name == "nt" else ""
     bin_path = src_path.replace(".cpp", exe_suffix or ".out")
 
+    cmd = [compiler, "-std=c++20", "-O2"]
+    if os.name == "nt":
+        cmd.append("-static")
+    jsoncpp_src = _JSONCPP_DIR / "jsoncpp.cpp"
+    if _JSONCPP_DIR.exists():
+        cmd.extend(["-I", str(_JSONCPP_DIR)])
+    cmd.append(src_path)
+    if _uses_jsoncpp(code) and jsoncpp_src.exists():
+        cmd.append(str(jsoncpp_src))
+    cmd.extend(["-o", bin_path])
+
+    compile_env = os.environ.copy()
+    compiler_dir = str(Path(compiler).parent)
+    if compiler_dir not in compile_env.get("PATH", ""):
+        compile_env["PATH"] = compiler_dir + os.pathsep + compile_env.get("PATH", "")
+
     try:
         compile_proc = subprocess.run(
-            [compiler, "-std=c++20", "-O2", src_path, "-o", bin_path],
+            cmd,
+            env=compile_env,
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=25 if _uses_jsoncpp(code) else 10,
         )
         if compile_proc.returncode != 0:
             for p in (src_path, bin_path):
@@ -262,6 +313,7 @@ def run_cpp_code(
         time_limit_sec=time_limit_sec,
         base_memory_mb=8.2,
         cleanup_paths=[src_path, bin_path],
+        env=compile_env,
     )
 
 
@@ -270,7 +322,7 @@ def get_runtime_capabilities() -> Dict[str, bool]:
         "python": True,
         "javascript": shutil.which("node") is not None,
         "typescript": shutil.which("node") is not None,
-        "cpp": (shutil.which("g++") or shutil.which("clang++")) is not None,
+        "cpp": _find_cpp_compiler() is not None,
     }
 
 

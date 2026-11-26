@@ -1,6 +1,7 @@
 ### Coding Task Factory Wiki
 
 - [Home Overview](Home.md)
+- [Process Flow & Use-Case Diagrams](Process-Flow-and-Use-Case.md)
 - [System Architecture & ER Schema](Architecture.md)
 - [Challenge Bank & Execution Sandbox](Challenge-Bank-and-Execution.md)
 - [Zero-Trust Security, PDF & Social Credentials](Security-and-Credentials.md)

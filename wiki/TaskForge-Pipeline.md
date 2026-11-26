@@ -14,15 +14,15 @@ Built inside [`pipeline/`](../pipeline/) to generate clean, zero-leakage SWE-ben
 
 ```mermaid
 flowchart LR
-  Repo["Upstream Repo: pallets/click @ 934813e"] --> Spec["feature_definitions.py (5 Substantive Features)"]
-  Spec --> Builder["package_builder.py (Harbor 0.25 Synthesizer)"]
-  Builder --> Pkg["task_packages/ (instruction.md, task.toml, solution.patch, Dockerfiles)"]
+  Spec["Repo Specs / Image Params<br/>(pallets/click @ 934813e or Docker Env)"] --> Analyzer["repo_analyzer.py & feature_definitions.py"]
+  Analyzer --> Builder["package_builder.py (Harbor 0.25 Synthesizer)"]
+  Builder --> Pkg["task_packages/ (instruction.md, tests/, solution.patch, Dockerfile)"]
+  Pkg --> AI["Target AI Model Runner & Container Sandbox"]
   Pkg --> Linter["Harbor 0.25 Linter: 0 Errors, 0 Warnings"]
-  Pkg --> Val["validator.py: Validation Matrix"]
+  Pkg & AI --> Val["validator.py & mutation_tester.py"]
   Val --> Base["Baseline (nop) -> 0.0 Reward"]
-  Val --> Oracle["Oracle (oracle) -> 1.0 Reward"]
-  Pkg --> Mut["mutation_tester.py: Fault Injection"]
-  Mut --> Kill["10/10 Mutants Killed (100.0%)"]
+  Val --> Oracle["Oracle (oracle) -> 1.0 Reward + 100% Mutant Kill"]
+  Base & Oracle --> Out["Validated Results (validation_evidence/)"]
 ```
 
 ---

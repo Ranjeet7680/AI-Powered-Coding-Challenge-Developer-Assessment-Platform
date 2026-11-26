@@ -37,8 +37,9 @@ jobs:
           cd backend
           pip install -r requirements.txt pytest httpx httpx2
 
-      - name: Run Backend API, Sandbox & Certificate PDF Tests
+      - name: Run Backend API, Sandbox, JsonCpp C++ & Certificate PDF Tests
         run: |
+          g++ --version
           python -m pytest backend/tests/ -v
 
       - name: Verify Zero-Trust Security Suite

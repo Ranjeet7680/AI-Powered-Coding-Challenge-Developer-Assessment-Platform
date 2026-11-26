@@ -203,6 +203,48 @@ def test_multilang_code_execution(client: TestClient):
     assert cpp_res.status_code == 200
     assert cpp_res.json()["status"] in ("Accepted", "Compilation Error")
 
+    # Verify vendored open-source-parsers/jsoncpp headers & amalgamated source exist
+    from pathlib import Path
+    from app.services.code_runner import _find_cpp_compiler, _JSONCPP_DIR
+
+    assert (_JSONCPP_DIR / "json" / "json.h").exists()
+    assert (_JSONCPP_DIR / "json" / "json-forwards.h").exists()
+    assert (_JSONCPP_DIR / "jsoncpp.cpp").exists()
+
+    # If g++ / clang++ is available, compile and run real JsonCpp JSON parsing
+    if _find_cpp_compiler() is not None:
+        jsoncpp_code = """#include <iostream>
+#include <sstream>
+#include <string>
+#include <json/json.h>
+
+int main() {
+    std::string raw;
+    std::getline(std::cin, raw);
+    Json::CharReaderBuilder builder;
+    Json::Value root;
+    std::string errs;
+    std::istringstream iss(raw);
+    if (!Json::parseFromStream(builder, iss, &root, &errs)) {
+        std::cerr << errs << std::endl;
+        return 1;
+    }
+    std::cout << root["library"].asString() << ":" << (root["version"].asInt() + 1) << std::endl;
+    return 0;
+}
+"""
+        jcpp_res = client.post(
+            "/api/run-code",
+            headers=headers,
+            json={
+                "language": "cpp",
+                "code": jsoncpp_code,
+                "test_cases": [{"input": "{\"library\":\"jsoncpp\",\"version\":1}", "expected_output": "jsoncpp:2", "is_hidden": False}],
+            },
+        )
+        assert jcpp_res.status_code == 200, jcpp_res.text
+        assert jcpp_res.json()["status"] == "Accepted", jcpp_res.json()
+
 
 def test_challenges_submissions_analytics_and_assessments(client: TestClient):
     headers, _ = _register_and_headers(client, "bob@example.com")

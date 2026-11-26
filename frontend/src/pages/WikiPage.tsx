@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { PipelineDiagrams } from '../components/wiki/PipelineDiagrams';
 import {
   ArrowRight,
   Award,
@@ -19,10 +20,12 @@ import {
   ShieldCheck,
   Sparkles,
   Terminal,
+  Workflow,
 } from 'lucide-react';
 
 type WikiSectionId =
   | 'overview'
+  | 'process-flow'
   | 'architecture'
   | 'challenge-bank'
   | 'security-credentials'
@@ -43,6 +46,13 @@ const WIKI_NAV: WikiNavItem[] = [
     shortTitle: 'Overview & Map',
     subtitle: 'End-to-end architecture & dual-engine workflow',
     icon: BookOpen,
+  },
+  {
+    id: 'process-flow',
+    title: 'Process Flow, Use-Case & Architecture Diagrams',
+    shortTitle: 'Process Flow & UML',
+    subtitle: 'Repo specs/image params -> task packages -> target AI -> validated output',
+    icon: Workflow,
   },
   {
     id: 'architecture',
@@ -279,6 +289,42 @@ export const WikiPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
+
+                  <PipelineDiagrams defaultTab="process-flow" />
+                </div>
+              )}
+
+              {activeSection === 'process-flow' && (
+                <div className="space-y-6">
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    The synthesis and evaluation pipeline accepts{' '}
+                    <strong className="text-white">repository specifications</strong> (Git URL, commit SHA, language, test runner) or{' '}
+                    <strong className="text-white">container image parameters</strong> (Dockerfile base, resource caps, Python/Node/C++20 with{' '}
+                    <code className="text-cyan-300 font-mono">open-source-parsers/jsoncpp</code>), synthesizes Harbor 0.25 task packages with reference tests, executes target AI coding models in isolation, and emits validated results &amp; evidence artifacts.
+                  </p>
+
+                  <PipelineDiagrams defaultTab="process-flow" />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-indigo-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-indigo-300">1. INGESTION SPECS</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        Accepts <code className="font-mono text-cyan-300">pipeline/config.py</code> repository metadata or custom <code className="font-mono text-cyan-300">Dockerfile</code> image bounds.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-emerald-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-emerald-300">2. PACKAGE + AI EXECUTION</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        Builds <code className="font-mono text-emerald-300">instruction.md</code>, reference tests (<code className="font-mono">F2P/P2P</code>), and runs target AI models &amp; baseline/oracle suites.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-[#070B16] border border-amber-500/30 space-y-1.5">
+                      <p className="font-mono font-bold text-amber-300">3. VALIDATED OUTPUTS</p>
+                      <p className="text-slate-300 leading-relaxed">
+                        <code className="font-mono text-amber-300">validator.py</code> &amp; <code className="font-mono text-amber-300">mutation_tester.py</code> emit verified scorecards into <code className="font-mono">validation_evidence/</code>.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -358,7 +404,7 @@ export const WikiPage: React.FC = () => {
                   <div className="p-5 rounded-2xl bg-[#070B16] border border-slate-800 space-y-2 text-xs">
                     <p className="font-bold text-white">Multi-Language Execution Sandbox Flow</p>
                     <p className="text-slate-400 leading-relaxed">
-                      Incoming code runs in isolated temporary directories via <code className="text-emerald-300 font-mono">code_runner.py</code>: Python invokes <code className="font-mono">sys.executable</code>, JavaScript executes Node <code className="font-mono">.mjs</code>, TypeScript utilizes Node <code className="font-mono">--experimental-strip-types</code>, and C++ compiles with <code className="font-mono">g++/clang++</code> and surfaces structured compilation diagnostics if missing.
+                      Incoming code runs in isolated temporary directories via <code className="text-emerald-300 font-mono">code_runner.py</code>: Python invokes <code className="font-mono">sys.executable</code>, JavaScript executes Node <code className="font-mono">.mjs</code>, TypeScript utilizes Node <code className="font-mono">--experimental-strip-types</code>, and C++20 compiles with <code className="font-mono">g++/clang++</code> bundled with amalgamated <code className="text-cyan-300 font-mono">open-source-parsers/jsoncpp</code> (<code className="font-mono">#include &lt;json/json.h&gt;</code>).
                     </p>
                   </div>
                 </div>
