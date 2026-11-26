@@ -20,15 +20,23 @@ router = APIRouter(prefix="/api/videos", tags=["Video Lessons"])
 
 _YT_EMBED_RE = re.compile(r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})")
 
+# Heals historical Postgres VideoLesson seed IDs that became unavailable on YouTube
+_BROKEN_VIDEO_REPLACEMENTS = {
+    "wjZofJX0v4U": "eMlx5fFNoYc",
+    "7V35oxV9_j0": "7ABFKPK2hD4",
+    "iuqZvajTO4A": "bUHFg8CZFws",
+}
+
 
 def _ensure_locked_embed_url(url: str) -> str:
     if not url:
         return url
-    if "youtube-nocookie.com/embed/" in url and "rel=0" in url:
-        return url
     match = _YT_EMBED_RE.search(url)
     if match:
-        return build_locked_lms_embed_url(match.group(1))
+        vid = _BROKEN_VIDEO_REPLACEMENTS.get(match.group(1), match.group(1))
+        if "youtube-nocookie.com/embed/" in url and "rel=0" in url and vid == match.group(1):
+            return url
+        return build_locked_lms_embed_url(vid)
     return url
 
 
@@ -101,7 +109,7 @@ class DenseLayer:
         "title": "Transformer Self-Attention Mechanism Visualized & Coded",
         "slug": "transformer-self-attention-visualized",
         "description": "Step-by-step breakdown of the core engine behind modern LLMs (GPT, Gemini, Claude). Understand Queries (Q), Keys (K), and Values (V), dot-product similarity, scaling by sqrt(d_k), causal masking, and parallel head computation.",
-        "video_url": build_locked_lms_embed_url("wjZofJX0v4U"),  # Transformer Attention Visualized
+        "video_url": build_locked_lms_embed_url("eMlx5fFNoYc"),  # 3Blue1Brown Attention in Transformers (embed-verified)
         "thumbnail_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
         "duration_minutes": 18,
         "category": "Machine Learning",
@@ -138,7 +146,7 @@ def scaled_dot_product_attention(Q, K, V, mask=None):
         "title": "LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps",
         "slug": "lru-cache-deep-dive-doubly-linked-list",
         "description": "Comprehensive visual breakdown of the Least Recently Used (LRU) Cache pattern. We analyze naive array solutions, explore why O(1) eviction demands a doubly linked list, and implement a production-ready solution in Python and TypeScript.",
-        "video_url": build_locked_lms_embed_url("7V35oxV9_j0"),  # NeetCode LRU Cache
+        "video_url": build_locked_lms_embed_url("7ABFKPK2hD4"),  # NeetCode LRU Cache (embed-verified)
         "thumbnail_url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
         "duration_minutes": 15,
         "category": "Data Structures",
@@ -234,7 +242,7 @@ def assign_clusters(X, centroids):
         "title": "System Design: Building a High-Throughput Distributed Cache",
         "slug": "system-design-distributed-cache",
         "description": "Staff engineer breakdown of scaling in-memory cache architecture (Redis, Memcached). Covers consistent hashing, replication, cache-aside vs write-through strategies, handling thundering herds, and cache penetration defenses.",
-        "video_url": build_locked_lms_embed_url("iuqZvajTO4A"),  # System Design Cache
+        "video_url": build_locked_lms_embed_url("bUHFg8CZFws"),  # System Design Caching & Architecture (embed-verified)
         "thumbnail_url": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=80",
         "duration_minutes": 24,
         "category": "System Design",

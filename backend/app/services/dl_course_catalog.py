@@ -2,7 +2,7 @@
 [Stanford X Coding Task Factory Academy] Deep Learning Course Catalog
 21 Lectures, Structured Markdown Study Notes, Equations, Python Snippets,
 21 After-Video Quizzes (20+ Mastery Quiz Bank), and 20-Question Proctored Final Exam.
-Built from verified playlist PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU.
+Built from embeddable official Stanford playlist PLA89DCFA6ADACE599 + CS230 PySo_6S4ZAg.
 """
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
@@ -16,11 +16,11 @@ from .course_catalog_shared import (
 )
 
 
-DL_PLAYLIST_ID = "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU"
+DL_PLAYLIST_ID = "PLA89DCFA6ADACE599"
 DL_PLAYLIST_URL = f"https://www.youtube.com/playlist?list={DL_PLAYLIST_ID}"
 DL_COURSE_ID = "course-stanford-ctf-dl-21"
 DL_COURSE_TITLE = "[Stanford X Coding Task Factory Academy] Deep Learning"
-DL_INSTRUCTOR = "Stanford CS229 (Andrew Ng) • Coding Task Factory Academy"
+DL_INSTRUCTOR = "Stanford CS229 & CS230 (Andrew Ng) • Coding Task Factory Academy"
 DL_THUMBNAIL_URL = "/thumbnails/stanford-ctf-dl-thumbnail.svg"
 
 DL_MODULES: List[Dict[str, Any]] = [

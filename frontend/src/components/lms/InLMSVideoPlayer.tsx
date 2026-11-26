@@ -59,7 +59,9 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
   }, [isPlaying, onVideoEnded]);
 
   const joiner = lesson.video_url.includes('?') ? '&' : '?';
-  const embedSrc = `${lesson.video_url}${joiner}autoplay=1&enablejsapi=1`;
+  const originParam =
+    typeof window !== 'undefined' ? `&origin=${encodeURIComponent(window.location.origin)}` : '';
+  const embedSrc = `${lesson.video_url}${joiner}autoplay=1&enablejsapi=1${originParam}`;
   const badgeText =
     seriesBadge ||
     `${badgeVariant === 'episode' ? 'Episode' : 'Lecture'} #${lesson.order} · ${lesson.duration_label}`;
@@ -145,7 +147,7 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
             title={lesson.title}
             className="w-full h-full"
             referrerPolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
           />
           {/* Corner lock pill masking YouTube top-right copy/share overlay during active playback */}

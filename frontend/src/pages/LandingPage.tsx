@@ -851,7 +851,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'Transformer Self-Attention Mechanism Visualized & Coded',
-                      video_url: 'https://www.youtube.com/embed/wjZofJX0v4U',
+                      video_url: 'https://www.youtube-nocookie.com/embed/eMlx5fFNoYc?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Elena Rostova (AI Lead)',
                       category: 'Machine Learning',
                       duration: '18 min',
@@ -899,7 +899,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'Transformer Self-Attention Mechanism Visualized & Coded',
-                      video_url: 'https://www.youtube.com/embed/wjZofJX0v4U',
+                      video_url: 'https://www.youtube-nocookie.com/embed/eMlx5fFNoYc?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Elena Rostova (AI Lead)',
                       category: 'Machine Learning',
                       duration: '18 min',
@@ -928,7 +928,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'Building a Neural Network from Scratch in Python',
-                      video_url: 'https://www.youtube.com/embed/aircAruvnKk',
+                      video_url: 'https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Dr. Andrew Karpathy',
                       category: 'Machine Learning',
                       duration: '22 min',
@@ -976,7 +976,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'Building a Neural Network from Scratch in Python',
-                      video_url: 'https://www.youtube.com/embed/aircAruvnKk',
+                      video_url: 'https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Dr. Andrew Karpathy',
                       category: 'Machine Learning',
                       duration: '22 min',
@@ -1005,7 +1005,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps',
-                      video_url: 'https://www.youtube.com/embed/7V35oxV9_j0',
+                      video_url: 'https://www.youtube-nocookie.com/embed/7ABFKPK2hD4?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Marcus Vance',
                       category: 'Data Structures',
                       duration: '15 min',
@@ -1053,7 +1053,7 @@ public:
                   onClick={() =>
                     setPreviewVideo({
                       title: 'LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps',
-                      video_url: 'https://www.youtube.com/embed/7V35oxV9_j0',
+                      video_url: 'https://www.youtube-nocookie.com/embed/7ABFKPK2hD4?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
                       instructor: 'Marcus Vance',
                       category: 'Data Structures',
                       duration: '15 min',

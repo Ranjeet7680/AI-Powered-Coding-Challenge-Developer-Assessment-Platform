@@ -281,14 +281,15 @@ def test_stanford_ctf_dl_course_21_videos_20_quizzes_and_proctored_exam(ml_clien
     overview = overview_resp.json()
 
     assert overview["title"] == DL_COURSE_TITLE
-    assert overview["playlist_id"] == "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU"
+    assert overview["playlist_id"] == "PLA89DCFA6ADACE599"
     assert overview["thumbnail_url"] == "/thumbnails/stanford-ctf-dl-thumbnail.svg"
     assert overview["total_lessons"] == 21
     assert overview["total_quizzes"] == 21
     assert len(overview["modules"]) == 4
     assert len(overview["lessons"]) == 21
-    assert overview["lessons"][0]["video_id"] == "jGwO_UgTS7I"
-    assert overview["lessons"][-1]["video_id"] == "pLhPQynL0tY"
+    assert overview["lessons"][0]["video_id"] == "UzxYlbK2c7E"
+    assert overview["lessons"][-1]["video_id"] == "yCqPMD6coO8"
+    assert overview["lessons"][10]["video_id"] == "PySo_6S4ZAg"
 
     # Completion + personal notes + per-video comprehension quiz
     comp = ml_client.post("/api/dl-course/lessons/dl-001/complete", headers=headers)
@@ -385,7 +386,7 @@ def test_lms_in_lms_player_advanced_syllabus_capstones_and_reviews(ml_client: Te
     # 1. Verify privacy-enhanced In-LMS playback URLs & rich syllabus metadata
     dl_data = ml_client.get("/api/dl-course", headers=headers).json()
     assert dl_data["lms_player_mode"] == "locked_in_lms"
-    assert "youtube-nocookie.com/embed/jGwO_UgTS7I" in dl_data["lessons"][0]["video_url"]
+    assert "youtube-nocookie.com/embed/UzxYlbK2c7E" in dl_data["lessons"][0]["video_url"]
     assert "modestbranding=1" in dl_data["lessons"][0]["video_url"]
     assert len(dl_data["modules"][0]["learning_objectives"]) >= 2
     assert len(dl_data["modules"][0]["key_topics"]) >= 2
@@ -557,9 +558,11 @@ def test_eight_video_playlists_watch_context_and_platform_embeds(ml_client: Test
     assert all_resp.status_code == 200, all_resp.text
     all_videos = all_resp.json()
     assert len(all_videos) >= 596
+    blocked_or_dead = {"jGwO_UgTS7I", "pLhPQynL0tY", "wjZofJX0v4U", "7V35oxV9_j0", "iuqZvajTO4A"}
     for v in all_videos:
         assert v["video_url"].startswith("https://www.youtube-nocookie.com/embed/")
         assert "youtube.com/watch" not in v["video_url"]
+        assert not any(bad in v["video_url"] for bad in blocked_or_dead)
 
     emb_resp = ml_client.get("/api/videos?playlist_id=PLUQpHm_JtukII_8U9pucV61MX2YE2CSUt")
     assert emb_resp.status_code == 200, emb_resp.text
