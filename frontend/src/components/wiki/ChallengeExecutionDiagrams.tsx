@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Code2, Cpu, GitMerge, MessageSquareCode } from 'lucide-react';
+import { Code2, Cpu, GitMerge, Layers, MessageSquareCode } from 'lucide-react';
 
-type ChallengeDiagramTab = 'execution' | 'synthesis' | 'sequence';
+type ChallengeDiagramTab = 'solution-arch' | 'execution' | 'synthesis' | 'sequence';
 
 export const ChallengeExecutionDiagrams: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<ChallengeDiagramTab>('execution');
+  const [activeTab, setActiveTab] = useState<ChallengeDiagramTab>('solution-arch');
 
   return (
     <div className="rounded-2xl border border-indigo-500/30 bg-[#070B16] overflow-hidden shadow-xl">
@@ -12,18 +12,19 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
         <div className="space-y-0.5">
           <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold">
             <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-            Challenge Bank (368+) &amp; Sandbox Diagrams (3 Views)
+            Proposed Solution — 3 Architecture Diagrams &amp; Sequence
           </div>
           <p className="text-xs text-slate-400">
-            Execution sandbox with C++20 JsonCpp, 368+ challenge synthesis pipeline, and IDE Copilot sequence.
+            Dual CLI/Web control plane, C++20 JsonCpp execution sandbox, 368+ challenge synthesis &amp; IDE Copilot sequence.
           </p>
         </div>
 
         <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
           {[
-            { id: 'execution' as const, label: '1. Sandbox & JsonCpp', icon: Cpu },
-            { id: 'synthesis' as const, label: '2. 368+ Synthesis', icon: GitMerge },
-            { id: 'sequence' as const, label: '3. IDE & Copilot Seq', icon: MessageSquareCode },
+            { id: 'solution-arch' as const, label: 'Arch 1: Solution', icon: Layers },
+            { id: 'execution' as const, label: 'Arch 2: Sandbox & JsonCpp', icon: Cpu },
+            { id: 'synthesis' as const, label: 'Arch 3: 368+ Synthesis', icon: GitMerge },
+            { id: 'sequence' as const, label: 'IDE Sequence', icon: MessageSquareCode },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -47,8 +48,59 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
       </div>
 
       <div className="p-4 sm:p-5 overflow-x-auto custom-scrollbar">
+        {activeTab === 'solution-arch' && (
+          <svg viewBox="0 0 960 440" className="w-full min-w-[660px] h-auto" role="img" aria-label="Architecture Diagram 1: Proposed Solution Full-Stack Architecture">
+            <defs>
+              <marker id="sol1-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+              </marker>
+            </defs>
+
+            <rect x="20" y="16" width="920" height="84" rx="14" fill="#0b1124" stroke="#6366f1" strokeWidth="1.5" />
+            <text x="36" y="36" fill="#a5b4fc" fontSize="10" fontWeight="700" fontFamily="monospace">LAYER 1 · LIGHTWEIGHT CLI &amp; WEB DASHBOARD UI</text>
+            <rect x="36" y="46" width="430" height="44" rx="8" fill="#131b36" stroke="#818cf8" strokeWidth="1" />
+            <text x="50" y="65" fill="#ffffff" fontSize="12" fontWeight="700">CLI (run_factory.py · validate_tasks.py · run_mutation_testing.py)</text>
+            <text x="50" y="81" fill="#a5b4fc" fontSize="10">Trigger pipelines, inspect package trees, view pass/fail matrices</text>
+            <rect x="494" y="46" width="430" height="44" rx="8" fill="#0c1f33" stroke="#22d3ee" strokeWidth="1" />
+            <text x="508" y="65" fill="#ffffff" fontSize="12" fontWeight="700">Web Dashboard &amp; Monaco IDE (React 19 + TS)</text>
+            <text x="508" y="81" fill="#67e8f9" fontSize="10">Challenge Bank, AI Task Generator, LMS &amp; Evaluation Report Viewer</text>
+
+            <path d="M 250 100 L 250 122" stroke="#38bdf8" strokeWidth="1.8" markerEnd="url(#sol1-arr)" />
+            <path d="M 710 100 L 710 122" stroke="#38bdf8" strokeWidth="1.8" markerEnd="url(#sol1-arr)" />
+
+            <rect x="20" y="126" width="920" height="82" rx="14" fill="#11162b" stroke="#8b5cf6" strokeWidth="1.5" />
+            <text x="36" y="146" fill="#c4b5fd" fontSize="10" fontWeight="700" fontFamily="monospace">LAYER 2 · FASTAPI CONTROL PLANE &amp; PIPELINE ORCHESTRATOR</text>
+            <rect x="36" y="156" width="430" height="42" rx="8" fill="#1e1b4b" stroke="#a78bfa" strokeWidth="1" />
+            <text x="50" y="175" fill="#ffffff" fontSize="12" fontWeight="700">FastAPI Zero-Trust API (/api/challenges · /run-code · /submit)</text>
+            <text x="50" y="190" fill="#cbd5e1" fontSize="10">PBKDF2-HMAC-SHA256 Auth · HS256 JWT · Capability Probe</text>
+            <rect x="494" y="156" width="430" height="42" rx="8" fill="#172554" stroke="#38bdf8" strokeWidth="1" />
+            <text x="508" y="175" fill="#ffffff" fontSize="12" fontWeight="700">TaskForge Orchestrator (pipeline/orchestrator.py)</text>
+            <text x="508" y="190" fill="#cbd5e1" fontSize="10">Repo Specs / Docker Image Params → Harbor 0.25 Packages</text>
+
+            <path d="M 480 208 L 480 230" stroke="#38bdf8" strokeWidth="1.8" markerEnd="url(#sol1-arr)" />
+
+            <rect x="20" y="234" width="920" height="92" rx="14" fill="#091d1c" stroke="#10b981" strokeWidth="1.5" />
+            <text x="36" y="254" fill="#6ee7b7" fontSize="10" fontWeight="700" fontFamily="monospace">LAYER 3 · CHALLENGE SYNTHESIS &amp; MULTI-LANGUAGE SANDBOX</text>
+            <rect x="36" y="264" width="430" height="50" rx="8" fill="#052e16" stroke="#34d399" strokeWidth="1" />
+            <text x="50" y="284" fill="#ffffff" fontSize="12" fontWeight="700">368+ Challenge Bank &amp; Reference Solver Gate</text>
+            <text x="50" y="301" fill="#d1fae5" fontSize="10">challenge_bank.py (10 domains) + Gemini/AST Generator</text>
+            <rect x="494" y="264" width="430" height="50" rx="8" fill="#052e16" stroke="#34d399" strokeWidth="1" />
+            <text x="508" y="284" fill="#ffffff" fontSize="12" fontWeight="700">Isolated Execution Sandbox (code_runner.py + Docker)</text>
+            <text x="508" y="301" fill="#67e8f9" fontSize="10">Python 3.11 · Node JS/TS · C++20 + open-source-parsers/jsoncpp</text>
+
+            <path d="M 480 326 L 480 348" stroke="#38bdf8" strokeWidth="1.8" markerEnd="url(#sol1-arr)" />
+
+            <rect x="20" y="352" width="920" height="74" rx="14" fill="#181308" stroke="#f59e0b" strokeWidth="1.5" />
+            <text x="36" y="372" fill="#fcd34d" fontSize="10" fontWeight="700" fontFamily="monospace">LAYER 4 · VALIDATION EVIDENCE, AI REVIEW &amp; PERSISTENCE</text>
+            <rect x="36" y="382" width="888" height="34" rx="8" fill="#271d0b" stroke="#fbbf24" strokeWidth="1" />
+            <text x="52" y="403" fill="#fef3c7" fontSize="11.5" fontWeight="600">
+              validator.py + mutation_tester.py + Gemini AI Copilot → SQLite Submissions · validation_evidence/ · ReportLab Vector PDFs
+            </text>
+          </svg>
+        )}
+
         {activeTab === 'execution' && (
-          <svg viewBox="0 0 960 400" className="w-full min-w-[660px] h-auto" role="img" aria-label="Multi-Language Execution Sandbox and C++20 JsonCpp Flow">
+          <svg viewBox="0 0 960 400" className="w-full min-w-[660px] h-auto" role="img" aria-label="Architecture Diagram 2: Multi-Language Execution Sandbox and C++20 JsonCpp Flow">
             <defs>
               <marker id="cb-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                 <path d="M 0 1 L 10 5 L 0 9 z" fill="#818cf8" />
@@ -101,7 +153,7 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
         )}
 
         {activeTab === 'synthesis' && (
-          <svg viewBox="0 0 960 360" className="w-full min-w-[660px] h-auto" role="img" aria-label="368+ Challenge Bank Synthesis and AI Challenge Pipeline">
+          <svg viewBox="0 0 960 360" className="w-full min-w-[660px] h-auto" role="img" aria-label="Architecture Diagram 3: 368+ Challenge Bank Synthesis and AI Challenge Pipeline">
             <defs>
               <marker id="syn-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                 <path d="M 0 1 L 10 5 L 0 9 z" fill="#22d3ee" />
@@ -170,7 +222,6 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
               </g>
             ))}
 
-            {/* Sequence Messages */}
             <line x1="115" y1="95" x2="342" y2="95" stroke="#38bdf8" strokeWidth="1.8" markerEnd="url(#seq-arr)" />
             <text x="228" y="88" textAnchor="middle" fill="#e2e8f0" fontSize="11" fontFamily="monospace">1. POST /api/run-code (code, lang)</text>
 
