@@ -16,4 +16,4 @@
 - [Project README](../README.md)
 - [Technical Explanation](../docs/TECHNICAL_EXPLANATION.md)
 - [Walkthrough Demo Script](../docs/WALKTHROUGH_DEMO.md)
-- [Backend Test Suite](../backend/tests/test_api.py)
+- [Backend Test Suite](../backend/tests)

@@ -52,8 +52,8 @@ flowchart TD
   Schema --> Base["Gate 2: Baseline Trial (nop)<br/>Clean pallets/click @ 934813e"]
   Schema --> Oracle["Gate 3: Oracle Trial (solve.sh)<br/>Apply Reference Solution Patch"]
 
-  Base -->|"F2P MUST FAIL = 0.0<br/>Upstream P2P = 0 Regressions"| BaseOK["Baseline Verified ✓"]
-  Oracle -->|"F2P MUST PASS = 1.0<br/>Upstream P2P = 0 Regressions"| OracleOK["Oracle Verified ✓"]
+  Base -->|"F2P MUST FAIL = 0.0<br/>Upstream P2P = 0 Regressions"| BaseOK["Baseline Verified"]
+  Oracle -->|"F2P MUST PASS = 1.0<br/>Upstream P2P = 0 Regressions"| OracleOK["Oracle Verified"]
 
   BaseOK & OracleOK --> Mutants["Gate 4: Mutation Sweep (run_mutation_testing.py)<br/>Inject MUT-1.1 .. MUT-5.2 Faults"]
   Mutants --> KillCheck{"Every Mutant Caught by<br/>tests/test_outputs.py?"}

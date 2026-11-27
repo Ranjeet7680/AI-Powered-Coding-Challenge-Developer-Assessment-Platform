@@ -10,14 +10,15 @@
 
 ## Full-Stack System Topology
 
-The web platform separates a **code-split React 19 SPA** from a **stateless JWT-authenticated FastAPI backend**, backed by SQLAlchemy + SQLite with idempotent runtime column migrations (`ensure_schema_migrations`).
+The web platform separates a **code-split React 19 Graphite Workbench SPA** from a **stateless JWT-authenticated FastAPI backend**, backed by SQLAlchemy + SQLite with idempotent runtime column migrations (`ensure_schema_migrations`).
 
 ```mermaid
 flowchart TB
   subgraph Client["Frontend Layer (React 19 + TypeScript + Vite)"]
-    Router["React Router v7 Lazy Routes"]
+    Router["React Router v7 Lazy Routes (22 Views)"]
+    Landing["LandingPage + CodeGlyphField Canvas"]
     IDE["WorkspacePage & Monaco Editor"]
-    Library["ChallengesPage (Pagination + Filters)"]
+    Academies["ML (106) & DL (21) LMS + Video Theater + MediaPipe Proctor"]
     CertsUI["CertificatesPage & Share Studio"]
     VerifyUI["Public VerifyCertificatePage (/verify/:id)"]
     Search["GlobalSearchModal (Ctrl+K)"]
@@ -29,13 +30,15 @@ flowchart TB
     ChalR["challenges.py (Stats & Paginated Bank)"]
     ExecR["execution.py (Run, Submit, AI Copilot)"]
     GenR["ai_generator.py (Gemini & Fallbacks)"]
-    AssessR["assessments.py & analytics.py"]
+    CourseR["ml_course.py & videos.py (LMS, Proctor, Playlists)"]
+    AssessR["assessments.py, analytics.py & submissions.py"]
     CertR["Public /verify & /pdf Endpoints"]
   end
 
   subgraph Services["Core Engines (backend/app/services/)"]
-    Runner["code_runner.py (PY, JS, TS, CPP Subprocess)"]
+    Runner["code_runner.py (PY, JS, TS, CPP20 JsonCpp)"]
     Bank["challenge_bank.py (360 Synthesized Tasks)"]
+    Catalog["ml_course_catalog.py · dl_course_catalog.py · video_library.py"]
     Gemini["gemini_service.py (LLM + Procedural AST Fallback)"]
     PDF["pdf_certificate.py (ReportLab Landscape A4 Vector PDF)"]
   end
@@ -44,19 +47,31 @@ flowchart TB
     DB["SQLite / SQLAlchemy (models.py + database.py)"]
   end
 
-  Router --> IDE & Library & CertsUI & VerifyUI & Search
+  Router --> Landing & IDE & Academies & CertsUI & VerifyUI & Search
   CertsUI --> CanvasPNG
   IDE --> ExecR
-  Library --> ChalR
+  Academies --> CourseR
   CertsUI --> AssessR & CertR
   VerifyUI --> CertR
 
-  AuthR & ChalR & AssessR & CertR --> DB
+  AuthR & ChalR & AssessR & CourseR & CertR --> DB
   ExecR --> Runner & Gemini & DB
   GenR --> Gemini
   ChalR --> Bank
+  CourseR --> Catalog
   CertR --> PDF
 ```
+
+---
+
+## Frontend UI System (Graphite & Signal Amber Workbench)
+
+All 22 frontend pages and shared layout shells follow a unified architectural specification:
+
+- **Surface Hierarchy (`frontend/src/index.css`)**: Deepest rail `#0f0f10`, Canvas `#141415`, Card `#19191b`, Raised `#222225`, separated by `1px` low-contrast hairlines (`rgba(237, 237, 237, 0.08)`) with zero ambient glow blurs.
+- **Typography & Tabular Discipline (`frontend/index.html`)**: `IBM Plex Sans` (weights `400`, `500`, `600`) paired with `IBM Plex Mono` (`400`, `500`) and `.tabular-nums` on every metric, countdown, rank, and table cell.
+- **Accent & Semantics**: Monochrome primary action surface (`#ededed` text on `#141415` or inverse dark button), single **Signal Amber (`#e5a00d`)** focal accent for primary chart trajectories and active markers, `#4cc38a` positive, and `#e5484d` error/negative.
+- **Pure-Code Visuals**: Interactive `CodeGlyphField.tsx` ASCII glyph backdrop and live interactive `lru_cache` code preview (`LandingPage.tsx`), flat drafted `< / >` vector mark (`BrandLogo.tsx`, `favicon.svg`, `logo.svg`, `og-card.svg`), and Graphite-themed Recharts & SVG curriculum thumbnails (`ml-ctf-course-thumbnail.svg`, `stanford-ctf-dl-thumbnail.svg`).
 
 ---
 
@@ -174,7 +189,7 @@ flowchart LR
   end
 
   subgraph CI["2. GitHub Actions CI & Live Wiki"]
-    GHA[".github/workflows/ci.yml<br/>g++ Check · pytest (15/15) · vite build"]
+    GHA[".github/workflows/ci.yml<br/>oxlint · tsc · pytest (15/15) · vite build"]
     WIKI[".wiki.git Mirror<br/>Live GitHub Wiki Pages + SVG Assets"]
   end
 

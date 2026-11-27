@@ -69,7 +69,7 @@ sequenceDiagram
   and Social Post Studio
     Dev->>App: Open Share & Post Studio Tab
     App-->>Dev: Editable Post Templates (LinkedIn, Instagram, Facebook, WhatsApp)
-    App-->>Dev: HTML5 Canvas PNG Cards (1080x1080 IG Square / 1200x630 Landscape)
+    App-->>Dev: Graphite HTML5 Canvas PNG Cards (1080x1080 IG Square / 1200x630 Landscape)
   end
 ```
 

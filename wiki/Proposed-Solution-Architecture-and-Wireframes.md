@@ -118,7 +118,7 @@ A **lightweight command-line interface** and an **interactive Web Dashboard** ex
 +---------------------------------------------------------------------------------------+
 | TAB 2: INSPECT TASK PACKAGES                                                          |
 | +-------------------------+ +-------------------------------------------------------+ |
-| | click-feature-command.. | | File: tests/test_outputs.py      [Schema Validated ✓] | |
+| | click-feature-command.. | | File: tests/test_outputs.py      [Schema Validated OK] | |
 | | > instruction.md        | | def test_command_alias_dispatch():                    | |
 | | > task.toml             | |     @click.group() ... assert res.exit_code == 0      | |
 | | > environment/Dockerfile| | ----------------------------------------------------- | |
