@@ -2,36 +2,36 @@
   <img src="../docs/assets/wiki-header.svg" alt="ML and DL Academy LMS Wiki Banner" width="100%" />
 </div>
 
-# Machine Learning (106) & Stanford DL (21) LMS + AI Proctoring Architecture
+# 5 LMS Academies (230 Lectures), Course Thumbnail Share & AI Proctoring Architecture
 
 [← Back to Wiki Home](Home.md) · [Proposed Solution Arch & Wireframes →](Proposed-Solution-Architecture-and-Wireframes.md)
 
 ---
 
-## 3 Big ML & AI Proctoring Architecture Diagrams
+## Architecture Overview & 5-Track Ecosystem
 
 <div align="center">
-  <img src="../docs/assets/ml-lms-big-diagrams.svg" alt="3 Big Diagrams for ML LMS, AI Camera Proctoring, and Curriculum Telemetry Architecture" width="100%" />
+  <img src="../docs/assets/ml-lms-big-diagrams.svg" alt="3 Big Diagrams for LMS Academies, AI Camera Proctoring, and Curriculum Telemetry Architecture" width="100%" />
 </div>
 
 ---
 
-### Big Diagram 1: End-to-End 9-Stage ML & Deep Learning LMS Progression
+### Big Diagram 1: End-to-End 9-Stage Multi-Track LMS Progression & Course Thumbnail Sharing
 
-Documents the complete page-by-page learning lifecycle across [`LMSHubPage.tsx`](../frontend/src/pages/LMSHubPage.tsx), [`CourseDetailPage.tsx`](../frontend/src/pages/CourseDetailPage.tsx), [`MLCoursePage.tsx`](../frontend/src/pages/MLCoursePage.tsx), [`CourseEndToEndPanels.tsx`](../frontend/src/components/lms/CourseEndToEndPanels.tsx), and [`CourseAdvancedPanels.tsx`](../frontend/src/components/lms/CourseAdvancedPanels.tsx).
+Documents the shared page-by-page classroom lifecycle powered by [`courseTracks.ts`](../frontend/src/constants/courseTracks.ts), [`LMSHubPage.tsx`](../frontend/src/pages/LMSHubPage.tsx), [`CourseDetailPage.tsx`](../frontend/src/pages/CourseDetailPage.tsx), [`MLCoursePage.tsx`](../frontend/src/pages/MLCoursePage.tsx), [`CourseShareButton.tsx`](../frontend/src/components/lms/CourseShareButton.tsx), [`CourseEndToEndPanels.tsx`](../frontend/src/components/lms/CourseEndToEndPanels.tsx), and [`CourseAdvancedPanels.tsx`](../frontend/src/components/lms/CourseAdvancedPanels.tsx).
 
 ```mermaid
 flowchart LR
-  S1["01 · LMS Courses Hub<br/>(/app/lms · ML & DL Tracks)"] --> S2["02 · Course Detail & Syllabus<br/>(/app/course/ml or /app/course/dl)"]
+  S1["01 · LMS Courses Hub<br/>(/app/lms · 5 Active Tracks)"] --> S2["02 · Course Detail & Syllabus<br/>(/app/lms/:track · Share w/ Thumbnail)"]
   S2 --> S3["03 · Lecture Theater<br/>(Step 1: Watch In-LMS Video<br/>Step 2: Notes & Code · +15 XP)"]
-  S3 --> S4["04 · Practice Quiz Bank<br/>(Step 3: 100+ ML / 20+ DL MCQs)"]
-  S4 --> S5["05 · Capstone Project Lab<br/>(Hands-on Model & Code Grading)"]
-  S5 --> S6["06 · Proctored Final Exam<br/>(35 Timed Qs · AI Camera Guard)"]
+  S3 --> S4["04 · Practice Quiz Bank<br/>(230+ Curriculum MCQs)"]
+  S4 --> S5["05 · Capstone Project Lab<br/>(Rubric-Graded Modeling & Code)"]
+  S5 --> S6["06 · Proctored Final Exam<br/>(14–35 Timed Qs · AI Camera Guard)"]
   S6 --> S7["07 · Feedback Survey<br/>(5-Star Rating & Review)"]
   S7 --> S8["08 · Verified PDF Certificate<br/>(ReportLab A4 · SHA-256 · QR + Social)"]
   S8 --> S9["09 · Goodies Form & Done!<br/>(Swag Claim & Completion Milestone)"]
 
-  S3 -. "Next Lecture / Next Quiz" .-> S4
+  S2 -. "CourseShareButton (PNG + OG /share/course/:track)" .-> Share["1280×720 Thumbnail Export<br/>LinkedIn / WhatsApp / X"]
 ```
 
 ---
@@ -60,44 +60,42 @@ flowchart TB
 
 ---
 
-### Big Diagram 3: Applied ML (106 Lectures) & Stanford DL (21) Curriculum & Backend Telemetry Architecture
+### Big Diagram 3: 5-Academy Curriculum (`230` Lectures), Shared Catalog Engine & FastAPI Telemetry Architecture
 
-Documents the 7 ML modules, 4 Stanford DL CS229 modules, Video Masterclasses theater, and the FastAPI / SQLite backend API (`api.courseLms('ml' | 'dl')`).
+Documents the 5 structured certification tracks, Video Masterclasses theater, and the parameterized FastAPI / SQLite backend (`api.courseLms('ml' | 'dl' | 'ds' | 'biz' | 'agentic')` + `/api/share/course/{track}`).
 
 ```mermaid
 flowchart TB
-  subgraph MLTrack["Applied Machine Learning LMS (106 Lectures · 7 Modules)"]
-    M1["M1 (1–8): ML Fundamentals & Metrics"]
-    M2["M2 (9–29): Linear & Logistic Regression"]
-    M3["M3 (30–43): PCA, Clustering & Dim Reduction"]
-    M4["M4 (44–54): Naive Bayes, Trees & Ensembles"]
-    M5["M5 (55–75): Gradient Optimization & Boosting"]
-    M6["M6 (76–90): Neural Networks & CNNs"]
-    M7["M7 (91–106): Transformers, PyTorch & RL"]
+  subgraph Tracks["5 Certified Academy LMS Tracks (230 Lectures Total)"]
+    ML["Machine Learning Mastery<br/>106 Lectures · 7 Modules"]
+    DL["Stanford × CTF Deep Learning<br/>21 Lectures · 4 Modules"]
+    DS["Python Data Science & Big Data<br/>14 Lectures · 3 Modules"]
+    BIZ["IIT Madras × CTF Business Fundamentals<br/>66 Lectures · 6 Modules"]
+    AG["Agentic AI & MCP Engineering<br/>23 Lectures · 4 Modules"]
   end
 
-  subgraph DLTrack["Stanford × CTF Deep Learning (21 Lectures) & Video Hub"]
-    DL1["CS229 Regression, GDA & Naive Bayes"]
-    DL2["Margins, Kernels & Learning Theory"]
-    DL3["Neural Nets, Backprop & Deep Learning"]
-    DL4["Reinforcement Learning & MDPs"]
-    VH["Video Masterclasses Hub (8 Playlists)<br/>InLMSVideoPlayer + Native Platform Share"]
+  subgraph Share["Thumbnail & Social Sharing"]
+    OG["/share/course/:track -> /api/share/course/:track<br/>OG/Twitter Meta Preview + 1280×720 SVG/PNG"]
   end
 
-  subgraph API["FastAPI LMS Telemetry & Credential Engine"]
-    LMSAPI["api.courseLms('ml' | 'dl')<br/>Progress · Quiz Answers · Capstone Grading<br/>Proctor Violation Logs · Reviews · Swag"]
-    DB["SQLite Persistence + ReportLab PDF<br/>SHA-256 Verification (/verify/:id) + Social PNG"]
+  subgraph API["FastAPI Parameterized LMS & Credential Engine"]
+    LMSAPI["course_catalog_shared.py + ml_course.py<br/>Progress · Quiz Banks · Capstones · Proctor Exam · Reviews · Swag"]
+    DB["SQLite Persistence + ReportLab Vector PDF<br/>SHA-256 Verification (/verify/:id)"]
   end
 
-  MLTrack & DLTrack --> LMSAPI --> DB
+  Tracks --> LMSAPI --> DB
+  Tracks --> OG
 ```
 
 ---
 
-## ML & DL Module Matrix
+## Complete Academy Module Matrix
 
 | Track | Modules | Lectures & Assessments | Proctoring & Output |
 | :--- | :---: | :--- | :--- |
-| **Applied ML Course LMS** | **7 Modules** | 106 lectures, 100+ quizzes, 3 capstone labs, 35-question final exam | Live MediaPipe AI camera + 3-strike lock + PDF certificate & goodies |
-| **Stanford × CTF Deep Learning** | **4 Modules** | 21 Stanford CS229 lectures, study notes, 20+ quizzes, capstone lab | Proctored final exam + feedback survey + verified credential |
-| **Video Masterclasses Hub** | **8 Playlists** | Embedded playlists with platform video theater & direct link sharing | Linked directly to related coding challenges & LMS pathways |
+| **Applied ML Course LMS** (`/ml-course`) | **7 Modules** | 106 lectures, 100+ quizzes, 3 capstones, 35-question exam | Live MediaPipe AI camera + 3-strike lock + `CTF-ML-` PDF & swag |
+| **Stanford × CTF Deep Learning** (`/dl-course`) | **4 Modules** | 21 CS229 lectures, study notes, 20+ quizzes, 3 capstones, 20-Q exam | Proctored exam + feedback + `CTF-DL-` PDF certificate |
+| **Python Data Science & Big Data** (`/ds-course`) | **3 Modules** | 14 lectures (Jupyter, NumPy, Pandas, CSV/JSON, Matplotlib), 14 quizzes, 3 capstones, 14-Q exam | Proctored exam + `CTF-DS-` PDF certificate + PNG share |
+| **IIT Madras × CTF Business Fundamentals** (`/biz-course`) | **6 Modules** | 66 lectures (Viz, Bayes, Elasticity, VIF, DEA frontiers, Conjoint), 66 quizzes, 3 capstones, 30-Q exam | Proctored exam + `CTF-BIZ-` PDF certificate + PNG share |
+| **Agentic AI & MCP Engineering** (`/agentic-course`) | **4 Modules** | 23 lectures (Reflex/RL Agents, LangGraph, CrewAI, Agno RAG, Custom MCP, OpenAI SDK), 23 quizzes, 3 capstones, 20-Q exam | Proctored exam + `CTF-AG-` PDF certificate + PNG share |
+| **Video Masterclasses Hub** (`/videos`) | **8 Playlists** | 596 embedded playlists with platform video theater & direct share | Linked to coding challenges & all 5 Academy pathways |

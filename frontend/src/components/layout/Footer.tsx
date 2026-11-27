@@ -81,6 +81,9 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               <li><Link to="/app/lms" className="hover:text-[#ededed] transition-colors">LMS courses hub</Link></li>
               <li><Link to="/app/ml-course" className="hover:text-[#ededed] transition-colors">ML course (106)</Link></li>
               <li><Link to="/app/dl-course" className="hover:text-[#ededed] transition-colors">Stanford DL (21)</Link></li>
+              <li><Link to="/app/ds-course" className="hover:text-[#ededed] transition-colors">Data Science (14)</Link></li>
+              <li><Link to="/app/biz-course" className="hover:text-[#ededed] transition-colors">IITM Business (66)</Link></li>
+              <li><Link to="/app/agentic-course" className="hover:text-[#ededed] transition-colors">Agentic AI (23)</Link></li>
               <li><Link to="/app/videos" className="hover:text-[#ededed] transition-colors">Video library</Link></li>
               <li><Link to="/app/submissions" className="hover:text-[#ededed] transition-colors">Submissions</Link></li>
             </ul>
@@ -196,6 +199,9 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               <li><Link to="/app/generator" className="hover:text-[#ededed] transition-colors">Task generator</Link></li>
               <li><Link to="/app/ml-course" className="hover:text-[#ededed] transition-colors">ML course (106)</Link></li>
               <li><Link to="/app/dl-course" className="hover:text-[#ededed] transition-colors">Stanford DL (21)</Link></li>
+              <li><Link to="/app/ds-course" className="hover:text-[#ededed] transition-colors">Data Science (14)</Link></li>
+              <li><Link to="/app/biz-course" className="hover:text-[#ededed] transition-colors">IITM Business (66)</Link></li>
+              <li><Link to="/app/agentic-course" className="hover:text-[#ededed] transition-colors">Agentic AI (23)</Link></li>
               <li><Link to="/app/videos" className="hover:text-[#ededed] transition-colors">Video library</Link></li>
             </ul>
           </div>

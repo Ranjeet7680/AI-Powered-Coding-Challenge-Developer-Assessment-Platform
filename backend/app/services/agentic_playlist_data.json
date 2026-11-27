@@ -1,0 +1,140 @@
+[
+  {
+    "order": 1,
+    "video_id": "nsq4yKF0u0Q",
+    "title": "Agentic AI Explained | How AI Agents Work & Why They Matter",
+    "duration": "2:42"
+  },
+  {
+    "order": 2,
+    "video_id": "h3c8KwO1aLk",
+    "title": "Generative AI Explained | How AI Generates New Content",
+    "duration": "2:32"
+  },
+  {
+    "order": 3,
+    "video_id": "OgEEGDw7Xw4",
+    "title": "Generative AI vs Agentic AI? | How They Work Together",
+    "duration": "4:37"
+  },
+  {
+    "order": 4,
+    "video_id": "wuXmOuL8ciA",
+    "title": "AI Agents Explained | How AI Agents Work & Make Decisions",
+    "duration": "3:23"
+  },
+  {
+    "order": 5,
+    "video_id": "dWKhCCsT8uc",
+    "title": "5 Types of AI Agents Explained with Examples | Agentic AI",
+    "duration": "14:28"
+  },
+  {
+    "order": 6,
+    "video_id": "iyvMKgfdf2I",
+    "title": "Simple Reflex Agent in Python | Build Your First AI Agent",
+    "duration": "17:29"
+  },
+  {
+    "order": 7,
+    "video_id": "6dWzfupgXzM",
+    "title": "Goal-Based AI Agent Using LangChain & Streamlit | Build an AI Agent",
+    "duration": "33:51"
+  },
+  {
+    "order": 8,
+    "video_id": "hb-22SBC5FQ",
+    "title": "What Are Learning Agents | Agentic AI Course",
+    "duration": "7:35"
+  },
+  {
+    "order": 9,
+    "video_id": "Hp8E4KshwOw",
+    "title": "What is Reinforcement Learning? | AI Agents Learn & Adapt",
+    "duration": "21:45"
+  },
+  {
+    "order": 10,
+    "video_id": "8C_YLg_O9Rc",
+    "title": "Reinforcement Learning Value Function | V(s) Explained with Example & Bellman Equation",
+    "duration": "11:10"
+  },
+  {
+    "order": 11,
+    "video_id": "jb2RKzk_2cY",
+    "title": "Learning Agents & Q-Learning Explained | Reinforcement Learning Tutorial",
+    "duration": "42:31"
+  },
+  {
+    "order": 12,
+    "video_id": "4GBUdTwsDqM",
+    "title": "Build AI Agents with LangGraph | Complete Agentic AI Tutorial",
+    "duration": "168:22"
+  },
+  {
+    "order": 13,
+    "video_id": "08lLabdEcfU",
+    "title": "What is CrewAI? | Agentic AI Framework Explained with Implementation",
+    "duration": "69:09"
+  },
+  {
+    "order": 14,
+    "video_id": "ddKRA3oWlQs",
+    "title": "Agno AI Framework Explained | Build Multimodal Agents",
+    "duration": "21:06"
+  },
+  {
+    "order": 15,
+    "video_id": "Lg6fU2vIM7U",
+    "title": "L-15 Build Agentic AI with Agno using Tools, Agents and Memory in hindi",
+    "duration": "36:18"
+  },
+  {
+    "order": 16,
+    "video_id": "PB9yf7E5YTw",
+    "title": "L-16 Agentic RAG Explained with Agno Framework in Hindi",
+    "duration": "54:41"
+  },
+  {
+    "order": 17,
+    "video_id": "ztSDJCZzAPY",
+    "title": "L-17 What is MCP (Model Context Protocol) in Hindi",
+    "duration": "26:30"
+  },
+  {
+    "order": 18,
+    "video_id": "_KB2146fFYs",
+    "title": "Ready-Made MCP Servers with LangGraph | Complete Hindi Tutorial",
+    "duration": "39:59"
+  },
+  {
+    "order": 19,
+    "video_id": "AlmdrYSDemI",
+    "title": "Build a Custom MCP Server with LangGraph and Streamlit",
+    "duration": "40:17"
+  },
+  {
+    "order": 20,
+    "video_id": "WnQXxzbm2W4",
+    "title": "Host Your Own MCP Server on the Cloud | Step by Step tutorial in Hindi",
+    "duration": "21:52"
+  },
+  {
+    "order": 21,
+    "video_id": "iN1Jv_dFBco",
+    "title": "MCP Servers with Agno  | From Local setup to Cloud Deployment",
+    "duration": "34:59"
+  },
+  {
+    "order": 22,
+    "video_id": "Jz4KraEgHho",
+    "title": "L-22 How to Build Agentic AI Apps with OpenAI Agents SDK",
+    "duration": "66:46"
+  },
+  {
+    "order": 23,
+    "video_id": "7nEHi1iMrlA",
+    "title": "How to Use MCP in OpenAI Agents SDK  | Hindi tutorial",
+    "duration": "26:57"
+  }
+]

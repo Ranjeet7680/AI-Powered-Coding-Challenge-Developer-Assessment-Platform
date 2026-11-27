@@ -1,7 +1,10 @@
 """
 Parameterized Multi-Course LMS Router:
-- Serves BOTH `/api/ml-course` (106-video ML LMS) and `/api/dl-course`
-  ([Stanford X Coding Task Factory Academy] 21-video Deep Learning LMS).
+- Serves `/api/ml-course` (106-video ML LMS),
+  `/api/dl-course` ([Stanford X Coding Task Factory Academy] 21-video Deep Learning LMS),
+  `/api/ds-course` (Python Data Science & Big Data 14-video LMS),
+  `/api/biz-course` ([IIT Madras X Coding Task Factory Academy] 66-video Business Fundamentals LMS),
+  and `/api/agentic-course` (Agentic AI Engineering & MCP 23-video LMS).
 - Handles:
   * Advanced structured module syllabi & privacy-enhanced In-LMS playback URLs
   * Per-lesson completion tracking (+15 XP) and persistent cloud study notes
@@ -11,11 +14,13 @@ Parameterized Multi-Course LMS Router:
   * Camera-proctored Final Exam + verified Certificate & Vector PDF issuance
 """
 import datetime
+import html
 import uuid
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -45,6 +50,22 @@ from ..schemas import (
     MLQuizAnswerRequest,
     MLQuizAnswerResponse,
 )
+from ..services.agentic_course_catalog import (
+    AGENTIC_COURSE_ID,
+    AGENTIC_COURSE_TITLE,
+    get_agentic_course_catalog,
+    get_agentic_final_exam_questions,
+    get_agentic_lesson_by_id,
+    get_agentic_quiz_bank,
+)
+from ..services.biz_course_catalog import (
+    BIZ_COURSE_ID,
+    BIZ_COURSE_TITLE,
+    get_biz_course_catalog,
+    get_biz_final_exam_questions,
+    get_biz_lesson_by_id,
+    get_biz_quiz_bank,
+)
 from ..services.dl_course_catalog import (
     DL_COURSE_ID,
     DL_COURSE_TITLE,
@@ -52,6 +73,14 @@ from ..services.dl_course_catalog import (
     get_dl_final_exam_questions,
     get_dl_lesson_by_id,
     get_dl_quiz_bank,
+)
+from ..services.ds_course_catalog import (
+    DS_COURSE_ID,
+    DS_COURSE_TITLE,
+    get_ds_course_catalog,
+    get_ds_final_exam_questions,
+    get_ds_lesson_by_id,
+    get_ds_quiz_bank,
 )
 from ..services.ml_course_catalog import (
     COURSE_ID as ML_COURSE_ID,
@@ -129,6 +158,75 @@ DL_TRACK = CourseTrackConfig(
     get_exam_questions=get_dl_final_exam_questions,
 )
 
+DS_TRACK = CourseTrackConfig(
+    course_id=DS_COURSE_ID,
+    course_title=DS_COURSE_TITLE,
+    exam_id="ds-proctored-final-exam",
+    exam_title="Python Data Science & Big Data — Proctored Final Exam",
+    exam_duration_minutes=25,
+    cert_prefix="CTF-DS-",
+    cert_category="Data Science & Big Data Analytics",
+    cert_skills=[
+        "NumPy Vectorization",
+        "Pandas DataFrames",
+        "CSV & JSON ETL",
+        "Data Merging & Joins",
+        "Matplotlib Visualization",
+    ],
+    completion_hours=18,
+    use_legacy_ml_table=False,
+    get_catalog=get_ds_course_catalog,
+    get_lesson=get_ds_lesson_by_id,
+    get_quiz_bank=get_ds_quiz_bank,
+    get_exam_questions=get_ds_final_exam_questions,
+)
+
+BIZ_TRACK = CourseTrackConfig(
+    course_id=BIZ_COURSE_ID,
+    course_title=BIZ_COURSE_TITLE,
+    exam_id="biz-proctored-final-exam",
+    exam_title="[IIT Madras X Coding Task Factory Academy] Business Fundamentals — Proctored Exam",
+    exam_duration_minutes=40,
+    cert_prefix="CTF-BIZ-",
+    cert_category="Entrepreneurial & Business Analytics",
+    cert_skills=[
+        "Pricing Elasticity & Profit Opt",
+        "Bayes & Chi-Square Inference",
+        "Multiple Regression & VIF",
+        "Data Envelopment Analysis (DEA)",
+        "Conjoint Market Simulation",
+    ],
+    completion_hours=45,
+    use_legacy_ml_table=False,
+    get_catalog=get_biz_course_catalog,
+    get_lesson=get_biz_lesson_by_id,
+    get_quiz_bank=get_biz_quiz_bank,
+    get_exam_questions=get_biz_final_exam_questions,
+)
+
+AGENTIC_TRACK = CourseTrackConfig(
+    course_id=AGENTIC_COURSE_ID,
+    course_title=AGENTIC_COURSE_TITLE,
+    exam_id="agentic-proctored-final-exam",
+    exam_title="Agentic AI Engineering & MCP — Proctored Final Exam",
+    exam_duration_minutes=30,
+    cert_prefix="CTF-AG-",
+    cert_category="Agentic AI & MCP Systems",
+    cert_skills=[
+        "Agent Architectures & Q-Learning",
+        "LangGraph Stateful Workflows",
+        "CrewAI & Agno Multi-Agent RAG",
+        "Model Context Protocol (MCP)",
+        "OpenAI Agents SDK & Cloud Tools",
+    ],
+    completion_hours=24,
+    use_legacy_ml_table=False,
+    get_catalog=get_agentic_course_catalog,
+    get_lesson=get_agentic_lesson_by_id,
+    get_quiz_bank=get_agentic_quiz_bank,
+    get_exam_questions=get_agentic_final_exam_questions,
+)
+
 _SEED_REVIEWS_BY_COURSE: Dict[str, List[Dict[str, Any]]] = {
     ML_COURSE_ID: [
         {
@@ -180,6 +278,84 @@ _SEED_REVIEWS_BY_COURSE: Dict[str, List[Dict[str, Any]]] = {
             "headline": "Challenging math, crisp notes & spotless in-LMS playback",
             "comment": "Love that videos stream cleanly inside the LMS without distractions, and the personal cloud notebook right next to Backprop & Error Analysis lectures made revision effortless.",
             "helpful_count": 7,
+        },
+    ],
+    DS_COURSE_ID: [
+        {
+            "author_name": "Rohan Kulkarni",
+            "author_role": "Analytics Engineer",
+            "rating": 5,
+            "headline": "Practical path from Jupyter basics to NumPy axis ops & Pandas merges",
+            "comment": "Every lecture comes with runnable Python snippets and immediate quizzes that reinforce views vs copies, axis=0/1 reductions, JSON flattening, and clean CSV exports.",
+            "helpful_count": 16,
+        },
+        {
+            "author_name": "Meera Iyer",
+            "author_role": "Senior Data Analyst",
+            "rating": 5,
+            "headline": "Capstone ETL & Matplotlib reporting exercises mirror real production work",
+            "comment": "Combining CSV/JSON normalization with relational pd.merge validation and passing the proctored final exam turned fundamentals into a verified credential.",
+            "helpful_count": 11,
+        },
+        {
+            "author_name": "Vikramaditya Sen",
+            "author_role": "BI Systems Developer",
+            "rating": 5,
+            "headline": "Crisp हिंदी explanation paired with production English reference notes",
+            "comment": "Having structured English Markdown notes, Pandas cheat-sheet snippets, and quizzes alongside the video playlist made revision fast and focused.",
+            "helpful_count": 8,
+        },
+    ],
+    BIZ_COURSE_ID: [
+        {
+            "author_name": "Siddharth Ramanathan",
+            "author_role": "Founder & Product Strategist",
+            "rating": 5,
+            "headline": "IIT Madras rigor applied straight to startup pricing, VIF & conjoint decisions",
+            "comment": "Connecting demand elasticity directly to MR=MC profit optimization, Data Envelopment Analysis frontiers, and conjoint market simulation gave our pricing strategy real mathematical grounding.",
+            "helpful_count": 24,
+        },
+        {
+            "author_name": "Ananya Deshmukh",
+            "author_role": "Venture Operations Lead",
+            "rating": 5,
+            "headline": "From Excel dashboards to DEA peer benchmarking and Logistic scoring",
+            "comment": "All 66 lectures with step-by-step quizzes and LP duality notes bridge textbook statistics and day-one founder execution cleanly.",
+            "helpful_count": 15,
+        },
+        {
+            "author_name": "Karanjit Singh",
+            "author_role": "Growth Analytics Manager",
+            "rating": 5,
+            "headline": "Capstone conjoint & pricing labs are boardroom-ready",
+            "comment": "Proctored exam certification and SHA-256 PDF credential make IIT Madras X Coding Task Factory Academy stand out immediately.",
+            "helpful_count": 10,
+        },
+    ],
+    AGENTIC_COURSE_ID: [
+        {
+            "author_name": "Neha Kapoor",
+            "author_role": "AI Agent Systems Engineer",
+            "rating": 5,
+            "headline": "Complete journey from Simple Reflex agents & Bellman Q-learning to live MCP servers",
+            "comment": "Going step by step from LangChain goals to stateful LangGraph loops, CrewAI teams, Agno Agentic RAG, custom cloud MCP hosting, and OpenAI Agents SDK saved weeks of scattered docs.",
+            "helpful_count": 22,
+        },
+        {
+            "author_name": "Raghavendra Rao",
+            "author_role": "Staff LLM Platform Architect",
+            "rating": 5,
+            "headline": "The MCP protocol + LangGraph & Agno integrations click effortlessly",
+            "comment": "Every lecture comes with focused tool-contract snippets, state-routing capstones, and immediate comprehension checks.",
+            "helpful_count": 17,
+        },
+        {
+            "author_name": "Tanya Verma",
+            "author_role": "Applied AI Builder",
+            "rating": 5,
+            "headline": "Best structured Agentic AI + OpenAI Agents SDK syllabus",
+            "comment": "Loved building custom JSON-RPC tool contracts and validating everything through the proctored capstone + exam track.",
+            "helpful_count": 9,
         },
     ],
 }
@@ -982,3 +1158,91 @@ def _build_course_router(prefix: str, tag: str, track: CourseTrackConfig) -> API
 
 router = _build_course_router("/api/ml-course", "ML Course LMS", ML_TRACK)
 dl_router = _build_course_router("/api/dl-course", "Stanford X CTF Deep Learning LMS", DL_TRACK)
+ds_router = _build_course_router("/api/ds-course", "Python Data Science & Big Data LMS", DS_TRACK)
+biz_router = _build_course_router("/api/biz-course", "IIT Madras X CTF Business Fundamentals LMS", BIZ_TRACK)
+agentic_router = _build_course_router("/api/agentic-course", "Agentic AI Engineering LMS", AGENTIC_TRACK)
+
+_SHARE_TRACK_MAP: Dict[str, CourseTrackConfig] = {
+    "ml": ML_TRACK,
+    "dl": DL_TRACK,
+    "ds": DS_TRACK,
+    "biz": BIZ_TRACK,
+    "agentic": AGENTIC_TRACK,
+}
+
+share_router = APIRouter(prefix="/api/share", tags=["Course Share"])
+
+
+@share_router.get("/course/{track}", response_class=HTMLResponse)
+def get_course_share_preview(track: str, request: Request):
+    """Serve Open Graph / Twitter Card HTML with the course thumbnail and redirect browsers to the LMS track."""
+    track_cfg = _SHARE_TRACK_MAP.get(track)
+    if not track_cfg:
+        raise HTTPException(status_code=404, detail="Unknown course track")
+
+    catalog = track_cfg.get_catalog()
+    origin = f"{request.url.scheme}://{request.url.netloc}"
+    raw_thumb = catalog.get("thumbnail_url") or "/og-card.svg"
+    thumb_url = raw_thumb if raw_thumb.startswith("http") else f"{origin}{raw_thumb}"
+    target_path = f"/app/lms/{track}"
+    target_url = f"{origin}{target_path}"
+    share_url = f"{origin}/share/course/{track}"
+
+    title = html.escape(catalog["title"], quote=True)
+    instructor = html.escape(catalog["instructor"], quote=True)
+    desc_raw = (
+        f"{catalog['total_lessons']} video lectures across {len(catalog['modules'])} modules "
+        f"({catalog['total_quizzes']}+ quizzes, graded capstones, and camera-proctored certification) "
+        f"by {catalog['instructor']}."
+    )
+    desc = html.escape(desc_raw, quote=True)
+    esc_thumb = html.escape(thumb_url, quote=True)
+    esc_target = html.escape(target_url, quote=True)
+    esc_share = html.escape(share_url, quote=True)
+    esc_target_path = html.escape(target_path, quote=True)
+
+    html_doc = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} — Coding Task Factory Academy</title>
+  <meta name="description" content="{desc}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Coding Task Factory Academy" />
+  <meta property="og:title" content="{title}" />
+  <meta property="og:description" content="{desc}" />
+  <meta property="og:url" content="{esc_share}" />
+  <meta property="og:image" content="{esc_thumb}" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{title}" />
+  <meta name="twitter:description" content="{desc}" />
+  <meta name="twitter:image" content="{esc_thumb}" />
+  <meta http-equiv="refresh" content="0;url={esc_target_path}" />
+  <style>
+    body {{ margin:0; font-family:system-ui,-apple-system,sans-serif; background:#141415; color:#ededed; display:flex; min-height:100vh; align-items:center; justify-content:center; padding:24px; }}
+    .card {{ max-width:640px; width:100%; background:#19191b; border:1px solid rgba(255,255,255,0.1); border-radius:14px; overflow:hidden; }}
+    .thumb {{ width:100%; display:block; aspect-ratio:16/9; object-fit:cover; background:#141415; }}
+    .body {{ padding:20px 24px; }}
+    .eyebrow {{ color:#e5a00d; font-size:12px; font-family:ui-monospace,monospace; margin-bottom:6px; }}
+    h1 {{ font-size:18px; margin:0 0 8px; line-height:1.35; }}
+    p {{ font-size:13px; color:#a1a1a6; margin:0 0 16px; line-height:1.5; }}
+    a.btn {{ display:inline-block; background:#ededed; color:#141415; text-decoration:none; font-size:13px; font-weight:600; padding:9px 16px; border-radius:8px; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="thumb" src="{esc_thumb}" alt="{title}" />
+    <div class="body">
+      <div class="eyebrow">Coding Task Factory Academy · {instructor}</div>
+      <h1>{title}</h1>
+      <p>{desc}</p>
+      <a class="btn" href="{esc_target}">Open course syllabus &rarr;</a>
+    </div>
+  </div>
+  <script>window.location.replace({target_path!r});</script>
+</body>
+</html>"""
+    return HTMLResponse(content=html_doc, status_code=200)

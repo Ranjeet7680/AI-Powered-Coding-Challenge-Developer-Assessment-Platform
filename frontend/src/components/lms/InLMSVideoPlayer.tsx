@@ -8,7 +8,8 @@ interface InLMSVideoPlayerProps {
     'id' | 'order' | 'video_id' | 'video_url' | 'thumbnail_url' | 'title' | 'duration_label'
   >;
   isCompleted: boolean;
-  isDL: boolean;
+  isDL?: boolean;
+  accentDot?: boolean;
   onVideoEnded: () => void;
   playerModeLabel?: string;
   seriesBadge?: string;
@@ -19,7 +20,8 @@ interface InLMSVideoPlayerProps {
 export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
   lesson,
   isCompleted,
-  isDL,
+  isDL = false,
+  accentDot,
   onVideoEnded,
   playerModeLabel = 'Locked classroom player',
   seriesBadge,
@@ -95,7 +97,7 @@ export const InLMSVideoPlayer: React.FC<InLMSVideoPlayerProps> = ({
             <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#141415]/90 border border-white/[0.10] text-xs font-medium text-[#ededed] tabular-nums">
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  isDL ? 'bg-[#e5a00d]' : 'bg-[#ededed]/60'
+                  (accentDot ?? isDL) ? 'bg-[#e5a00d]' : 'bg-[#ededed]/60'
                 }`}
               />
               {badgeText}

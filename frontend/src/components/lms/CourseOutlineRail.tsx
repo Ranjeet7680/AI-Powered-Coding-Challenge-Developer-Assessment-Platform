@@ -18,6 +18,7 @@ import {
   Star,
 } from 'lucide-react';
 import { MLLessonItem, MLModuleInfo, MLQuizResultRecord } from '../../types';
+import { COURSE_TRACK_META, CourseTrack } from '../../constants/courseTracks';
 
 export type LMSPageStage =
   | 'watch'
@@ -44,7 +45,7 @@ interface CourseOutlineRailProps {
   hasFeedback: boolean;
   certificateEarned: boolean;
   goodiesClaimed: boolean;
-  isDL: boolean;
+  track: CourseTrack;
   onSelectLessonActivity: (lesson: MLLessonItem, stage: 'watch' | 'notes' | 'quiz') => void;
   onSelectMilestoneStage: (
     stage: 'quiz-bank' | 'capstone' | 'final-exam' | 'reviews' | 'certificate' | 'goodies' | 'done'
@@ -64,10 +65,11 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
   hasFeedback,
   certificateEarned,
   goodiesClaimed,
-  isDL,
+  track,
   onSelectLessonActivity,
   onSelectMilestoneStage,
 }) => {
+  const trackMeta = COURSE_TRACK_META[track];
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [incompleteOnly, setIncompleteOnly] = useState<boolean>(false);
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
@@ -98,7 +100,7 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
   }[] = [
     {
       stage: 'quiz-bank',
-      label: isDL ? '20+ practice quiz bank' : '100+ practice quiz bank',
+      label: trackMeta.quizBankLabel,
       icon: ListChecks,
       done: Object.values(quizResults).filter((r) => r.correct).length >= 5,
     },
@@ -171,7 +173,7 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={isDL ? 'Find lecture (GLM, SVM, EM)...' : 'Find lecture (PCA, XGB, GPT)...'}
+            placeholder={trackMeta.searchPlaceholder}
             className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-[#19191b] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
           />
         </div>

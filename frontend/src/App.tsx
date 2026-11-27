@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -7,6 +7,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import { useAuth } from './context/useContexts';
 import { AppLayout } from './components/layout/AppLayout';
 import { PageLoader } from './components/common/Preloader';
+import { COURSE_TRACK_META, resolveCourseTrack } from './constants/courseTracks';
 
 // Code-split pages for fast initial load and smaller chunks
 const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
@@ -34,6 +35,15 @@ const MLCoursePage = lazy(() =>
 const DLCoursePage = lazy(() =>
   import('./pages/MLCoursePage').then((m) => ({ default: m.DLCoursePage }))
 );
+const DSCoursePage = lazy(() =>
+  import('./pages/MLCoursePage').then((m) => ({ default: m.DSCoursePage }))
+);
+const BizCoursePage = lazy(() =>
+  import('./pages/MLCoursePage').then((m) => ({ default: m.BizCoursePage }))
+);
+const AgenticCoursePage = lazy(() =>
+  import('./pages/MLCoursePage').then((m) => ({ default: m.AgenticCoursePage }))
+);
 const LMSHubPage = lazy(() =>
   import('./pages/LMSHubPage').then((m) => ({ default: m.LMSHubPage }))
 );
@@ -44,6 +54,12 @@ const VerifyCertificatePage = lazy(() =>
   import('./pages/VerifyCertificatePage').then((m) => ({ default: m.VerifyCertificatePage }))
 );
 const WikiPage = lazy(() => import('./pages/WikiPage').then((m) => ({ default: m.WikiPage })));
+
+const CourseShareRedirect: React.FC = () => {
+  const { track } = useParams<{ track?: string }>();
+  const resolved = resolveCourseTrack(track);
+  return <Navigate to={COURSE_TRACK_META[resolved].lmsDetailPath} replace />;
+};
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -79,6 +95,7 @@ export const App: React.FC = () => {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/verify/:credentialId" element={<VerifyCertificatePage />} />
+                <Route path="/share/course/:track" element={<CourseShareRedirect />} />
                 <Route path="/wiki" element={<WikiPage />} />
                 <Route path="/wiki/:section" element={<WikiPage />} />
                 <Route
@@ -107,6 +124,12 @@ export const App: React.FC = () => {
                   <Route path="ml-course/:lessonId" element={<MLCoursePage />} />
                   <Route path="dl-course" element={<DLCoursePage />} />
                   <Route path="dl-course/:lessonId" element={<DLCoursePage />} />
+                  <Route path="ds-course" element={<DSCoursePage />} />
+                  <Route path="ds-course/:lessonId" element={<DSCoursePage />} />
+                  <Route path="biz-course" element={<BizCoursePage />} />
+                  <Route path="biz-course/:lessonId" element={<BizCoursePage />} />
+                  <Route path="agentic-course" element={<AgenticCoursePage />} />
+                  <Route path="agentic-course/:lessonId" element={<AgenticCoursePage />} />
                   <Route path="videos" element={<VideosPage />} />
                   <Route path="videos/:videoId" element={<WatchVideoPage />} />
                   <Route path="generator" element={<GeneratorPage />} />

@@ -15,14 +15,14 @@ The web platform separates a **code-split React 19 Graphite Workbench SPA** from
 ```mermaid
 flowchart TB
   subgraph Client["Frontend Layer (React 19 + TypeScript + Vite)"]
-    Router["React Router v7 Lazy Routes (22 Views)"]
+    Router["React Router v7 Lazy Routes (26 Views)"]
     Landing["LandingPage + CodeGlyphField Canvas"]
     IDE["WorkspacePage & Monaco Editor"]
-    Academies["ML (106) & DL (21) LMS + Video Theater + MediaPipe Proctor"]
+    Academies["5 Academies (230 Lectures: ML, DL, DS, IITM Biz, Agentic AI) + CourseShare + Proctor"]
     CertsUI["CertificatesPage & Share Studio"]
-    VerifyUI["Public VerifyCertificatePage (/verify/:id)"]
+    VerifyUI["Public Verify (/verify/:id) & OG Course Share (/share/course/:track)"]
     Search["GlobalSearchModal (Ctrl+K)"]
-    CanvasPNG["HTML5 Canvas PNG Exporter (certificateShare.ts)"]
+    CanvasPNG["HTML5 Canvas PNG Exporters (certificateShare.ts & courseShare.ts)"]
   end
 
   subgraph API["FastAPI Backend (backend/app/main.py)"]
@@ -30,7 +30,7 @@ flowchart TB
     ChalR["challenges.py (Stats & Paginated Bank)"]
     ExecR["execution.py (Run, Submit, AI Copilot)"]
     GenR["ai_generator.py (Gemini & Fallbacks)"]
-    CourseR["ml_course.py & videos.py (LMS, Proctor, Playlists)"]
+    CourseR["ml_course.py & videos.py (5 LMS Routers, Proctor, OG Share, Playlists)"]
     AssessR["assessments.py, analytics.py & submissions.py"]
     CertR["Public /verify & /pdf Endpoints"]
   end
@@ -38,7 +38,7 @@ flowchart TB
   subgraph Services["Core Engines (backend/app/services/)"]
     Runner["code_runner.py (PY, JS, TS, CPP20 JsonCpp)"]
     Bank["challenge_bank.py (360 Synthesized Tasks)"]
-    Catalog["ml_course_catalog.py · dl_course_catalog.py · video_library.py"]
+    Catalog["course_catalog_shared.py · ml/dl/ds/biz/agentic catalogs · video_library.py"]
     Gemini["gemini_service.py (LLM + Procedural AST Fallback)"]
     PDF["pdf_certificate.py (ReportLab Landscape A4 Vector PDF)"]
   end

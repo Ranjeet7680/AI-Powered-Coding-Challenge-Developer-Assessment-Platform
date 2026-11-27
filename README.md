@@ -2,7 +2,7 @@
   <img src="docs/assets/hero-banner.svg" alt="Coding Task Factory — AI-Powered Coding Challenge &amp; Developer Assessment Platform" width="100%" />
 
   <h3>AI-Powered Coding Challenge &amp; Developer Assessment Platform</h3>
-  <p><em>"Create. Code. Evaluate. Improve."</em> — 368+ Multi-Language Challenges, ML &amp; Stanford DL Academies, MediaPipe AI Proctoring, Zero-Trust Security, ReportLab Vector PDF Credentials &amp; Harbor 0.25 TaskForge Pipeline</p>
+  <p><em>"Create. Code. Evaluate. Improve."</em> — 368+ Multi-Language Challenges, 5 Certified Academies (230 Lectures: ML, Stanford DL, Data Science, IIT Madras Business &amp; Agentic AI), Thumbnail Social Share Cards, MediaPipe AI Proctoring, Zero-Trust Security, ReportLab Vector PDF Credentials &amp; Harbor 0.25 TaskForge Pipeline</p>
 
   <p>
     <a href="https://coding-task-factory.vercel.app"><img src="https://img.shields.io/badge/Live%20Website-Vercel%20Production-19191b?style=for-the-badge&logo=vercel" alt="Live Website" /></a>
@@ -29,10 +29,10 @@
 This repository delivers a unified dual-capability platform built for the **Innodata AI Hackathon**:
 
 1. **Coding Task Factory Full-Stack SaaS Workbench**:
-   - **Graphite & Signal Amber Precision UI**: High-contrast dark workbench (`#141415` / `#19191b` surfaces, `#ededed` primary ink, `#e5a00d` single accent, `IBM Plex Sans` & `IBM Plex Mono`, `tabular-nums`) featuring a procedural ASCII glyph canvas (`CodeGlyphField`) and interactive multi-language code preview on the landing page, plus 22 lazy-loaded routes.
+   - **Graphite & Signal Amber Precision UI**: High-contrast dark workbench (`#141415` / `#19191b` surfaces, `#ededed` primary ink, `#e5a00d` single accent, `IBM Plex Sans` & `IBM Plex Mono`, `tabular-nums`) featuring a procedural ASCII glyph canvas (`CodeGlyphField`) and interactive multi-language code preview on the landing page, plus 26 lazy-loaded routes.
    - **368+ Multi-Language Challenges** spanning 10 CS & ML domains with Python, JavaScript, TypeScript, and C++20 (bundled `open-source-parsers/jsoncpp`) starter harnesses and automated unit verification.
    - **Interactive Monaco Workspace & AI Copilot** combining live test-case execution, Big-O review, Markdown/LaTeX rendering, and Google Gemini integration (with offline procedural & AST static fallbacks).
-   - **ML (106) & Stanford Deep Learning (21) Academies + Engineering Video Theater**: 9-stage LMS progression with `InLMSVideoPlayer`, 120+ comprehension quizzes, capstone project rubrics, **4-tier MediaPipe AI Camera Proctoring**, graduate goodies claims, and a 596-video library across 8 playlists.
+   - **5 Certified Academies (230 Lectures) + Course Thumbnail Sharing**: Full LMS progression (`InLMSVideoPlayer`, Markdown/LaTeX study notes, Python starter snippets, 230 comprehension quizzes, capstone rubrics, **4-tier MediaPipe AI Camera Proctoring**, and graduate goodies) covering **Machine Learning (`106`)**, **Stanford CS229 Deep Learning (`21`)**, **Python Data Science & Big Data (`14`)**, **IIT Madras × CTF Business Fundamentals for Entrepreneurs (`66`)**, and **Agentic AI & MCP Engineering (`23`)**, plus **Course Share with Thumbnail** (`1280×720` PNG card download/clipboard + Open Graph `/share/course/:track` unfurling) and a 596-video library across 8 playlists.
    - **Timed Assessments, Analytics & Leaderboard** with live weekly/all-time rankings, interactive assessment screener UI, and 1-click completion grading.
    - **Cryptographic Credentials, ReportLab Vector PDF & Social Post Studio** featuring SHA-256 verification hashes, deterministic 15×15 QR matrices, a public `/verify/:credentialId` registry, ReportLab landscape A4 PDFs, and HTML5 Canvas `1080×1080` & `1200×630` PNG cards for **LinkedIn, Instagram, Facebook, and WhatsApp**.
    - **Zero-Trust Auth & Security** enforcing salted 100k-round PBKDF2-HMAC-SHA256 hashing, constant-time checks, brute-force account lockouts, HS256 JWTs, and masked user API key previews.
@@ -49,21 +49,21 @@ This repository delivers a unified dual-capability platform built for the **Inno
 ```mermaid
 flowchart TB
   subgraph Client["Frontend (React 19 + TypeScript + Vite)"]
-    UI["22 Lazy Routes: Overview, Challenge Library, Monaco IDE, ML/DL Academies, Video Theater"]
-    CertUI["CertificatesPage & Share Studio (LinkedIn / IG / FB / WhatsApp)"]
-    VerifyUI["Public Recruiter Verify Page (/verify/:credentialId)"]
+    UI["26 Lazy Routes: Overview, Challenges, Monaco IDE, 5 Academies (230 Lectures), Video Theater"]
+    CertUI["CertificatesPage, CourseShareButton (1280x720 PNG) & Share Studio"]
+    VerifyUI["Public Verify (/verify/:credentialId) & OG Share (/share/course/:track)"]
   end
 
   subgraph Backend["FastAPI Zero-Trust API (backend/app)"]
     Auth["Auth & Security (PBKDF2 100k, HS256 JWT, Lockout Shield)"]
-    BankAPI["Challenges & LMS Routers (368+ Bank, ML 106 / DL 21, Videos)"]
+    BankAPI["Challenges & 5 LMS Routers (ML, DL, DS, IITM Business, Agentic AI, Share OG)"]
     ExecAPI["Execution Sandbox & AI Copilot"]
     CertAPI["Certificates API + ReportLab Vector PDF + Public /verify"]
   end
 
   subgraph Core["Engines & Storage"]
     Runner["Multi-Lang Runner (Python, Node JS/TS, C++20 JsonCpp)"]
-    Bank["challenge_bank.py · ml/dl_course_catalog.py · gemini_service.py"]
+    Bank["challenge_bank.py · ml/dl/ds/biz/agentic_course_catalog.py · gemini_service.py"]
     PDFGen["pdf_certificate.py (Landscape A4 + SHA-256 + QR Matrix)"]
     SQLite["SQLite + SQLAlchemy + Auto-Migrations"]
   end
@@ -89,7 +89,7 @@ flowchart TB
 | **Process Flow, Use-Case & Architecture** | Pipeline process flow, UML actors & system boundaries | [`wiki/Process-Flow-and-Use-Case.md`](wiki/Process-Flow-and-Use-Case.md) |
 | **System Architecture & ER Schema** | Component topology, Graphite UI system & SQLite ER schema | [`wiki/Architecture.md`](wiki/Architecture.md) |
 | **Challenge Bank & Execution Sandbox** | 368+ challenge domains & Python/JS/TS/C++20 JsonCpp runner pipeline | [`wiki/Challenge-Bank-and-Execution.md`](wiki/Challenge-Bank-and-Execution.md) |
-| **ML & DL Academies + AI Proctoring** | 106-lecture ML LMS, Stanford CS229 DL (21), MediaPipe proctor & Video Hub | [`wiki/ML-Course-and-AI-Proctoring.md`](wiki/ML-Course-and-AI-Proctoring.md) |
+| **5 LMS Academies, Share & AI Proctoring** | ML (106), Stanford DL (21), Data Science (14), IITM Business (66), Agentic AI (23), Thumbnail Share & MediaPipe Proctor | [`wiki/ML-Course-and-AI-Proctoring.md`](wiki/ML-Course-and-AI-Proctoring.md) |
 | **Security, PDF & Social Credentials** | Zero-trust auth sequences, ReportLab PDFs & social share workflows | [`wiki/Security-and-Credentials.md`](wiki/Security-and-Credentials.md) |
 | **Track 1 TaskForge Pipeline** | Harbor 0.25 task generation, validation matrix & mutation testing | [`wiki/TaskForge-Pipeline.md`](wiki/TaskForge-Pipeline.md) |
 | **Technical Whitepaper & Demo Script** | Detailed architecture report & presentation walkthrough | [`docs/TECHNICAL_EXPLANATION.md`](docs/TECHNICAL_EXPLANATION.md) · [`docs/WALKTHROUGH_DEMO.md`](docs/WALKTHROUGH_DEMO.md) |
@@ -179,7 +179,7 @@ flowchart LR
 │   ├── Process-Flow-and-Use-Case.md                # Process Flow, UML & Pipeline Architecture
 │   ├── Architecture.md                             # Full-Stack Topology, Graphite UI & ER Schema
 │   ├── Challenge-Bank-and-Execution.md             # 368+ Challenge Bank & Sandbox Runner Guide
-│   ├── ML-Course-and-AI-Proctoring.md              # ML/DL LMS & MediaPipe 4-Tier Proctoring
+│   ├── ML-Course-and-AI-Proctoring.md              # 5 LMS Academies (230 Lectures), Course Share & AI Proctor
 │   ├── Security-and-Credentials.md                 # Auth Sequence, ReportLab PDF & Social Share Studio
 │   ├── TaskForge-Pipeline.md                       # Track 1 Harbor 0.25 Pipeline Diagrams
 │   └── _Sidebar.md                                 # GitHub Wiki Navigation Sidebar
@@ -193,17 +193,19 @@ flowchart LR
 │   ├── app/
 │   │   ├── routers/                                # auth, user, challenges, execution, ai_generator,
 │   │   │                                           # assessments, analytics, submissions, ml_course, videos
-│   │   └── services/                               # challenge_bank, ml/dl catalogs, video_library,
-│   │                                               # pdf_certificate, code_runner, gemini_service
-│   └── tests/                                      # test_api.py + test_ml_course.py (15 pytest cases)
+│   │   └── services/                               # challenge_bank, ml/dl/ds/biz/agentic catalogs,
+│   │                                               # course_catalog_shared, video_library, pdf_certificate,
+│   │                                               # code_runner, gemini_service
+│   └── tests/                                      # test_api.py + test_ml_course.py (23 pytest cases)
 │
 ├── frontend/                                       # React 19 + TypeScript + Vite SPA
-│   ├── public/                                     # Graphite < / > SVG logo, favicon, OpenGraph & thumbnails
+│   ├── public/                                     # Graphite < / > SVG logo, OpenGraph & 5 course thumbnails
 │   └── src/
-│       ├── components/                             # common (BrandLogo, CodeGlyphField), layout, lms, videos, wiki
-│       ├── pages/                                  # 22 routes: Landing, Dashboard, Challenges, Workspace IDE,
-│       │                                           # LMSHub, MLCourse, Videos, Certificates, Verify, Wiki, etc.
-│       └── utils/certificateShare.ts               # LinkedIn / IG / FB / WhatsApp builders & Canvas PNG cards
+│       ├── components/                             # common, layout, lms (CourseShareButton), videos, wiki
+│       ├── constants/courseTracks.ts               # Parameterized 5-track LMS metadata & thumbnails
+│       ├── pages/                                  # 26 routes: LMSHub, CourseDetail, ML/DL/DS/Biz/Agentic
+│       │                                           # LMS classrooms, Challenges, Workspace IDE, Wiki, etc.
+│       └── utils/                                  # certificateShare.ts + courseShare.ts (PNG/OG share)
 │
 ├── api/index.py · vercel.json · requirements.txt   # Vercel Production ASGI + SPA deployment config
 ├── LICENSE · SECURITY.md · .github/                # MIT License, Security Policy, CI & PR/Issue templates
@@ -236,7 +238,10 @@ npm run dev -- --host 127.0.0.1 --port 5173
 
 ### 2. Run Automated Test, Lint & Build Checks
 ```bash
-# Backend API, Sandbox, Challenge Bank, ML/DL LMS & ReportLab PDF Suite (15 tests)
+# Backend 5-Course LMS, Open Graph Course Share, AI Proctor & PDF Suite (17 tests)
+python -m pytest backend/tests/test_ml_course.py -v
+
+# Full Backend Test Suite
 python -m pytest backend/tests/ -v
 
 # Frontend Lint (oxlint), TypeScript Type-Check & Production Bundle

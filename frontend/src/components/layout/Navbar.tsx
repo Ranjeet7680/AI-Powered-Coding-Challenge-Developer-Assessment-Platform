@@ -11,6 +11,9 @@ import {
   ChevronDown,
   BookOpen,
   BrainCircuit,
+  BarChart3,
+  Briefcase,
+  Cpu,
   GraduationCap,
   Video,
 } from 'lucide-react';
@@ -28,7 +31,7 @@ const ACADEMY_ITEMS: AcademyItem[] = [
     name: 'LMS Courses Hub',
     desc: 'Structured academies and certification tracks',
     to: '/app/lms',
-    meta: '2 tracks',
+    meta: '5 tracks',
     icon: BookOpen,
   },
   {
@@ -44,6 +47,27 @@ const ACADEMY_ITEMS: AcademyItem[] = [
     to: '/app/dl-course',
     meta: '21',
     icon: GraduationCap,
+  },
+  {
+    name: 'Data Science LMS',
+    desc: '14 lectures on Jupyter, NumPy, Pandas, JSON & Matplotlib',
+    to: '/app/ds-course',
+    meta: '14',
+    icon: BarChart3,
+  },
+  {
+    name: 'IITM Business Fundamentals',
+    desc: '66 lectures on pricing elasticity, Bayes, DEA & conjoint strategy',
+    to: '/app/biz-course',
+    meta: '66',
+    icon: Briefcase,
+  },
+  {
+    name: 'Agentic AI & MCP LMS',
+    desc: '23 lectures on RL agents, LangGraph, CrewAI, Agno & MCP servers',
+    to: '/app/agentic-course',
+    meta: '23',
+    icon: Cpu,
   },
   {
     name: 'Video Masterclasses',

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight,
-  Award,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -22,6 +21,8 @@ import {
 import { api } from '../services/api';
 import { VideoLesson, VideoPlaylistSummary } from '../types';
 import { VideoShareButton } from '../components/videos/VideoShareButton';
+import { CourseShareButton } from '../components/lms/CourseShareButton';
+import { COURSE_TRACK_META, COURSE_TRACK_ORDER } from '../constants/courseTracks';
 
 const CATEGORIES = [
   'All',
@@ -152,70 +153,52 @@ export const VideosPage: React.FC = () => {
       </div>
 
       {/* Featured LMS Flagship Tracks */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5">
-          <Link
-            to="/app/lms/ml"
-            className="w-full sm:w-52 aspect-video shrink-0 rounded-lg overflow-hidden border border-white/[0.08]"
-          >
-            <img
-              src="/thumbnails/ml-ctf-course-thumbnail.svg"
-              alt="Coding Task Factory Complete Machine Learning LMS"
-              className="w-full h-full object-cover"
-            />
-          </Link>
-          <div className="space-y-2.5 flex-1">
-            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#e5a00d] tabular-nums">
-              <GraduationCap className="w-3.5 h-3.5" strokeWidth={1.5} />
-              106 lectures · 100+ quizzes · Proctored exam
-            </div>
-            <h2 className="text-base font-semibold text-[#ededed]">
-              Complete Machine Learning LMS
-            </h2>
-            <p className="text-xs text-[#a1a1a6] leading-relaxed">
-              Full StatQuest 106-video sequence with study notes, capstones, and verified certificate.
-            </p>
-            <Link
-              to="/app/lms/ml"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {COURSE_TRACK_ORDER.map((trackId) => {
+          const meta = COURSE_TRACK_META[trackId];
+          return (
+            <div
+              key={trackId}
+              className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 flex flex-col justify-between gap-4"
             >
-              Open ML course
-              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-            </Link>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5">
-          <Link
-            to="/app/lms/dl"
-            className="w-full sm:w-52 aspect-video shrink-0 rounded-lg overflow-hidden border border-white/[0.08]"
-          >
-            <img
-              src="/thumbnails/stanford-ctf-dl-thumbnail.svg"
-              alt="Stanford X Coding Task Factory Academy Deep Learning Course"
-              className="w-full h-full object-cover"
-            />
-          </Link>
-          <div className="space-y-2.5 flex-1">
-            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#a1a1a6] tabular-nums">
-              <Award className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
-              Stanford CS229 &times; CTF · 21 lectures + 20 quizzes
+              <div className="space-y-3">
+                <Link
+                  to={meta.lmsDetailPath}
+                  className="block aspect-video rounded-lg overflow-hidden border border-white/[0.08]"
+                >
+                  <img
+                    src={meta.defaultThumbnail}
+                    alt={meta.cardTitle}
+                    className="w-full h-full object-cover"
+                  />
+                </Link>
+                <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#e5a00d] tabular-nums">
+                  <GraduationCap className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+                  <span>{meta.hubBadgeText}</span>
+                </div>
+                <h2 className="text-base font-semibold text-[#ededed]">{meta.cardTitle}</h2>
+                <p className="text-xs text-[#a1a1a6] leading-relaxed">{meta.cardSummary}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  to={meta.lmsDetailPath}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.10] text-[#ededed] text-xs font-medium transition-colors"
+                >
+                  Open {meta.shortLabel}
+                  <ArrowRight className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                </Link>
+                <CourseShareButton
+                  track={trackId}
+                  title={meta.cardTitle}
+                  instructor={meta.eyebrowLabel}
+                  lectureCount={meta.lectureCount}
+                  thumbnailUrl={meta.defaultThumbnail}
+                  variant="compact"
+                />
+              </div>
             </div>
-            <h2 className="text-base font-semibold text-[#ededed]">
-              Stanford &times; CTF Deep Learning
-            </h2>
-            <p className="text-xs text-[#a1a1a6] leading-relaxed">
-              CNNs, Transformers, Sequence Models, camera-proctored final exam, and verified certificate.
-            </p>
-            <Link
-              to="/app/lms/dl"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.10] text-[#ededed] text-xs font-medium transition-colors"
-            >
-              Open Stanford DL
-              <ArrowRight className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
-            </Link>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       {/* 8 Full University Course Playlists */}

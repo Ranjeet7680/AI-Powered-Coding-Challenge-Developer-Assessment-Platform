@@ -56,22 +56,28 @@ def build_structured_notes_markdown(
     concept: str,
     explanation: str,
     curriculum_label: str,
+    concept_heading: str = "Core Concept & Mathematical Formulation",
+    takeaway_guidance: Optional[str] = None,
 ) -> str:
+    guidance = takeaway_guidance or (
+        "Understand when assumptions hold (scaling, linearity, convex optimization, margin geometry, latent EM bounds, or policy convergence) "
+        "before choosing hyperparameters in production."
+    )
     return f"""### Lecture {order} Study Notes — {title}
 
 **Module {mod['order']}:** {mod['title']}
 
-#### Core Concept & Mathematical Formulation
+#### {concept_heading}
 {concept}
 
 #### Key Engineering Takeaways
 - {explanation}
-- Understand when assumptions hold (scaling, linearity, convex optimization, margin geometry, latent EM bounds, or policy convergence) before choosing hyperparameters in production.
-- Pair intuition from the **{curriculum_label}** lecture with empirical validation metrics (CV error, generalization bounds, reward curves, and held-out test checks).
+- {guidance}
+- Pair intuition from the **{curriculum_label}** lecture with empirical validation metrics and reproducibility checks.
 
 #### Practical Checklist Before Moving On
-1. Review the formula above and trace what happens at boundary cases (small sample size, non-separable data, or unscaled features).
-2. Inspect the reference Python snippet below to verify numerical & API conventions.
+1. Review the formulation above and trace boundary/edge cases carefully.
+2. Inspect the reference Python snippet below to verify conventions and API behavior.
 3. Complete the **After-Video Comprehension Quiz** below to unlock `+10 XP` and track mastery.
 """
 
@@ -90,6 +96,8 @@ def build_course_catalog(
     id_prefix: str,
     curriculum_label: str,
     capstone_projects: Optional[List[Dict[str, Any]]] = None,
+    concept_heading: str = "Core Concept & Mathematical Formulation",
+    takeaway_guidance: Optional[str] = None,
 ) -> Dict[str, Any]:
     data_path = Path(__file__).resolve().parent / playlist_filename
     with data_path.open("r", encoding="utf-8") as f:
@@ -130,7 +138,14 @@ def build_course_catalog(
                 "youtube_watch_url": build_locked_lms_embed_url(vid),
                 "thumbnail_url": f"https://img.youtube.com/vi/{vid}/hqdefault.jpg",
                 "notes_markdown": build_structured_notes_markdown(
-                    order, title, mod, concept, explanation, curriculum_label
+                    order,
+                    title,
+                    mod,
+                    concept,
+                    explanation,
+                    curriculum_label,
+                    concept_heading=concept_heading,
+                    takeaway_guidance=takeaway_guidance,
                 ),
                 "key_formula": concept,
                 "code_snippet": code_snippet,

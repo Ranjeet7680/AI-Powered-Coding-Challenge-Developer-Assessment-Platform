@@ -1,0 +1,398 @@
+[
+  {
+    "order": 1,
+    "video_id": "_0z2c-Awpt0",
+    "title": "L1: Introduction to data visualization",
+    "duration": "37:41"
+  },
+  {
+    "order": 2,
+    "video_id": "1zWJyhv6j_g",
+    "title": "L2: Defining the message | choosing the right visual for data storytelling",
+    "duration": "23:42"
+  },
+  {
+    "order": 3,
+    "video_id": "lLvRWjclPus",
+    "title": "L3: Creating designs | dashboard & chart design principles for clarity",
+    "duration": "24:12"
+  },
+  {
+    "order": 4,
+    "video_id": "iRdCG6Xg0AY",
+    "title": "L4: Tutorial 1.1: misleading visuals | spotting deceptive charts & graphs",
+    "duration": "8:37"
+  },
+  {
+    "order": 5,
+    "video_id": "Nhf5VyNwY9U",
+    "title": "L5: Tutorial 1.2: building a simple dashboard | call center data in excel",
+    "duration": "40:23"
+  },
+  {
+    "order": 6,
+    "video_id": "yMFsKaMRqdw",
+    "title": "L6: Probability distributions | fitting data with theory & simulation",
+    "duration": "22:23"
+  },
+  {
+    "order": 7,
+    "video_id": "ePqGFuLnVFM",
+    "title": "L7: Business example | fitting probability distributions using stats & plots",
+    "duration": "19:07"
+  },
+  {
+    "order": 8,
+    "video_id": "UM-3E8fsCgA",
+    "title": "L8: Guessing the distribution | goodness of fit & statistical tests",
+    "duration": "15:03"
+  },
+  {
+    "order": 9,
+    "video_id": "rPHT7w1jfck",
+    "title": "L9: Guessing the distribution of dataset 1 | visual & statistical fit in python",
+    "duration": "28:42"
+  },
+  {
+    "order": 10,
+    "video_id": "C60v18OuTgo",
+    "title": "L10: Guessing the distribution of dataset 2 | visualizing data & identifying probability patterns",
+    "duration": "15:18"
+  },
+  {
+    "order": 11,
+    "video_id": "aSDOGXBLZhc",
+    "title": "L11: Guessing the distribution of dataset 3 | chi-square test for uniformity",
+    "duration": "9:24"
+  },
+  {
+    "order": 12,
+    "video_id": "wWFK-N7RTKU",
+    "title": "L12: Determining association between categorical variables | contingency tables",
+    "duration": "39:29"
+  },
+  {
+    "order": 13,
+    "video_id": "O1-fspYUq6g",
+    "title": "L13: Bayes' rule | updating probabilities with new information",
+    "duration": "30:33"
+  },
+  {
+    "order": 14,
+    "video_id": "obVldwZBm0c",
+    "title": "L14: Inferring association between categorical variables | chi-squared test",
+    "duration": "22:02"
+  },
+  {
+    "order": 15,
+    "video_id": "8eeRkqA1YO4",
+    "title": "L15: Chi-squared test of independence | python implementation",
+    "duration": "11:21"
+  },
+  {
+    "order": 16,
+    "video_id": "IFLk64kNdSE",
+    "title": "L16: Chi-squared test of independence | implementation in spreadsheets",
+    "duration": "10:45"
+  },
+  {
+    "order": 17,
+    "video_id": "vTl1tQklAQo",
+    "title": "L17: Demand response curve | pricing strategy & revenue insights explained",
+    "duration": "11:30"
+  },
+  {
+    "order": 18,
+    "video_id": "0I-SMGZqd6c",
+    "title": "W6_L1: Elasticity",
+    "duration": "13:03"
+  },
+  {
+    "order": 19,
+    "video_id": "3nqzbvKIibU",
+    "title": "L19: Linear response curve | price, demand & elasticity in revenue strategy",
+    "duration": "16:27"
+  },
+  {
+    "order": 20,
+    "video_id": "pIHBxiSDjAw",
+    "title": "L20: Estimation problem in demand response curves",
+    "duration": "4:50"
+  },
+  {
+    "order": 21,
+    "video_id": "ZA2DJUgdYGs",
+    "title": "L21: Analyzing linear demand response curve using simple linear regression",
+    "duration": "42:28"
+  },
+  {
+    "order": 22,
+    "video_id": "OwMmB3DR24s",
+    "title": "L22: Building a simple linear regression model on python",
+    "duration": "26:08"
+  },
+  {
+    "order": 23,
+    "video_id": "rvLLuwQZt9E",
+    "title": "L23: Non-linear demand response curve | constant elasticity model & regression",
+    "duration": "3:48"
+  },
+  {
+    "order": 24,
+    "video_id": "HhhHpi5eBQw",
+    "title": "L24: Analyzing constant elasticity model using simple linear regression",
+    "duration": "8:30"
+  },
+  {
+    "order": 25,
+    "video_id": "s8fqKYRp3_8",
+    "title": "Implementing Constant Elasticity Model using Simple Linear Regression",
+    "duration": "23:38"
+  },
+  {
+    "order": 26,
+    "video_id": "tSD817fSgK0",
+    "title": "L25: Optimal pricing - revenue maximization",
+    "duration": "12:50"
+  },
+  {
+    "order": 27,
+    "video_id": "86oTBGl1rnk",
+    "title": "L26: Optimal pricing | profit maximization using elasticity & marginal cost",
+    "duration": "6:03"
+  },
+  {
+    "order": 28,
+    "video_id": "axYhp4su404",
+    "title": "L27: Revenue maximization versus profit maximization",
+    "duration": "9:56"
+  },
+  {
+    "order": 29,
+    "video_id": "go7XAevdV3k",
+    "title": "L28: Operations research | linear programming & duality in spreadsheets & python",
+    "duration": "43:33"
+  },
+  {
+    "order": 30,
+    "video_id": "GglB29ahQDM",
+    "title": "L29: Implementing constant elasticity model using simple linear regression in python",
+    "duration": "12:59"
+  },
+  {
+    "order": 31,
+    "video_id": "mYrEsnuZ_l8",
+    "title": "L30: Multiple linear regression | interaction & collinearity",
+    "duration": "16:15"
+  },
+  {
+    "order": 32,
+    "video_id": "tM17U6PFsrs",
+    "title": "L31: Multiple linear regression | example & excel analysis",
+    "duration": "19:00"
+  },
+  {
+    "order": 33,
+    "video_id": "ZZ6YwLPLC4g",
+    "title": "L32: Multiple linear regression | path diagram & multicollinearity",
+    "duration": "27:42"
+  },
+  {
+    "order": 34,
+    "video_id": "UtC-BNbj0aU",
+    "title": "L33: Multiple linear regression | variance inflation factor | part 1",
+    "duration": "19:45"
+  },
+  {
+    "order": 35,
+    "video_id": "YSFOixgqOJY",
+    "title": "L34: Multiple linear regression | variance inflation factor | part 2",
+    "duration": "23:05"
+  },
+  {
+    "order": 36,
+    "video_id": "dM3CnXrlr9k",
+    "title": "L35: Multiple linear regression | implementation in python",
+    "duration": "15:21"
+  },
+  {
+    "order": 37,
+    "video_id": "3s8XyTUflKM",
+    "title": "L36: Logistic regression | predicting the placements",
+    "duration": "13:55"
+  },
+  {
+    "order": 38,
+    "video_id": "KibI60XYRn0",
+    "title": "L37: Logistic regression | working with data in excel",
+    "duration": "20:22"
+  },
+  {
+    "order": 39,
+    "video_id": "Q8VntgpklI8",
+    "title": "L38: Logistic regression | model building in excel for job placement prediction",
+    "duration": "9:34"
+  },
+  {
+    "order": 40,
+    "video_id": "9bS6Ss6ysUA",
+    "title": "L39: Logistic regression | model evaluation",
+    "duration": "23:43"
+  },
+  {
+    "order": 41,
+    "video_id": "IRLp6eAErSk",
+    "title": "L40: Logistic regression | interpretation of the coefficients",
+    "duration": "4:42"
+  },
+  {
+    "order": 42,
+    "video_id": "-FvQIVCyWOU",
+    "title": "L41: Tutorial- logistic regression in python",
+    "duration": "28:18"
+  },
+  {
+    "order": 43,
+    "video_id": "PF495KZF5wk",
+    "title": "L42: Measuring the efficiency of a business unit",
+    "duration": "18:08"
+  },
+  {
+    "order": 44,
+    "video_id": "J_Kh1CJBgMA",
+    "title": "L43: Efficiency comparison | graphical method",
+    "duration": "20:07"
+  },
+  {
+    "order": 45,
+    "video_id": "ArRb7nxuq6U",
+    "title": "L44: Optimization method | data envelopment analysis",
+    "duration": "42:01"
+  },
+  {
+    "order": 46,
+    "video_id": "aBSyGyNit3U",
+    "title": "L45: Data envelopment analysis | example with one output & two inputs",
+    "duration": "32:02"
+  },
+  {
+    "order": 47,
+    "video_id": "AgooIkOyYGw",
+    "title": "L46: Data envelopment analysis | example with two outputs & one input",
+    "duration": "21:41"
+  },
+  {
+    "order": 48,
+    "video_id": "GnP4eFV82nw",
+    "title": "L47: Data envelopment analysis | example with multiple inputs & outputs",
+    "duration": "19:03"
+  },
+  {
+    "order": 49,
+    "video_id": "LiXo81ihZUg",
+    "title": "L48: Data envelopment analysis | prescription for inefficient units (1 output & 2 inputs case)",
+    "duration": "55:14"
+  },
+  {
+    "order": 50,
+    "video_id": "VPgukzBKRUk",
+    "title": "L49: Data envelopment analysis | prescription for inefficient units (two outputs & one input case)",
+    "duration": "17:15"
+  },
+  {
+    "order": 51,
+    "video_id": "_98BG7VHr9Y",
+    "title": "L50: Consumer choice models | introduction to conjoint analysis for marketing insights",
+    "duration": "18:42"
+  },
+  {
+    "order": 52,
+    "video_id": "DOIhSW38P-Q",
+    "title": "L51: Forms of conjoint analysis | types & applications in marketing",
+    "duration": "13:59"
+  },
+  {
+    "order": 53,
+    "video_id": "xdydJgWuUKo",
+    "title": "L52: Conjoint problem",
+    "duration": "14:06"
+  },
+  {
+    "order": 54,
+    "video_id": "5h0G4G_hiXE",
+    "title": "L53: Optimization formulation of conjoint problem | ideal point model",
+    "duration": "9:44"
+  },
+  {
+    "order": 55,
+    "video_id": "wYT2SH00VBw",
+    "title": "L54: Problem-specific notations | weighted distance & ideal point estimation",
+    "duration": "23:44"
+  },
+  {
+    "order": 56,
+    "video_id": "xG8tRstRfWM",
+    "title": "L55: Conjoint problem formulation using linear programming | excel example",
+    "duration": "25:28"
+  },
+  {
+    "order": 57,
+    "video_id": "Br1ZPQhSW0M",
+    "title": "L56: Solving the conjoint problem | excel-based linear programming optimization for preferences",
+    "duration": "19:40"
+  },
+  {
+    "order": 58,
+    "video_id": "5XccUTnc8zg",
+    "title": "L57: Conjoint analysis using a statistical method",
+    "duration": "34:53"
+  },
+  {
+    "order": 59,
+    "video_id": "6LSpK1ybs6M",
+    "title": "L58: Regression method for conjoint analysis",
+    "duration": "19:53"
+  },
+  {
+    "order": 60,
+    "video_id": "SRHnDZFNgm8",
+    "title": "L59: Epilogue | future of business analytics | data-driven decisions",
+    "duration": "61:32"
+  },
+  {
+    "order": 61,
+    "video_id": "T2-nUf1BjWA",
+    "title": "L60: Epilogue-continuation | financial & marketing engineering in analytics",
+    "duration": "28:35"
+  },
+  {
+    "order": 62,
+    "video_id": "17EQ8wzoExQ",
+    "title": "L61: Part-1 | overview of chisquare goodness-of-fit test (GOF) | explained",
+    "duration": "11:50"
+  },
+  {
+    "order": 63,
+    "video_id": "XyI9uLnkVxs",
+    "title": "Part-2 - Tutorial on performing Chisquare GOF for a Uniform Distribution",
+    "duration": "21:57"
+  },
+  {
+    "order": 64,
+    "video_id": "VRd2sMymf1c",
+    "title": "L63: Part-3 | tutorial on performing chisquare GOF for a Poisson distribution",
+    "duration": "15:48"
+  },
+  {
+    "order": 65,
+    "video_id": "ShDPBmYr3n4",
+    "title": "L62: Part-2 | tutorial on performing chisquare GOF for a uniform distribution",
+    "duration": "21:57"
+  },
+  {
+    "order": 66,
+    "video_id": "T7mQW6N1JH8",
+    "title": "Part-3 - Tutorial on performing Chisquare GOF for a Poisson distribution",
+    "duration": "15:48"
+  }
+]

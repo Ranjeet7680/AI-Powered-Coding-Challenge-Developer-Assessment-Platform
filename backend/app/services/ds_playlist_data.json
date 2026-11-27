@@ -1,0 +1,86 @@
+[
+  {
+    "order": 1,
+    "video_id": "pF-h1YCS5GE",
+    "title": "[Hindi] What, Why And How of Big Data Analysis | Python Data Science and Big Data Tutorials In Hindi",
+    "duration": "3:27"
+  },
+  {
+    "order": 2,
+    "video_id": "TjRXT8mkTvM",
+    "title": "[Hindi] Jupyter Notebook Installation and demo | Python Data Science and Big Data Tutorials In Hindi",
+    "duration": "22:50"
+  },
+  {
+    "order": 3,
+    "video_id": "HYoGR7kq_sA",
+    "title": "[Hindi] Numpy Python Tutorial For Beginners | Python Data Science and Big Data Tutorials In Hindi",
+    "duration": "15:45"
+  },
+  {
+    "order": 4,
+    "video_id": "cg8P0NSe8Ew",
+    "title": "[Hindi] Python Numpy Array Functions and Slicing-Python Data Science and Big Data Tutorials in Hindi",
+    "duration": "27:52"
+  },
+  {
+    "order": 5,
+    "video_id": "mcpphUjarHo",
+    "title": "[Hindi] Axis, Sorting & Useful Numpy Functions-Python Data Science and Big Data Tutorials in Hindi",
+    "duration": "14:58"
+  },
+  {
+    "order": 6,
+    "video_id": "ZD1Qig8gmVA",
+    "title": "[Hindi] Numpy Argsort, Argmin, Argmax And Other Tips - Python Data Science and Big Data Tutorials",
+    "duration": "10:46"
+  },
+  {
+    "order": 7,
+    "video_id": "iOX150jUnH8",
+    "title": "[Hindi] Introduction To Pandas Module - Python Data Science and Big Data Tutorials",
+    "duration": "7:30"
+  },
+  {
+    "order": 8,
+    "video_id": "Q5F9WLhtfRk",
+    "title": "[Hindi] Creating Our First Pandas DataFrame - Python Data Science and Big Data Tutorials",
+    "duration": "9:22"
+  },
+  {
+    "order": 9,
+    "video_id": "VZwYd4UaaeY",
+    "title": "[Hindi] Slicing And Adding Columns To A DataFrame - Python Data Science and Big Data Tutorials",
+    "duration": "16:04"
+  },
+  {
+    "order": 10,
+    "video_id": "TRJr5h6HI8Q",
+    "title": "[Hindi] Reading A CSV File In Python Pandas - Python Data Science and Big Data Tutorials",
+    "duration": "11:47"
+  },
+  {
+    "order": 11,
+    "video_id": "qtxrpHjG-oE",
+    "title": "[Hindi] Writing A CSV File In Python Pandas - Python Data Science and Big Data Tutorials",
+    "duration": "8:02"
+  },
+  {
+    "order": 12,
+    "video_id": "v_f__2IWfZI",
+    "title": "[Hindi] Merging DataFrames In Pandas - Python Data Science and Big Data Tutorials",
+    "duration": "9:17"
+  },
+  {
+    "order": 13,
+    "video_id": "Rolq7_E4ses",
+    "title": "[Hindi] Working With JSON In Python - Python Data Science and Big Data Tutorials",
+    "duration": "8:31"
+  },
+  {
+    "order": 14,
+    "video_id": "VFsRLjSc8GA",
+    "title": "[Hindi] Python Matplotlib Tutorial - Python Data Science and Big Data Tutorials",
+    "duration": "14:20"
+  }
+]

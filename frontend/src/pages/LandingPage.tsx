@@ -770,7 +770,7 @@ public:
                 Learn the theory, then implement the solution
               </h2>
               <p className="text-[#a1a1a6] text-sm sm:text-base mt-3 leading-relaxed">
-                Follow structured machine learning and deep learning tracks with lecture notes, quizzes, capstones, and camera-proctored exams.
+                Follow structured machine learning, deep learning, data science, entrepreneurship, and agentic AI tracks with lecture notes, quizzes, capstones, and camera-proctored exams.
               </p>
             </div>
 
@@ -795,6 +795,27 @@ public:
               >
                 <GraduationCap strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
                 <span>Stanford DL (21)</span>
+              </Link>
+              <Link
+                to="/app/lms/ds"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] font-medium text-xs transition-colors"
+              >
+                <BarChart3 strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                <span>Data Science (14)</span>
+              </Link>
+              <Link
+                to="/app/lms/biz"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] font-medium text-xs transition-colors"
+              >
+                <Briefcase strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                <span>IITM Business (66)</span>
+              </Link>
+              <Link
+                to="/app/lms/agentic"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] font-medium text-xs transition-colors"
+              >
+                <Cpu strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                <span>Agentic AI (23)</span>
               </Link>
             </div>
           </div>

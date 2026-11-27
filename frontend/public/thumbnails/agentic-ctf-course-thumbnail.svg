@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" fill="#141415" />
+
+  <!-- Subtle Hairline Architectural Grid -->
+  <g stroke="#222225" stroke-width="1">
+    <path d="M0 120 H1280 M0 240 H1280 M0 360 H1280 M0 480 H1280 M0 600 H1280" />
+    <path d="M160 0 V720 M320 0 V720 M480 0 V720 M640 0 V720 M800 0 V720 M960 0 V720 M1120 0 V720" />
+  </g>
+
+  <!-- Precision Graphite Frame -->
+  <rect x="28" y="28" width="1224" height="664" rx="20" fill="#19191b" fill-opacity="0.92" stroke="#2c2c31" stroke-width="1.5" />
+
+  <!-- Right-Side Stateful Multi-Agent + MCP Graph -->
+  <g transform="translate(765, 118)">
+    <rect x="0" y="0" width="435" height="495" rx="18" fill="#141415" stroke="#2c2c31" stroke-width="1.5" />
+
+    <!-- Orchestrator Edges -->
+    <g stroke="#35353b" stroke-width="2">
+      <line x1="218" y1="88" x2="108" y2="204" />
+      <line x1="218" y1="88" x2="328" y2="204" />
+      <line x1="108" y1="204" x2="218" y2="318" />
+      <line x1="328" y1="204" x2="218" y2="318" />
+    </g>
+    <g stroke="#e5a00d" stroke-opacity="0.7" stroke-width="2" stroke-dasharray="5 4">
+      <line x1="218" y1="318" x2="218" y2="118" />
+      <line x1="108" y1="204" x2="328" y2="204" />
+    </g>
+
+    <!-- Nodes -->
+    <rect x="136" y="50" width="164" height="52" rx="10" fill="#19191b" stroke="#e5a00d" stroke-width="1.8" />
+    <text x="218" y="81" text-anchor="middle" fill="#ededed" font-family="ui-monospace, monospace" font-size="14" font-weight="600">Planner Graph</text>
+
+    <rect x="38" y="178" width="140" height="52" rx="10" fill="#19191b" stroke="#85858b" stroke-width="1.5" />
+    <text x="108" y="209" text-anchor="middle" fill="#ededed" font-family="ui-monospace, monospace" font-size="13">Agentic RAG</text>
+
+    <rect x="258" y="178" width="140" height="52" rx="10" fill="#19191b" stroke="#4cc38a" stroke-width="1.5" />
+    <text x="328" y="209" text-anchor="middle" fill="#4cc38a" font-family="ui-monospace, monospace" font-size="13">MCP Server</text>
+
+    <rect x="136" y="294" width="164" height="52" rx="10" fill="#19191b" stroke="#ededed" stroke-width="1.5" />
+    <text x="218" y="325" text-anchor="middle" fill="#ededed" font-family="ui-monospace, monospace" font-size="14">Tool &amp; Critic</text>
+
+    <!-- Protocol Tags -->
+    <rect x="44" y="372" width="106" height="36" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="97" y="395" text-anchor="middle" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="12">LangGraph</text>
+
+    <rect x="164" y="372" width="106" height="36" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="217" y="395" text-anchor="middle" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="12">CrewAI</text>
+
+    <rect x="284" y="372" width="106" height="36" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="337" y="395" text-anchor="middle" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="12">Agno SDK</text>
+
+    <rect x="44" y="438" width="346" height="38" rx="8" fill="#19191b" stroke="#2c2c31" stroke-width="1.2" />
+    <text x="217" y="462" text-anchor="middle" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="14" font-weight="500">perceive() -&gt; reason() -&gt; mcp.call()</text>
+  </g>
+
+  <g transform="translate(74, 84)">
+    <rect x="0" y="0" width="460" height="40" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <circle cx="22" cy="20" r="5" fill="#e5a00d" />
+    <text x="40" y="25" fill="#ededed" font-family="ui-monospace, monospace" font-size="15" font-weight="500">Coding Task Factory · Autonomous Systems</text>
+  </g>
+
+  <g transform="translate(74, 160)">
+    <rect x="0" y="0" width="76" height="76" rx="14" fill="#141415" stroke="#35353b" stroke-width="1.5" />
+    <circle cx="26" cy="28" r="6" stroke="#ededed" stroke-width="2.5" />
+    <circle cx="50" cy="28" r="6" stroke="#e5a00d" stroke-width="2.5" />
+    <circle cx="38" cy="52" r="6" stroke="#4cc38a" stroke-width="2.5" />
+    <line x1="31" y1="32" x2="35" y2="47" stroke="#85858b" stroke-width="2" />
+    <line x1="45" y1="32" x2="41" y2="47" stroke="#85858b" stroke-width="2" />
+    <text x="98" y="30" fill="#e5a00d" font-family="ui-monospace, monospace" font-size="15" font-weight="500">Multi-Agent &amp; MCP Track</text>
+    <text x="98" y="58" fill="#a1a1a6" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="500">Code With Aarohi · Engineering LMS</text>
+  </g>
+
+  <text x="74" y="328" fill="#ededed" font-family="system-ui, -apple-system, sans-serif" font-size="60" font-weight="600">Agentic AI</text>
+  <text x="74" y="396" fill="#a1a1a6" font-family="system-ui, -apple-system, sans-serif" font-size="50" font-weight="600">&amp; MCP Engineering</text>
+  <text x="74" y="454" fill="#85858b" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="400">RL Agents, LangGraph, CrewAI, Agno RAG, Custom MCP &amp; OpenAI SDK</text>
+
+  <g transform="translate(74, 512)" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="500">
+    <rect x="0" y="0" width="160" height="52" rx="10" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="80" y="32" text-anchor="middle" fill="#ededed">23 lectures</text>
+    <rect x="176" y="0" width="166" height="52" rx="10" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="259" y="32" text-anchor="middle" fill="#ededed">23 quizzes</text>
+    <rect x="358" y="0" width="164" height="52" rx="10" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+    <text x="440" y="32" text-anchor="middle" fill="#ededed">Notes &amp; code</text>
+    <rect x="538" y="0" width="184" height="52" rx="10" fill="#222225" stroke="#4cc38a" stroke-opacity="0.45" stroke-width="1.2" />
+    <text x="630" y="32" text-anchor="middle" fill="#4cc38a">Cam proctored</text>
+  </g>
+
+  <g transform="translate(74, 622)">
+    <rect x="0" y="-18" width="6" height="22" rx="3" fill="#4cc38a" />
+    <text x="20" y="0" fill="#85858b" font-family="ui-monospace, monospace" font-size="15" font-weight="400">Proctored final exam · SHA-256 verified certificate &amp; A4 vector PDF</text>
+  </g>
+</svg>

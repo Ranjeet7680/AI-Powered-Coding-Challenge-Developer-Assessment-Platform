@@ -20,12 +20,18 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { MLCourseOverview, MLCourseReviewsOverview } from '../types';
+import {
+  COURSE_TRACK_META,
+  COURSE_TRACK_ORDER,
+  resolveCourseTrack,
+} from '../constants/courseTracks';
+import { CourseShareButton } from '../components/lms/CourseShareButton';
+import { syncCourseOpenGraphMeta } from '../utils/courseShare';
 
 export const CourseDetailPage: React.FC = () => {
   const { track: routeTrack } = useParams<{ track?: string }>();
-  const track: 'ml' | 'dl' = routeTrack === 'dl' ? 'dl' : 'ml';
-  const isDL = track === 'dl';
-  const learnBasePath = isDL ? '/app/dl-course' : '/app/ml-course';
+  const track = resolveCourseTrack(routeTrack);
+  const learnBasePath = COURSE_TRACK_META[track].learnBasePath;
 
   const [course, setCourse] = useState<MLCourseOverview | null>(null);
   const [reviews, setReviews] = useState<MLCourseReviewsOverview | null>(null);
@@ -40,6 +46,14 @@ export const CourseDetailPage: React.FC = () => {
         if (cancelled) return;
         setCourse(ov);
         setReviews(rev);
+        syncCourseOpenGraphMeta({
+          track,
+          title: ov.title,
+          instructor: ov.instructor,
+          lectureCount: ov.total_lessons,
+          moduleCount: ov.modules.length,
+          thumbnailUrl: ov.thumbnail_url,
+        });
         const initialExpanded: Record<string, boolean> = {};
         if (ov.modules.length > 0) {
           initialExpanded[ov.modules[0].id] = true;
@@ -67,7 +81,9 @@ export const CourseDetailPage: React.FC = () => {
   const completed = course.progress?.completed_lessons || [];
   const nextLecture =
     course.lessons.find((l) => !completed.includes(l.id)) || course.lessons[0];
-  const totalHours = course.modules.reduce((acc, m) => acc + (m.estimated_hours || 2), 0);
+  const totalHours = Number(
+    course.modules.reduce((acc, m) => acc + (m.estimated_hours || 2), 0).toFixed(1)
+  );
   const completionPct = Math.round((completed.length / Math.max(1, course.total_lessons)) * 100);
 
   const expandAllModules = () => {
@@ -80,31 +96,26 @@ export const CourseDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           to="/app/lms"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#85858b] hover:text-[#ededed] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#85858b] hover:text-[#ededed] transition-colors shrink-0 whitespace-nowrap"
         >
           <ArrowLeft strokeWidth={1.5} className="w-4 h-4" />
           <span>All courses</span>
         </Link>
-        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs font-mono tabular-nums">
-          <Link
-            to="/app/lms/ml"
-            className={`px-2.5 py-1 rounded-md transition-colors ${
-              !isDL ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
-            }`}
-          >
-            ML (106)
-          </Link>
-          <Link
-            to="/app/lms/dl"
-            className={`px-2.5 py-1 rounded-md transition-colors ${
-              isDL ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
-            }`}
-          >
-            Stanford DL (21)
-          </Link>
+        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs font-mono tabular-nums">
+          {COURSE_TRACK_ORDER.map((id) => (
+            <Link
+              key={id}
+              to={COURSE_TRACK_META[id].lmsDetailPath}
+              className={`px-2 py-1 rounded-md transition-colors whitespace-nowrap ${
+                track === id ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
+              }`}
+            >
+              {COURSE_TRACK_META[id].switcherLabel}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -113,7 +124,7 @@ export const CourseDetailPage: React.FC = () => {
         <div className="lg:col-span-7 space-y-4">
           <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
             <span className="text-[#e5a00d]">
-              {isDL ? 'Stanford × Coding Task Factory' : 'Engineering Academy'}
+              {COURSE_TRACK_META[track].eyebrowLabel}
             </span>
             {reviews && (
               <span className="inline-flex items-center gap-1 text-[#a1a1a6] tabular-nums">
@@ -151,6 +162,14 @@ export const CourseDetailPage: React.FC = () => {
               <Layers strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
               <span>Syllabus ({course.total_lessons})</span>
             </a>
+            <CourseShareButton
+              track={track}
+              title={course.title}
+              instructor={course.instructor}
+              lectureCount={course.total_lessons}
+              moduleCount={course.modules.length}
+              thumbnailUrl={course.thumbnail_url}
+            />
           </div>
         </div>
 

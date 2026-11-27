@@ -38,6 +38,27 @@ CATEGORY_SKILLS_MAP: Dict[str, List[str]] = {
         "AI Code Auditing",
         "Evaluation Harnesses",
     ],
+    "Data Science & Big Data Analytics": [
+        "NumPy Vectorization",
+        "Pandas DataFrames",
+        "CSV & JSON ETL",
+        "Data Merging & Joins",
+        "Matplotlib Visualization",
+    ],
+    "Entrepreneurial & Business Analytics": [
+        "Pricing Elasticity & Profit Opt",
+        "Bayes & Chi-Square Inference",
+        "Multiple Regression & VIF",
+        "Data Envelopment Analysis (DEA)",
+        "Conjoint Market Simulation",
+    ],
+    "Agentic AI & MCP Systems": [
+        "Agent Architectures & Q-Learning",
+        "LangGraph Stateful Workflows",
+        "CrewAI & Agno Multi-Agent RAG",
+        "Model Context Protocol (MCP)",
+        "OpenAI Agents SDK & Cloud Tools",
+    ],
     "Enterprise Technical Assessment": [
         "Timed Problem Solving",
         "Edge-Case Resilience",
@@ -68,7 +89,13 @@ def default_certificate_metadata(
     skills = CATEGORY_SKILLS_MAP.get(category)
     if not skills:
         lowered = (title + " " + category).lower()
-        if "ai" in lowered or "ml" in lowered or "machine" in lowered:
+        if "business" in lowered or "entrepreneur" in lowered or "conjoint" in lowered:
+            skills = CATEGORY_SKILLS_MAP["Entrepreneurial & Business Analytics"]
+        elif "agentic" in lowered or "mcp" in lowered or "langgraph" in lowered:
+            skills = CATEGORY_SKILLS_MAP["Agentic AI & MCP Systems"]
+        elif "data science" in lowered or "big data" in lowered or "pandas" in lowered:
+            skills = CATEGORY_SKILLS_MAP["Data Science & Big Data Analytics"]
+        elif "ai" in lowered or "ml" in lowered or "machine" in lowered:
             skills = CATEGORY_SKILLS_MAP["Applied AI Engineering"]
         elif "system" in lowered or "full" in lowered or "architecture" in lowered:
             skills = CATEGORY_SKILLS_MAP["Enterprise Software Engineering"]

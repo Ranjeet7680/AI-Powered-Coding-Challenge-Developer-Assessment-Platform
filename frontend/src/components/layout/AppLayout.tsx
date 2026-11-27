@@ -31,6 +31,7 @@ import {
   BrainCircuit,
   GraduationCap,
   BookOpen,
+  Briefcase,
   Flame,
   Keyboard,
   PanelLeftClose,
@@ -69,6 +70,9 @@ const NAV_SECTIONS: NavSectionConfig[] = [
       { name: 'Courses hub', path: '/app/lms', icon: BookOpen },
       { name: 'ML course', path: '/app/ml-course', icon: BrainCircuit, meta: '106' },
       { name: 'Stanford DL', path: '/app/dl-course', icon: GraduationCap, meta: '21' },
+      { name: 'Data Science', path: '/app/ds-course', icon: BarChart3, meta: '14' },
+      { name: 'IITM Business', path: '/app/biz-course', icon: Briefcase, meta: '66' },
+      { name: 'Agentic AI', path: '/app/agentic-course', icon: Cpu, meta: '23' },
       { name: 'Video library', path: '/app/videos', icon: Video },
     ],
   },
@@ -201,11 +205,17 @@ export const AppLayout: React.FC = () => {
   const getBreadcrumbs = () => {
     const path = location.pathname;
     if (path.includes('/dashboard')) return ['Workspace', 'Overview'];
+    if (path.includes('/lms/agentic')) return ['Workspace', 'LMS hub', 'Agentic AI'];
+    if (path.includes('/lms/biz')) return ['Workspace', 'LMS hub', 'IITM Business'];
+    if (path.includes('/lms/ds')) return ['Workspace', 'LMS hub', 'Data Science'];
     if (path.includes('/lms/dl')) return ['Workspace', 'LMS hub', 'Stanford DL'];
     if (path.includes('/lms/ml')) return ['Workspace', 'LMS hub', 'ML course'];
     if (path.includes('/lms')) return ['Workspace', 'LMS courses hub'];
     if (path.includes('/ml-course')) return ['Workspace', 'Academies', 'ML course'];
     if (path.includes('/dl-course')) return ['Workspace', 'Academies', 'Stanford DL'];
+    if (path.includes('/ds-course')) return ['Workspace', 'Academies', 'Data Science'];
+    if (path.includes('/biz-course')) return ['Workspace', 'Academies', 'IITM Business'];
+    if (path.includes('/agentic-course')) return ['Workspace', 'Academies', 'Agentic AI'];
     if (path.includes('/videos')) return ['Workspace', 'Academies', 'Video library'];
     if (path.includes('/challenges')) return ['Workspace', 'Challenge library'];
     if (path.includes('/generator')) return ['Workspace', 'Task generator'];
@@ -549,6 +559,16 @@ export const AppLayout: React.FC = () => {
                       <p className="font-medium text-[#ededed]">Stanford Deep Learning LMS</p>
                       <p className="text-[#85858b] mt-0.5">
                         21 lectures, capstone lab, and proctored certification available
+                      </p>
+                    </Link>
+                    <Link
+                      to="/app/ds-course"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="block p-2.5 rounded-lg bg-[#141415] border border-white/[0.08] hover:border-white/[0.16] transition-colors"
+                    >
+                      <p className="font-medium text-[#ededed]">Python Data Science &amp; Big Data</p>
+                      <p className="text-[#85858b] mt-0.5">
+                        14 NumPy, Pandas, JSON &amp; Matplotlib lectures with proctored exam
                       </p>
                     </Link>
                   </div>

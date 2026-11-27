@@ -19,6 +19,21 @@ from app.services.dl_course_catalog import (  # noqa: E402
     get_dl_final_exam_questions,
     get_dl_quiz_bank,
 )
+from app.services.ds_course_catalog import (  # noqa: E402
+    DS_COURSE_TITLE,
+    get_ds_final_exam_questions,
+    get_ds_quiz_bank,
+)
+from app.services.biz_course_catalog import (  # noqa: E402
+    BIZ_COURSE_TITLE,
+    get_biz_final_exam_questions,
+    get_biz_quiz_bank,
+)
+from app.services.agentic_course_catalog import (  # noqa: E402
+    AGENTIC_COURSE_TITLE,
+    get_agentic_final_exam_questions,
+    get_agentic_quiz_bank,
+)
 from app.services.ml_course_catalog import (  # noqa: E402
     get_100_quiz_bank,
     get_final_exam_questions,
@@ -610,3 +625,287 @@ def test_proctor_log_tamper_resistance(ml_client: TestClient):
     assert data["violations"] == 3
     assert data["passed"] is False
     assert data["certificate"] is None
+
+
+def test_ds_course_14_videos_quizzes_capstones_exam_and_certificate(ml_client: TestClient):
+    headers = _register_and_auth(ml_client)
+
+    overview_resp = ml_client.get("/api/ds-course", headers=headers)
+    assert overview_resp.status_code == 200, overview_resp.text
+    overview = overview_resp.json()
+
+    assert overview["title"] == DS_COURSE_TITLE
+    assert overview["total_lessons"] == 14
+    assert len(overview["modules"]) == 3
+    assert len(overview["lessons"]) == 14
+    assert len(overview["capstone_projects"]) == 3
+    assert overview["lms_player_mode"] == "locked_in_lms"
+
+    for lesson in overview["lessons"]:
+        assert lesson["video_url"].startswith("https://www.youtube-nocookie.com/embed/")
+        assert "youtube.com/watch" not in lesson["video_url"]
+        assert "Quiz" in lesson["quiz"]["question"] or len(lesson["quiz"]["options"]) == 4
+
+    # Complete first DS lecture + save note (ensure isolated from ML/DL progress)
+    comp = ml_client.post("/api/ds-course/lessons/ds-001/complete", headers=headers)
+    assert comp.status_code == 200, comp.text
+    assert comp.json()["points_awarded"] == 15
+
+    note_res = ml_client.put(
+        "/api/ds-course/lessons/ds-001/notes",
+        json={"notes": "Reviewed Big Data 3Vs: Volume, Velocity, Variety."},
+        headers=headers,
+    )
+    assert note_res.status_code == 200
+    assert note_res.json()["saved"] is True
+
+    # Verify ML progress remains completely separate for same user
+    ml_check = ml_client.get("/api/ml-course", headers=headers).json()
+    assert "ds-001" not in ml_check["progress"]["completed_lessons"]
+
+    # Seeded Data Science reviews exist
+    rev_overview = ml_client.get("/api/ds-course/reviews", headers=headers).json()
+    assert rev_overview["total_reviews"] >= 3
+
+    # Quiz bank has all 14 Data Science questions with zero secret answers leaked
+    bank_resp = ml_client.get("/api/ds-course/quiz-bank")
+    assert bank_resp.status_code == 200
+    bank_qs = bank_resp.json()["questions"]
+    assert len(bank_qs) == 14
+    assert all("correct_index" not in q for q in bank_qs)
+
+    truth_bank = get_ds_quiz_bank(include_answers=True)
+    practice_submit = ml_client.post(
+        "/api/ds-course/quiz-bank/submit",
+        json={"answers": {q["id"]: q["correct_index"] for q in truth_bank}},
+        headers=headers,
+    )
+    assert practice_submit.status_code == 200
+    assert practice_submit.json()["score_percent"] == 100
+
+    # Capstone submission
+    cap_resp = ml_client.post(
+        "/api/ds-course/capstone/submit",
+        json={
+            "project_id": overview["capstone_projects"][0]["id"],
+            "title": "Vectorized NumPy Telemetry Ranking",
+            "repo_url": "https://github.com/coding-task-factory/ds-numpy-capstone",
+            "architecture_notes": (
+                "Implemented axis=0 z-score standardization across sensor readings, handled zero-variance "
+                "columns cleanly without NaN division, and used np.argsort for fast top-k telemetry ranking."
+            ),
+            "code_submission": (
+                "import numpy as np\n\n"
+                "def rank_sensors(matrix: np.ndarray, top_k: int = 3) -> np.ndarray:\n"
+                "    means = matrix.mean(axis=0, keepdims=True)\n"
+                "    stds = np.where(matrix.std(axis=0, keepdims=True) == 0, 1.0, matrix.std(axis=0, keepdims=True))\n"
+                "    scores = ((matrix - means) / stds).mean(axis=0)\n"
+                "    return np.argsort(scores)[::-1][:top_k]\n"
+            ),
+        },
+        headers=headers,
+    )
+    assert cap_resp.status_code == 200, cap_resp.text
+    assert cap_resp.json()["status"] == "Approved"
+
+    # Proctored final exam -> Certificate -> PDF -> Goodies flow
+    exam_meta = ml_client.get("/api/ds-course/final-exam", headers=headers).json()
+    assert exam_meta["total_questions"] == 14
+    assert exam_meta["duration_minutes"] == 25
+
+    exam_truth = get_ds_final_exam_questions(include_answers=True)
+    pass_resp = ml_client.post(
+        "/api/ds-course/final-exam/submit",
+        json={
+            "answers": {q["id"]: q["correct_index"] for q in exam_truth},
+            "violations": 0,
+            "violation_log": [],
+            "elapsed_seconds": 360,
+            "camera_verified": True,
+            "auto_terminated": False,
+        },
+        headers=headers,
+    )
+    assert pass_resp.status_code == 200, pass_resp.text
+    pass_data = pass_resp.json()
+    assert pass_data["passed"] is True
+    assert pass_data["score_percent"] == 100
+    cert = pass_data["certificate"]
+    assert cert is not None
+    assert cert["title"] == DS_COURSE_TITLE
+    assert cert["credential_id"].startswith("CTF-DS-")
+
+    pdf_resp = ml_client.get(f"/api/certificates/{cert['credential_id']}/pdf")
+    assert pdf_resp.status_code == 200
+    assert pdf_resp.headers.get("content-type", "").startswith("application/pdf")
+
+    goodies = ml_client.post(
+        "/api/ds-course/goodies",
+        json={
+            "full_name": "Data Graduate",
+            "email": "ds.grad@example.com",
+            "phone": "+919876543210",
+            "tshirt_size": "M",
+            "swag_bundle": "Complete Graduate Swag Box",
+            "address_line": "101 Analytics Way",
+            "city": "Bengaluru",
+            "state": "KA",
+            "postal_code": "560001",
+            "country": "India",
+        },
+        headers=headers,
+    )
+    assert goodies.status_code == 200, goodies.text
+    assert goodies.json()["course_id"] == overview["id"]
+    assert goodies.json()["dispatch_code"].startswith("CTF-SWAG-")
+
+
+@pytest.mark.parametrize(
+    "prefix,expected_title,expected_lessons,expected_modules,expected_exam_qs,cert_prefix,get_truth_bank,get_truth_exam,cap_title",
+    [
+        (
+            "/api/biz-course",
+            BIZ_COURSE_TITLE,
+            66,
+            6,
+            30,
+            "CTF-BIZ-",
+            get_biz_quiz_bank,
+            get_biz_final_exam_questions,
+            "Constant-Elasticity Pricing Optimizer",
+        ),
+        (
+            "/api/agentic-course",
+            AGENTIC_COURSE_TITLE,
+            23,
+            4,
+            20,
+            "CTF-AG-",
+            get_agentic_quiz_bank,
+            get_agentic_final_exam_questions,
+            "Stateful LangGraph Router & MCP",
+        ),
+    ],
+)
+def test_biz_and_agentic_courses_end_to_end(
+    ml_client: TestClient,
+    prefix: str,
+    expected_title: str,
+    expected_lessons: int,
+    expected_modules: int,
+    expected_exam_qs: int,
+    cert_prefix: str,
+    get_truth_bank,
+    get_truth_exam,
+    cap_title: str,
+):
+    headers = _register_and_auth(ml_client)
+
+    ov_resp = ml_client.get(prefix, headers=headers)
+    assert ov_resp.status_code == 200, ov_resp.text
+    ov = ov_resp.json()
+
+    assert ov["title"] == expected_title
+    assert ov["total_lessons"] == expected_lessons
+    assert len(ov["modules"]) == expected_modules
+    assert len(ov["lessons"]) == expected_lessons
+    assert len(ov["capstone_projects"]) == 3
+    assert ov["lms_player_mode"] == "locked_in_lms"
+
+    first_id = ov["lessons"][0]["id"]
+    comp = ml_client.post(f"{prefix}/lessons/{first_id}/complete", headers=headers)
+    assert comp.status_code == 200, comp.text
+    assert comp.json()["points_awarded"] == 15
+
+    bank_resp = ml_client.get(f"{prefix}/quiz-bank")
+    assert bank_resp.status_code == 200
+    bank_qs = bank_resp.json()["questions"]
+    assert len(bank_qs) == expected_lessons
+    assert all("correct_index" not in q for q in bank_qs)
+
+    truth_bank = get_truth_bank(include_answers=True)
+    batch = ml_client.post(
+        f"{prefix}/quiz-bank/submit",
+        json={"answers": {q["id"]: q["correct_index"] for q in truth_bank}},
+        headers=headers,
+    )
+    assert batch.status_code == 200
+    assert batch.json()["score_percent"] == 100
+
+    cap = ml_client.post(
+        f"{prefix}/capstone/submit",
+        json={
+            "project_id": ov["capstone_projects"][0]["id"],
+            "title": cap_title,
+            "repo_url": "https://github.com/coding-task-factory/capstone-verified",
+            "architecture_notes": (
+                "Validated quantitative objective constraints, deterministic edge-case handling, and automated unit checks across sample data."
+            ),
+            "code_submission": (
+                "import numpy as np\n\n"
+                "def evaluate_pipeline(values):\n"
+                "    arr = np.asarray(values, dtype=float)\n"
+                "    if arr.size == 0:\n"
+                "        return 0.0\n"
+                "    return float(arr.mean())\n"
+            ),
+        },
+        headers=headers,
+    )
+    assert cap.status_code == 200, cap.text
+    assert cap.json()["status"] == "Approved"
+
+    exam_meta = ml_client.get(f"{prefix}/final-exam", headers=headers).json()
+    assert exam_meta["total_questions"] == expected_exam_qs
+
+    truth_exam = get_truth_exam(include_answers=True)
+    exam_res = ml_client.post(
+        f"{prefix}/final-exam/submit",
+        json={
+            "answers": {q["id"]: q["correct_index"] for q in truth_exam},
+            "violations": 0,
+            "violation_log": [],
+            "elapsed_seconds": 420,
+            "camera_verified": True,
+            "auto_terminated": False,
+        },
+        headers=headers,
+    )
+    assert exam_res.status_code == 200, exam_res.text
+    exam_data = exam_res.json()
+    assert exam_data["passed"] is True
+    assert exam_data["score_percent"] == 100
+    cert = exam_data["certificate"]
+    assert cert["title"] == expected_title
+    assert cert["credential_id"].startswith(cert_prefix)
+
+    pdf_resp = ml_client.get(f"/api/certificates/{cert['credential_id']}/pdf")
+    assert pdf_resp.status_code == 200
+    assert pdf_resp.headers.get("content-type", "").startswith("application/pdf")
+
+
+@pytest.mark.parametrize(
+    "track,expected_thumb",
+    [
+        ("ml", "ml-ctf-course-thumbnail.svg"),
+        ("dl", "stanford-ctf-dl-thumbnail.svg"),
+        ("ds", "ds-ctf-course-thumbnail.svg"),
+        ("biz", "iitm-ctf-biz-thumbnail.svg"),
+        ("agentic", "agentic-ctf-course-thumbnail.svg"),
+    ],
+)
+def test_course_share_open_graph_preview_with_thumbnail(
+    ml_client: TestClient,
+    track: str,
+    expected_thumb: str,
+):
+    resp = ml_client.get(f"/api/share/course/{track}")
+    assert resp.status_code == 200, resp.text
+    html_body = resp.text
+    assert 'property="og:image"' in html_body
+    assert expected_thumb in html_body
+    assert 'name="twitter:card" content="summary_large_image"' in html_body
+    assert f"/app/lms/{track}" in html_body
+
+    bad_resp = ml_client.get("/api/share/course/unknown-track")
+    assert bad_resp.status_code == 404

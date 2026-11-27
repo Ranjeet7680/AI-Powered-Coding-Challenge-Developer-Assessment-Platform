@@ -1,3 +1,4 @@
+import { COURSE_TRACK_META, CourseTrack } from '../constants/courseTracks';
 import {
   Challenge,
   Submission,
@@ -301,8 +302,9 @@ export const api = {
   getVideoWatchContext: (id: string) =>
     request<VideoWatchContextResponse>(`/videos/${encodeURIComponent(id)}/watch-context`),
 
-  // Parameterized LMS Course Client (supports both ML 106-video and Stanford X CTF DL 21-video)
-  courseLms: (track: 'ml' | 'dl') => createCourseClient(track === 'dl' ? '/dl-course' : '/ml-course'),
+  // Parameterized LMS Course Client (supports ML, DL, DS, IIT Madras Business & Agentic AI)
+  courseLms: (track: CourseTrack) =>
+    createCourseClient(COURSE_TRACK_META[track].apiBasePath),
 
   // Machine Learning 106-Video Full LMS (direct convenience aliases)
   getMLCourseOverview: () => createCourseClient('/ml-course').getOverview(),
@@ -326,7 +328,9 @@ export const api = {
     createCourseClient('/ml-course').submitFinalExam(payload),
 };
 
-function createCourseClient(basePath: '/ml-course' | '/dl-course') {
+function createCourseClient(
+  basePath: '/ml-course' | '/dl-course' | '/ds-course' | '/biz-course' | '/agentic-course'
+) {
   return {
     getOverview: () => request<MLCourseOverview>(basePath),
 

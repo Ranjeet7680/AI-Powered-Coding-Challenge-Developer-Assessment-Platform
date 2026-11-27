@@ -84,9 +84,9 @@ const WIKI_NAV: WikiNavItem[] = [
   },
   {
     id: 'ml-lms',
-    title: 'ML (106) & DL (21) LMS + AI proctoring',
-    shortTitle: 'ML LMS diagrams',
-    subtitle: '9-stage ML journey, MediaPipe camera guard & curriculum telemetry',
+    title: '5 Academy LMS Tracks (230 Lectures) + AI Proctoring',
+    shortTitle: 'Academy LMS',
+    subtitle: 'ML, Stanford DL, Data Science, IITM Business & Agentic AI tracks',
     icon: BrainCircuit,
   },
   {
@@ -487,8 +487,11 @@ export const WikiPage: React.FC = () => {
                 <div className="space-y-6">
                   <p className="text-sm text-[#a1a1a6] leading-relaxed">
                     Full architectural walkthrough of the{' '}
-                    <strong className="font-medium text-[#ededed]">Applied ML Course LMS (106 lectures, 7 modules)</strong> and{' '}
-                    <strong className="font-medium text-[#ededed]">Stanford &times; CTF Deep Learning Track (21 lectures, 4 modules)</strong>, including page-by-page video + quiz flow, the 4-tier{' '}
+                    <strong className="font-medium text-[#ededed]">Applied ML Course LMS (106 lectures, 7 modules)</strong>,{' '}
+                    <strong className="font-medium text-[#ededed]">Stanford &times; CTF Deep Learning Track (21 lectures, 4 modules)</strong>,{' '}
+                    <strong className="font-medium text-[#ededed]">Python Data Science &amp; Big Data (14 lectures, 3 modules)</strong>,{' '}
+                    <strong className="font-medium text-[#ededed]">IIT Madras &times; CTF Business Fundamentals for Entrepreneurs (66 lectures, 6 modules)</strong>, and{' '}
+                    <strong className="font-medium text-[#ededed]">Agentic AI &amp; MCP Engineering (23 lectures, 4 modules)</strong>, including page-by-page video + quiz flow, the 4-tier{' '}
                     <code className="text-[#e5a00d] font-mono">MediaPipe</code> AI Camera Proctor engine, and FastAPI LMS credential telemetry.
                   </p>
 

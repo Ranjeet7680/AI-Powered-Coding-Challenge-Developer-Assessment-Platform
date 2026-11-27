@@ -18,9 +18,15 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { MLCourseOverview, MLCourseReviewsOverview } from '../types';
+import {
+  COURSE_TRACK_META,
+  COURSE_TRACK_ORDER,
+  CourseTrack,
+} from '../constants/courseTracks';
+import { CourseShareButton } from '../components/lms/CourseShareButton';
 
 interface HubCourseEntry {
-  track: 'ml' | 'dl';
+  track: CourseTrack;
   categoryTag: string;
   badgeText: string;
   overview: MLCourseOverview;
@@ -42,35 +48,31 @@ const FLOW_STAGES = [
 export const LMSHubPage: React.FC = () => {
   const [entries, setEntries] = useState<HubCourseEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [filterTrack, setFilterTrack] = useState<'all' | 'ml' | 'dl'>('all');
+  const [filterTrack, setFilterTrack] = useState<'all' | CourseTrack>('all');
   const [query, setQuery] = useState<string>('');
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      api.courseLms('ml').getOverview(),
-      api.courseLms('dl').getOverview(),
-      api.courseLms('ml').getReviews().catch(() => null),
-      api.courseLms('dl').getReviews().catch(() => null),
-    ])
-      .then(([mlOverview, dlOverview, mlReviews, dlReviews]) => {
-        if (cancelled) return;
-        setEntries([
-          {
-            track: 'ml',
-            categoryTag: 'Applied Machine Learning · Engineering LMS',
-            badgeText: '106 videos · 100+ quizzes · Camera proctored',
-            overview: mlOverview,
-            reviews: mlReviews,
-          },
-          {
-            track: 'dl',
-            categoryTag: 'Stanford CS229 × Coding Task Factory',
-            badgeText: '21 videos · 20+ quizzes · Camera proctored',
-            overview: dlOverview,
-            reviews: dlReviews,
-          },
+    Promise.all(
+      COURSE_TRACK_ORDER.map(async (track): Promise<HubCourseEntry> => {
+        const client = api.courseLms(track);
+        const [overview, reviews] = await Promise.all([
+          client.getOverview(),
+          client.getReviews().catch(() => null),
         ]);
+        const meta = COURSE_TRACK_META[track];
+        return {
+          track,
+          categoryTag: meta.hubCategoryTag,
+          badgeText: meta.hubBadgeText,
+          overview,
+          reviews,
+        };
+      })
+    )
+      .then((loaded) => {
+        if (cancelled) return;
+        setEntries(loaded);
         setIsLoading(false);
       })
       .catch(() => {
@@ -115,11 +117,17 @@ export const LMSHubPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-3 shrink-0 tabular-nums">
             <div className="rounded-lg bg-[#141415] border border-white/[0.08] px-4 py-3 text-center">
-              <div className="text-2xl font-medium font-mono text-[#ededed]">127</div>
+              <div className="text-2xl font-medium font-mono text-[#ededed]">
+                {entries.length > 0
+                  ? entries.reduce((sum, entry) => sum + entry.overview.total_lessons, 0)
+                  : COURSE_TRACK_ORDER.reduce((sum, t) => sum + COURSE_TRACK_META[t].lectureCount, 0)}
+              </div>
               <div className="text-xs text-[#85858b]">In-LMS lectures</div>
             </div>
             <div className="rounded-lg bg-[#141415] border border-white/[0.08] px-4 py-3 text-center">
-              <div className="text-2xl font-medium font-mono text-[#4cc38a]">2</div>
+              <div className="text-2xl font-medium font-mono text-[#4cc38a]">
+                {entries.length || COURSE_TRACK_ORDER.length}
+              </div>
               <div className="text-xs text-[#85858b]">Active tracks</div>
             </div>
           </div>
@@ -145,8 +153,8 @@ export const LMSHubPage: React.FC = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-[#19191b] p-4">
-        <div className="relative flex-1">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-[#19191b] p-4">
+        <div className="relative flex-1 min-w-[220px]">
           <Search strokeWidth={1.5} className="w-4 h-4 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
@@ -158,9 +166,11 @@ export const LMSHubPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap gap-1 p-1 rounded-lg bg-[#141415] border border-white/[0.08]">
           {[
-            { id: 'all' as const, label: 'All tracks (2)' },
-            { id: 'ml' as const, label: 'ML mastery (106)' },
-            { id: 'dl' as const, label: 'Stanford DL (21)' },
+            { id: 'all' as const, label: `All tracks (${COURSE_TRACK_ORDER.length})` },
+            ...COURSE_TRACK_ORDER.map((id) => ({
+              id,
+              label: COURSE_TRACK_META[id].switcherLabel,
+            })),
           ].map((pill) => (
             <button
               key={pill.id}
@@ -180,21 +190,23 @@ export const LMSHubPage: React.FC = () => {
 
       {/* Course Cards */}
       {isLoading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {[1, 2].map((idx) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[1, 2, 3].map((idx) => (
             <div key={idx} className="h-[460px] rounded-xl border border-white/[0.08] bg-[#19191b] animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 tabular-nums">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 tabular-nums">
           {filtered.map((entry) => {
             const ov = entry.overview;
             const completedCount = ov.progress?.completed_lessons?.length || 0;
             const totalLessons = ov.total_lessons;
             const progressPct = Math.round((completedCount / Math.max(1, totalLessons)) * 100);
-            const totalHours = ov.modules.reduce((acc, m) => acc + (m.estimated_hours || 2), 0);
-            const isDL = entry.track === 'dl';
-            const learnPath = isDL ? '/app/dl-course' : '/app/ml-course';
+            const totalHours = Number(
+              ov.modules.reduce((acc, m) => acc + (m.estimated_hours || 2), 0).toFixed(1)
+            );
+            const meta = COURSE_TRACK_META[entry.track];
+            const learnPath = meta.learnBasePath;
 
             return (
               <div
@@ -204,12 +216,7 @@ export const LMSHubPage: React.FC = () => {
                 <div>
                   <Link to={`/app/lms/${entry.track}`} className="block relative overflow-hidden bg-[#141415]">
                     <img
-                      src={
-                        ov.thumbnail_url ||
-                        (isDL
-                          ? '/thumbnails/stanford-ctf-dl-thumbnail.svg'
-                          : '/thumbnails/ml-ctf-course-thumbnail.svg')
-                      }
+                      src={ov.thumbnail_url || meta.defaultThumbnail}
                       alt={ov.title}
                       className="w-full aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity"
                     />
@@ -288,6 +295,15 @@ export const LMSHubPage: React.FC = () => {
                     <PlayCircle strokeWidth={1.5} className="w-3.5 h-3.5 text-[#e5a00d]" />
                     <span>{completedCount > 0 ? 'Resume' : 'Start'}</span>
                   </Link>
+                  <CourseShareButton
+                    track={entry.track}
+                    title={ov.title}
+                    instructor={ov.instructor}
+                    lectureCount={totalLessons}
+                    moduleCount={ov.modules.length}
+                    thumbnailUrl={ov.thumbnail_url}
+                    variant="compact"
+                  />
                 </div>
               </div>
             );

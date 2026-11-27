@@ -43,6 +43,8 @@ import {
 import { CourseOutlineRail, LMSPageStage } from '../components/lms/CourseOutlineRail';
 import { InLMSVideoPlayer } from '../components/lms/InLMSVideoPlayer';
 import { VideoShareButton } from '../components/videos/VideoShareButton';
+import { CourseShareButton } from '../components/lms/CourseShareButton';
+import { syncCourseOpenGraphMeta } from '../utils/courseShare';
 import {
   Certificate,
   MLCapstoneProject,
@@ -64,16 +66,27 @@ import {
   MLViolationEvent,
 } from '../types';
 
-type CourseTrack = 'ml' | 'dl';
+import {
+  COURSE_TRACK_META,
+  COURSE_TRACK_ORDER,
+  CourseTrack,
+} from '../constants/courseTracks';
+
 type ExamPhase = 'preflight' | 'active' | 'submitted';
 
 export const MLCoursePage: React.FC = () => <CourseLMSView key="ml" track="ml" />;
 
 export const DLCoursePage: React.FC = () => <CourseLMSView key="dl" track="dl" />;
 
+export const DSCoursePage: React.FC = () => <CourseLMSView key="ds" track="ds" />;
+
+export const BizCoursePage: React.FC = () => <CourseLMSView key="biz" track="biz" />;
+
+export const AgenticCoursePage: React.FC = () => <CourseLMSView key="agentic" track="agentic" />;
+
 const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
-  const isDL = track === 'dl';
-  const basePath = isDL ? '/app/dl-course' : '/app/ml-course';
+  const trackMeta = COURSE_TRACK_META[track];
+  const basePath = trackMeta.learnBasePath;
   const courseClient = useMemo(() => api.courseLms(track), [track]);
 
   const { lessonId: routeLessonId } = useParams<{ lessonId?: string }>();
@@ -93,7 +106,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const [outlineOpen, setOutlineOpen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
   );
-  const [selectedLessonId, setSelectedLessonId] = useState<string>(isDL ? 'dl-001' : 'ml-001');
+  const [selectedLessonId, setSelectedLessonId] = useState<string>(trackMeta.defaultLessonId);
   const [videoJustFinished, setVideoJustFinished] = useState<boolean>(false);
 
   // Per-Lesson Progress, Notes & Quiz State
@@ -138,7 +151,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   });
   const [examQuestionIdx, setExamQuestionIdx] = useState<number>(0);
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
-  const [examRemainingSec, setExamRemainingSec] = useState<number>(45 * 60);
+  const [examRemainingSec, setExamRemainingSec] = useState<number>(trackMeta.defaultExamMinutes * 60);
   const [examViolations, setExamViolations] = useState<number>(0);
   const [examViolationLog, setExamViolationLog] = useState<MLViolationEvent[]>([]);
   const [examResult, setExamResult] = useState<MLFinalExamResultResponse | null>(null);
@@ -194,6 +207,14 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
       .then(([overview, bankRes, examRes, capstoneRes, revRes, certRes, goodiesRes]) => {
         if (cancelled) return;
         setCourse(overview);
+        syncCourseOpenGraphMeta({
+          track,
+          title: overview.title,
+          instructor: overview.instructor,
+          lectureCount: overview.total_lessons,
+          moduleCount: overview.modules.length,
+          thumbnailUrl: overview.thumbnail_url,
+        });
         setQuizBank(bankRes.questions || []);
         setFinalExam(examRes);
         setCapstoneProjects(capstoneRes?.projects || overview.capstone_projects || []);
@@ -241,7 +262,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
     return () => {
       cancelled = true;
     };
-  }, [courseClient, routeLessonId]);
+  }, [courseClient, routeLessonId, track]);
 
   const activeLesson: MLLessonItem | null = useMemo(() => {
     if (!course || course.lessons.length === 0) return null;
@@ -557,7 +578,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         document.exitFullscreen?.().catch(() => {});
       }
 
-      const totalSec = (finalExamRef.current?.duration_minutes || 45) * 60;
+      const totalSec = (finalExamRef.current?.duration_minutes || trackMeta.defaultExamMinutes) * 60;
       const elapsed = Math.max(0, totalSec - examRemainingSecRef.current);
 
       try {
@@ -595,7 +616,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         setIsSubmittingExam(false);
       }
     },
-    [courseClient, refreshUser, showToast]
+    [courseClient, refreshUser, showToast, trackMeta.defaultExamMinutes]
   );
 
   useEffect(() => {
@@ -882,25 +903,30 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-[#141415] p-1 rounded-lg border border-white/[0.08] text-xs">
-            <Link
-              to="/app/ml-course"
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                !isDL ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
-              }`}
-            >
-              ML (106)
-            </Link>
-            <Link
-              to="/app/dl-course"
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                isDL ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
-              }`}
-            >
-              Stanford DL (21)
-            </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-1 bg-[#141415] p-1 rounded-lg border border-white/[0.08] text-xs">
+            {COURSE_TRACK_ORDER.map((id) => (
+              <Link
+                key={id}
+                to={COURSE_TRACK_META[id].learnBasePath}
+                className={`px-2 py-1 rounded-md font-medium transition-colors whitespace-nowrap ${
+                  track === id ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
+                }`}
+              >
+                {COURSE_TRACK_META[id].switcherLabel}
+              </Link>
+            ))}
           </div>
+
+          <CourseShareButton
+            track={track}
+            title={course.title}
+            instructor={course.instructor}
+            lectureCount={course.total_lessons}
+            moduleCount={course.modules.length}
+            thumbnailUrl={course.thumbnail_url}
+            variant="compact"
+          />
 
           <div className="w-32 hidden md:block">
             <div className="flex justify-between text-[11px] font-mono text-[#85858b] mb-1 tabular-nums">
@@ -952,7 +978,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 hasFeedback={hasOwnReview}
                 certificateEarned={Boolean(earnedCertificate)}
                 goodiesClaimed={Boolean(goodiesClaim)}
-                isDL={isDL}
+                track={track}
                 onSelectLessonActivity={openLessonStage}
                 onSelectMilestoneStage={openMilestoneStage}
               />
@@ -1059,7 +1085,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 key={activeLesson.id}
                 lesson={activeLesson}
                 isCompleted={isLessonCompleted}
-                isDL={isDL}
+                accentDot={trackMeta.accentDot}
                 onVideoEnded={handleVideoEnded}
               />
 
@@ -1339,7 +1365,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                   <h2 className="text-lg font-semibold text-[#ededed] tabular-nums">
-                    {quizBank.length} comprehension quizzes ({isDL ? '20+ bank' : '100+ bank'})
+                    {quizBank.length} comprehension quizzes ({trackMeta.quizBankShort})
                   </h2>
                   <p className="text-xs text-[#a1a1a6] mt-1 tabular-nums">
                     Best score: <strong className="font-medium text-[#ededed]">{bestPracticeScore}%</strong> · Grade all modules before capstone &amp; final exam.
@@ -1573,13 +1599,13 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
                         <div className="text-xs text-[#85858b]">Length</div>
                         <div className="text-base font-medium text-[#ededed] tabular-nums">
-                          {finalExam?.total_questions || (isDL ? 20 : 35)} Qs
+                          {finalExam?.total_questions || trackMeta.defaultExamQuestions} Qs
                         </div>
                       </div>
                       <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
                         <div className="text-xs text-[#85858b]">Timer</div>
                         <div className="text-base font-medium text-[#ededed] tabular-nums">
-                          {finalExam?.duration_minutes || (isDL ? 30 : 45)} min
+                          {finalExam?.duration_minutes || trackMeta.defaultExamMinutes} min
                         </div>
                       </div>
                       <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
