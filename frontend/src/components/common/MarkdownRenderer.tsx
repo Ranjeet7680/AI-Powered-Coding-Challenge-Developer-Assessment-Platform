@@ -32,7 +32,6 @@ function formatMathTokens(expr: string): string {
 
 function renderInline(text: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = [];
-  // Match inline code (`...`), bold (**...**), or inline math ($...$)
   const tokenRegex = /(`[^`]+`|\*\*[^*]+\*\*|\$[^$\n]+\$)/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -47,14 +46,14 @@ function renderInline(text: string): React.ReactNode[] {
       nodes.push(
         <code
           key={keyIdx++}
-          className="px-1.5 py-0.5 rounded bg-slate-800/90 text-indigo-300 border border-slate-700/60 font-mono text-[11px]"
+          className="px-1.5 py-0.5 rounded bg-[#222225] text-[#ededed] border border-white/[0.08] font-mono text-[11px]"
         >
           {token.slice(1, -1)}
         </code>
       );
     } else if (token.startsWith('**') && token.endsWith('**')) {
       nodes.push(
-        <strong key={keyIdx++} className="font-semibold text-white">
+        <strong key={keyIdx++} className="font-medium text-[#ededed]">
           {token.slice(2, -2)}
         </strong>
       );
@@ -62,7 +61,7 @@ function renderInline(text: string): React.ReactNode[] {
       nodes.push(
         <span
           key={keyIdx++}
-          className="px-1.5 py-0.5 rounded bg-indigo-950/50 text-cyan-300 font-mono text-[11px] border border-indigo-500/20"
+          className="px-1.5 py-0.5 rounded bg-[#222225] text-[#e5a00d] font-mono text-[11px] border border-white/[0.08]"
         >
           {formatMathTokens(token.slice(1, -1))}
         </span>
@@ -85,11 +84,10 @@ interface MarkdownRendererProps {
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, className = '' }) => {
   if (!content) return null;
 
-  // Split by fenced code blocks and display math blocks first
   const blocks = content.split(/(```[\s\S]*?```|\$\$[\s\S]*?\$\$)/g);
 
   return (
-    <div className={`space-y-3 text-xs text-slate-300 leading-relaxed ${className}`}>
+    <div className={`space-y-3 text-xs text-[#a1a1a6] leading-relaxed ${className}`}>
       {blocks.map((block, blockIdx) => {
         const trimmed = block.trim();
         if (!trimmed) return null;
@@ -99,7 +97,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
           return (
             <pre
               key={blockIdx}
-              className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 font-mono text-[11px] text-slate-200 overflow-x-auto"
+              className="p-3 rounded-lg bg-[#0f0f10] border border-white/[0.08] font-mono text-[11px] text-[#ededed] overflow-x-auto"
             >
               {inner}
             </pre>
@@ -111,14 +109,13 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
           return (
             <div
               key={blockIdx}
-              className="px-4 py-2.5 rounded-xl bg-indigo-950/30 border border-indigo-500/25 font-mono text-xs text-cyan-200 overflow-x-auto text-center"
+              className="px-4 py-2.5 rounded-lg bg-[#0f0f10] border border-white/[0.08] font-mono text-xs text-[#e5a00d] overflow-x-auto text-center"
             >
               {formula}
             </div>
           );
         }
 
-        // Parse lines for headings, bullets, ordered items, and paragraphs
         const lines = trimmed.split('\n');
         const elements: React.ReactNode[] = [];
         let listItems: string[] = [];
@@ -126,7 +123,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
         const flushList = (keySuffix: string) => {
           if (listItems.length > 0) {
             elements.push(
-              <ul key={`list-${blockIdx}-${keySuffix}`} className="space-y-1 pl-4 list-disc text-slate-300">
+              <ul key={`list-${blockIdx}-${keySuffix}`} className="space-y-1 pl-4 list-disc text-[#a1a1a6]">
                 {listItems.map((item, liIdx) => (
                   <li key={liIdx}>{renderInline(item)}</li>
                 ))}
@@ -145,14 +142,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
           if (line.startsWith('### ')) {
             flushList(String(lineIdx));
             elements.push(
-              <h4 key={`h-${lineIdx}`} className="text-sm font-bold text-white pt-1">
+              <h4 key={`h-${lineIdx}`} className="text-sm font-medium text-[#ededed] pt-1">
                 {renderInline(line.slice(4))}
               </h4>
             );
           } else if (line.startsWith('## ')) {
             flushList(String(lineIdx));
             elements.push(
-              <h3 key={`h2-${lineIdx}`} className="text-base font-bold text-white pt-1">
+              <h3 key={`h2-${lineIdx}`} className="text-base font-medium text-[#ededed] pt-1">
                 {renderInline(line.slice(3))}
               </h3>
             );

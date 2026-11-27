@@ -13,20 +13,20 @@ export const PipelineDiagrams: React.FC<PipelineDiagramsProps> = ({
   const [activeDiagram, setActiveDiagram] = useState<DiagramKind>(defaultTab);
 
   return (
-    <div className="rounded-2xl border border-indigo-500/30 bg-[#070B16] overflow-hidden shadow-xl">
+    <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
       {/* Diagram Selector Header */}
-      <div className="px-4 py-3.5 sm:px-6 border-b border-slate-800 bg-slate-950/75 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 py-3.5 sm:px-6 border-b border-white/[0.08] bg-[#0f0f10] flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
-            <GitBranch className="w-3.5 h-3.5" />
-            Interactive Pipeline Architecture &amp; UML Views
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+            <GitBranch className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Interactive pipeline architecture &amp; UML views
           </div>
-          <p className="text-xs text-slate-400">
-            Repo specs &amp; image params → generated task packages + reference tests → target AI models → validated outputs.
+          <p className="text-xs text-[#85858b]">
+            Repo specs &amp; image params &rarr; generated task packages + reference tests &rarr; target AI models &rarr; validated outputs.
           </p>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-[#19191b] p-1 rounded-lg border border-white/[0.08] w-full sm:w-auto">
           {[
             { id: 'process-flow' as const, label: 'Process Flow', icon: Workflow },
             { id: 'use-case' as const, label: 'Use-Case (UML)', icon: Users },
@@ -39,10 +39,10 @@ export const PipelineDiagrams: React.FC<PipelineDiagramsProps> = ({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveDiagram(tab.id)}
-                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   active
-                    ? 'bg-indigo-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#ededed] text-[#141415]'
+                    : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -115,10 +115,10 @@ export const PipelineDiagrams: React.FC<PipelineDiagramsProps> = ({
             <text x="808" y="89" fill="#fcd34d" fontSize="10" fontWeight="700" fontFamily="monospace">04 · OUTPUT</text>
             <text x="808" y="111" fill="#ffffff" fontSize="14" fontWeight="800">Validated</text>
             <text x="808" y="129" fill="#ffffff" fontSize="14" fontWeight="800">Results</text>
-            <text x="808" y="154" fill="#cbd5e1" fontSize="11">✓ Pass/Fail Score</text>
-            <text x="808" y="172" fill="#cbd5e1" fontSize="11">✓ Evidence JSON</text>
-            <text x="808" y="190" fill="#cbd5e1" fontSize="11">✓ 100% Mutant Kill</text>
-            <text x="808" y="208" fill="#34d399" fontSize="11" fontWeight="700">✓ PDF &amp; Logs</text>
+            <text x="808" y="154" fill="#cbd5e1" fontSize="11">Pass/Fail Score</text>
+            <text x="808" y="172" fill="#cbd5e1" fontSize="11">Evidence JSON</text>
+            <text x="808" y="190" fill="#cbd5e1" fontSize="11">100% Mutant Kill</text>
+            <text x="808" y="208" fill="#4cc38a" fontSize="11" fontWeight="600">PDF &amp; Logs</text>
 
             {/* Feedback Loop Arrow */}
             <path d="M 660 245 L 660 310 L 404 310 L 404 228" fill="none" stroke="#64748b" strokeWidth="1.5" strokeDasharray="5,4" markerEnd="url(#pf-arrow)" />

@@ -1,46 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
-  <defs>
-    <linearGradient id="ogBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#040711" />
-      <stop offset="55%" stop-color="#0B1124" />
-      <stop offset="100%" stop-color="#060A17" />
-    </linearGradient>
-    <linearGradient id="ogBorder" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#6366F1" />
-      <stop offset="50%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#22D3EE" />
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#ogBg)" />
-  <rect x="28" y="28" width="1144" height="574" rx="28" fill="#090F20" stroke="url(#ogBorder)" stroke-width="2.5" stroke-opacity="0.65" />
+  <rect width="1200" height="630" fill="#141415" />
+  <rect x="32" y="32" width="1136" height="566" rx="16" fill="#19191b" stroke="#2c2c30" stroke-width="1.5" />
 
-  <!-- Custom Brand Logo Emblem -->
-  <g transform="translate(96, 155)">
-    <rect x="0" y="0" width="124" height="124" rx="30" fill="#0B1124" stroke="url(#ogBorder)" stroke-width="4" />
-    <polygon points="62,18 100,40 100,84 62,106 24,84 24,40" fill="#111A36" stroke="url(#ogBorder)" stroke-width="2" />
-    <path d="M48 46L33 62L48 78" stroke="#A5B4FC" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-    <path d="M76 46L91 62L76 78" stroke="#67E8F9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-    <polygon points="62,38 71,62 62,86 53,62" fill="#38BDF8" />
-    <circle cx="98" cy="24" r="6" fill="#FBBF24" />
+  <g transform="translate(88, 128) scale(2.4)">
+    <rect x="1.5" y="1.5" width="29" height="29" rx="7" fill="#222225" stroke="#3a3a40" stroke-width="1.25" />
+    <path d="M12.5 11L7.5 16L12.5 21" stroke="#ededed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M19.5 11L24.5 16L19.5 21" stroke="#ededed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="17.2" y1="9.5" x2="14.8" y2="22.5" stroke="#e5a00d" stroke-width="1.8" stroke-linecap="round" />
   </g>
 
-  <text x="256" y="195" fill="#22D3EE" font-family="ui-monospace, monospace" font-size="18" font-weight="700" letter-spacing="4">CODING TASK FACTORY</text>
-  <text x="256" y="256" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="54" font-weight="800">Build Smarter. Code Better.</text>
-  <text x="256" y="314" fill="#A5B4FC" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="34" font-weight="700">368+ Challenges • AI Copilot • PDF Credentials</text>
+  <text x="192" y="158" fill="#a1a1a6" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="18" font-weight="500">Coding Task Factory</text>
+  <text x="88" y="274" fill="#ededed" font-family="'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif" font-size="56" font-weight="500">Multi-language coding bench</text>
+  <text x="88" y="338" fill="#a1a1a6" font-family="'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif" font-size="30" font-weight="400">368+ tasks · Sandboxed execution · Verified SHA-256 PDFs</text>
 
-  <g transform="translate(96, 385)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="700">
-    <rect x="0" y="0" width="240" height="62" rx="16" fill="#111936" stroke="#4F46E5" stroke-width="1.5" />
-    <text x="120" y="38" text-anchor="middle" fill="#E0E7FF">368+ Challenges</text>
+  <g transform="translate(88, 412)" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="18" font-weight="500">
+    <rect x="0" y="0" width="236" height="54" rx="8" fill="#222225" stroke="#343438" stroke-width="1" />
+    <text x="118" y="33" text-anchor="middle" fill="#ededed">368+ Challenges</text>
 
-    <rect x="260" y="0" width="240" height="62" rx="16" fill="#0F242B" stroke="#06B6D4" stroke-width="1.5" />
-    <text x="380" y="38" text-anchor="middle" fill="#CFFAFE">PY • JS • TS • C++</text>
+    <rect x="256" y="0" width="244" height="54" rx="8" fill="#222225" stroke="#343438" stroke-width="1" />
+    <text x="378" y="33" text-anchor="middle" fill="#ededed">PY · JS · TS · C++</text>
 
-    <rect x="520" y="0" width="240" height="62" rx="16" fill="#0D261F" stroke="#10B981" stroke-width="1.5" />
-    <text x="640" y="38" text-anchor="middle" fill="#D1FAE5">SHA-256 PDFs</text>
+    <rect x="520" y="0" width="236" height="54" rx="8" fill="#222225" stroke="#343438" stroke-width="1" />
+    <text x="638" y="33" text-anchor="middle" fill="#4cc38a">[PASS] Verified</text>
 
-    <rect x="780" y="0" width="228" height="62" rx="16" fill="#261D0E" stroke="#F59E0B" stroke-width="1.5" />
-    <text x="894" y="38" text-anchor="middle" fill="#FEF3C7">Social Share</text>
+    <rect x="776" y="0" width="248" height="54" rx="8" fill="#222225" stroke="#e5a00d" stroke-width="1" />
+    <text x="900" y="33" text-anchor="middle" fill="#e5a00d">SHA-256 PDF</text>
   </g>
 
-  <text x="96" y="538" fill="#64748B" font-family="ui-monospace, monospace" font-size="18">AI-Powered Coding Challenge &amp; Developer Assessment Platform</text>
+  <text x="88" y="540" fill="#85858b" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="16">codingtaskfactory.io · Python 3, Node.js, TypeScript, C++20</text>
 </svg>

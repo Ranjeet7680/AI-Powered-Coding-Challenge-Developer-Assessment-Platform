@@ -674,37 +674,30 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
       : 'Vision Skin & Motion Guard';
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl">
+    <div className="rounded-xl border border-white/[0.08] bg-[#19191b] overflow-hidden">
       {/* Header Status */}
-      <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between gap-2 bg-slate-950/60">
+      <div className="px-4 py-3 border-b border-white/[0.08] flex items-center justify-between gap-2 bg-[#141415]">
         <div className="flex items-center gap-2">
           {cameraStatus === 'active' ? (
-            <span className="relative flex h-2.5 w-2.5">
-              <span
-                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  liveIntegrity.status === 'ok' ? 'bg-emerald-400' : 'bg-rose-400'
-                }`}
-              />
-              <span
-                className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                  liveIntegrity.status === 'ok' ? 'bg-emerald-500' : 'bg-rose-500'
-                }`}
-              />
-            </span>
+            <span
+              className={`inline-block rounded-full h-2 w-2 ${
+                liveIntegrity.status === 'ok' ? 'bg-[#4cc38a]' : 'bg-[#e5484d]'
+              }`}
+            />
           ) : (
-            <ShieldAlert className="w-4 h-4 text-amber-400" />
+            <ShieldAlert className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
           )}
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
-            AI Camera Proctor Guard
+          <span className="text-xs font-medium text-[#ededed]">
+            Camera proctor guard
           </span>
         </div>
         <span
-          className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+          className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-medium border tabular-nums ${
             strikeRatio === 0
-              ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+              ? 'bg-[#4cc38a]/10 text-[#4cc38a] border-[#4cc38a]/30'
               : strikeRatio < maxViolations
-              ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-              : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+              ? 'bg-[#e5a00d]/10 text-[#e5a00d] border-[#e5a00d]/30'
+              : 'bg-[#e5484d]/10 text-[#e5484d] border-[#e5484d]/30'
           }`}
         >
           Strikes: {strikeRatio}/{maxViolations}
@@ -714,10 +707,10 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
       {/* Live Video Preview + AI Canvas Overlay */}
       <div className="p-3 space-y-3">
         <div
-          className={`relative aspect-video rounded-xl overflow-hidden bg-slate-950 border flex items-center justify-center transition ${
+          className={`relative aspect-video rounded-lg overflow-hidden bg-[#0f0f10] border flex items-center justify-center transition-colors ${
             cameraStatus === 'active' && liveIntegrity.status !== 'ok'
-              ? 'border-rose-500 ring-2 ring-rose-500/40'
-              : 'border-slate-800'
+              ? 'border-[#e5484d]'
+              : 'border-white/[0.08]'
           }`}
         >
           <video
@@ -741,20 +734,20 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
             <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
               {cameraStatus === 'denied' || cameraStatus === 'disconnected' ? (
                 <>
-                  <CameraOff className="w-8 h-8 text-rose-400 mb-2" />
-                  <p className="text-xs font-semibold text-rose-300">
-                    {cameraStatus === 'disconnected' ? 'Webcam Disconnected' : 'Camera Access Blocked'}
+                  <CameraOff className="w-7 h-7 text-[#e5484d] mb-2" strokeWidth={1.5} />
+                  <p className="text-xs font-medium text-[#e5484d]">
+                    {cameraStatus === 'disconnected' ? 'Webcam disconnected' : 'Camera access blocked'}
                   </p>
-                  <p className="text-[11px] text-slate-400 mt-1 max-w-[230px] leading-relaxed">
+                  <p className="text-xs text-[#85858b] mt-1 max-w-[230px] leading-relaxed">
                     {cameraError || 'Allow browser camera access to unlock the final exam.'}
                   </p>
                 </>
               ) : (
                 <>
-                  <Video className="w-8 h-8 text-indigo-400 mb-2" />
-                  <p className="text-xs font-semibold text-slate-200">AI Webcam Verification Required</p>
-                  <p className="text-[11px] text-slate-400 mt-1 max-w-[235px]">
-                    Real-time BlazeFace + Cell-Phone AI runs 100% locally on your browser.
+                  <Video className="w-7 h-7 text-[#a1a1a6] mb-2" strokeWidth={1.5} />
+                  <p className="text-xs font-medium text-[#ededed]">Webcam verification required</p>
+                  <p className="text-xs text-[#85858b] mt-1 max-w-[235px]">
+                    Real-time BlazeFace and object checks run locally in your browser.
                   </p>
                 </>
               )}
@@ -763,22 +756,22 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
 
           {cameraStatus === 'active' && (
             <>
-              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-950/85 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 flex items-center gap-1.5 backdrop-blur">
-                <Eye className="w-3 h-3" />
+              <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#141415]/90 border border-white/[0.12] text-[10px] font-mono text-[#4cc38a] flex items-center gap-1.5">
+                <Eye className="w-3 h-3" strokeWidth={1.5} />
                 {active ? 'PROCTORING LIVE' : 'CAM READY'}
               </div>
-              <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-950/85 border border-indigo-500/35 text-[9px] font-mono text-cyan-300 flex items-center gap-1 backdrop-blur">
-                <Cpu className="w-2.5 h-2.5" />
+              <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-[#141415]/90 border border-white/[0.12] text-[10px] font-mono text-[#a1a1a6] flex items-center gap-1">
+                <Cpu className="w-2.5 h-2.5" strokeWidth={1.5} />
                 {engineMode === 'mediapipe-full' ? 'FACE+OBJ AI' : engineMode.toUpperCase()}
               </div>
-              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono text-slate-200 bg-slate-950/80 px-2 py-1 rounded border border-slate-800/80 backdrop-blur">
+              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono text-[#ededed] bg-[#141415]/90 px-2 py-1 rounded border border-white/[0.08] tabular-nums">
                 <span
                   className={
                     liveIntegrity.status === 'ok'
-                      ? 'text-emerald-300 font-bold'
+                      ? 'text-[#4cc38a] font-medium'
                       : liveIntegrity.status === 'warning'
-                      ? 'text-amber-300 font-bold'
-                      : 'text-rose-300 font-bold'
+                      ? 'text-[#e5a00d] font-medium'
+                      : 'text-[#e5484d] font-medium'
                   }
                 >
                   {liveIntegrity.status !== 'ok'
@@ -787,7 +780,7 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
                     ? 'Face: Verified (1)'
                     : 'Calibrating...'}
                 </span>
-                <span>Luma {luminance}</span>
+                <span className="text-[#85858b]">Luma {luminance}</span>
               </div>
             </>
           )}
@@ -795,12 +788,12 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
 
         {/* Live Warning Callout */}
         {cameraStatus === 'active' && liveIntegrity.status !== 'ok' && (
-          <div className="rounded-xl border border-rose-500/50 bg-rose-950/40 px-3 py-2 text-[11px] text-rose-200 space-y-0.5 animate-pulse">
-            <div className="font-bold text-rose-300 flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+          <div className="rounded-lg border border-[#e5484d]/40 bg-[#e5484d]/[0.08] px-3 py-2 text-xs text-[#ededed] space-y-0.5">
+            <div className="font-medium text-[#e5484d] flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
               {liveIntegrity.headline}
             </div>
-            <p className="text-rose-200/85 leading-snug">{liveIntegrity.reason}</p>
+            <p className="text-[#a1a1a6] leading-snug">{liveIntegrity.reason}</p>
           </div>
         )}
 
@@ -811,10 +804,10 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
               type="button"
               onClick={startCamera}
               disabled={cameraStatus === 'requesting'}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-indigo-500/20"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
             >
-              <Camera className="w-3.5 h-3.5" />
-              {cameraStatus === 'requesting' ? 'Loading AI Models & Cam...' : 'Enable AI Webcam Guard'}
+              <Camera className="w-3.5 h-3.5" strokeWidth={1.5} />
+              {cameraStatus === 'requesting' ? 'Loading camera models...' : 'Enable webcam guard'}
             </button>
           ) : (
             <>
@@ -822,19 +815,19 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
                 <button
                   type="button"
                   onClick={stopCameraTracks}
-                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition border border-slate-700"
+                  className="px-3 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] text-xs font-medium transition-colors border border-white/[0.08]"
                 >
-                  Turn Off
+                  Turn off
                 </button>
               )}
               {!isFullscreen && (
                 <button
                   type="button"
                   onClick={enterFullscreen}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] text-xs font-medium transition-colors border border-white/[0.08]"
                 >
-                  <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
-                  Lock Fullscreen
+                  <Maximize2 className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                  Lock fullscreen
                 </button>
               )}
             </>
@@ -842,36 +835,36 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
         </div>
 
         {/* Active Cheat Rules Checklist */}
-        <div className="rounded-xl bg-slate-950/70 border border-slate-800/80 p-3 space-y-1.5 text-[11px] text-slate-400">
-          <div className="flex items-center justify-between gap-1.5 text-slate-200 font-semibold mb-1">
+        <div className="rounded-lg bg-[#141415] border border-white/[0.08] p-3 space-y-1.5 text-xs text-[#a1a1a6]">
+          <div className="flex items-center justify-between gap-1.5 text-[#ededed] font-medium mb-1">
             <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              Enforced Anti-Cheat Signals
+              <ShieldCheck className="w-3.5 h-3.5 text-[#4cc38a]" strokeWidth={1.5} />
+              Enforced proctoring signals
             </span>
           </div>
-          <div className="text-[10px] font-mono text-indigo-300 pb-1 border-b border-slate-800/80">
+          <div className="text-[11px] font-mono text-[#e5a00d] pb-1.5 border-b border-white/[0.06]">
             Engine: {engineLabel}
           </div>
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-            AI Face presence, occlusion &amp; gaze-away detection
+            <CheckCircle2 className="w-3 h-3 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
+            Face presence, occlusion &amp; gaze-away detection
           </div>
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-            Cell-phone, book &amp; extra-person object recognition
+            <CheckCircle2 className="w-3 h-3 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
+            Phone, book &amp; extra-person object recognition
           </div>
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-            Tab switch, split-screen resize, DevTools &amp; copy lock
+            <CheckCircle2 className="w-3 h-3 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
+            Tab switch, resize, DevTools &amp; copy lock
           </div>
         </div>
 
         {/* Violation Audit Log */}
         {violationLog.length > 0 && (
-          <div className="rounded-xl bg-rose-950/25 border border-rose-500/30 p-3 space-y-1.5 max-h-40 overflow-y-auto">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-300 uppercase tracking-wider">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              Proctoring Audit Log ({violationLog.length})
+          <div className="rounded-lg bg-[#e5484d]/[0.06] border border-[#e5484d]/25 p-3 space-y-1.5 max-h-40 overflow-y-auto">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-[#e5484d]">
+              <AlertTriangle className="w-3.5 h-3.5" strokeWidth={1.5} />
+              Proctoring audit log ({violationLog.length})
             </div>
             {violationLog
               .slice()
@@ -879,10 +872,10 @@ export const ProctorCameraGuard: React.FC<ProctorCameraGuardProps> = ({
               .map((ev, idx) => (
                 <div
                   key={`${ev.timestamp}-${idx}`}
-                  className="text-[11px] text-rose-200/90 border-l-2 border-rose-500/60 pl-2 py-0.5"
+                  className="text-[11px] text-[#a1a1a6] border-l-2 border-[#e5484d]/60 pl-2 py-0.5"
                 >
-                  <span className="font-mono font-bold text-rose-300">{ev.type}</span>
-                  <span className="text-rose-200/70"> — {ev.detail}</span>
+                  <span className="font-mono font-medium text-[#e5484d]">{ev.type}</span>
+                  <span> &mdash; {ev.detail}</span>
                 </div>
               ))}
           </div>

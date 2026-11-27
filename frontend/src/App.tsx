@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
@@ -6,7 +6,7 @@ import { ToastProvider } from './context/ToastContext';
 import { PreferencesProvider } from './context/PreferencesContext';
 import { useAuth } from './context/useContexts';
 import { AppLayout } from './components/layout/AppLayout';
-import { BootSplashPreloader, PageLoader } from './components/common/Preloader';
+import { PageLoader } from './components/common/Preloader';
 
 // Code-split pages for fast initial load and smaller chunks
 const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
@@ -65,15 +65,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 export const App: React.FC = () => {
-  const [bootLoading, setBootLoading] = useState(true);
-
   return (
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
-        <BootSplashPreloader
-          visible={bootLoading}
-          onComplete={() => setBootLoading(false)}
-        />
         <ToastProvider>
           <PreferencesProvider>
             <AuthProvider>

@@ -16,7 +16,6 @@ import {
   RotateCcw,
   Share2,
   ShieldCheck,
-  Sparkles,
   X,
 } from 'lucide-react';
 import {
@@ -64,33 +63,22 @@ const PlatformBadgeIcon: React.FC<{ platform: SocialPlatform; className?: string
   );
 };
 
-const PLATFORM_META: Record<
-  SocialPlatform,
-  { label: string; colorClass: string; activeBg: string; hint: string }
-> = {
+const PLATFORM_META: Record<SocialPlatform, { label: string; hint: string }> = {
   linkedin: {
     label: 'LinkedIn',
-    colorClass: 'text-sky-400',
-    activeBg: 'bg-sky-600 text-white border-sky-500',
-    hint: 'Includes pre-formatted career announcement, hashtags, verification URL & "Add to Profile" credential sync.',
+    hint: 'Pre-formatted post with verification URL and LinkedIn Add-to-Profile sync.',
   },
   instagram: {
     label: 'Instagram',
-    colorClass: 'text-pink-400',
-    activeBg: 'bg-gradient-to-r from-pink-600 to-amber-500 text-white border-pink-500',
-    hint: 'Download a crisp 1080×1080 Instagram card image and copy this ready-to-paste caption & hashtags.',
+    hint: 'Export a 1080×1080 PNG card image and copy the caption below.',
   },
   facebook: {
     label: 'Facebook',
-    colorClass: 'text-blue-400',
-    activeBg: 'bg-blue-600 text-white border-blue-500',
-    hint: 'Share your achievement milestone with friends & tech groups or export a 1200×630 showcase graphic.',
+    hint: 'Share your verified link or download a 1200×630 PNG card.',
   },
   whatsapp: {
     label: 'WhatsApp',
-    colorClass: 'text-emerald-400',
-    activeBg: 'bg-emerald-600 text-white border-emerald-500',
-    hint: 'Bold-formatted WhatsApp status/DM message ready to send directly to peers, mentors, or recruiters.',
+    hint: 'Formatted summary message ready to send to peers or recruiters.',
   },
 };
 
@@ -147,9 +135,9 @@ export const CertificatesPage: React.FC = () => {
     setDownloadingPdfId(cert.credential_id);
     try {
       await api.downloadCertificatePdf(cert.credential_id);
-      showToast(`Downloaded ${cert.credential_id}.pdf`, 'success');
+      showToast(`Downloaded ${cert.credential_id}.pdf.`, 'success');
     } catch (err: unknown) {
-      showToast(err instanceof Error ? err.message : 'PDF download failed', 'error');
+      showToast(err instanceof Error ? err.message : 'PDF download failed.', 'error');
     } finally {
       setDownloadingPdfId(null);
     }
@@ -159,26 +147,26 @@ export const CertificatesPage: React.FC = () => {
     const recipient = (cert.recipient_name || user?.full_name || 'Developer').replace(/[<>&]/g, '');
     const title = cert.title.replace(/[<>&]/g, '');
     const dateStr = formatCertificateDate(cert.issue_date);
-    const skillsLine = (cert.skills_verified || [cert.category]).slice(0, 4).join('  •  ').replace(/[<>&]/g, '');
+    const skillsLine = (cert.skills_verified || [cert.category]).slice(0, 4).join('  ·  ').replace(/[<>&]/g, '');
     const hashShort = cert.credential_hash ? `0x${cert.credential_hash.slice(0, 28)}...` : 'VERIFIED';
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600">
-  <rect width="960" height="600" rx="24" fill="#060913" stroke="#D4AF37" stroke-width="3"/>
-  <rect x="20" y="20" width="920" height="560" rx="18" fill="#0B1020" stroke="#4F46E5" stroke-width="1.5"/>
-  <text x="480" y="78" text-anchor="middle" fill="#FBBF24" font-family="sans-serif" font-size="13" font-weight="bold" letter-spacing="4">CERTIFICATE OF ENGINEERING EXCELLENCE</text>
-  <text x="480" y="114" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="24" font-weight="bold">${(cert.issuer_name || 'Coding Task Factory Academy').replace(/[<>&]/g, '')}</text>
-  <text x="480" y="168" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="14">This certifies that</text>
-  <text x="480" y="220" text-anchor="middle" fill="#f8fafc" font-family="Georgia, serif" font-size="40" font-weight="bold">${recipient}</text>
-  <line x1="250" y1="236" x2="710" y2="236" stroke="#6366f1" stroke-width="1.5"/>
-  <text x="480" y="274" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="14">has demonstrated verified engineering excellence in</text>
-  <text x="480" y="316" text-anchor="middle" fill="#c7d2fe" font-family="sans-serif" font-size="22" font-weight="bold">${title}</text>
-  <text x="480" y="358" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="15">Grade: ${cert.grade.replace(/[<>&]/g, '')}  |  Score: ${cert.score_percent ?? 98}%  |  ${cert.challenges_completed ?? 12}+ Challenges</text>
-  <text x="480" y="405" text-anchor="middle" fill="#a5b4fc" font-family="sans-serif" font-size="13">${skillsLine}</text>
-  <line x1="70" y1="455" x2="890" y2="455" stroke="#1e293b" stroke-width="1.2"/>
-  <text x="70" y="492" fill="#94a3b8" font-family="monospace" font-size="12">Issued: ${dateStr}</text>
-  <text x="70" y="516" fill="#34d399" font-family="monospace" font-size="11">SHA-256: ${hashShort}</text>
-  <text x="890" y="492" text-anchor="end" fill="#818cf8" font-family="monospace" font-size="13" font-weight="bold">Credential ID: ${cert.credential_id}</text>
-  <text x="890" y="516" text-anchor="end" fill="#e2e8f0" font-family="sans-serif" font-size="12">Signed: ${(cert.signatory_name || 'Dr. Aris Thorne').replace(/[<>&]/g, '')}</text>
+  <rect width="960" height="600" rx="16" fill="#141415" stroke="#e5a00d" stroke-width="2"/>
+  <rect x="20" y="20" width="920" height="560" rx="12" fill="#19191b" stroke="#2c2c30" stroke-width="1"/>
+  <text x="480" y="78" text-anchor="middle" fill="#e5a00d" font-family="monospace" font-size="13" font-weight="500">Certificate of Engineering Mastery</text>
+  <text x="480" y="114" text-anchor="middle" fill="#ededed" font-family="sans-serif" font-size="22" font-weight="500">${(cert.issuer_name || 'Coding Task Factory Academy').replace(/[<>&]/g, '')}</text>
+  <text x="480" y="168" text-anchor="middle" fill="#85858b" font-family="sans-serif" font-size="14">Awarded to</text>
+  <text x="480" y="220" text-anchor="middle" fill="#ededed" font-family="Georgia, serif" font-size="40" font-weight="500">${recipient}</text>
+  <line x1="250" y1="236" x2="710" y2="236" stroke="#2c2c30" stroke-width="1.5"/>
+  <text x="480" y="274" text-anchor="middle" fill="#85858b" font-family="sans-serif" font-size="14">For verified engineering mastery in</text>
+  <text x="480" y="316" text-anchor="middle" fill="#ededed" font-family="sans-serif" font-size="22" font-weight="500">${title}</text>
+  <text x="480" y="358" text-anchor="middle" fill="#4cc38a" font-family="monospace" font-size="14">Standing: ${cert.grade.replace(/[<>&]/g, '')}  |  Score: ${cert.score_percent ?? 98}%  |  ${cert.challenges_completed ?? 12}+ Tasks</text>
+  <text x="480" y="405" text-anchor="middle" fill="#a1a1a6" font-family="sans-serif" font-size="13">${skillsLine}</text>
+  <line x1="70" y1="455" x2="890" y2="455" stroke="#2c2c30" stroke-width="1"/>
+  <text x="70" y="492" fill="#85858b" font-family="monospace" font-size="12">Issued: ${dateStr}</text>
+  <text x="70" y="516" fill="#4cc38a" font-family="monospace" font-size="11">SHA-256: ${hashShort}</text>
+  <text x="890" y="492" text-anchor="end" fill="#ededed" font-family="monospace" font-size="13">Credential ID: ${cert.credential_id}</text>
+  <text x="890" y="516" text-anchor="end" fill="#a1a1a6" font-family="sans-serif" font-size="12">Signed: ${(cert.signatory_name || 'Dr. Aris Thorne').replace(/[<>&]/g, '')}</text>
 </svg>`;
 
     const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -194,12 +182,12 @@ export const CertificatesPage: React.FC = () => {
 
   const handleCopyPost = () => {
     navigator.clipboard.writeText(postDraft);
-    showToast(`${PLATFORM_META[platform].label} post message copied!`, 'success');
+    showToast(`${PLATFORM_META[platform].label} post copied.`, 'success');
   };
 
   const handleCopyVerifyUrl = (cert: Certificate) => {
     navigator.clipboard.writeText(getVerificationUrl(cert.credential_id));
-    showToast('Verification link copied to clipboard', 'success');
+    showToast('Verification link copied.', 'success');
   };
 
   const handleExportCard = async (format: 'square' | 'landscape') => {
@@ -208,80 +196,71 @@ export const CertificatesPage: React.FC = () => {
     try {
       await downloadSocialCardPng(selectedCert, format, user?.full_name);
       showToast(
-        `Exported ${format === 'square' ? '1080×1080 Instagram' : '1200×630 Social'} PNG card!`,
+        `Exported ${format === 'square' ? '1080×1080' : '1200×630'} PNG card.`,
         'success'
       );
     } catch (err: unknown) {
-      showToast(err instanceof Error ? err.message : 'Failed to render social card', 'error');
+      showToast(err instanceof Error ? err.message : 'Failed to render social card.', 'error');
     } finally {
       setExportingCard(false);
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      <div className="no-print flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Certificates &amp; Social Credentials
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+            Certificates
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Cryptographically verified engineering diplomas with vector PDF export &amp; 1-click LinkedIn, Instagram, Facebook &amp; WhatsApp posts.
+          <p className="text-sm text-[#85858b] mt-1">
+            SHA-256 verified diplomas with vector PDF export and social card tools
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-xs text-indigo-300 font-semibold self-start">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          {certificates.length} Verified Credentials
-        </div>
+        <span className="font-mono text-xs text-[#a1a1a6] tabular-nums self-start sm:self-auto">
+          {certificates.length} verified credentials
+        </span>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 no-print">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-72 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse p-6" />
+            <div key={i} className="h-64 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse p-6" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 no-print tabular-nums">
           {certificates.map((cert) => {
             const skills = (cert.skills_verified || []).slice(0, 3);
             const extraSkills = Math.max(0, (cert.skills_verified?.length || 0) - 3);
             return (
               <div
                 key={cert.id}
-                className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-indigo-500/45 transition duration-200 flex flex-col justify-between group shadow-xl relative overflow-hidden"
+                className="p-5 rounded-xl bg-[#19191b] border border-white/[0.08] hover:border-white/[0.14] transition-colors flex flex-col justify-between"
               >
-                <div className="absolute top-0 right-0 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-cyan-300 shadow-md shadow-indigo-600/10">
-                      <Award className="w-6 h-6" />
+                    <div className="w-9 h-9 rounded-lg bg-[#222225] border border-white/[0.08] flex items-center justify-center text-[#e5a00d]">
+                      <Award strokeWidth={1.5} className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        {cert.grade}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400">
-                        {cert.challenges_completed ?? 12}+ Tasks • {cert.completion_hours ?? 24}h
+                    <div className="text-right font-mono text-xs">
+                      <span className="text-[#4cc38a] block">{cert.grade}</span>
+                      <span className="text-[#85858b] text-[11px]">
+                        {cert.challenges_completed ?? 12}+ tasks · {cert.completion_hours ?? 24}h
                       </span>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors leading-snug">
-                      {cert.title}
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-1">
-                      {cert.issuer_name || 'Coding Task Factory Academy'} • {cert.category}
+                    <h2 className="text-base font-medium text-[#ededed] leading-snug">{cert.title}</h2>
+                    <p className="text-xs text-[#85858b] mt-1">
+                      {cert.issuer_name || 'Coding Task Factory Academy'} · {cert.category}
                     </p>
                   </div>
 
                   {cert.summary && (
-                    <p className="text-xs text-slate-400/90 line-clamp-2 leading-relaxed">
-                      {cert.summary}
-                    </p>
+                    <p className="text-xs text-[#a1a1a6] line-clamp-2 leading-relaxed">{cert.summary}</p>
                   )}
 
                   {skills.length > 0 && (
@@ -289,13 +268,13 @@ export const CertificatesPage: React.FC = () => {
                       {skills.map((s) => (
                         <span
                           key={s}
-                          className="text-[10px] px-2 py-0.5 rounded-md bg-slate-950/90 text-indigo-300 border border-slate-800"
+                          className="text-[11px] px-2 py-0.5 rounded bg-[#141415] text-[#a1a1a6] border border-white/[0.08]"
                         >
                           {s}
                         </span>
                       ))}
                       {extraSkills > 0 && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-950 text-slate-400">
+                        <span className="text-[11px] px-2 py-0.5 rounded bg-[#141415] text-[#85858b]">
                           +{extraSkills}
                         </span>
                       )}
@@ -303,33 +282,36 @@ export const CertificatesPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="pt-4 mt-5 border-t border-slate-800 space-y-3">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                    <span className="text-indigo-400 font-semibold">{cert.credential_id}</span>
+                <div className="pt-4 mt-5 border-t border-white/[0.08] space-y-3">
+                  <div className="flex items-center justify-between text-xs font-mono text-[#85858b]">
+                    <span className="text-[#ededed]">{cert.credential_id}</span>
                     <span>{formatCertificateDate(cert.issue_date)}</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <button
+                      type="button"
                       onClick={() => openCertificateModal(cert, 'diploma')}
-                      className="col-span-1 inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/20 transition"
+                      className="h-8 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
                     >
                       View
                     </button>
                     <button
+                      type="button"
                       onClick={() => openCertificateModal(cert, 'share', 'linkedin')}
-                      className="col-span-1 inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold text-cyan-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
+                      className="inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors"
                     >
-                      <Share2 className="w-3.5 h-3.5 text-cyan-400" />
-                      Share
+                      <Share2 strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                      <span>Share</span>
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleDownloadPdf(cert)}
                       disabled={downloadingPdfId === cert.credential_id}
-                      className="col-span-1 inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition disabled:opacity-60"
+                      className="inline-flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors disabled:opacity-50"
                     >
-                      <FileText className="w-3.5 h-3.5 text-amber-400" />
-                      {downloadingPdfId === cert.credential_id ? '...' : 'PDF'}
+                      <FileText strokeWidth={1.5} className="w-3.5 h-3.5 text-[#e5a00d]" />
+                      <span>{downloadingPdfId === cert.credential_id ? '...' : 'PDF'}</span>
                     </button>
                   </div>
                 </div>
@@ -341,37 +323,34 @@ export const CertificatesPage: React.FC = () => {
 
       {selectedCert && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn print-certificate"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fadeIn print-certificate"
           onClick={() => setSelectedCert(null)}
         >
           <div
-            className="w-full max-w-4xl max-h-[92dvh] overflow-y-auto custom-scrollbar bg-[#080C16] border border-slate-700 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl flex flex-col relative"
+            className="w-full max-w-4xl max-h-[92dvh] overflow-y-auto custom-scrollbar bg-[#19191b] border border-white/[0.12] rounded-2xl p-4 sm:p-8 shadow-2xl flex flex-col relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header & Tab Switcher */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5 no-print">
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800">
+              <div className="flex items-center gap-1 p-1 rounded-lg bg-[#141415] border border-white/[0.08]">
                 <button
+                  type="button"
                   onClick={() => setModalTab('diploma')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    modalTab === 'diploma'
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                    modalTab === 'diploma' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                   }`}
                 >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  Official Diploma
+                  <ShieldCheck strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>Diploma</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setModalTab('share')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    modalTab === 'share'
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                    modalTab === 'share' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                   }`}
                 >
-                  <Share2 className="w-3.5 h-3.5" />
-                  Share &amp; Post Studio
+                  <Share2 strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>Share studio</span>
                 </button>
               </div>
 
@@ -379,104 +358,98 @@ export const CertificatesPage: React.FC = () => {
                 <Link
                   to={`/verify/${selectedCert.credential_id}`}
                   target="_blank"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500/20 transition"
+                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] border border-white/[0.08] hover:bg-[#2a2a2e] transition-colors"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  Public Verify Page
+                  <ExternalLink strokeWidth={1.5} className="w-3.5 h-3.5 text-[#4cc38a]" />
+                  <span>Public verify page</span>
                 </Link>
                 <button
+                  type="button"
                   onClick={() => setSelectedCert(null)}
-                  className="p-2 text-slate-400 hover:text-white rounded-lg bg-slate-900 border border-slate-800"
-                  aria-label="Close certificate modal"
+                  className="w-8 h-8 flex items-center justify-center text-[#85858b] hover:text-[#ededed] rounded-lg bg-[#141415] border border-white/[0.08]"
+                  aria-label="Close certificate"
                 >
-                  <X className="w-4 h-4" />
+                  <X strokeWidth={1.5} className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {modalTab === 'diploma' ? (
               <>
-                {/* Enriched Diploma Plate */}
-                <div className="p-5 sm:p-9 rounded-2xl border-2 border-amber-500/40 bg-gradient-to-b from-[#0B1020] to-[#070B15] relative shadow-inner text-center">
-                  <div className="border border-indigo-500/35 rounded-xl p-5 sm:p-7 space-y-5">
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-left border-b border-slate-800/90 pb-4">
+                <div className="p-5 sm:p-8 rounded-xl border border-[#e5a00d]/45 bg-[#141415] text-center">
+                  <div className="border border-white/[0.08] rounded-lg p-5 sm:p-7 space-y-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-left border-b border-white/[0.08] pb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 p-0.5 shrink-0">
-                          <div className="w-full h-full bg-[#0B0F1E] rounded-[10px] flex items-center justify-center text-cyan-300">
-                            <ShieldCheck className="w-6 h-6" />
-                          </div>
+                        <div className="w-10 h-10 rounded-lg bg-[#19191b] border border-white/[0.1] flex items-center justify-center text-[#e5a00d] shrink-0">
+                          <ShieldCheck strokeWidth={1.5} className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="text-[11px] font-mono tracking-widest uppercase text-amber-300 font-bold">
+                          <p className="text-xs font-mono text-[#e5a00d]">
                             {selectedCert.issuer_name || 'Coding Task Factory Academy'}
                           </p>
-                          <p className="text-xs text-slate-400">
-                            Credential Track: {selectedCert.category}
-                          </p>
+                          <p className="text-xs text-[#85858b]">Track: {selectedCert.category}</p>
                         </div>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        VERIFIED CREDENTIAL
+                      <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#4cc38a]">
+                        <CheckCircle2 strokeWidth={1.5} className="w-3.5 h-3.5" />
+                        <span>Verified credential</span>
                       </span>
                     </div>
 
                     <div className="space-y-1.5">
-                      <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-indigo-400">
-                        Certificate of Engineering Excellence
+                      <p className="text-xs font-mono text-[#85858b]">
+                        Certificate of Engineering Mastery
                       </p>
-                      <p className="text-xs text-slate-400">This official credential certifies that</p>
-                      <p className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-cyan-200 py-1 font-serif">
+                      <p className="text-xs text-[#85858b]">Awarded to</p>
+                      <p className="text-3xl sm:text-4xl font-medium text-[#ededed] py-1 font-serif">
                         {selectedCert.recipient_name || user?.full_name || 'Developer'}
                       </p>
-                      <div className="w-48 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
+                      <div className="w-44 h-px bg-white/[0.12] mx-auto" />
                     </div>
 
                     <div className="space-y-2">
-                      <p className="text-xs text-slate-400">has demonstrated verified mastery in</p>
-                      <h4 className="text-lg sm:text-xl font-bold text-indigo-300">
+                      <p className="text-xs text-[#85858b]">For verified mastery in</p>
+                      <h4 className="text-lg sm:text-xl font-medium text-[#ededed]">
                         {selectedCert.title}
                       </h4>
                       {selectedCert.summary && (
-                        <p className="text-xs text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-xs text-[#a1a1a6] max-w-2xl mx-auto leading-relaxed">
                           {selectedCert.summary}
                         </p>
                       )}
                     </div>
 
-                    {/* Metrics Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
-                      <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
-                        <p className="text-[10px] font-mono text-indigo-400 uppercase">Standing</p>
-                        <p className="text-xs font-bold text-emerald-400 mt-0.5">{selectedCert.grade}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center tabular-nums">
+                      <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                        <p className="text-[11px] font-mono text-[#85858b]">Standing</p>
+                        <p className="text-xs font-medium text-[#4cc38a] mt-0.5">{selectedCert.grade}</p>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
-                        <p className="text-[10px] font-mono text-indigo-400 uppercase">Score</p>
-                        <p className="text-xs font-bold text-white mt-0.5">
-                          {selectedCert.score_percent ?? 98}% Verified
+                      <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                        <p className="text-[11px] font-mono text-[#85858b]">Score</p>
+                        <p className="text-xs font-medium text-[#ededed] mt-0.5">
+                          {selectedCert.score_percent ?? 98}%
                         </p>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
-                        <p className="text-[10px] font-mono text-indigo-400 uppercase">Challenges</p>
-                        <p className="text-xs font-bold text-white mt-0.5">
-                          {selectedCert.challenges_completed ?? 12}+ Completed
+                      <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                        <p className="text-[11px] font-mono text-[#85858b]">Tasks</p>
+                        <p className="text-xs font-medium text-[#ededed] mt-0.5">
+                          {selectedCert.challenges_completed ?? 12}+ completed
                         </p>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800">
-                        <p className="text-[10px] font-mono text-indigo-400 uppercase">Lab Time</p>
-                        <p className="text-xs font-bold text-white mt-0.5">
-                          {selectedCert.completion_hours ?? 24} Hours
+                      <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                        <p className="text-[11px] font-mono text-[#85858b]">Lab time</p>
+                        <p className="text-xs font-medium text-[#ededed] mt-0.5">
+                          {selectedCert.completion_hours ?? 24} hours
                         </p>
                       </div>
                     </div>
 
-                    {/* Verified Skills Pills */}
                     {(selectedCert.skills_verified?.length ?? 0) > 0 && (
                       <div className="flex flex-wrap justify-center gap-1.5">
                         {selectedCert.skills_verified?.map((skill) => (
                           <span
                             key={skill}
-                            className="text-[11px] px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-200 border border-indigo-500/30"
+                            className="text-xs px-2.5 py-0.5 rounded-md bg-[#19191b] text-[#a1a1a6] border border-white/[0.08]"
                           >
                             {skill}
                           </span>
@@ -484,29 +457,26 @@ export const CertificatesPage: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Diploma Footer: Metadata + QR + Signatory */}
-                    <div className="pt-5 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 items-center gap-4 text-left font-mono text-[11px] text-slate-400">
+                    <div className="pt-5 border-t border-white/[0.08] grid grid-cols-1 sm:grid-cols-3 items-center gap-4 text-left font-mono text-xs text-[#85858b]">
                       <div className="space-y-1">
                         <p>
-                          Issued:{' '}
-                          <span className="text-white font-semibold">
-                            {formatCertificateDate(selectedCert.issue_date)}
-                          </span>
+                          Issued: <span className="text-[#ededed]">{formatCertificateDate(selectedCert.issue_date)}</span>
                         </p>
                         <p>
-                          Credential ID:{' '}
-                          <span className="text-indigo-400 font-semibold">{selectedCert.credential_id}</span>
+                          ID: <span className="text-[#ededed]">{selectedCert.credential_id}</span>
                         </p>
-                        <p className="flex items-center gap-1 text-[10px] text-emerald-400">
-                          <Lock className="w-3 h-3" />
-                          {selectedCert.credential_hash
-                            ? `0x${selectedCert.credential_hash.slice(0, 20)}...`
-                            : 'SHA-256 Verified'}
+                        <p className="flex items-center gap-1 text-[11px] text-[#4cc38a]">
+                          <Lock strokeWidth={1.5} className="w-3 h-3" />
+                          <span>
+                            {selectedCert.credential_hash
+                              ? `0x${selectedCert.credential_hash.slice(0, 20)}...`
+                              : 'SHA-256 verified'}
+                          </span>
                         </p>
                       </div>
 
                       <div className="flex flex-col items-center justify-center">
-                        <div className="p-1.5 rounded-lg bg-slate-100 border border-slate-700">
+                        <div className="p-1.5 rounded-md bg-[#ededed]">
                           <div
                             className="grid gap-[1px]"
                             style={{ gridTemplateColumns: `repeat(${qrCells.length}, 3.5px)` }}
@@ -515,33 +485,33 @@ export const CertificatesPage: React.FC = () => {
                               row.map((on, c) => (
                                 <div
                                   key={`${r}-${c}`}
-                                  className={`w-[3.5px] h-[3.5px] ${on ? 'bg-slate-950' : 'bg-transparent'}`}
+                                  className={`w-[3.5px] h-[3.5px] ${on ? 'bg-[#141415]' : 'bg-transparent'}`}
                                 />
                               ))
                             )}
                           </div>
                         </div>
-                        <span className="text-[9px] text-slate-500 mt-1">SCAN TO VERIFY</span>
+                        <span className="text-[10px] text-[#85858b] mt-1">Scan to verify</span>
                       </div>
 
                       <div className="sm:text-right space-y-0.5">
                         <svg
                           viewBox="0 0 140 32"
-                          className="w-28 h-7 sm:ml-auto text-slate-200"
+                          className="w-28 h-7 sm:ml-auto text-[#ededed]"
                           fill="none"
                           aria-hidden="true"
                         >
                           <path
                             d="M8 22 C24 4, 34 28, 56 12 C72 2, 86 24, 108 14 C118 10, 126 17, 134 15"
                             stroke="currentColor"
-                            strokeWidth="2"
+                            strokeWidth="1.8"
                             strokeLinecap="round"
                           />
                         </svg>
-                        <p className="text-white font-semibold font-sans text-xs">
+                        <p className="text-[#ededed] font-sans font-medium text-xs">
                           {selectedCert.signatory_name || 'Dr. Aris Thorne'}
                         </p>
-                        <p className="text-[10px] text-slate-500 font-sans">
+                        <p className="text-[11px] text-[#85858b] font-sans">
                           {selectedCert.signatory_title || 'Chief Curriculum Architect'}
                         </p>
                       </div>
@@ -549,106 +519,101 @@ export const CertificatesPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Diploma Actions */}
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 no-print">
                   <button
+                    type="button"
                     onClick={() => handleDownloadPdf(selectedCert)}
                     disabled={downloadingPdfId === selectedCert.credential_id}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-lg shadow-indigo-600/30 transition disabled:opacity-60"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors disabled:opacity-50"
                   >
-                    <FileText className="w-4 h-4" />
-                    {downloadingPdfId === selectedCert.credential_id
-                      ? 'Rendering Vector PDF...'
-                      : 'Download Official PDF'}
+                    <FileText strokeWidth={1.5} className="w-4 h-4" />
+                    <span>
+                      {downloadingPdfId === selectedCert.credential_id ? 'Rendering PDF' : 'Download PDF'}
+                    </span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDownloadSvg(selectedCert)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors"
                   >
-                    <Download className="w-4 h-4 text-cyan-400" />
-                    Download SVG
+                    <Download strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
+                    <span>Download SVG</span>
                   </button>
                   <button
+                    type="button"
                     onClick={handlePrint}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors"
                   >
-                    <Printer className="w-4 h-4 text-slate-300" />
-                    Print
+                    <Printer strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
+                    <span>Print</span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       handlePlatformSelect(platform);
                       setModalTab('share');
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-200 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/35 transition"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors"
                   >
-                    <Share2 className="w-4 h-4 text-emerald-400" />
-                    Post to LinkedIn / IG / FB / WA
+                    <Share2 strokeWidth={1.5} className="w-4 h-4 text-[#e5a00d]" />
+                    <span>Share post</span>
                   </button>
                 </div>
               </>
             ) : (
-              /* Share & Social Post Studio */
               <div className="space-y-5 no-print">
-                {/* Platform Tabs */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {(['linkedin', 'instagram', 'facebook', 'whatsapp'] as SocialPlatform[]).map(
-                    (p) => {
-                      const meta = PLATFORM_META[p];
-                      const active = platform === p;
-                      return (
-                        <button
-                          key={p}
-                          onClick={() => handlePlatformSelect(p)}
-                          className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold border transition ${
-                            active
-                              ? meta.activeBg
-                              : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-600'
-                          }`}
-                        >
-                          <PlatformBadgeIcon
-                            platform={p}
-                            className={`w-4 h-4 ${active ? 'text-white' : meta.colorClass}`}
-                          />
-                          {meta.label}
-                        </button>
-                      );
-                    }
-                  )}
+                  {(['linkedin', 'instagram', 'facebook', 'whatsapp'] as SocialPlatform[]).map((p) => {
+                    const meta = PLATFORM_META[p];
+                    const active = platform === p;
+                    return (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => handlePlatformSelect(p)}
+                        className={`flex items-center justify-center gap-2 px-3 h-9 rounded-lg text-xs font-medium border transition-colors ${
+                          active
+                            ? 'bg-[#222225] text-[#ededed] border-[#e5a00d]/55'
+                            : 'bg-[#141415] text-[#85858b] border-white/[0.08] hover:text-[#ededed]'
+                        }`}
+                      >
+                        <PlatformBadgeIcon platform={p} className="w-3.5 h-3.5" />
+                        <span>{meta.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
-                  <div className="flex items-center gap-2 text-slate-300">
-                    <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />
-                    <span>{PLATFORM_META[platform].hint}</span>
-                  </div>
+                <div className="p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <span className="text-[#a1a1a6]">{PLATFORM_META[platform].hint}</span>
                   <button
+                    type="button"
                     onClick={() => handleCopyVerifyUrl(selectedCert)}
-                    className="inline-flex items-center gap-1.5 text-[11px] font-mono text-cyan-300 hover:text-cyan-200"
+                    className="inline-flex items-center gap-1.5 font-mono text-[#ededed] hover:text-[#e5a00d]"
                   >
-                    <Copy className="w-3 h-3" />
-                    Copy Verify Link
+                    <Copy strokeWidth={1.5} className="w-3 h-3" />
+                    <span>Copy verify link</span>
                   </button>
                 </div>
 
-                {/* Message Composer */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-slate-300">
-                      {PLATFORM_META[platform].label} Post Message (Editable)
+                    <label className="text-xs font-medium text-[#a1a1a6]">
+                      {PLATFORM_META[platform].label} message
                     </label>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400">
-                      <span>{postDraft.length} characters</span>
+                    <div className="flex items-center gap-3 text-xs text-[#85858b] tabular-nums">
+                      <span>{postDraft.length} chars</span>
                       <button
+                        type="button"
                         onClick={() =>
                           setPostDraft(
                             buildSocialPostMessage(selectedCert, platform, user?.full_name)
                           )
                         }
-                        className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-medium"
+                        className="inline-flex items-center gap-1 text-[#a1a1a6] hover:text-[#ededed]"
                       >
-                        <RotateCcw className="w-3 h-3" />
-                        Reset Template
+                        <RotateCcw strokeWidth={1.5} className="w-3 h-3" />
+                        <span>Reset</span>
                       </button>
                     </div>
                   </div>
@@ -656,19 +621,19 @@ export const CertificatesPage: React.FC = () => {
                     rows={9}
                     value={postDraft}
                     onChange={(e) => setPostDraft(e.target.value)}
-                    className="w-full rounded-2xl bg-[#050812] border border-slate-700/80 p-4 text-xs sm:text-sm text-slate-100 leading-relaxed focus:outline-none focus:border-indigo-500 custom-scrollbar"
+                    className="w-full rounded-xl bg-[#141415] border border-white/[0.1] p-4 text-xs sm:text-sm text-[#ededed] leading-relaxed focus:outline-none focus:border-[#e5a00d] custom-scrollbar"
                   />
                 </div>
 
-                {/* Platform Action Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.08]">
                   <div className="flex flex-wrap items-center gap-2">
                     <button
+                      type="button"
                       onClick={handleCopyPost}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition shadow-md shadow-indigo-600/20"
+                      className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
                     >
-                      <Copy className="w-3.5 h-3.5" />
-                      Copy Post Message
+                      <Copy strokeWidth={1.5} className="w-3.5 h-3.5" />
+                      <span>Copy message</span>
                     </button>
 
                     {platform === 'linkedin' && (
@@ -677,19 +642,19 @@ export const CertificatesPage: React.FC = () => {
                           href={buildLinkedInFeedShareUrl(postDraft)}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-sky-600 hover:bg-sky-500 transition"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                         >
                           <PlatformBadgeIcon platform="linkedin" className="w-3.5 h-3.5" />
-                          Post on LinkedIn Feed
+                          <span>Post on LinkedIn</span>
                         </a>
                         <a
                           href={buildLinkedInAddToProfileUrl(selectedCert)}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-sky-200 bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/35 transition"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          Add to LinkedIn Profile
+                          <ExternalLink strokeWidth={1.5} className="w-3.5 h-3.5" />
+                          <span>Add to profile</span>
                         </a>
                       </>
                     )}
@@ -697,22 +662,23 @@ export const CertificatesPage: React.FC = () => {
                     {platform === 'instagram' && (
                       <>
                         <button
+                          type="button"
                           onClick={() => handleExportCard('square')}
                           disabled={exportingCard}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pink-600 to-amber-500 hover:opacity-95 transition disabled:opacity-60"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] disabled:opacity-50"
                         >
-                          <ImageIcon className="w-3.5 h-3.5" />
-                          {exportingCard ? 'Rendering PNG...' : 'Download 1080×1080 IG Card'}
+                          <ImageIcon strokeWidth={1.5} className="w-3.5 h-3.5" />
+                          <span>{exportingCard ? 'Rendering' : 'Download 1080×1080 PNG'}</span>
                         </button>
                         <a
                           href="https://www.instagram.com/"
                           target="_blank"
                           rel="noreferrer"
                           onClick={() => handleCopyPost()}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-pink-200 bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/35 transition"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                         >
                           <PlatformBadgeIcon platform="instagram" className="w-3.5 h-3.5" />
-                          Copy &amp; Open Instagram
+                          <span>Open Instagram</span>
                         </a>
                       </>
                     )}
@@ -723,18 +689,19 @@ export const CertificatesPage: React.FC = () => {
                           href={buildFacebookShareUrl(selectedCert.credential_id, postDraft)}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 transition"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                         >
                           <PlatformBadgeIcon platform="facebook" className="w-3.5 h-3.5" />
-                          Share on Facebook
+                          <span>Share on Facebook</span>
                         </a>
                         <button
+                          type="button"
                           onClick={() => handleExportCard('landscape')}
                           disabled={exportingCard}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-blue-200 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/35 transition disabled:opacity-60"
+                          className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] disabled:opacity-50"
                         >
-                          <ImageIcon className="w-3.5 h-3.5" />
-                          Download 1200×630 Card
+                          <ImageIcon strokeWidth={1.5} className="w-3.5 h-3.5" />
+                          <span>Download 1200×630 PNG</span>
                         </button>
                       </>
                     )}
@@ -744,33 +711,34 @@ export const CertificatesPage: React.FC = () => {
                         href={buildWhatsAppShareUrl(postDraft)}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition"
+                        className="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                       >
                         <PlatformBadgeIcon platform="whatsapp" className="w-3.5 h-3.5" />
-                        Send via WhatsApp
+                        <span>Send via WhatsApp</span>
                       </a>
                     )}
                   </div>
 
-                  {/* Universal PNG & PDF Attachments */}
                   <div className="flex flex-wrap items-center gap-2">
                     {platform !== 'instagram' && platform !== 'facebook' && (
                       <button
+                        type="button"
                         onClick={() => handleExportCard('landscape')}
                         disabled={exportingCard}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
+                        className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                       >
-                        <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-                        PNG Card
+                        <ImageIcon strokeWidth={1.5} className="w-3.5 h-3.5" />
+                        <span>PNG card</span>
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => handleDownloadPdf(selectedCert)}
                       disabled={downloadingPdfId === selectedCert.credential_id}
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition"
+                      className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08]"
                     >
-                      <FileText className="w-3.5 h-3.5 text-amber-400" />
-                      Download PDF
+                      <FileText strokeWidth={1.5} className="w-3.5 h-3.5 text-[#e5a00d]" />
+                      <span>Download PDF</span>
                     </button>
                   </div>
                 </div>

@@ -29,29 +29,24 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-5 right-5 z-[100] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0 no-print">
+      <div className="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0 no-print">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             role="status"
-            className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-2xl border backdrop-blur-xl shadow-2xl text-xs animate-fadeIn ${
-              toast.variant === 'success'
-                ? 'bg-emerald-950/90 border-emerald-500/40 text-emerald-100'
-                : toast.variant === 'error'
-                ? 'bg-rose-950/90 border-rose-500/40 text-rose-100'
-                : 'bg-slate-900/95 border-indigo-500/40 text-slate-100'
-            }`}
+            className="pointer-events-auto flex items-start gap-2.5 p-3.5 rounded-xl bg-[#19191b] border border-white/[0.12] shadow-xl text-xs text-[#ededed] animate-fadeIn"
           >
-            {toast.variant === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />}
-            {toast.variant === 'error' && <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />}
-            {toast.variant === 'info' && <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />}
-            <span className="flex-1 leading-relaxed font-medium">{toast.message}</span>
+            {toast.variant === 'success' && <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0 mt-0.5" />}
+            {toast.variant === 'error' && <AlertCircle strokeWidth={1.5} className="w-4 h-4 text-[#e5484d] shrink-0 mt-0.5" />}
+            {toast.variant === 'info' && <Info strokeWidth={1.5} className="w-4 h-4 text-[#e5a00d] shrink-0 mt-0.5" />}
+            <span className="flex-1 leading-relaxed">{toast.message}</span>
             <button
+              type="button"
               onClick={() => dismiss(toast.id)}
-              className="text-slate-400 hover:text-white transition shrink-0"
+              className="text-[#85858b] hover:text-[#ededed] transition-colors shrink-0"
               aria-label="Dismiss notification"
             >
-              <X className="w-3.5 h-3.5" />
+              <X strokeWidth={1.5} className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}

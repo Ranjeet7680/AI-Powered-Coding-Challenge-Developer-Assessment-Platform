@@ -29,14 +29,12 @@ export const AssessmentsPage: React.FC = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Create form
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState(60);
   const [passingScore, setPassingScore] = useState(75);
   const [selectedChallengeIds, setSelectedChallengeIds] = useState<string[]>([]);
 
-  // Active assessment session runner
   const [activeAssessment, setActiveAssessment] = useState<Assessment | null>(null);
   const [sessionChallenges, setSessionChallenges] = useState<Challenge[]>([]);
   const [activeProblemIdx, setActiveProblemIdx] = useState(0);
@@ -61,7 +59,6 @@ export const AssessmentsPage: React.FC = () => {
     });
   }, []);
 
-  // Countdown timer during active assessment
   useEffect(() => {
     if (!activeAssessment || completionResult) return;
     const timer = setInterval(() => {
@@ -87,7 +84,7 @@ export const AssessmentsPage: React.FC = () => {
       setIsCreateOpen(false);
       setTitle('');
       setDescription('');
-      showToast('Assessment created and published.', 'success');
+      showToast('Assessment created.', 'success');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not create assessment.';
       showToast(msg, 'error');
@@ -131,9 +128,9 @@ export const AssessmentsPage: React.FC = () => {
         [currentProblem.id]: Math.max(prev[currentProblem.id] || 0, pct),
       }));
       if (res.status === 'Accepted') {
-        showToast(`${currentProblem.title}: All ${res.total_count} tests passed (100%)!`, 'success');
+        showToast(`${currentProblem.title}: ${res.total_count}/${res.total_count} tests passed.`, 'success');
       } else {
-        showToast(`${currentProblem.title}: ${res.passed_count}/${res.total_count} passed (${pct}%)`, 'error');
+        showToast(`${currentProblem.title}: ${res.passed_count}/${res.total_count} passed (${pct}%).`, 'error');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Test run failed.';
@@ -165,14 +162,14 @@ export const AssessmentsPage: React.FC = () => {
 
       if (res.passed) {
         refreshUser().catch(() => {});
-        showToast(`Passed with ${res.score}%! Certificate unlocked.`, 'success');
+        showToast(`Passed with ${res.score}%. Certificate issued.`, 'success');
         try {
-          confetti({ particleCount: 110, spread: 70, origin: { y: 0.6 } });
+          confetti({ particleCount: 90, spread: 60, origin: { y: 0.6 } });
         } catch {
           // Decorative
         }
       } else {
-        showToast(`Assessment completed with ${res.score}% (required ${activeAssessment.passing_score}%).`, 'info');
+        showToast(`Completed with ${res.score}% (required ${activeAssessment.passing_score}%).`, 'info');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not submit assessment.';
@@ -191,74 +188,74 @@ export const AssessmentsPage: React.FC = () => {
   const currentProblem = sessionChallenges[activeProblemIdx];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Technical Assessments
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+            Technical assessments
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Standardized timed coding evaluations. Pass any screener to unlock a verified credential certificate.
+          <p className="text-sm text-[#85858b] mt-1">
+            Timed coding evaluations that issue verified SHA-256 certificates on passing scores
           </p>
         </div>
 
         <button
+          type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition self-start sm:self-auto active:scale-95"
+          className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
-          Create New Assessment
+          <Plus strokeWidth={1.5} className="w-3.5 h-3.5" />
+          <span>New assessment</span>
         </button>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-64 rounded-3xl bg-slate-900/50 border border-slate-800 animate-pulse p-6" />
+            <div key={i} className="h-56 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse p-6" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 tabular-nums">
           {assessments.map((a) => (
             <div
               key={a.id}
-              className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between hover:border-indigo-500/40 transition duration-200 group shadow-xl"
+              className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] hover:border-white/[0.14] flex flex-col justify-between transition-colors"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    {a.is_active ? 'Active Screener' : 'Closed'}
+                <div className="flex items-center justify-between mb-3 text-xs font-mono">
+                  <span className={a.is_active ? 'text-[#4cc38a]' : 'text-[#85858b]'}>
+                    {a.is_active ? 'Active' : 'Closed'}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" /> {a.duration_minutes} Mins
+                  <span className="text-[#85858b] flex items-center gap-1.5">
+                    <Clock strokeWidth={1.5} className="w-3.5 h-3.5" />
+                    <span>{a.duration_minutes}m</span>
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors mb-2">
-                  {a.title}
-                </h3>
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3 mb-6">
+                <h2 className="text-base font-medium text-[#ededed] mb-2">{a.title}</h2>
+                <p className="text-xs text-[#a1a1a6] leading-relaxed line-clamp-3 mb-6">
                   {a.description}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-slate-800 space-y-4">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span>
-                    Passing: <strong className="text-slate-200">{a.passing_score}%</strong>
-                  </span>
-                  <span>{a.challenge_ids?.length || 2} Problems</span>
+              <div className="pt-4 border-t border-white/[0.08] space-y-3.5">
+                <div className="flex items-center justify-between text-xs text-[#85858b] font-mono">
+                  <span>Pass {a.passing_score}%</span>
+                  <span>{a.challenge_ids?.length || 2} tasks</span>
                   <span className="flex items-center gap-1">
-                    <Users className="w-3 h-3" /> {a.candidates_count}
+                    <Users strokeWidth={1.5} className="w-3.5 h-3.5" />
+                    {a.candidates_count}
                   </span>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => handleStartAssessment(a)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-slate-800 hover:bg-indigo-600 transition flex items-center justify-center gap-2"
+                  className="w-full h-9 px-4 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#ededed] hover:text-[#141415] border border-white/[0.08] transition-colors flex items-center justify-center gap-2"
                 >
-                  Start Timed Assessment
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Start assessment</span>
+                  <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -266,93 +263,94 @@ export const AssessmentsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Interactive Assessment Session Runner Modal */}
+      {/* Assessment Runner */}
       {activeAssessment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-6xl h-[92dvh] sm:h-[90vh] bg-[#080B14] border border-indigo-500/35 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-            {/* Session Header */}
-            <div className="px-5 py-3.5 border-b border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-between gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-6xl h-[92dvh] sm:h-[90vh] bg-[#141415] border border-white/[0.12] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-white/[0.08] bg-[#0f0f10] flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <Award className="w-5 h-5 text-indigo-400" />
+                <Award strokeWidth={1.5} className="w-4 h-4 text-[#e5a00d]" />
                 <div>
-                  <h3 className="text-sm font-bold text-white">{activeAssessment.title}</h3>
-                  <p className="text-[11px] text-slate-400 font-mono">
-                    Passing Score: {activeAssessment.passing_score}% • {sessionChallenges.length} Tasks
+                  <h3 className="text-sm font-medium text-[#ededed]">{activeAssessment.title}</h3>
+                  <p className="text-xs text-[#85858b] font-mono tabular-nums">
+                    Pass threshold {activeAssessment.passing_score}% · {sessionChallenges.length} tasks
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-700 font-mono text-xs text-amber-300">
-                  <Timer className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#19191b] border border-white/[0.08] font-mono text-xs text-[#e5a00d] tabular-nums">
+                  <Timer strokeWidth={1.5} className="w-3.5 h-3.5" />
                   <span>{formatCountdown(remainingSeconds)}</span>
                 </div>
                 {!completionResult && (
                   <button
+                    type="button"
                     onClick={handleFinishAssessment}
                     disabled={isFinishing}
-                    className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                    className="px-4 h-8 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
                   >
-                    {isFinishing ? 'Grading...' : 'Finish & Submit Assessment'}
+                    {isFinishing ? 'Grading' : 'Submit assessment'}
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={() => setActiveAssessment(null)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                  className="p-1.5 rounded-lg text-[#85858b] hover:text-[#ededed] hover:bg-[#19191b]"
+                  aria-label="Close assessment"
                 >
-                  <X className="w-5 h-5" />
+                  <X strokeWidth={1.5} className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {completionResult ? (
-              /* Completion Summary */
               <div className="flex-1 flex items-center justify-center p-8 text-center">
-                <div className="max-w-md space-y-5 p-8 rounded-3xl bg-slate-900/70 border border-slate-800">
-                  <div
-                    className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center border ${
-                      completionResult.passed
-                        ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                        : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                    }`}
-                  >
-                    {completionResult.passed ? <ShieldCheck className="w-8 h-8" /> : <Award className="w-8 h-8" />}
+                <div className="max-w-md space-y-5 p-8 rounded-2xl bg-[#19191b] border border-white/[0.08]">
+                  <div className="w-12 h-12 rounded-xl mx-auto flex items-center justify-center bg-[#222225] border border-white/[0.08]">
+                    {completionResult.passed ? (
+                      <ShieldCheck strokeWidth={1.5} className="w-6 h-6 text-[#4cc38a]" />
+                    ) : (
+                      <Award strokeWidth={1.5} className="w-6 h-6 text-[#e5a00d]" />
+                    )}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-extrabold text-white">
-                      {completionResult.passed ? 'Assessment Passed!' : 'Assessment Completed'}
+                    <h3 className="text-xl font-medium text-[#ededed]">
+                      {completionResult.passed ? 'Assessment passed' : 'Assessment completed'}
                     </h3>
-                    <p className="text-sm text-slate-300 mt-1">
-                      Final Score: <strong className="font-mono text-indigo-300">{completionResult.score}%</strong> (Threshold:{' '}
-                      {activeAssessment.passing_score}%)
+                    <p className="text-sm text-[#a1a1a6] mt-1 tabular-nums">
+                      Score <span className="font-mono text-[#ededed]">{completionResult.score}%</span> · threshold{' '}
+                      {activeAssessment.passing_score}%
                     </p>
                   </div>
 
                   {completionResult.certificate && (
-                    <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-xs space-y-1">
-                      <p className="font-bold text-indigo-300">Verified Certificate Awarded</p>
-                      <p className="text-slate-300">{completionResult.certificate.title}</p>
-                      <p className="font-mono text-[11px] text-emerald-400">
-                        Credential ID: {completionResult.certificate.credential_id}
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] text-xs space-y-1 text-left">
+                      <p className="font-medium text-[#4cc38a]">Certificate issued</p>
+                      <p className="text-[#ededed]">{completionResult.certificate.title}</p>
+                      <p className="font-mono text-[#85858b]">
+                        ID: {completionResult.certificate.credential_id}
                       </p>
                     </div>
                   )}
 
-                  <div className="flex items-center justify-center gap-3 pt-2">
+                  <div className="flex items-center justify-center gap-2.5 pt-2">
                     {completionResult.certificate && (
                       <button
+                        type="button"
                         onClick={() => {
                           setActiveAssessment(null);
                           navigate('/app/certificates');
                         }}
-                        className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
+                        className="px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium"
                       >
-                        View Certificate
+                        View certificate
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => setActiveAssessment(null)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold"
+                      className="px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] text-xs font-medium"
                     >
                       Close
                     </button>
@@ -360,28 +358,26 @@ export const AssessmentsPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              /* Active Problem Tabs + Split Editor */
               <div className="flex-1 flex flex-col min-h-0">
-                <div className="px-5 py-2 border-b border-slate-800 bg-slate-900/50 flex items-center gap-2 overflow-x-auto">
+                <div className="px-5 py-2 border-b border-white/[0.08] bg-[#19191b] flex items-center gap-2 overflow-x-auto">
                   {sessionChallenges.map((p, idx) => {
                     const score = sessionScores[p.id];
                     return (
                       <button
                         key={p.id}
+                        type="button"
                         onClick={() => setActiveProblemIdx(idx)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition whitespace-nowrap ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 transition-colors whitespace-nowrap tabular-nums ${
                           activeProblemIdx === idx
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                            ? 'bg-[#222225] text-[#ededed] border border-white/[0.12]'
+                            : 'text-[#85858b] hover:text-[#ededed] border border-transparent'
                         }`}
                       >
-                        <span>Task {idx + 1}: {p.title}</span>
+                        <span>
+                          Task {idx + 1}: {p.title}
+                        </span>
                         {score !== undefined && (
-                          <span
-                            className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
-                              score === 100 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
-                            }`}
-                          >
+                          <span className={`font-mono ${score === 100 ? 'text-[#4cc38a]' : 'text-[#e5a00d]'}`}>
                             {score}%
                           </span>
                         )}
@@ -392,36 +388,37 @@ export const AssessmentsPage: React.FC = () => {
 
                 {currentProblem && (
                   <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0">
-                    <div className="lg:col-span-5 p-5 overflow-y-auto border-b lg:border-b-0 lg:border-r border-slate-800 custom-scrollbar space-y-4">
+                    <div className="lg:col-span-5 p-5 overflow-y-auto border-b lg:border-b-0 lg:border-r border-white/[0.08] custom-scrollbar space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-base font-bold text-white">{currentProblem.title}</h4>
-                        <span className="text-[11px] font-mono text-indigo-300">{currentProblem.difficulty}</span>
+                        <h4 className="text-base font-medium text-[#ededed]">{currentProblem.title}</h4>
+                        <span className="text-xs font-mono text-[#a1a1a6]">{currentProblem.difficulty}</span>
                       </div>
                       <MarkdownRenderer content={currentProblem.description} />
-                      <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-xs">
-                        <p className="font-semibold text-white mb-1">Constraints</p>
-                        <ul className="space-y-0.5 text-slate-400 font-mono text-[11px]">
+                      <div className="p-3.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs">
+                        <p className="font-medium text-[#ededed] mb-1.5">Constraints</p>
+                        <ul className="space-y-1 text-[#85858b] font-mono text-[11px]">
                           {currentProblem.constraints.map((c, i) => (
-                            <li key={i}>• {c}</li>
+                            <li key={i}>· {c}</li>
                           ))}
                         </ul>
                       </div>
                     </div>
 
                     <div className="lg:col-span-7 flex flex-col min-h-[300px]">
-                      <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs">
-                        <span className="font-mono text-slate-400">Python 3.11 Sandbox</span>
+                      <div className="px-4 py-2 bg-[#0f0f10] border-b border-white/[0.08] flex items-center justify-between text-xs">
+                        <span className="font-mono text-[#85858b]">Python 3.11</span>
                         <button
+                          type="button"
                           onClick={handleRunProblemTests}
                           disabled={isRunningTests}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold"
+                          className="inline-flex items-center gap-1.5 px-3 h-7 rounded-md bg-[#ededed] hover:bg-white text-[#141415] font-medium"
                         >
                           {isRunningTests ? (
-                            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span className="w-3 h-3 border-2 border-[#141415]/30 border-t-[#141415] rounded-full animate-spin" />
                           ) : (
-                            <Play className="w-3.5 h-3.5 fill-current" />
+                            <Play strokeWidth={1.5} className="w-3 h-3 fill-current" />
                           )}
-                          Verify Task Tests
+                          <span>Verify tests</span>
                         </button>
                       </div>
                       <div className="flex-1">
@@ -438,24 +435,24 @@ export const AssessmentsPage: React.FC = () => {
                           }
                           options={{
                             fontSize: 13,
-                            fontFamily: "'JetBrains Mono', monospace",
+                            fontFamily: "'IBM Plex Mono', monospace",
                             minimap: { enabled: false },
                             scrollBeyondLastLine: false,
                           }}
                         />
                       </div>
-                      <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex items-center justify-between text-xs font-mono">
-                        <span className="text-slate-400">
-                          Task Score:{' '}
-                          <strong className="text-emerald-400">
+                      <div className="px-4 py-2.5 border-t border-white/[0.08] bg-[#0f0f10] flex items-center justify-between text-xs font-mono tabular-nums">
+                        <span className="text-[#85858b]">
+                          Task score:{' '}
+                          <span className="text-[#4cc38a]">
                             {sessionScores[currentProblem.id] !== undefined
                               ? `${sessionScores[currentProblem.id]}%`
-                              : 'Not verified yet'}
-                          </strong>
+                              : 'Pending'}
+                          </span>
                         </span>
-                        <span className="text-slate-500 flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
-                          Run Verify Task Tests before finishing
+                        <span className="text-[#85858b] flex items-center gap-1.5">
+                          <CheckCircle2 strokeWidth={1.5} className="w-3.5 h-3.5" />
+                          <span>Verify tests before submitting</span>
                         </span>
                       </div>
                     </div>
@@ -470,81 +467,83 @@ export const AssessmentsPage: React.FC = () => {
       {/* Create Assessment Modal */}
       {isCreateOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn"
           onClick={() => setIsCreateOpen(false)}
         >
           <div
-            className="w-full max-w-lg bg-[#0A0D17] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-5"
+            className="w-full max-w-lg bg-[#19191b] border border-white/[0.12] rounded-2xl p-6 shadow-2xl space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Award className="w-5 h-5 text-indigo-400" />
-                Create New Assessment
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                <Award strokeWidth={1.5} className="w-4 h-4 text-[#85858b]" />
+                <span>Create assessment</span>
               </h3>
               <button
+                type="button"
                 onClick={() => setIsCreateOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white"
+                className="p-1 rounded-lg text-[#85858b] hover:text-[#ededed]"
+                aria-label="Close"
               >
-                <X className="w-4 h-4" />
+                <X strokeWidth={1.5} className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Assessment Title</label>
+                <label className="block font-medium text-[#a1a1a6] mb-1.5">Title</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Senior Fullstack Screener"
+                  placeholder="Senior Backend Screener"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Description</label>
+                <label className="block font-medium text-[#a1a1a6] mb-1.5">Description</label>
                 <textarea
                   rows={2}
-                  placeholder="Candidate screening instructions..."
+                  placeholder="Candidate instructions"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#141415] border border-white/[0.1] rounded-lg p-3 text-xs text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Duration (Minutes)</label>
+                  <label className="block font-medium text-[#a1a1a6] mb-1.5">Duration (minutes)</label>
                   <input
                     type="number"
                     min={5}
                     max={240}
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] font-mono tabular-nums focus:outline-none focus:border-[#e5a00d]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Passing Threshold (%)</label>
+                  <label className="block font-medium text-[#a1a1a6] mb-1.5">Passing score (%)</label>
                   <input
                     type="number"
                     min={10}
                     max={100}
                     value={passingScore}
                     onChange={(e) => setPassingScore(Number(e.target.value))}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] font-mono tabular-nums focus:outline-none focus:border-[#e5a00d]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Assigned Challenges</label>
-                <div className="max-h-36 overflow-y-auto space-y-1 p-2 bg-slate-900 rounded-xl border border-slate-800 custom-scrollbar">
+                <label className="block font-medium text-[#a1a1a6] mb-1.5">Assigned challenges</label>
+                <div className="max-h-36 overflow-y-auto space-y-1 p-2 bg-[#141415] rounded-lg border border-white/[0.08] custom-scrollbar">
                   {challenges.map((c) => (
-                    <label key={c.id} className="flex items-center gap-2 p-1.5 hover:bg-slate-800 rounded cursor-pointer">
+                    <label key={c.id} className="flex items-center gap-2 p-1.5 hover:bg-[#222225] rounded cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedChallengeIds.includes(c.id)}
@@ -555,10 +554,10 @@ export const AssessmentsPage: React.FC = () => {
                             setSelectedChallengeIds(selectedChallengeIds.filter((id) => id !== c.id));
                           }
                         }}
-                        className="rounded border-slate-700 text-indigo-600 bg-slate-950"
+                        className="rounded border-white/20 bg-[#19191b] accent-[#e5a00d]"
                       />
-                      <span className="text-slate-300 font-medium truncate">{c.title}</span>
-                      <span className="text-[10px] text-slate-500 ml-auto font-mono">{c.difficulty}</span>
+                      <span className="text-[#ededed] truncate">{c.title}</span>
+                      <span className="text-[11px] text-[#85858b] ml-auto font-mono">{c.difficulty}</span>
                     </label>
                   ))}
                 </div>
@@ -566,9 +565,9 @@ export const AssessmentsPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition"
+                className="w-full h-9 rounded-lg font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
               >
-                Create &amp; Publish Screener
+                Create assessment
               </button>
             </form>
           </div>

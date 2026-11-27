@@ -12,23 +12,23 @@ export const MLWikiBigDiagrams: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-indigo-500/30 bg-[#070B16] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="rounded-xl border border-white/[0.08] bg-[#141415] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
-            <BrainCircuit className="w-3.5 h-3.5" />
-            ML &amp; DL Academy — 3 Big Architecture Diagrams
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+            <BrainCircuit className="w-3.5 h-3.5" strokeWidth={1.5} />
+            ML &amp; DL Academy — 3 architecture diagrams
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#85858b]">
             View all 3 large-format ML LMS, MediaPipe AI Proctor, and Curriculum Telemetry diagrams together or focus individually.
           </p>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-[#19191b] p-1 rounded-lg border border-white/[0.08] w-full sm:w-auto">
           {[
-            { id: 'all' as const, label: 'Show All 3 Big', icon: Layers },
+            { id: 'all' as const, label: 'Show All 3', icon: Layers },
             { id: 'journey' as const, label: '1. 9-Stage LMS', icon: BookOpen },
-            { id: 'proctor' as const, label: '2. AI Camera Proctor', icon: Camera },
-            { id: 'curriculum' as const, label: '3. ML Curriculum & API', icon: BrainCircuit },
+            { id: 'proctor' as const, label: '2. Camera Proctor', icon: Camera },
+            { id: 'curriculum' as const, label: '3. Curriculum & API', icon: BrainCircuit },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = view === tab.id;
@@ -37,11 +37,11 @@ export const MLWikiBigDiagrams: React.FC = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setView(tab.id)}
-                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                  active ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  active ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
                 {tab.label}
               </button>
             );
@@ -51,12 +51,12 @@ export const MLWikiBigDiagrams: React.FC = () => {
 
       {/* BIG DIAGRAM 1 */}
       {showJourney && (
-        <div className="rounded-2xl border border-indigo-500/35 bg-[#070B16] overflow-hidden shadow-xl">
-          <div className="px-5 py-3.5 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between gap-2">
-            <span className="text-xs font-mono font-bold text-indigo-300 uppercase tracking-wider">
-              Big Diagram 1 · End-to-End 9-Stage ML &amp; Stanford DL LMS Learning Pipeline
+        <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-white/[0.08] bg-[#0f0f10] flex items-center justify-between gap-2">
+            <span className="text-xs font-mono font-medium text-[#ededed]">
+              Diagram 1 · End-to-End 9-Stage ML &amp; Stanford DL LMS Learning Pipeline
             </span>
-            <span className="text-[11px] font-mono text-cyan-300">LMSHub → Done!</span>
+            <span className="text-[11px] font-mono text-[#e5a00d]">LMSHub &rarr; Done</span>
           </div>
           <div className="p-4 sm:p-5 overflow-x-auto custom-scrollbar">
             <svg viewBox="0 0 1120 340" className="w-full min-w-[760px] h-auto" role="img" aria-label="End-to-End 9-Stage ML and DL LMS Learning Journey">
@@ -78,7 +78,7 @@ export const MLWikiBigDiagrams: React.FC = () => {
                 { x: 618, num: '06 · EXAM', title: 'Proctored Exam', sub: '35 Qs · Camera AI', stroke: '#f43f5e', bg: '#2b1019' },
                 { x: 738, num: '07 · SURVEY', title: 'Feedback', sub: '5-Star Review', stroke: '#f59e0b', bg: '#211809' },
                 { x: 858, num: '08 · CERT', title: 'PDF Certificate', sub: 'SHA-256 + Social', stroke: '#f59e0b', bg: '#211809' },
-                { x: 978, num: '09 · REWARD', title: 'Goodies & Done', sub: 'Claim Form ✓', stroke: '#34d399', bg: '#052e16' },
+                { x: 978, num: '09 · REWARD', title: 'Goodies & Done', sub: 'Claim Form', stroke: '#34d399', bg: '#052e16' },
               ].map((s, idx) => (
                 <g key={s.num}>
                   <rect x={s.x} y="30" width="110" height="106" rx="12" fill={s.bg} stroke={s.stroke} strokeWidth="1.6" />
@@ -114,7 +114,7 @@ export const MLWikiBigDiagrams: React.FC = () => {
               <rect x="756" y="210" width="314" height="84" rx="10" fill="#06281c" stroke="#10b981" strokeWidth="1.2" />
               <text x="772" y="234" fill="#ffffff" fontSize="13" fontWeight="700">Step 3 · Solve Quiz &amp; Advance</text>
               <text x="772" y="255" fill="#d1fae5" fontSize="11">Per-lecture verification &amp; instant feedback</text>
-              <text x="772" y="274" fill="#34d399" fontSize="11" fontWeight="700">Auto-Unlock Lecture #N+1 ✓</text>
+              <text x="772" y="274" fill="#34d399" fontSize="11" fontWeight="600">Auto-Unlock Lecture #N+1</text>
             </svg>
           </div>
         </div>
@@ -122,12 +122,12 @@ export const MLWikiBigDiagrams: React.FC = () => {
 
       {/* BIG DIAGRAM 2 */}
       {showProctor && (
-        <div className="rounded-2xl border border-rose-500/35 bg-[#070B16] overflow-hidden shadow-xl">
-          <div className="px-5 py-3.5 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between gap-2">
-            <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
-              Big Diagram 2 · MediaPipe AI Camera Proctor &amp; 4-Tier Anti-Cheat Vision Architecture
+        <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-white/[0.08] bg-[#0f0f10] flex items-center justify-between gap-2">
+            <span className="text-xs font-mono font-medium text-[#ededed]">
+              Diagram 2 · MediaPipe AI Camera Proctor &amp; 4-Tier Vision Architecture
             </span>
-            <span className="text-[11px] font-mono text-rose-300">ProctorCameraGuard + proctorVision.ts</span>
+            <span className="text-[11px] font-mono text-[#e5a00d]">ProctorCameraGuard + proctorVision.ts</span>
           </div>
           <div className="p-4 sm:p-5 overflow-x-auto custom-scrollbar">
             <svg viewBox="0 0 1120 390" className="w-full min-w-[760px] h-auto" role="img" aria-label="MediaPipe AI Camera Proctor and 4-Tier Anti-Cheat Pipeline">
@@ -201,12 +201,12 @@ export const MLWikiBigDiagrams: React.FC = () => {
 
       {/* BIG DIAGRAM 3 */}
       {showCurriculum && (
-        <div className="rounded-2xl border border-emerald-500/35 bg-[#070B16] overflow-hidden shadow-xl">
-          <div className="px-5 py-3.5 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between gap-2">
-            <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
-              Big Diagram 3 · Applied ML (106) + Stanford DL (21) Curriculum &amp; Telemetry API Architecture
+        <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-white/[0.08] bg-[#0f0f10] flex items-center justify-between gap-2">
+            <span className="text-xs font-mono font-medium text-[#ededed]">
+              Diagram 3 · Applied ML (106) + Stanford DL (21) Curriculum &amp; Telemetry API Architecture
             </span>
-            <span className="text-[11px] font-mono text-emerald-300">api.courseLms(&apos;ml&apos; | &apos;dl&apos;)</span>
+            <span className="text-[11px] font-mono text-[#4cc38a]">api.courseLms(&apos;ml&apos; | &apos;dl&apos;)</span>
           </div>
           <div className="p-4 sm:p-5 overflow-x-auto custom-scrollbar">
             <svg viewBox="0 0 1120 380" className="w-full min-w-[760px] h-auto" role="img" aria-label="ML and DL Curriculum and Backend Telemetry Architecture">
@@ -266,7 +266,7 @@ export const MLWikiBigDiagrams: React.FC = () => {
               <text x="804" y="258" fill="#fef3c7" fontSize="11">• Landscape A4 ReportLab Vector PDF</text>
               <text x="804" y="278" fill="#fef3c7" fontSize="11">• Public /verify/:id SHA-256 Registry</text>
               <text x="804" y="298" fill="#fef3c7" fontSize="11">• 1080×1080 &amp; 1200×630 Social Cards</text>
-              <text x="804" y="318" fill="#34d399" fontSize="11" fontWeight="700">• Graduate Goodies Form Submission ✓</text>
+              <text x="804" y="318" fill="#4cc38a" fontSize="11" fontWeight="600">• Graduate Goodies Form Submission</text>
             </svg>
           </div>
         </div>

@@ -2,24 +2,44 @@
 
 @layer base {
   :root {
-    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    --surface-canvas: #05070e;
-    --surface-panel: #0a0e1a;
-    --surface-card: #0e1424;
-    --border-subtle: rgba(148, 163, 184, 0.12);
+    --font-sans: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Graphite neutral ramp */
+    --surface-deepest: #0f0f10;
+    --surface-canvas: #141415;
+    --surface-card: #19191b;
+    --surface-raised: #222225;
+
+    --text-primary: #ededed;
+    --text-secondary: #a1a1a6;
+    --text-muted: #85858b;
+
+    --border-hairline: rgba(237, 237, 237, 0.08);
+    --border-strong: rgba(237, 237, 237, 0.14);
+
+    /* Single accent + toned semantic tokens */
+    --accent: #e5a00d;
+    --accent-hover: #f0b024;
+    --positive: #4cc38a;
+    --negative: #e5484d;
+
+    --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html,
   body {
     font-family: var(--font-sans);
     background-color: var(--surface-canvas);
-    color: #f1f5f9;
+    color: var(--text-primary);
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
   }
 
-  code, pre, kbd {
+  code,
+  pre,
+  kbd,
+  .font-mono {
     font-family: var(--font-mono);
   }
 
@@ -29,6 +49,15 @@
     cursor: pointer;
     touch-action: manipulation;
   }
+
+  :focus-visible {
+    outline: 2px solid rgba(229, 160, 13, 0.75);
+    outline-offset: 2px;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Mobile-friendly utility helpers */
@@ -45,19 +74,6 @@
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
-/* Architectural Grid Backdrop */
-.bg-grid-pattern {
-  background-image:
-    linear-gradient(to right, rgba(99, 102, 241, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.bg-dot-pattern {
-  background-image: radial-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -69,101 +85,80 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.7);
-  border-radius: 9999px;
+  background: rgba(237, 237, 237, 0.14);
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.55);
+  background: rgba(237, 237, 237, 0.26);
 }
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(51, 65, 85, 0.7) transparent;
+  scrollbar-color: rgba(237, 237, 237, 0.16) transparent;
 }
 
-/* Glassmorphism & Elevated Surfaces */
-.glass-panel {
-  background: rgba(10, 14, 26, 0.72);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+/* Architectural Graphite Surfaces (depth from surface steps + hairlines, zero glow) */
+.surface-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-hairline);
 }
 
-.glass-panel-glow {
-  background: rgba(10, 14, 26, 0.82);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(99, 102, 241, 0.32);
-  box-shadow: 0 0 40px -8px rgba(99, 102, 241, 0.22);
+.surface-raised {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-hairline);
 }
 
-.glass-card-hover {
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease, box-shadow 0.24s ease;
+.surface-active {
+  background: linear-gradient(180deg, #27272a 0%, #202023 100%);
+  border: 1px solid rgba(237, 237, 237, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.glass-card-hover:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.42);
-  box-shadow: 0 14px 32px -10px rgba(99, 102, 241, 0.18);
-}
-
-/* Animations */
+/* Motion: one ease-out curve, opacity and transform only */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.22s ease-out forwards;
+  animation: fadeIn 0.22s var(--ease-ui) forwards;
 }
 
 @keyframes shakeX {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 .animate-shake {
-  animation: shakeX 0.32s ease-in-out;
-}
-
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
-
-.animate-float-slow {
-  animation: floatSlow 4.5s ease-in-out infinite;
-}
-
-@keyframes shimmerSweep {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.animate-shimmer {
-  background-size: 200% 100%;
-  animation: shimmerSweep 2.4s linear infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.animate-gradient-text {
-  background-size: 200% auto;
-  animation: gradientShift 5s ease infinite;
+  animation: shakeX 0.32s var(--ease-ui);
 }
 
 /* Print Styles for Verified Certificates */
 @media print {
   body {
     background: #ffffff !important;
-    color: #0f172a !important;
+    color: #171717 !important;
   }
 
   .no-print {
@@ -173,8 +168,8 @@
   .print-certificate {
     position: fixed !important;
     inset: 0 !important;
-    background: #0b0f1e !important;
-    color: #ffffff !important;
+    background: #141415 !important;
+    color: #ededed !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     border: none !important;

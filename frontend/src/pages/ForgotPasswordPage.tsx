@@ -29,84 +29,89 @@ export const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070E] flex flex-col">
+    <div className="min-h-screen bg-[#141415] flex flex-col text-[#ededed]">
       <div className="flex-1 flex items-center justify-center p-4">
-      <div className="w-full max-w-md p-8 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl text-center">
-        <div className="flex justify-center mb-6">
-          <BrandLogo size="md" />
-        </div>
-
-        {!isSubmitted ? (
-          <>
-            <h2 className="text-2xl font-bold text-white mb-2">Reset Password</h2>
-            <p className="text-xs text-slate-400 mb-6">
-              Enter your email address and we&apos;ll send you a secure verification link to recover access.
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>
-                    Send Reset Link
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-white">Check Your Inbox</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              If an account exists for <strong className="text-slate-200">{email}</strong>, verification instructions have been dispatched.
-            </p>
-            <button
-              onClick={() => setIsSubmitted(false)}
-              className="text-xs text-indigo-400 hover:text-indigo-300"
-            >
-              Try another email address
-            </button>
+        <div className="w-full max-w-md p-8 rounded-2xl bg-[#19191b] border border-white/[0.1] text-center">
+          <div className="flex justify-center mb-6">
+            <BrandLogo size="md" />
           </div>
-        )}
 
-        <div className="mt-6 pt-6 border-t border-slate-800">
-          <Link
-            to="/login"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Sign In
-          </Link>
+          {!isSubmitted ? (
+            <>
+              <h1 className="text-2xl font-medium tracking-[-0.02em] text-[#ededed] mb-2">
+                Reset password
+              </h1>
+              <p className="text-xs text-[#85858b] mb-6">
+                Enter your account email to receive password recovery instructions.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4 text-left">
+                <div>
+                  <label className="block text-xs font-medium text-[#a1a1a6] mb-1.5">
+                    Email address
+                  </label>
+                  <div className="relative">
+                    <Mail strokeWidth={1.5} className="w-4 h-4 text-[#85858b] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="name@company.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full h-10 bg-[#141415] border border-white/[0.1] rounded-lg pl-10 pr-4 text-sm text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#e5a00d] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-10 px-4 rounded-lg text-sm font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <span className="w-4 h-4 border-2 border-[#141415]/30 border-t-[#141415] rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>Send reset link</span>
+                      <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="w-11 h-11 rounded-lg bg-[#222225] border border-white/[0.1] flex items-center justify-center text-[#4cc38a] mx-auto">
+                <CheckCircle2 strokeWidth={1.5} className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-medium text-[#ededed]">Check your inbox</h2>
+              <p className="text-xs text-[#85858b] leading-relaxed">
+                If an account exists for <strong className="font-medium text-[#ededed]">{email}</strong>, verification instructions have been sent.
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsSubmitted(false)}
+                className="text-xs text-[#a1a1a6] hover:text-[#ededed] transition-colors"
+              >
+                Try another email
+              </button>
+            </div>
+          )}
+
+          <div className="mt-6 pt-5 border-t border-white/[0.08]">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1.5 text-xs text-[#85858b] hover:text-[#ededed] transition-colors"
+            >
+              <ArrowLeft strokeWidth={1.5} className="w-3.5 h-3.5" />
+              <span>Back to sign in</span>
+            </Link>
+          </div>
         </div>
       </div>
+      <div className="max-w-7xl w-full mx-auto px-4 pb-6">
+        <Footer compact />
       </div>
-      <Footer compact />
     </div>
   );
 };

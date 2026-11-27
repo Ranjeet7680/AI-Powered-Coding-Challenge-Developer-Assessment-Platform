@@ -16,7 +16,6 @@ import {
   Play,
   Search,
   ShieldCheck,
-  Sparkles,
   Terminal,
   Video as VideoIcon,
 } from 'lucide-react';
@@ -53,7 +52,10 @@ export const VideosPage: React.FC = () => {
   const [category, setCategory] = useState('All');
   const [difficulty, setDifficulty] = useState('All');
   const filterKey = `${selectedPlaylistId}|${category}|${difficulty}|${search}`;
-  const [pageState, setPageState] = useState<{ key: string; page: number }>({ key: filterKey, page: 1 });
+  const [pageState, setPageState] = useState<{ key: string; page: number }>({
+    key: filterKey,
+    page: 1,
+  });
   const currentPage = pageState.key === filterKey ? pageState.page : 1;
   const setCurrentPage = (updater: number | ((prev: number) => number)) => {
     setPageState((prev) => {
@@ -122,41 +124,39 @@ export const VideosPage: React.FC = () => {
   );
 
   const difficultyBadge = (diff: string) => {
-    if (diff === 'Hard' || diff === 'Advanced') return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-    if (diff === 'Medium' || diff === 'Intermediate') return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-    return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+    if (diff === 'Hard' || diff === 'Advanced') return 'bg-[#141415]/90 text-[#e5484d] border-white/[0.12]';
+    if (diff === 'Medium' || diff === 'Intermediate') return 'bg-[#141415]/90 text-[#e5a00d] border-white/[0.12]';
+    return 'bg-[#141415]/90 text-[#4cc38a] border-white/[0.12]';
   };
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-2">
-            <VideoIcon className="w-3.5 h-3.5" /> Engineering Theater · {videos.length || 596} In-Platform Lectures
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <div className="space-y-1.5">
+          <div className="text-xs font-mono text-[#85858b] tabular-nums">
+            Engineering theater · {videos.length || 596} in-platform lectures
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Engineering Video Library &amp; 8 Full Playlists
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#ededed] tracking-tight">
+            Engineering video library
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Stream every lecture inside Coding Task Factory&apos;s locked Watch Theater — share direct platform links with zero YouTube redirects.
+          <p className="text-[#a1a1a6] text-sm">
+            Stream every lecture inside Coding Task Factory&apos;s locked watch theater and share direct platform links.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-emerald-300">
-            <Lock className="w-3.5 h-3.5" />
-            Platform-Only Stream &amp; Share
-          </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs font-medium text-[#4cc38a] self-start md:self-auto">
+          <Lock className="w-3.5 h-3.5" strokeWidth={1.5} />
+          Platform-only stream &amp; share
         </div>
       </div>
 
       {/* Featured LMS Flagship Tracks */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <div className="rounded-3xl border border-indigo-500/35 bg-gradient-to-br from-indigo-950/60 via-slate-900/90 to-cyan-950/40 p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5 shadow-2xl">
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5">
           <Link
             to="/app/lms/ml"
-            className="w-full sm:w-52 aspect-video shrink-0 rounded-2xl overflow-hidden border border-indigo-500/40 shadow-lg hover:scale-[1.02] transition"
+            className="w-full sm:w-52 aspect-video shrink-0 rounded-lg overflow-hidden border border-white/[0.08]"
           >
             <img
               src="/thumbnails/ml-ctf-course-thumbnail.svg"
@@ -165,28 +165,30 @@ export const VideosPage: React.FC = () => {
             />
           </Link>
           <div className="space-y-2.5 flex-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-[11px] font-bold text-indigo-300">
-              <GraduationCap className="w-3.5 h-3.5" />
-              106 Lectures · 100+ Quizzes · Proctored Exam
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#e5a00d] tabular-nums">
+              <GraduationCap className="w-3.5 h-3.5" strokeWidth={1.5} />
+              106 lectures · 100+ quizzes · Proctored exam
             </div>
-            <h2 className="text-lg font-extrabold text-white">Complete Machine Learning LMS</h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Full StatQuest 106-video sequence with page-by-page study notes, capstones &amp; verified certificate.
+            <h2 className="text-base font-semibold text-[#ededed]">
+              Complete Machine Learning LMS
+            </h2>
+            <p className="text-xs text-[#a1a1a6] leading-relaxed">
+              Full StatQuest 106-video sequence with study notes, capstones, and verified certificate.
             </p>
             <Link
               to="/app/lms/ml"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-lg shadow-indigo-500/20"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
             >
-              Open ML Course
-              <ArrowRight className="w-3.5 h-3.5" />
+              Open ML course
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
             </Link>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-rose-500/40 bg-gradient-to-br from-rose-950/55 via-slate-900/95 to-indigo-950/45 p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5 shadow-2xl">
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5">
           <Link
             to="/app/lms/dl"
-            className="w-full sm:w-52 aspect-video shrink-0 rounded-2xl overflow-hidden border border-rose-500/40 shadow-lg hover:scale-[1.02] transition"
+            className="w-full sm:w-52 aspect-video shrink-0 rounded-lg overflow-hidden border border-white/[0.08]"
           >
             <img
               src="/thumbnails/stanford-ctf-dl-thumbnail.svg"
@@ -195,22 +197,22 @@ export const VideosPage: React.FC = () => {
             />
           </Link>
           <div className="space-y-2.5 flex-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-[11px] font-bold text-rose-300">
-              <Award className="w-3.5 h-3.5" />
-              Stanford CS230 X CTF · 21 Lectures + 20 Quizzes
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#a1a1a6] tabular-nums">
+              <Award className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
+              Stanford CS229 &times; CTF · 21 lectures + 20 quizzes
             </div>
-            <h2 className="text-lg font-extrabold text-white">
-              [Stanford X Coding Task Factory] Deep Learning
+            <h2 className="text-base font-semibold text-[#ededed]">
+              Stanford &times; CTF Deep Learning
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              CNNs, Transformers, Sequence Models, Camera-Proctored Final Exam &amp; Verified Certificate.
+            <p className="text-xs text-[#a1a1a6] leading-relaxed">
+              CNNs, Transformers, Sequence Models, camera-proctored final exam, and verified certificate.
             </p>
             <Link
               to="/app/lms/dl"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-lg shadow-rose-500/20"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.10] text-[#ededed] text-xs font-medium transition-colors"
             >
               Open Stanford DL
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
             </Link>
           </div>
         </div>
@@ -220,12 +222,12 @@ export const VideosPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-cyan-300 font-bold">
-              <Layers className="w-3.5 h-3.5" />
-              8 Curated University Playlists · {playlists.reduce((acc, p) => acc + p.video_count, 0)} Episodes
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#a1a1a6] tabular-nums">
+              <Layers className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
+              8 university playlists · {playlists.reduce((acc, p) => acc + p.video_count, 0)} episodes
             </div>
-            <h2 className="text-lg sm:text-xl font-extrabold text-white mt-0.5">
-              Select a Playlist Series or Watch Episode 1 Inside Platform Theater
+            <h2 className="text-lg font-semibold text-[#ededed] mt-0.5">
+              Playlist series
             </h2>
           </div>
 
@@ -233,9 +235,9 @@ export const VideosPage: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSelectPlaylist('')}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition"
+              className="px-3.5 py-1.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
             >
-              Show All 8 Playlists &amp; Masterclasses
+              Show all playlists
             </button>
           )}
         </div>
@@ -246,66 +248,67 @@ export const VideosPage: React.FC = () => {
             return (
               <div
                 key={pl.playlist_id}
-                className={`rounded-2xl border overflow-hidden flex flex-col transition-all ${
+                className={`rounded-xl border overflow-hidden flex flex-col transition-colors ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-950/35 shadow-xl shadow-indigo-500/15'
-                    : 'border-slate-800 bg-slate-900/75 hover:border-indigo-500/40'
+                    ? 'border-[#e5a00d]/60 bg-[#222225]'
+                    : 'border-white/[0.08] bg-[#19191b] hover:border-white/[0.16]'
                 }`}
               >
                 <div
                   onClick={() => pl.first_video_id && navigate(`/app/videos/${pl.first_video_id}`)}
-                  className="relative aspect-video bg-slate-950 cursor-pointer overflow-hidden group"
+                  className="relative aspect-video bg-[#0f0f10] cursor-pointer overflow-hidden group"
                 >
                   <img
                     src={pl.thumbnail_url}
                     alt={pl.title}
                     loading="lazy"
-                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-500"
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition-opacity"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
-                  <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-lg bg-slate-950/90 border border-indigo-500/40 text-[10px] font-mono font-bold text-indigo-300 flex items-center gap-1">
-                    <ListVideo className="w-3 h-3" />
-                    {pl.video_count} Videos
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/25 to-transparent" />
+                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-[#141415]/90 border border-white/[0.10] text-[11px] font-mono text-[#ededed] flex items-center gap-1 tabular-nums">
+                    <ListVideo className="w-3 h-3 text-[#85858b]" strokeWidth={1.5} />
+                    {pl.video_count} videos
                   </div>
                   <div className="absolute top-2.5 right-2.5">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border backdrop-blur-md ${difficultyBadge(pl.difficulty)}`}>
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-md border ${difficultyBadge(pl.difficulty)}`}>
                       {pl.difficulty}
                     </span>
                   </div>
                   <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-cyan-300 truncate">{pl.category}</span>
-                    <span className="w-8 h-8 rounded-full bg-indigo-600/90 flex items-center justify-center shadow-lg">
-                      <Play className="w-3.5 h-3.5 text-white fill-white ml-0.5" />
+                    <span className="text-xs font-medium text-[#a1a1a6] truncate">{pl.category}</span>
+                    <span className="w-7 h-7 rounded-full bg-[#ededed] text-[#141415] flex items-center justify-center">
+                      <Play className="w-3 h-3 fill-current ml-0.5" strokeWidth={1.5} />
                     </span>
                   </div>
                 </div>
 
                 <div className="p-4 flex flex-col flex-1 justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-extrabold text-white line-clamp-2 leading-snug">
+                    <h3 className="text-sm font-medium text-[#ededed] line-clamp-2 leading-snug">
                       {pl.title}
                     </h3>
-                    <p className="text-[11px] text-slate-400 mt-1 truncate">{pl.channel}</p>
+                    <p className="text-xs text-[#85858b] mt-1 truncate">{pl.channel}</p>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-slate-800/80">
+                  <div className="flex items-center gap-2 pt-2.5 border-t border-white/[0.06]">
                     <button
                       type="button"
                       onClick={() => handleSelectPlaylist(pl.playlist_id)}
-                      className={`flex-1 py-1.5 px-2.5 rounded-xl text-[11px] font-bold transition ${
+                      className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs font-medium transition-colors ${
                         isSelected
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                          ? 'bg-[#ededed] text-[#141415]'
+                          : 'bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed]'
                       }`}
                     >
-                      {isSelected ? 'Filtered ✓' : 'Browse Episodes'}
+                      {isSelected ? 'Filtered' : 'Browse episodes'}
                     </button>
                     {pl.first_video_id && (
                       <Link
                         to={`/app/videos/${pl.first_video_id}`}
-                        className="py-1.5 px-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/35 text-[11px] font-bold text-indigo-200 hover:text-white transition"
+                        className="py-1.5 px-2.5 rounded-lg bg-[#141415] hover:bg-[#222225] border border-white/[0.08] text-xs font-medium text-[#a1a1a6] hover:text-[#ededed] transition-colors inline-flex items-center gap-1"
                       >
-                        Watch Ep 1 →
+                        Ep 1
+                        <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                       </Link>
                     )}
                   </div>
@@ -317,26 +320,26 @@ export const VideosPage: React.FC = () => {
       </div>
 
       {/* Filters & Search Bar */}
-      <div className="bg-slate-900/60 border border-slate-800/90 p-4 rounded-2xl space-y-4">
+      <div className="bg-[#19191b] border border-white/[0.08] p-4 rounded-xl space-y-4">
         {activePlaylist && (
-          <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/30">
-            <div className="text-xs font-bold text-indigo-200 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-indigo-400" />
-              Active Playlist Filter: {activePlaylist.title} ({filteredVideos.length} episodes shown in sequential order)
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#222225] border border-[#e5a00d]/35">
+            <div className="text-xs font-medium text-[#ededed] flex items-center gap-2 tabular-nums">
+              <CheckCircle2 className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+              Active playlist: {activePlaylist.title} ({filteredVideos.length} episodes in sequence)
             </div>
             <button
               type="button"
               onClick={() => handleSelectPlaylist('')}
-              className="text-xs font-bold text-cyan-300 hover:text-white"
+              className="text-xs font-medium text-[#e5a00d] hover:underline"
             >
-              Clear Filter
+              Clear filter
             </button>
           </div>
         )}
 
         <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="relative w-full md:w-96">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#85858b] absolute left-3.5 top-1/2 -translate-y-1/2" strokeWidth={1.5} />
             <input
               type="text"
               placeholder="Search Python, ML, Deep Learning, Java, C++, Embedded C..."
@@ -345,12 +348,12 @@ export const VideosPage: React.FC = () => {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500/60 transition"
+              className="w-full pl-10 pr-4 py-2 bg-[#141415] border border-white/[0.08] rounded-lg text-sm text-[#ededed] placeholder:text-[#85858b] focus:outline-none focus:border-[#e5a00d]/60 transition-colors"
             />
           </div>
 
-          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-2 w-full md:w-auto pb-1 sm:pb-0">
-            <Filter className="w-4 h-4 text-slate-500 mr-1 hidden sm:block" />
+          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 w-full md:w-auto pb-1 sm:pb-0">
+            <Filter className="w-3.5 h-3.5 text-[#85858b] mr-1 hidden sm:block" strokeWidth={1.5} />
             {DIFFICULTIES.map((diff) => (
               <button
                 key={diff}
@@ -359,10 +362,10 @@ export const VideosPage: React.FC = () => {
                   setDifficulty(diff);
                   setCurrentPage(1);
                 }}
-                className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   difficulty === diff
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                    : 'bg-slate-800/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    ? 'bg-[#ededed] text-[#141415]'
+                    : 'bg-[#222225] text-[#a1a1a6] hover:text-[#ededed]'
                 }`}
               >
                 {diff}
@@ -371,7 +374,7 @@ export const VideosPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-2 pt-1 pb-1 sm:pb-0 border-t border-slate-800/80">
+        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pt-2 pb-1 sm:pb-0 border-t border-white/[0.06]">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -380,10 +383,10 @@ export const VideosPage: React.FC = () => {
                 setCategory(cat);
                 setCurrentPage(1);
               }}
-              className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 category === cat
-                  ? 'bg-slate-800 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                  ? 'bg-[#222225] text-[#e5a00d] border border-[#e5a00d]/35'
+                  : 'text-[#85858b] hover:text-[#ededed] hover:bg-[#222225]/60 border border-transparent'
               }`}
             >
               {cat}
@@ -393,98 +396,98 @@ export const VideosPage: React.FC = () => {
       </div>
 
       {/* Results Count */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#a1a1a6] tabular-nums">
         <span>
           Showing{' '}
-          <strong className="text-white">
+          <strong className="font-medium text-[#ededed]">
             {filteredVideos.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1}–
             {Math.min(safePage * PAGE_SIZE, filteredVideos.length)}
           </strong>{' '}
-          of <strong className="text-indigo-300">{filteredVideos.length}</strong> videos
+          of <strong className="font-medium text-[#ededed]">{filteredVideos.length}</strong> videos
         </span>
-        <span className="inline-flex items-center gap-1.5 text-emerald-300 font-semibold">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          Click any lecture to open our Dedicated Watch Page (no YouTube.com share links)
+        <span className="inline-flex items-center gap-1.5 text-[#4cc38a] font-medium">
+          <ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.5} />
+          Opens in dedicated in-platform watch theater
         </span>
       </div>
 
       {/* Video Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-80 rounded-2xl bg-slate-900/50 border border-slate-800 animate-pulse" />
+            <div key={i} className="h-80 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
           ))}
         </div>
       ) : filteredVideos.length === 0 ? (
-        <div className="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-2xl">
-          <VideoIcon className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-slate-300 font-medium text-lg">No matching video lessons found</h3>
-          <p className="text-slate-500 text-sm mt-1">Try resetting your playlist, category, or search term.</p>
+        <div className="text-center py-16 bg-[#19191b] border border-white/[0.08] rounded-xl">
+          <VideoIcon className="w-8 h-8 text-[#85858b] mx-auto mb-3" strokeWidth={1.5} />
+          <h3 className="text-[#ededed] font-medium text-base">No matching video lessons found</h3>
+          <p className="text-[#85858b] text-sm mt-1">Try resetting your playlist, category, or search term.</p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {paginatedVideos.map((video) => (
               <div
                 key={video.id}
                 onClick={() => navigate(`/app/videos/${video.id}`)}
-                className="group bg-slate-900/75 border border-slate-800 hover:border-indigo-500/50 rounded-2xl overflow-hidden flex flex-col cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-xl hover:shadow-indigo-500/10"
+                className="group bg-[#19191b] border border-white/[0.08] hover:border-white/[0.16] rounded-xl overflow-hidden flex flex-col cursor-pointer transition-colors"
               >
                 {/* Thumbnail with Play Overlay */}
-                <div className="relative aspect-video bg-slate-950 overflow-hidden">
+                <div className="relative aspect-video bg-[#0f0f10] overflow-hidden">
                   <img
                     src={video.thumbnail_url}
                     alt={video.title}
                     loading="lazy"
-                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition-opacity"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f10] via-transparent to-transparent opacity-80" />
 
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-indigo-600/90 flex items-center justify-center border border-white/20 shadow-2xl group-hover:scale-110 transition-transform">
-                      <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                    <div className="w-11 h-11 rounded-full bg-[#ededed]/95 group-hover:bg-[#e5a00d] text-[#141415] flex items-center justify-center transition-colors">
+                      <Play className="w-4 h-4 fill-current ml-0.5" strokeWidth={1.5} />
                     </div>
                   </div>
 
                   {video.episode_order && (
-                    <div className="absolute top-3 left-3 px-2 py-0.5 rounded-lg bg-slate-950/90 border border-indigo-500/40 text-[10px] font-mono font-bold text-indigo-200">
+                    <div className="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-[#141415]/90 border border-white/[0.10] text-[11px] font-mono text-[#ededed] tabular-nums">
                       Ep #{video.episode_order}
                     </div>
                   )}
 
                   <div className="absolute top-3 right-3">
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border backdrop-blur-md ${difficultyBadge(video.difficulty)}`}>
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-md border ${difficultyBadge(video.difficulty)}`}>
                       {video.difficulty}
                     </span>
                   </div>
 
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-slate-300 font-mono">
-                    <span className="bg-black/70 px-2 py-0.5 rounded-md backdrop-blur-md text-[10px] font-semibold text-cyan-300 truncate max-w-[180px]">
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] text-[#ededed] font-mono tabular-nums">
+                    <span className="bg-[#141415]/90 px-2 py-0.5 rounded-md border border-white/[0.08] text-[#a1a1a6] truncate max-w-[180px]">
                       {video.playlist_title || video.category}
                     </span>
-                    <span className="flex items-center gap-1 bg-black/70 px-2 py-0.5 rounded-md backdrop-blur-md">
-                      <Clock className="w-3 h-3 text-indigo-400" />
+                    <span className="flex items-center gap-1 bg-[#141415]/90 px-2 py-0.5 rounded-md border border-white/[0.08]">
+                      <Clock className="w-3 h-3 text-[#85858b]" strokeWidth={1.5} />
                       {video.duration_label || `${video.duration_minutes}:00`}
                     </span>
                   </div>
                 </div>
 
                 {/* Card Body */}
-                <div className="p-5 flex flex-col flex-1 justify-between gap-4">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-white group-hover:text-indigo-400 transition-colors line-clamp-2 text-base leading-snug">
+                <div className="p-4 flex flex-col flex-1 justify-between gap-4">
+                  <div className="space-y-1.5">
+                    <h3 className="font-medium text-[#ededed] group-hover:text-[#e5a00d] transition-colors line-clamp-2 text-sm leading-snug">
                       {video.title}
                     </h3>
-                    <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed">
+                    <p className="text-[#85858b] text-xs line-clamp-2 leading-relaxed">
                       {video.description}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs text-slate-400">
+                  <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2 text-xs text-[#85858b]">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-slate-300 font-medium truncate">{video.instructor}</span>
-                      <span className="hidden sm:inline-flex items-center gap-1 text-slate-500 shrink-0">
-                        <Eye className="w-3 h-3" /> {video.views_count.toLocaleString()}
+                      <span className="text-[#a1a1a6] truncate">{video.instructor}</span>
+                      <span className="hidden sm:inline-flex items-center gap-1 text-[#85858b] shrink-0 tabular-nums font-mono">
+                        <Eye className="w-3 h-3" strokeWidth={1.5} /> {video.views_count.toLocaleString()}
                       </span>
                     </div>
 
@@ -496,8 +499,9 @@ export const VideosPage: React.FC = () => {
                         variant="compact"
                         align="right"
                       />
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/35 text-indigo-300 text-[11px] font-bold">
-                        Watch <Sparkles className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#ededed] text-[#141415] text-xs font-medium">
+                        Watch
+                        <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                       </span>
                     </div>
                   </div>
@@ -508,8 +512,8 @@ export const VideosPage: React.FC = () => {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800/80">
-              <span className="text-xs font-mono text-slate-400">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/[0.08]">
+              <span className="text-xs font-mono text-[#85858b] tabular-nums">
                 Page {safePage} of {totalPages}
               </span>
 
@@ -521,9 +525,9 @@ export const VideosPage: React.FC = () => {
                     setCurrentPage((p) => Math.max(1, p - 1));
                     window.scrollTo({ top: 360, behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-40 border border-slate-700 text-xs font-bold text-slate-200 transition"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] disabled:opacity-40 border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
                   Previous
                 </button>
 
@@ -534,10 +538,10 @@ export const VideosPage: React.FC = () => {
                     setCurrentPage((p) => Math.min(totalPages, p + 1));
                     window.scrollTo({ top: 360, behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-xs font-bold text-white transition"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-40 text-xs font-medium text-[#141415] transition-colors"
                 >
                   Next
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
             </div>
@@ -546,13 +550,17 @@ export const VideosPage: React.FC = () => {
       )}
 
       {/* Bottom IDE Link Hint */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[#a1a1a6]">
         <span className="inline-flex items-center gap-2">
-          <Terminal className="w-4 h-4 text-cyan-400" />
+          <Terminal className="w-4 h-4 text-[#85858b]" strokeWidth={1.5} />
           Every playlist pairs directly with interactive Python, Java, C++, and ML coding challenges.
         </span>
-        <Link to="/app/challenges" className="text-indigo-400 hover:text-indigo-300 font-bold">
-          Open 368+ Challenge Bank →
+        <Link
+          to="/app/challenges"
+          className="inline-flex items-center gap-1 text-[#e5a00d] hover:underline font-medium"
+        >
+          Open challenge bank
+          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
         </Link>
       </div>
     </div>

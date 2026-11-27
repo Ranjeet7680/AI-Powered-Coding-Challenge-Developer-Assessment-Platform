@@ -10,13 +10,13 @@ import {
   Code2,
   Copy,
   Eye,
+  ListChecks,
   ListVideo,
   Lock,
   Maximize2,
   Minimize2,
   Play,
   Search,
-  Sparkles,
   Terminal,
   UserCheck,
 } from 'lucide-react';
@@ -116,10 +116,13 @@ export const WatchVideoPage: React.FC = () => {
     if (!context) return;
     markWatched(context.video.id);
     if (autoAdvance && context.next_video) {
-      showToast(`Completed Episode — starting #${context.next_video.episode_order || ''} ${context.next_video.title}`, 'success');
+      showToast(
+        `Completed episode — starting #${context.next_video.episode_order || ''} ${context.next_video.title}`,
+        'success'
+      );
       handleNavigateEpisode(context.next_video, true);
     } else {
-      showToast('Video marked as watched!', 'success');
+      showToast('Video marked as watched.', 'success');
     }
   }, [autoAdvance, context, handleNavigateEpisode, markWatched, showToast]);
 
@@ -135,7 +138,10 @@ export const WatchVideoPage: React.FC = () => {
     );
   }, [context, queueSearch]);
 
-  const isLoading = Boolean(videoId) && (!context || (context.video.id !== videoId && context.video.slug !== videoId)) && !loadError;
+  const isLoading =
+    Boolean(videoId) &&
+    (!context || (context.video.id !== videoId && context.video.slug !== videoId)) &&
+    !loadError;
 
   if (!videoId) {
     return null;
@@ -144,15 +150,15 @@ export const WatchVideoPage: React.FC = () => {
   if (loadError) {
     return (
       <div className="max-w-4xl mx-auto p-6 sm:p-10 text-center space-y-4">
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-950/20 p-8 space-y-3">
-          <h1 className="text-xl font-bold text-white">Video Lesson Not Found</h1>
-          <p className="text-sm text-slate-400">{loadError}</p>
+        <div className="rounded-xl border border-[#e5484d]/30 bg-[#19191b] p-8 space-y-3">
+          <h1 className="text-xl font-semibold text-[#ededed]">Video lesson not found</h1>
+          <p className="text-sm text-[#a1a1a6]">{loadError}</p>
           <Link
             to="/app/videos"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Return to Video Library
+            <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+            Return to video library
           </Link>
         </div>
       </div>
@@ -162,20 +168,28 @@ export const WatchVideoPage: React.FC = () => {
   if (isLoading || !context) {
     return (
       <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-5 animate-pulse">
-        <div className="h-12 rounded-2xl bg-slate-900 border border-slate-800" />
+        <div className="h-12 rounded-xl bg-[#19191b] border border-white/[0.08]" />
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
           <div className="xl:col-span-8 space-y-4">
-            <div className="aspect-video rounded-2xl bg-slate-900 border border-slate-800" />
-            <div className="h-36 rounded-2xl bg-slate-900 border border-slate-800" />
+            <div className="aspect-video rounded-xl bg-[#19191b] border border-white/[0.08]" />
+            <div className="h-36 rounded-xl bg-[#19191b] border border-white/[0.08]" />
           </div>
-          <div className="xl:col-span-4 h-[540px] rounded-2xl bg-slate-900 border border-slate-800" />
+          <div className="xl:col-span-4 h-[540px] rounded-xl bg-[#19191b] border border-white/[0.08]" />
         </div>
       </div>
     );
   }
 
-  const { video, series, series_videos: seriesVideos, prev_video: prevVideo, next_video: nextVideo, platform_share_path: sharePath } = context;
-  const episodeNumber = video.episode_order || Math.max(1, seriesVideos.findIndex((v) => v.id === video.id) + 1);
+  const {
+    video,
+    series,
+    series_videos: seriesVideos,
+    prev_video: prevVideo,
+    next_video: nextVideo,
+    platform_share_path: sharePath,
+  } = context;
+  const episodeNumber =
+    video.episode_order || Math.max(1, seriesVideos.findIndex((v) => v.id === video.id) + 1);
   const totalSeriesCount = series?.video_count || seriesVideos.length || 1;
   const isWatched = watchedIds.includes(video.id);
   const seriesWatchedCount = seriesVideos.filter((v) => watchedIds.includes(v.id)).length;
@@ -194,24 +208,24 @@ export const WatchVideoPage: React.FC = () => {
   return (
     <div className="max-w-[1440px] mx-auto p-3 sm:p-6 space-y-5">
       {/* Top Watch Theater Toolbar */}
-      <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5 min-w-0">
           <Link
             to={series ? `/app/videos?playlist=${encodeURIComponent(series.playlist_id)}` : '/app/videos'}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            {series ? 'All Series Episodes' : 'Video Library'}
+            <ArrowLeft className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+            {series ? 'All episodes' : 'Video library'}
           </Link>
 
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono font-bold text-emerald-300">
-            <Lock className="w-3 h-3" />
-            Platform Watch Mode
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#141415] border border-white/[0.08] text-xs font-medium text-[#4cc38a]">
+            <Lock className="w-3 h-3" strokeWidth={1.5} />
+            Platform watch mode
           </span>
 
           {series && (
-            <span className="text-xs font-semibold text-slate-300 truncate max-w-md">
-              {series.title} · <span className="text-indigo-300 font-mono">{episodeNumber} / {totalSeriesCount}</span>
+            <span className="text-xs font-medium text-[#a1a1a6] truncate max-w-md tabular-nums">
+              {series.title} · <span className="text-[#ededed] font-mono">{episodeNumber}/{totalSeriesCount}</span>
             </span>
           )}
         </div>
@@ -220,22 +234,26 @@ export const WatchVideoPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setAutoAdvance((prev) => !prev)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition ${
+            className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
               autoAdvance
-                ? 'bg-indigo-600/20 border-indigo-500/40 text-indigo-200'
-                : 'bg-slate-900 border-slate-800 text-slate-400'
+                ? 'bg-[#e5a00d]/15 border-[#e5a00d]/40 text-[#e5a00d]'
+                : 'bg-[#141415] border-white/[0.08] text-[#85858b]'
             }`}
           >
-            Auto-Next: {autoAdvance ? 'ON' : 'OFF'}
+            Auto-next: {autoAdvance ? 'On' : 'Off'}
           </button>
 
           <button
             type="button"
             onClick={() => setTheaterMode((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
           >
-            {theaterMode ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-            {theaterMode ? 'Standard View' : 'Theater View'}
+            {theaterMode ? (
+              <Minimize2 className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+            ) : (
+              <Maximize2 className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+            )}
+            {theaterMode ? 'Standard view' : 'Theater view'}
           </button>
 
           <VideoShareButton
@@ -256,77 +274,81 @@ export const WatchVideoPage: React.FC = () => {
             lesson={playerLesson}
             isCompleted={isWatched}
             isDL={false}
-            playerModeLabel="LOCKED WATCH THEATER"
+            playerModeLabel="Locked watch theater"
             badgeVariant="episode"
-            seriesBadge={series ? `Episode #${episodeNumber} of ${totalSeriesCount} · ${durationLabel}` : `Masterclass · ${durationLabel}`}
+            seriesBadge={
+              series
+                ? `Episode #${episodeNumber} of ${totalSeriesCount} · ${durationLabel}`
+                : `Masterclass · ${durationLabel}`
+            }
             autoPlay={autoPlayTrigger}
             onVideoEnded={handleVideoEnded}
           />
 
           {/* Video Header, Prev/Next Controls & Platform Actions */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4">
+          <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold">
+              <div className="flex flex-wrap items-center gap-2 tabular-nums">
+                <span className="px-2.5 py-0.5 rounded-md bg-[#222225] border border-white/[0.08] text-[#ededed] text-xs font-medium">
                   {video.category}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-mono">
+                <span className="px-2.5 py-0.5 rounded-md bg-[#141415] border border-white/[0.08] text-[#a1a1a6] text-xs font-mono">
                   {video.difficulty}
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-                  <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="inline-flex items-center gap-1 text-xs text-[#a1a1a6] font-mono">
+                  <Clock className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
                   {durationLabel}
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-                  <Eye className="w-3.5 h-3.5 text-slate-500" />
+                <span className="inline-flex items-center gap-1 text-xs text-[#85858b] font-mono">
+                  <Eye className="w-3.5 h-3.5" strokeWidth={1.5} />
                   {video.views_count.toLocaleString()} views
                 </span>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 text-xs text-slate-300 font-semibold">
-                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#a1a1a6] font-medium">
+                <UserCheck className="w-3.5 h-3.5 text-[#4cc38a]" strokeWidth={1.5} />
                 {video.instructor}
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[#ededed] leading-snug tracking-tight">
               {video.title}
             </h1>
 
             {/* Episode Controls Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800/80">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-white/[0.06]">
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   disabled={!prevVideo}
                   onClick={() => prevVideo && handleNavigateEpisode(prevVideo, false)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-slate-200 transition"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] disabled:opacity-40 disabled:cursor-not-allowed border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                 >
-                  <ChevronLeft className="w-4 h-4" />
-                  Previous Episode
+                  <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
+                  Previous episode
                 </button>
 
                 <button
                   type="button"
                   disabled={!nextVideo}
                   onClick={() => nextVideo && handleNavigateEpisode(nextVideo, false)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-extrabold text-white transition shadow-lg shadow-indigo-500/20"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium text-[#141415] transition-colors"
                 >
-                  Next Episode
-                  <ChevronRight className="w-4 h-4" />
+                  Next episode
+                  <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => toggleWatched(video.id)}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition ${
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-xs font-medium transition-colors ${
                     isWatched
-                      ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-300'
-                      : 'bg-slate-950 border-slate-700 text-slate-300 hover:border-emerald-500/35'
+                      ? 'bg-[#4cc38a]/15 border-[#4cc38a]/35 text-[#4cc38a]'
+                      : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                   }`}
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  {isWatched ? 'Watched' : 'Mark Watched'}
+                  <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  {isWatched ? 'Watched' : 'Mark watched'}
                 </button>
               </div>
 
@@ -340,9 +362,9 @@ export const WatchVideoPage: React.FC = () => {
                 {video.related_challenge_id && (
                   <Link
                     to={`/app/workspace/${video.related_challenge_id}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/35 text-cyan-200 text-xs font-bold transition"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#e5a00d]/15 hover:bg-[#e5a00d]/25 border border-[#e5a00d]/35 text-[#e5a00d] text-xs font-medium transition-colors"
                   >
-                    <Terminal className="w-3.5 h-3.5" />
+                    <Terminal className="w-3.5 h-3.5" strokeWidth={1.5} />
                     Practice in IDE
                   </Link>
                 )}
@@ -351,44 +373,44 @@ export const WatchVideoPage: React.FC = () => {
           </div>
 
           {/* Study Breakdown Tabs */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden">
-            <div className="flex items-center border-b border-slate-800 bg-[#0A0F1D]">
+          <div className="rounded-xl border border-white/[0.08] bg-[#19191b] overflow-hidden">
+            <div className="flex items-center border-b border-white/[0.08] bg-[#141415]">
               <button
                 type="button"
                 onClick={() => setActiveTab('overview')}
-                className={`px-5 py-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition ${
+                className={`px-5 py-3 text-xs font-medium flex items-center gap-1.5 border-b-2 transition-colors ${
                   activeTab === 'overview'
-                    ? 'border-indigo-500 text-white bg-indigo-500/10'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#e5a00d] text-[#ededed] bg-[#19191b]'
+                    : 'border-transparent text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5" />
-                Overview &amp; Chapters
+                <BookOpen className="w-3.5 h-3.5" strokeWidth={1.5} />
+                Overview &amp; chapters
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('takeaways')}
-                className={`px-5 py-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition ${
+                className={`px-5 py-3 text-xs font-medium flex items-center gap-1.5 border-b-2 transition-colors tabular-nums ${
                   activeTab === 'takeaways'
-                    ? 'border-emerald-500 text-white bg-emerald-500/10'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#e5a00d] text-[#ededed] bg-[#19191b]'
+                    : 'border-transparent text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Key Takeaways ({video.key_takeaways.length})
+                <ListChecks className="w-3.5 h-3.5" strokeWidth={1.5} />
+                Key takeaways ({video.key_takeaways.length})
               </button>
               {video.code_snippet && (
                 <button
                   type="button"
                   onClick={() => setActiveTab('code')}
-                  className={`px-5 py-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition ${
+                  className={`px-5 py-3 text-xs font-medium flex items-center gap-1.5 border-b-2 transition-colors ${
                     activeTab === 'code'
-                      ? 'border-cyan-500 text-white bg-cyan-500/10'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-[#e5a00d] text-[#ededed] bg-[#19191b]'
+                      : 'border-transparent text-[#85858b] hover:text-[#ededed]'
                   }`}
                 >
-                  <Code2 className="w-3.5 h-3.5" />
-                  Starter Code
+                  <Code2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Starter code
                 </button>
               )}
             </div>
@@ -396,20 +418,20 @@ export const WatchVideoPage: React.FC = () => {
             <div className="p-5">
               {activeTab === 'overview' && (
                 <div className="space-y-5">
-                  <p className="text-sm text-slate-300 leading-relaxed">{video.description}</p>
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">{video.description}</p>
                   {video.chapters.length > 0 && (
                     <div className="space-y-2.5">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                        Lecture Sections &amp; Pacing
+                      <h3 className="text-xs font-medium text-[#85858b]">
+                        Lecture sections &amp; pacing
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {video.chapters.map((ch, idx) => (
                           <div
                             key={`${ch.title}-${idx}`}
-                            className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/80 px-3.5 py-2.5"
+                            className="flex items-center justify-between gap-3 rounded-lg border border-white/[0.08] bg-[#141415] px-3.5 py-2.5"
                           >
-                            <span className="text-xs font-medium text-slate-200 truncate">{ch.title}</span>
-                            <span className="shrink-0 text-[11px] font-mono font-bold text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded-md">
+                            <span className="text-xs font-medium text-[#ededed] truncate">{ch.title}</span>
+                            <span className="shrink-0 text-[11px] font-mono text-[#e5a00d] bg-[#222225] px-2 py-0.5 rounded tabular-nums">
                               {ch.time}
                             </span>
                           </div>
@@ -425,9 +447,9 @@ export const WatchVideoPage: React.FC = () => {
                   {video.key_takeaways.map((point, idx) => (
                     <li
                       key={idx}
-                      className="flex items-start gap-2.5 rounded-xl border border-slate-800 bg-slate-950/80 p-3 text-sm text-slate-300"
+                      className="flex items-start gap-2.5 rounded-lg border border-white/[0.08] bg-[#141415] p-3 text-sm text-[#a1a1a6]"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-[#4cc38a] shrink-0 mt-0.5" strokeWidth={1.5} />
                       <span>{point}</span>
                     </li>
                   ))}
@@ -437,20 +459,20 @@ export const WatchVideoPage: React.FC = () => {
               {activeTab === 'code' && video.code_snippet && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono text-slate-400">Reference Code Snippet</span>
+                    <span className="text-xs font-mono text-[#85858b]">Reference code snippet</span>
                     <button
                       type="button"
                       onClick={() => {
                         navigator.clipboard.writeText(video.code_snippet || '');
-                        showToast('Code copied to clipboard!', 'success');
+                        showToast('Code copied to clipboard.', 'success');
                       }}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                     >
-                      <Copy className="w-3.5 h-3.5" />
-                      Copy Code
+                      <Copy className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                      Copy code
                     </button>
                   </div>
-                  <pre className="rounded-xl bg-[#050814] border border-slate-800 p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                  <pre className="rounded-lg bg-[#0f0f10] border border-white/[0.08] p-4 text-xs font-mono text-[#ededed] overflow-x-auto leading-relaxed">
                     <code>{video.code_snippet}</code>
                   </pre>
                 </div>
@@ -461,44 +483,44 @@ export const WatchVideoPage: React.FC = () => {
 
         {/* Series Playlist Queue Sidebar */}
         <div className={`${theaterMode ? 'xl:col-span-12' : 'xl:col-span-4 xl:sticky xl:top-4'}`}>
-          <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] overflow-hidden shadow-xl">
-            <div className="p-4 border-b border-slate-800 space-y-3">
+          <div className="rounded-xl border border-white/[0.08] bg-[#0f0f10] overflow-hidden">
+            <div className="p-4 border-b border-white/[0.08] bg-[#141415] space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-0.5 min-w-0">
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold">
-                    <ListVideo className="w-3.5 h-3.5" />
-                    {series ? 'Series Playlist Queue' : 'More Engineering Masterclasses'}
+                  <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[#e5a00d]">
+                    <ListVideo className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    {series ? 'Series playlist queue' : 'Engineering masterclasses'}
                   </div>
-                  <h2 className="text-sm font-extrabold text-white truncate">
+                  <h2 className="text-sm font-medium text-[#ededed] truncate">
                     {series ? series.title : 'Core Video Masterclasses'}
                   </h2>
-                  <p className="text-xs text-slate-400 truncate">
-                    {series ? series.channel : 'Coding Task Factory Curated'} ·{' '}
-                    <span className="text-emerald-400 font-mono">
+                  <p className="text-xs text-[#85858b] truncate tabular-nums">
+                    {series ? series.channel : 'Coding Task Factory curated'} ·{' '}
+                    <span className="text-[#4cc38a] font-mono">
                       {seriesWatchedCount}/{seriesVideos.length} watched
                     </span>
                   </p>
                 </div>
-                <span className="shrink-0 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-mono font-bold text-slate-300">
+                <span className="shrink-0 px-2.5 py-1 rounded-md bg-[#19191b] border border-white/[0.08] text-[11px] font-mono text-[#ededed] tabular-nums">
                   {episodeNumber}/{seriesVideos.length}
                 </span>
               </div>
 
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" strokeWidth={1.5} />
                 <input
                   type="text"
                   value={queueSearch}
                   onChange={(e) => setQueueSearch(e.target.value)}
                   placeholder={`Search ${seriesVideos.length} episodes...`}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/50"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs text-[#ededed] placeholder:text-[#85858b] focus:outline-none focus:border-[#e5a00d]/60"
                 />
               </div>
             </div>
 
-            <div className="max-h-[46dvh] xl:max-h-[600px] overflow-y-auto divide-y divide-slate-800/70 custom-scrollbar">
+            <div className="max-h-[46dvh] xl:max-h-[600px] overflow-y-auto divide-y divide-white/[0.06] custom-scrollbar">
               {filteredQueue.length === 0 ? (
-                <div className="p-6 text-center text-xs text-slate-500">
+                <div className="p-6 text-center text-xs text-[#85858b]">
                   No matching episodes found for &ldquo;{queueSearch}&rdquo;.
                 </div>
               ) : (
@@ -511,45 +533,45 @@ export const WatchVideoPage: React.FC = () => {
                       key={ep.id}
                       type="button"
                       onClick={() => handleNavigateEpisode(ep, false)}
-                      className={`w-full p-3 flex items-start gap-3 text-left transition ${
+                      className={`w-full p-3 flex items-start gap-3 text-left transition-colors ${
                         isCurrent
-                          ? 'bg-indigo-600/20 border-l-4 border-l-indigo-500'
-                          : 'hover:bg-slate-900/90 border-l-4 border-l-transparent'
+                          ? 'bg-[#222225] border-l-2 border-l-[#e5a00d]'
+                          : 'hover:bg-[#19191b] border-l-2 border-l-transparent'
                       }`}
                     >
-                      <div className="w-6 shrink-0 pt-2 text-center font-mono text-[11px] font-bold">
+                      <div className="w-6 shrink-0 pt-2 text-center font-mono text-[11px] tabular-nums">
                         {isCurrent ? (
-                          <Play className="w-3.5 h-3.5 text-indigo-400 fill-indigo-400 mx-auto" />
+                          <Play className="w-3.5 h-3.5 text-[#e5a00d] fill-[#e5a00d] mx-auto" strokeWidth={1.5} />
                         ) : (
-                          <span className="text-slate-500">{epNum}</span>
+                          <span className="text-[#85858b]">{epNum}</span>
                         )}
                       </div>
 
-                      <div className="relative w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-950 border border-slate-800">
+                      <div className="relative w-24 aspect-video shrink-0 rounded-md overflow-hidden bg-[#141415] border border-white/[0.08]">
                         <img
                           src={ep.thumbnail_url}
                           alt={ep.title}
                           loading="lazy"
                           className="w-full h-full object-cover"
                         />
-                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-mono text-white">
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-[#0f0f10]/90 text-[10px] font-mono text-[#ededed] tabular-nums">
                           {ep.duration_label || `${ep.duration_minutes}:00`}
                         </span>
                       </div>
 
                       <div className="min-w-0 flex-1 space-y-1">
                         <div
-                          className={`text-xs font-bold leading-snug line-clamp-2 ${
-                            isCurrent ? 'text-white' : 'text-slate-200'
+                          className={`text-xs font-medium leading-snug line-clamp-2 ${
+                            isCurrent ? 'text-[#ededed]' : 'text-[#a1a1a6]'
                           }`}
                         >
                           {ep.title}
                         </div>
-                        <div className="flex items-center justify-between gap-2 text-[10px] text-slate-500">
+                        <div className="flex items-center justify-between gap-2 text-[11px] text-[#85858b]">
                           <span className="truncate">{ep.instructor}</span>
                           {epWatched && (
-                            <span className="inline-flex items-center gap-0.5 text-emerald-400 font-bold shrink-0">
-                              <CheckCircle2 className="w-3 h-3" />
+                            <span className="inline-flex items-center gap-0.5 text-[#4cc38a] font-medium shrink-0">
+                              <CheckCircle2 className="w-3 h-3" strokeWidth={1.5} />
                               Watched
                             </span>
                           )}

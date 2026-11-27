@@ -24,7 +24,6 @@ import {
   Search,
   Share2,
   ShieldCheck,
-  Sparkles,
   Terminal,
   Workflow,
 } from 'lucide-react';
@@ -44,62 +43,62 @@ interface WikiNavItem {
   title: string;
   shortTitle: string;
   subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
 
 const WIKI_NAV: WikiNavItem[] = [
   {
     id: 'overview',
-    title: 'Platform Overview & Ecosystem',
-    shortTitle: 'Overview & Map',
+    title: 'Platform overview & ecosystem',
+    shortTitle: 'Overview & map',
     subtitle: 'End-to-end architecture & dual-engine workflow',
     icon: BookOpen,
   },
   {
     id: 'wireframes-architecture',
-    title: 'Proposed Solution Architecture & CLI / Web Wireframes',
-    shortTitle: 'CLI & Web Wireframes',
-    subtitle: 'Trigger pipelines, inspect packages, view evaluation reports & solution architecture',
+    title: 'Proposed solution architecture & CLI / web wireframes',
+    shortTitle: 'CLI & web wireframes',
+    subtitle: 'Trigger pipelines, inspect packages, view evaluation reports & architecture',
     icon: LayoutDashboard,
   },
   {
     id: 'process-flow',
-    title: 'Process Flow, Use-Case & Architecture Diagrams',
-    shortTitle: 'Process Flow & UML',
+    title: 'Process flow, use-case & architecture diagrams',
+    shortTitle: 'Process flow & UML',
     subtitle: 'Repo specs/image params -> task packages -> target AI -> validated output',
     icon: Workflow,
   },
   {
     id: 'architecture',
-    title: 'System Architecture & ER Schema',
+    title: 'System architecture & ER schema',
     shortTitle: 'Architecture & DB',
     subtitle: 'React 19 SPA, FastAPI routers, SQLite & Vercel runtime',
     icon: Database,
   },
   {
     id: 'challenge-bank',
-    title: '368+ Challenge Bank & Sandbox',
-    shortTitle: 'Challenges & Runner',
+    title: '368+ challenge bank & sandbox',
+    shortTitle: 'Challenges & runner',
     subtitle: '10 CS/ML domains, PY/JS/TS/C++ execution & AI Copilot',
     icon: Code2,
   },
   {
     id: 'ml-lms',
-    title: 'ML (106) & DL (21) LMS + AI Proctoring (3 Big Diagrams)',
-    shortTitle: 'ML LMS (3 Big Diagrams)',
-    subtitle: '9-stage ML journey, MediaPipe AI camera guard & backend curriculum telemetry',
+    title: 'ML (106) & DL (21) LMS + AI proctoring',
+    shortTitle: 'ML LMS diagrams',
+    subtitle: '9-stage ML journey, MediaPipe camera guard & curriculum telemetry',
     icon: BrainCircuit,
   },
   {
     id: 'security-credentials',
-    title: 'Zero-Trust Security, PDF & Social Studio',
+    title: 'Zero-trust security, PDF & social studio',
     shortTitle: 'Security & PDFs',
-    subtitle: 'PBKDF2 100k, HS256 JWT, ReportLab PDFs & LinkedIn/IG/FB/WA',
+    subtitle: 'PBKDF2 100k, HS256 JWT, ReportLab PDFs & social share studio',
     icon: ShieldCheck,
   },
   {
     id: 'taskforge',
-    title: 'Track 1: TaskForge Harbor 0.25 Pipeline',
+    title: 'Track 1: TaskForge Harbor 0.25 pipeline',
     shortTitle: 'TaskForge Harbor',
     subtitle: 'Autonomous Click feature synthesis & 100% mutation kill',
     icon: GitBranch,
@@ -132,27 +131,25 @@ export const WikiPage: React.FC = () => {
   const currentMeta = WIKI_NAV.find((item) => item.id === activeSection) || WIKI_NAV[0];
 
   return (
-    <div className="min-h-screen bg-[#05070E] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#141415] text-[#ededed] flex flex-col">
       <Navbar />
 
-      <main className="flex-1 pt-28 pb-20 relative">
-        <div className="absolute inset-0 bg-grid-pattern opacity-35 pointer-events-none -z-10" />
-
+      <main className="flex-1 pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          {/* Animated Hero Wiki Banner */}
-          <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#0A1022] via-[#0B1228] to-[#070B16] border border-indigo-500/30 shadow-2xl relative overflow-hidden">
-            <div className="absolute -right-24 -top-24 w-72 h-72 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+          {/* Header Banner */}
+          <div className="rounded-2xl p-6 sm:p-8 bg-[#19191b] border border-white/[0.08]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-2 max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-bold">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  OFFICIAL TECHNICAL WIKI &amp; ARCHITECTURE BLUEPRINT
+                <div className="text-xs font-mono text-[#e5a00d]">
+                  Technical documentation · architecture blueprint
                 </div>
-                <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-[#ededed] tracking-tight">
                   Coding Task Factory Wiki
                 </h1>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Interactive system documentation covering the React 19 + Monaco IDE frontend, FastAPI zero-trust backend, 368+ multi-language challenge bank, ReportLab vector PDF credential engine, and Harbor 0.25 TaskForge pipeline.
+                <p className="text-sm text-[#a1a1a6] leading-relaxed">
+                  Interactive system documentation covering the React 19 + Monaco IDE frontend,
+                  FastAPI zero-trust backend, 368+ multi-language challenge bank, ReportLab vector
+                  PDF credential engine, and Harbor 0.25 TaskForge pipeline.
                 </p>
               </div>
 
@@ -161,17 +158,17 @@ export const WikiPage: React.FC = () => {
                   href={GITHUB_WIKI_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-900 hover:bg-slate-800 border border-slate-700 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] transition-colors"
                 >
-                  <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-                  GitHub Markdown Wiki
+                  <ExternalLink className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                  GitHub Markdown wiki
                 </a>
                 <Link
                   to="/app/challenges"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/25 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
                 >
-                  Launch Workspace
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  Launch workspace
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </Link>
               </div>
             </div>
@@ -181,40 +178,45 @@ export const WikiPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Sidebar Navigation */}
             <aside className="lg:col-span-4 xl:col-span-3 space-y-4 lg:sticky lg:top-24">
-              <div className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
+              <div className="p-4 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-3">
                 <div className="relative">
-                  <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search
+                    className="w-3.5 h-3.5 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2"
+                    strokeWidth={1.5}
+                  />
                   <input
                     type="text"
                     value={filterQuery}
                     onChange={(e) => setFilterQuery(e.target.value)}
                     placeholder="Filter wiki topics..."
-                    className="w-full rounded-xl bg-slate-950 border border-slate-800 pl-8 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full rounded-lg bg-[#141415] border border-white/[0.08] pl-8 pr-3 py-2 text-xs text-[#ededed] placeholder:text-[#85858b] focus:outline-none focus:border-[#e5a00d]/60"
                   />
                 </div>
 
-                <nav className="space-y-1.5">
+                <nav className="space-y-1">
                   {filteredNav.map((item) => {
                     const Icon = item.icon;
                     const active = item.id === activeSection;
                     return (
                       <button
                         key={item.id}
+                        type="button"
                         onClick={() => navigate(`/wiki/${item.id}`)}
-                        className={`w-full text-left p-3 rounded-xl border transition flex items-start gap-2.5 ${
+                        className={`w-full text-left p-2.5 rounded-lg border transition-colors flex items-start gap-2.5 ${
                           active
-                            ? 'bg-indigo-600/20 border-indigo-500/45 text-white shadow-md'
-                            : 'bg-slate-950/50 border-transparent hover:bg-slate-800/60 text-slate-300'
+                            ? 'bg-[#222225] border-white/[0.12] text-[#ededed]'
+                            : 'bg-transparent border-transparent hover:bg-[#141415] text-[#a1a1a6]'
                         }`}
                       >
                         <Icon
                           className={`w-4 h-4 mt-0.5 shrink-0 ${
-                            active ? 'text-cyan-300' : 'text-slate-400'
+                            active ? 'text-[#e5a00d]' : 'text-[#85858b]'
                           }`}
+                          strokeWidth={1.5}
                         />
                         <div>
-                          <p className="text-xs font-bold leading-snug">{item.shortTitle}</p>
-                          <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5">
+                          <p className="text-xs font-medium leading-snug">{item.shortTitle}</p>
+                          <p className="text-[11px] text-[#85858b] line-clamp-2 mt-0.5">
                             {item.subtitle}
                           </p>
                         </div>
@@ -224,71 +226,71 @@ export const WikiPage: React.FC = () => {
                 </nav>
               </div>
 
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 space-y-2 text-xs">
-                <p className="font-bold text-emerald-300 flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5" />
-                  Demo Credentials
+              <div className="p-4 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-1.5 text-xs">
+                <p className="font-medium text-[#ededed] flex items-center gap-1.5">
+                  <Terminal className="w-3.5 h-3.5 text-[#4cc38a]" strokeWidth={1.5} />
+                  Reference demo credentials
                 </p>
-                <p className="text-slate-300 font-mono text-[11px]">
+                <p className="text-[#a1a1a6] font-mono text-[11px]">
                   developer@codingtaskfactory.io
                 </p>
-                <p className="text-slate-400 font-mono text-[11px]">Developer@2026!</p>
+                <p className="text-[#85858b] font-mono text-[11px]">Developer@2026!</p>
               </div>
             </aside>
 
             {/* Active Documentation Body */}
-            <article className="lg:col-span-8 xl:col-span-9 p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl space-y-8">
-              <div className="border-b border-slate-800 pb-5">
-                <p className="text-xs font-mono uppercase tracking-widest text-indigo-400 mb-1">
-                  Wiki Section / {currentMeta.shortTitle}
+            <article className="lg:col-span-8 xl:col-span-9 p-6 sm:p-8 rounded-2xl bg-[#19191b] border border-white/[0.08] space-y-8">
+              <div className="border-b border-white/[0.08] pb-5">
+                <p className="text-xs font-mono text-[#e5a00d] mb-1">
+                  Wiki / {currentMeta.shortTitle}
                 </p>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#ededed] tracking-tight">
                   {currentMeta.title}
                 </h2>
-                <p className="text-sm text-slate-400 mt-1">{currentMeta.subtitle}</p>
+                <p className="text-sm text-[#a1a1a6] mt-1">{currentMeta.subtitle}</p>
               </div>
 
               {activeSection === 'overview' && (
                 <div className="space-y-6">
-                  {/* Visual End-to-End Architecture Flow Diagram */}
-                  <div className="p-5 rounded-2xl bg-[#070B16] border border-slate-800 space-y-4">
-                    <h3 className="text-sm font-bold text-cyan-300 font-mono uppercase tracking-wider">
-                      Unified Platform Architecture Flow
+                  {/* Unified Platform Architecture Flow */}
+                  <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-4">
+                    <h3 className="text-xs font-mono text-[#a1a1a6]">
+                      Unified platform architecture flow
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 text-xs">
-                      <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/35 space-y-1.5">
-                        <span className="font-mono text-[10px] text-indigo-300 font-bold">
-                          01 • CLIENT LAYER
+                      <div className="p-4 rounded-lg bg-[#19191b] border border-white/[0.08] space-y-1.5">
+                        <span className="font-mono text-[11px] text-[#e5a00d]">
+                          01 · Client layer
                         </span>
-                        <p className="font-bold text-white">React 19 + Monaco IDE</p>
-                        <p className="text-slate-400">
+                        <p className="font-medium text-[#ededed]">React 19 + Monaco IDE</p>
+                        <p className="text-[#85858b]">
                           Lazy-loaded routes, Ctrl+K global search, Canvas social card PNG exporter, public /verify view.
                         </p>
                       </div>
-                      <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/35 space-y-1.5">
-                        <span className="font-mono text-[10px] text-cyan-300 font-bold">
-                          02 • API GATEWAY
+                      <div className="p-4 rounded-lg bg-[#19191b] border border-white/[0.08] space-y-1.5">
+                        <span className="font-mono text-[11px] text-[#e5a00d]">
+                          02 · API gateway
                         </span>
-                        <p className="font-bold text-white">FastAPI Zero-Trust API</p>
-                        <p className="text-slate-400">
+                        <p className="font-medium text-[#ededed]">FastAPI zero-trust API</p>
+                        <p className="text-[#85858b]">
                           PBKDF2 100k auth, HS256 JWTs, rate lockouts, /api/challenges/stats, Vercel serverless adapter.
                         </p>
                       </div>
-                      <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/35 space-y-1.5">
-                        <span className="font-mono text-[10px] text-emerald-300 font-bold">
-                          03 • ENGINES
+                      <div className="p-4 rounded-lg bg-[#19191b] border border-white/[0.08] space-y-1.5">
+                        <span className="font-mono text-[11px] text-[#e5a00d]">
+                          03 · Engines
                         </span>
-                        <p className="font-bold text-white">368+ Bank &amp; Sandbox</p>
-                        <p className="text-slate-400">
+                        <p className="font-medium text-[#ededed]">368+ bank &amp; sandbox</p>
+                        <p className="text-[#85858b]">
                           Python, Node JS/TS, C++ runners, Gemini challenge synthesizer, AST code reviewer &amp; Copilot.
                         </p>
                       </div>
-                      <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/35 space-y-1.5">
-                        <span className="font-mono text-[10px] text-amber-300 font-bold">
-                          04 • CREDENTIALS
+                      <div className="p-4 rounded-lg bg-[#19191b] border border-white/[0.08] space-y-1.5">
+                        <span className="font-mono text-[11px] text-[#e5a00d]">
+                          04 · Credentials
                         </span>
-                        <p className="font-bold text-white">ReportLab PDF &amp; Harbor</p>
-                        <p className="text-slate-400">
+                        <p className="font-medium text-[#ededed]">ReportLab PDF &amp; Harbor</p>
+                        <p className="text-[#85858b]">
                           Landscape A4 PDFs, SHA-256 verification registry, social share studio, Harbor 0.25 benchmark suite.
                         </p>
                       </div>
@@ -296,18 +298,24 @@ export const WikiPage: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
-                      <Layers className="w-5 h-5 text-indigo-400" />
-                      <h4 className="font-bold text-white text-sm">Coding Task Factory Web App</h4>
-                      <p className="text-xs text-slate-400 leading-relaxed">
-                        Full-stack SaaS coding studio combining 368+ verified multi-language challenges, timed assessments, live leaderboard, video masterclasses, and verifiable credentials.
+                    <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2">
+                      <Layers className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+                      <h4 className="font-medium text-[#ededed] text-sm">
+                        Coding Task Factory web app
+                      </h4>
+                      <p className="text-xs text-[#a1a1a6] leading-relaxed">
+                        Full-stack coding studio combining 368+ verified multi-language challenges,
+                        timed assessments, live leaderboard, video masterclasses, and verifiable credentials.
                       </p>
                     </div>
-                    <div className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
-                      <Cpu className="w-5 h-5 text-cyan-400" />
-                      <h4 className="font-bold text-white text-sm">Track 1 TaskForge Pipeline</h4>
-                      <p className="text-xs text-slate-400 leading-relaxed">
-                        Autonomous feature-task generator anchored at pallets/click v8.1.8 (934813e), validated with Harbor 0.25 linter (0 errors), 1.0 oracle pass rate, and 100% mutation kill rate.
+                    <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2">
+                      <Cpu className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+                      <h4 className="font-medium text-[#ededed] text-sm">
+                        Track 1 TaskForge pipeline
+                      </h4>
+                      <p className="text-xs text-[#a1a1a6] leading-relaxed">
+                        Autonomous feature-task generator anchored at pallets/click v8.1.8 (934813e),
+                        validated with Harbor 0.25 linter (0 errors), 1.0 oracle pass rate, and 100% mutation kill rate.
                       </p>
                     </div>
                   </div>
@@ -320,34 +328,34 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'wireframes-architecture' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
                     Architectural blueprint and interactive interface wireframes pairing a{' '}
-                    <strong className="text-white">lightweight command-line runner</strong> (
-                    <code className="font-mono text-cyan-300">run_factory.py</code>,{' '}
-                    <code className="font-mono text-cyan-300">validate_tasks.py</code>,{' '}
-                    <code className="font-mono text-cyan-300">run_mutation_testing.py</code>) with a{' '}
-                    <strong className="text-white">Web Dashboard interface</strong> for triggering generation pipelines, inspecting Harbor 0.25 task packages, and reviewing evaluation reports.
+                    <strong className="font-medium text-[#ededed]">lightweight command-line runner</strong> (
+                    <code className="font-mono text-[#ededed]">run_factory.py</code>,{' '}
+                    <code className="font-mono text-[#ededed]">validate_tasks.py</code>,{' '}
+                    <code className="font-mono text-[#ededed]">run_mutation_testing.py</code>) with a{' '}
+                    <strong className="font-medium text-[#ededed]">Web Dashboard interface</strong> for triggering generation pipelines, inspecting Harbor 0.25 task packages, and reviewing evaluation reports.
                   </p>
 
                   <SolutionWireframesAndArch defaultTab="architecture" />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-indigo-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-indigo-300">01. TRIGGER PIPELINES</p>
-                      <p className="text-slate-300 leading-relaxed">
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#e5a00d]">01. Trigger pipelines</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
                         Submit repository specs or Docker image params via CLI or the Web Dashboard form to synthesize Harbor task packages.
                       </p>
                     </div>
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-cyan-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-cyan-300">02. INSPECT TASK PACKAGES</p>
-                      <p className="text-slate-300 leading-relaxed">
-                        Browse <code className="font-mono text-cyan-300">instruction.md</code>,{' '}
-                        <code className="font-mono text-cyan-300">task.toml</code>, Dockerfiles, oracle patches, and <code className="font-mono text-cyan-300">tests/</code> with schema verification.
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#e5a00d]">02. Inspect task packages</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
+                        Browse <code className="font-mono text-[#ededed]">instruction.md</code>,{' '}
+                        <code className="font-mono text-[#ededed]">task.toml</code>, Dockerfiles, oracle patches, and <code className="font-mono text-[#ededed]">tests/</code> with schema verification.
                       </p>
                     </div>
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-emerald-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-emerald-300">03. VIEW EVAL REPORTS</p>
-                      <p className="text-slate-300 leading-relaxed">
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#4cc38a]">03. View eval reports</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
                         Inspect Baseline <code className="font-mono">0.0</code>, Oracle <code className="font-mono">1.0</code>, <code className="font-mono">100%</code> mutant kills, and JSON/PDF evidence artifacts.
                       </p>
                     </div>
@@ -357,32 +365,32 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'process-flow' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
                     The synthesis and evaluation pipeline accepts{' '}
-                    <strong className="text-white">repository specifications</strong> (Git URL, commit SHA, language, test runner) or{' '}
-                    <strong className="text-white">container image parameters</strong> (Dockerfile base, resource caps, Python/Node/C++20 with{' '}
-                    <code className="text-cyan-300 font-mono">open-source-parsers/jsoncpp</code>), synthesizes Harbor 0.25 task packages with reference tests, executes target AI coding models in isolation, and emits validated results &amp; evidence artifacts.
+                    <strong className="font-medium text-[#ededed]">repository specifications</strong> (Git URL, commit SHA, language, test runner) or{' '}
+                    <strong className="font-medium text-[#ededed]">container image parameters</strong> (Dockerfile base, resource caps, Python/Node/C++20 with{' '}
+                    <code className="text-[#ededed] font-mono">open-source-parsers/jsoncpp</code>), synthesizes Harbor 0.25 task packages with reference tests, executes target AI coding models in isolation, and emits validated results &amp; evidence artifacts.
                   </p>
 
                   <PipelineDiagrams defaultTab="process-flow" />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-indigo-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-indigo-300">1. INGESTION SPECS</p>
-                      <p className="text-slate-300 leading-relaxed">
-                        Accepts <code className="font-mono text-cyan-300">pipeline/config.py</code> repository metadata or custom <code className="font-mono text-cyan-300">Dockerfile</code> image bounds.
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#e5a00d]">1. Ingestion specs</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
+                        Accepts <code className="font-mono text-[#ededed]">pipeline/config.py</code> repository metadata or custom <code className="font-mono text-[#ededed]">Dockerfile</code> image bounds.
                       </p>
                     </div>
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-emerald-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-emerald-300">2. PACKAGE + AI EXECUTION</p>
-                      <p className="text-slate-300 leading-relaxed">
-                        Builds <code className="font-mono text-emerald-300">instruction.md</code>, reference tests (<code className="font-mono">F2P/P2P</code>), and runs target AI models &amp; baseline/oracle suites.
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#e5a00d]">2. Package + AI execution</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
+                        Builds <code className="font-mono text-[#ededed]">instruction.md</code>, reference tests (<code className="font-mono">F2P/P2P</code>), and runs target AI models &amp; baseline/oracle suites.
                       </p>
                     </div>
-                    <div className="p-4 rounded-2xl bg-[#070B16] border border-amber-500/30 space-y-1.5">
-                      <p className="font-mono font-bold text-amber-300">3. VALIDATED OUTPUTS</p>
-                      <p className="text-slate-300 leading-relaxed">
-                        <code className="font-mono text-amber-300">validator.py</code> &amp; <code className="font-mono text-amber-300">mutation_tester.py</code> emit verified scorecards into <code className="font-mono">validation_evidence/</code>.
+                    <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] space-y-1.5">
+                      <p className="font-mono font-medium text-[#4cc38a]">3. Validated outputs</p>
+                      <p className="text-[#a1a1a6] leading-relaxed">
+                        <code className="font-mono text-[#ededed]">validator.py</code> &amp; <code className="font-mono text-[#ededed]">mutation_tester.py</code> emit verified scorecards into <code className="font-mono">validation_evidence/</code>.
                       </p>
                     </div>
                   </div>
@@ -391,41 +399,41 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'architecture' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
                     Every API module resides in{' '}
-                    <code className="text-indigo-300 font-mono">backend/app/routers/</code> and shares Pydantic v2 schemas and SQLAlchemy models. On startup or Vercel cold start,{' '}
-                    <code className="text-cyan-300 font-mono">ensure_schema_migrations()</code> idempotently migrates SQLite columns before seeding.
+                    <code className="text-[#ededed] font-mono">backend/app/routers/</code> and shares Pydantic v2 schemas and SQLAlchemy models. On startup or Vercel cold start,{' '}
+                    <code className="text-[#ededed] font-mono">ensure_schema_migrations()</code> idempotently migrates SQLite columns before seeding.
                   </p>
 
-                  <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#070B16]">
+                  <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#141415]">
                     <table className="w-full text-left text-xs">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 font-mono bg-slate-950/70">
-                          <th className="py-3 px-4">SQLAlchemy Model</th>
-                          <th className="py-3 px-4">Key Columns</th>
-                          <th className="py-3 px-4">Primary Endpoints</th>
+                        <tr className="border-b border-white/[0.08] text-[#85858b] font-mono bg-[#0f0f10]">
+                          <th className="py-3 px-4 font-medium">SQLAlchemy model</th>
+                          <th className="py-3 px-4 font-medium">Key columns</th>
+                          <th className="py-3 px-4 font-medium">Primary endpoints</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/70 text-slate-300">
+                      <tbody className="divide-y divide-white/[0.06] text-[#a1a1a6]">
                         <tr>
-                          <td className="py-3 px-4 font-mono font-bold text-indigo-300">User</td>
+                          <td className="py-3 px-4 font-mono font-medium text-[#ededed]">User</td>
                           <td className="py-3 px-4">email, hashed_password, points, streak, solved_count, gemini_api_key</td>
-                          <td className="py-3 px-4 font-mono">/api/auth/*, /api/user/profile</td>
+                          <td className="py-3 px-4 font-mono text-[#e5a00d]">/api/auth/*, /api/user/profile</td>
                         </tr>
                         <tr>
-                          <td className="py-3 px-4 font-mono font-bold text-cyan-300">Challenge</td>
+                          <td className="py-3 px-4 font-mono font-medium text-[#ededed]">Challenge</td>
                           <td className="py-3 px-4">id, slug, difficulty, category, starter_code (4 langs), test_cases</td>
-                          <td className="py-3 px-4 font-mono">/api/challenges, /stats, /generate-challenge</td>
+                          <td className="py-3 px-4 font-mono text-[#e5a00d]">/api/challenges, /stats, /generate-challenge</td>
                         </tr>
                         <tr>
-                          <td className="py-3 px-4 font-mono font-bold text-emerald-300">Submission</td>
+                          <td className="py-3 px-4 font-mono font-medium text-[#ededed]">Submission</td>
                           <td className="py-3 px-4">user_id, challenge_id, language, status, runtime_ms, ai_feedback</td>
-                          <td className="py-3 px-4 font-mono">/api/run-code, /submit-solution, /submissions</td>
+                          <td className="py-3 px-4 font-mono text-[#e5a00d]">/api/run-code, /submit-solution, /submissions</td>
                         </tr>
                         <tr>
-                          <td className="py-3 px-4 font-mono font-bold text-amber-300">Certificate</td>
+                          <td className="py-3 px-4 font-mono font-medium text-[#ededed]">Certificate</td>
                           <td className="py-3 px-4">credential_id, score_percent, skills_verified, challenges_completed, credential_hash</td>
-                          <td className="py-3 px-4 font-mono">/api/certificates, /verify, /pdf</td>
+                          <td className="py-3 px-4 font-mono text-[#e5a00d]">/api/certificates, /verify, /pdf</td>
                         </tr>
                       </tbody>
                     </table>
@@ -437,8 +445,8 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'challenge-bank' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
-                    <code className="text-indigo-300 font-mono">backend/app/services/challenge_bank.py</code> synthesizes 360 deterministic coding problems across 10 core domains (paired with 8 flagship challenges for 368 total), each checked against Python reference solvers and packaged with starter harnesses for Python, JavaScript, TypeScript, and C++.
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
+                    <code className="text-[#ededed] font-mono">backend/app/services/challenge_bank.py</code> synthesizes 360 deterministic coding problems across 10 core domains (paired with 8 flagship challenges for 368 total), each checked against Python reference solvers and packaged with starter harnesses for Python, JavaScript, TypeScript, and C++.
                   </p>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 text-xs">
@@ -456,18 +464,18 @@ export const WikiPage: React.FC = () => {
                     ].map((domain) => (
                       <div
                         key={domain}
-                        className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center"
+                        className="p-3 rounded-lg bg-[#141415] border border-white/[0.08] text-center"
                       >
-                        <p className="font-semibold text-white">{domain}</p>
-                        <p className="text-[10px] font-mono text-cyan-400 mt-1">36+ Verified Tasks</p>
+                        <p className="font-medium text-[#ededed]">{domain}</p>
+                        <p className="text-[11px] font-mono text-[#e5a00d] mt-1 tabular-nums">36+ tasks</p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-[#070B16] border border-slate-800 space-y-2 text-xs">
-                    <p className="font-bold text-white">Multi-Language Execution Sandbox Flow</p>
-                    <p className="text-slate-400 leading-relaxed">
-                      Incoming code runs in isolated temporary directories via <code className="text-emerald-300 font-mono">code_runner.py</code>: Python invokes <code className="font-mono">sys.executable</code>, JavaScript executes Node <code className="font-mono">.mjs</code>, TypeScript utilizes Node <code className="font-mono">--experimental-strip-types</code>, and C++20 compiles with <code className="font-mono">g++/clang++</code> bundled with amalgamated <code className="text-cyan-300 font-mono">open-source-parsers/jsoncpp</code> (<code className="font-mono">#include &lt;json/json.h&gt;</code>).
+                  <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2 text-xs">
+                    <p className="font-medium text-[#ededed]">Multi-language execution sandbox flow</p>
+                    <p className="text-[#a1a1a6] leading-relaxed">
+                      Incoming code runs in isolated temporary directories via <code className="text-[#ededed] font-mono">code_runner.py</code>: Python invokes <code className="font-mono">sys.executable</code>, JavaScript executes Node <code className="font-mono">.mjs</code>, TypeScript utilizes Node <code className="font-mono">--experimental-strip-types</code>, and C++20 compiles with <code className="font-mono">g++/clang++</code> bundled with amalgamated <code className="text-[#ededed] font-mono">open-source-parsers/jsoncpp</code> (<code className="font-mono">#include &lt;json/json.h&gt;</code>).
                     </p>
                   </div>
 
@@ -477,11 +485,11 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'ml-lms' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
                     Full architectural walkthrough of the{' '}
-                    <strong className="text-white">Applied ML Course LMS (106 lectures, 7 modules)</strong> and{' '}
-                    <strong className="text-white">Stanford × CTF Deep Learning Track (21 lectures, 4 modules)</strong>, including Google-Cloud-Skills-style page-by-page video + quiz flow, the 4-tier{' '}
-                    <code className="text-rose-300 font-mono">MediaPipe</code> AI Camera Proctor engine, and FastAPI LMS credential telemetry.
+                    <strong className="font-medium text-[#ededed]">Applied ML Course LMS (106 lectures, 7 modules)</strong> and{' '}
+                    <strong className="font-medium text-[#ededed]">Stanford &times; CTF Deep Learning Track (21 lectures, 4 modules)</strong>, including page-by-page video + quiz flow, the 4-tier{' '}
+                    <code className="text-[#e5a00d] font-mono">MediaPipe</code> AI Camera Proctor engine, and FastAPI LMS credential telemetry.
                   </p>
 
                   <MLWikiBigDiagrams />
@@ -491,42 +499,42 @@ export const WikiPage: React.FC = () => {
               {activeSection === 'security-credentials' && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-5 rounded-2xl bg-[#070B16] border border-indigo-500/30 space-y-2.5">
-                      <div className="flex items-center gap-2 text-indigo-300 font-bold text-sm">
-                        <Lock className="w-4 h-4" />
-                        Zero-Trust Auth Pipeline
+                    <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2.5">
+                      <div className="flex items-center gap-2 text-[#ededed] font-medium text-sm">
+                        <Lock className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+                        Zero-trust auth pipeline
                       </div>
-                      <ul className="space-y-1.5 text-xs text-slate-300">
-                        <li>• Password policy: 10–128 chars, mixed case, digit &amp; symbol</li>
-                        <li>• Salted PBKDF2-HMAC-SHA256 (100,000 rounds)</li>
-                        <li>• Constant-time checks via <code className="font-mono text-cyan-300">hmac.compare_digest</code></li>
-                        <li>• 15-minute lockout shield after 5 failed logins</li>
-                        <li>• Masked Gemini API keys (<code className="font-mono text-cyan-300">gemini_api_key_preview</code>)</li>
+                      <ul className="space-y-1.5 text-xs text-[#a1a1a6]">
+                        <li>· Password policy: 10–128 chars, mixed case, digit &amp; symbol</li>
+                        <li>· Salted PBKDF2-HMAC-SHA256 (100,000 rounds)</li>
+                        <li>· Constant-time checks via <code className="font-mono text-[#ededed]">hmac.compare_digest</code></li>
+                        <li>· 15-minute lockout shield after 5 failed logins</li>
+                        <li>· Masked Gemini API keys (<code className="font-mono text-[#ededed]">gemini_api_key_preview</code>)</li>
                       </ul>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-[#070B16] border border-amber-500/30 space-y-2.5">
-                      <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
-                        <FileText className="w-4 h-4" />
-                        ReportLab Vector PDF &amp; Verify Registry
+                    <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2.5">
+                      <div className="flex items-center gap-2 text-[#ededed] font-medium text-sm">
+                        <FileText className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+                        ReportLab vector PDF &amp; verify registry
                       </div>
-                      <ul className="space-y-1.5 text-xs text-slate-300">
-                        <li>• Landscape A4 vector PDF generated live by ReportLab</li>
-                        <li>• Unique SHA-256 fingerprint + 15×15 QR matrix</li>
-                        <li>• Verified skills pills, score %, tasks &amp; lab hours</li>
-                        <li>• Signatory block &amp; embossed gold seal emblem</li>
-                        <li>• Public recruiter endpoint at <code className="font-mono text-emerald-300">/verify/:credentialId</code></li>
+                      <ul className="space-y-1.5 text-xs text-[#a1a1a6]">
+                        <li>· Landscape A4 vector PDF generated live by ReportLab</li>
+                        <li>· Unique SHA-256 fingerprint + 15&times;15 QR matrix</li>
+                        <li>· Verified skills, score %, tasks &amp; lab hours</li>
+                        <li>· Signatory block &amp; verification seal emblem</li>
+                        <li>· Public endpoint at <code className="font-mono text-[#4cc38a]">/verify/:credentialId</code></li>
                       </ul>
                     </div>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-bold text-white">
-                      <Share2 className="w-4 h-4 text-cyan-400" />
-                      Built-In Social Share &amp; Post Studio
+                  <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] space-y-2.5">
+                    <div className="flex items-center gap-2 text-sm font-medium text-[#ededed]">
+                      <Share2 className="w-4 h-4 text-[#85858b]" strokeWidth={1.5} />
+                      Built-in social share &amp; post studio
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      Every earned credential generates editable messages, hashtags, verification links, and crisp HTML5 Canvas PNG graphics tailored for LinkedIn (Feed + Add-to-Profile + 1200×630 PNG), Instagram (1080×1080 PNG + caption), Facebook (Share dialog + 1200×630 PNG), and WhatsApp (bold-formatted share message + PDF attachment).
+                    <p className="text-xs text-[#a1a1a6] leading-relaxed">
+                      Every earned credential generates editable messages, verification links, and HTML5 Canvas PNG graphics formatted for LinkedIn (1200&times;630 PNG), Instagram (1080&times;1080 PNG), Facebook (1200&times;630 PNG), and WhatsApp (formatted summary + PDF attachment).
                     </p>
                   </div>
                 </div>
@@ -534,66 +542,66 @@ export const WikiPage: React.FC = () => {
 
               {activeSection === 'taskforge' && (
                 <div className="space-y-6">
-                  <p className="text-sm text-slate-300 leading-relaxed">
-                    TaskForge targets <code className="text-cyan-300 font-mono">pallets/click</code> v8.1.8 (<code className="font-mono text-xs">934813e4d421071a1b3db3973c02fe2721359a6e</code>) and synthesizes 5 Harbor 0.25 feature packages spanning distinct Click subsystems with zero upstream regression failures.
+                  <p className="text-sm text-[#a1a1a6] leading-relaxed">
+                    TaskForge targets <code className="text-[#ededed] font-mono">pallets/click</code> v8.1.8 (<code className="font-mono text-xs">934813e4d421071a1b3db3973c02fe2721359a6e</code>) and synthesizes 5 Harbor 0.25 feature packages spanning distinct Click subsystems with zero upstream regression failures.
                   </p>
 
-                  <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#070B16]">
-                    <table className="w-full text-left text-xs">
+                  <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#141415]">
+                    <table className="w-full text-left text-xs tabular-nums">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 font-mono bg-slate-950/70">
-                          <th className="py-3 px-4">Package ID</th>
-                          <th className="py-3 px-4">Subsystem</th>
-                          <th className="py-3 px-4 text-center">Baseline</th>
-                          <th className="py-3 px-4 text-center">Oracle</th>
-                          <th className="py-3 px-4 text-center">Mutants Killed</th>
+                        <tr className="border-b border-white/[0.08] text-[#85858b] font-mono bg-[#0f0f10]">
+                          <th className="py-3 px-4 font-medium">Package ID</th>
+                          <th className="py-3 px-4 font-medium">Subsystem</th>
+                          <th className="py-3 px-4 font-medium text-center">Baseline</th>
+                          <th className="py-3 px-4 font-medium text-center">Oracle</th>
+                          <th className="py-3 px-4 font-medium text-center">Mutants killed</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/70 text-slate-300 font-mono">
+                      <tbody className="divide-y divide-white/[0.06] text-[#a1a1a6] font-mono">
                         <tr>
-                          <td className="py-2.5 px-4 text-indigo-300">click-feature-command-aliases</td>
+                          <td className="py-2.5 px-4 text-[#ededed]">click-feature-command-aliases</td>
                           <td className="py-2.5 px-4 font-sans">Command Dispatch (core.py)</td>
-                          <td className="py-2.5 px-4 text-center text-rose-400">0.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-400">1.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-300">100% (2/2)</td>
+                          <td className="py-2.5 px-4 text-center text-[#e5484d]">0.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">1.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">100% (2/2)</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-4 text-indigo-300">click-feature-json-help-export</td>
+                          <td className="py-2.5 px-4 text-[#ededed]">click-feature-json-help-export</td>
                           <td className="py-2.5 px-4 font-sans">Help Export (core.py)</td>
-                          <td className="py-2.5 px-4 text-center text-rose-400">0.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-400">1.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-300">100% (2/2)</td>
+                          <td className="py-2.5 px-4 text-center text-[#e5484d]">0.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">1.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">100% (2/2)</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-4 text-indigo-300">click-feature-nested-envvar-prefix</td>
+                          <td className="py-2.5 px-4 text-[#ededed]">click-feature-nested-envvar-prefix</td>
                           <td className="py-2.5 px-4 font-sans">Context Envvars (core.py)</td>
-                          <td className="py-2.5 px-4 text-center text-rose-400">0.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-400">1.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-300">100% (2/2)</td>
+                          <td className="py-2.5 px-4 text-center text-[#e5484d]">0.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">1.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">100% (2/2)</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-4 text-indigo-300">click-feature-parameter-deprecation</td>
+                          <td className="py-2.5 px-4 text-[#ededed]">click-feature-parameter-deprecation</td>
                           <td className="py-2.5 px-4 font-sans">Param Lifecycle (core.py)</td>
-                          <td className="py-2.5 px-4 text-center text-rose-400">0.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-400">1.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-300">100% (2/2)</td>
+                          <td className="py-2.5 px-4 text-center text-[#e5484d]">0.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">1.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">100% (2/2)</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-4 text-indigo-300">click-feature-password-minlen-validator</td>
+                          <td className="py-2.5 px-4 text-[#ededed]">click-feature-password-minlen-validator</td>
                           <td className="py-2.5 px-4 font-sans">Password UI (termui.py)</td>
-                          <td className="py-2.5 px-4 text-center text-rose-400">0.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-400">1.0</td>
-                          <td className="py-2.5 px-4 text-center text-emerald-300">100% (2/2)</td>
+                          <td className="py-2.5 px-4 text-center text-[#e5484d]">0.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">1.0</td>
+                          <td className="py-2.5 px-4 text-center text-[#4cc38a]">100% (2/2)</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-300 flex flex-wrap items-center justify-between gap-2">
+                  <div className="p-4 rounded-xl bg-[#141415] border border-white/[0.08] font-mono text-xs text-[#a1a1a6] flex flex-wrap items-center justify-between gap-2">
                     <span>python demo_walkthrough.py &amp;&amp; python run_mutation_testing.py</span>
-                    <span className="inline-flex items-center gap-1 text-emerald-400 font-bold">
-                      <Award className="w-4 h-4" />
-                      Harbor 0.25: 0 Errors
+                    <span className="inline-flex items-center gap-1.5 text-[#4cc38a] font-medium">
+                      <Award className="w-4 h-4" strokeWidth={1.5} />
+                      Harbor 0.25: 0 errors
                     </span>
                   </div>
 

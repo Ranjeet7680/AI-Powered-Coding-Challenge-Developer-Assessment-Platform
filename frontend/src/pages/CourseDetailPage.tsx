@@ -16,7 +16,6 @@ import {
   Lock,
   PlayCircle,
   ShieldCheck,
-  Sparkles,
   Star,
 } from 'lucide-react';
 import { api } from '../services/api';
@@ -58,9 +57,9 @@ export const CourseDetailPage: React.FC = () => {
 
   if (isLoading || !course) {
     return (
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
-        <div className="h-64 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse" />
-        <div className="h-96 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+      <div className="space-y-6">
+        <div className="h-56 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
+        <div className="h-80 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
       </div>
     );
   }
@@ -80,29 +79,28 @@ export const CourseDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
-      {/* Breadcrumb Back Link */}
+    <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <Link
           to="/app/lms"
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#85858b] hover:text-[#ededed] transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to All LMS Courses
+          <ArrowLeft strokeWidth={1.5} className="w-4 h-4" />
+          <span>All courses</span>
         </Link>
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs font-mono tabular-nums">
           <Link
             to="/app/lms/ml"
-            className={`px-3 py-1 rounded-lg font-bold transition ${
-              !isDL ? 'bg-indigo-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'
+            className={`px-2.5 py-1 rounded-md transition-colors ${
+              !isDL ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
             }`}
           >
             ML (106)
           </Link>
           <Link
             to="/app/lms/dl"
-            className={`px-3 py-1 rounded-lg font-bold transition ${
-              isDL ? 'bg-rose-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'
+            className={`px-2.5 py-1 rounded-md transition-colors ${
+              isDL ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
             }`}
           >
             Stanford DL (21)
@@ -110,138 +108,115 @@ export const CourseDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Course Detail Hero Banner */}
-      <div
-        className={`rounded-3xl border p-6 sm:p-8 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center ${
-          isDL
-            ? 'border-rose-500/35 bg-gradient-to-br from-[#160913] via-slate-900 to-[#0B1226]'
-            : 'border-indigo-500/35 bg-gradient-to-br from-[#0A1026] via-slate-900 to-[#081A20]'
-        }`}
-      >
+      {/* Hero Card */}
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div className="lg:col-span-7 space-y-4">
-          <div className="inline-flex flex-wrap items-center gap-2">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                isDL
-                  ? 'bg-rose-500/15 border-rose-500/35 text-rose-300'
-                  : 'bg-indigo-500/15 border-indigo-500/35 text-indigo-300'
-              }`}
-            >
-              {isDL ? 'STANFORD × CODING TASK FACTORY ACADEMY' : 'FLAGSHIP ENGINEERING ACADEMY'}
+          <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+            <span className="text-[#e5a00d]">
+              {isDL ? 'Stanford × Coding Task Factory' : 'Engineering Academy'}
             </span>
             {reviews && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                {reviews.average_rating.toFixed(1)}★ ({reviews.total_reviews} Reviews)
+              <span className="inline-flex items-center gap-1 text-[#a1a1a6] tabular-nums">
+                <Star strokeWidth={1.5} className="w-3.5 h-3.5 fill-current text-[#e5a00d]" />
+                <span>
+                  {reviews.average_rating.toFixed(1)} ({reviews.total_reviews} reviews)
+                </span>
               </span>
             )}
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black text-white leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed] leading-snug">
             {course.title}
           </h1>
 
-          <p className="text-sm text-slate-300 leading-relaxed">
-            Instructor Track: <strong className="text-white">{course.instructor}</strong>. Scroll
-            below to inspect every module, prerequisite, capstone assignment, and lecture before
-            launching into the distraction-free In-LMS classroom.
+          <p className="text-sm text-[#a1a1a6] leading-relaxed">
+            Instructor: <span className="text-[#ededed]">{course.instructor}</span>. Inspect modules, prerequisites, capstones, and lectures below before entering the classroom.
           </p>
 
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-2.5 pt-1">
             <Link
               to={nextLecture ? `${learnBasePath}/${nextLecture.id}` : learnBasePath}
-              className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-xs sm:text-sm font-extrabold transition shadow-xl ${
-                isDL
-                  ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/25'
-                  : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/25'
-              }`}
+              className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
             >
-              <PlayCircle className="w-4 h-4" />
-              {completed.length > 0
-                ? `Resume Lecture #${nextLecture.order}`
-                : 'Start Lectures in LMS'}
-              <ArrowRight className="w-4 h-4" />
+              <PlayCircle strokeWidth={1.5} className="w-4 h-4" />
+              <span>
+                {completed.length > 0 ? `Resume lecture #${nextLecture.order}` : 'Start lectures'}
+              </span>
+              <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
             </Link>
             <a
               href="#scroll-syllabus"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs sm:text-sm font-bold transition"
+              className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] text-xs font-medium transition-colors tabular-nums"
             >
-              <Layers className="w-4 h-4 text-cyan-400" />
-              Scroll Full Curriculum ({course.total_lessons})
+              <Layers strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+              <span>Syllabus ({course.total_lessons})</span>
             </a>
           </div>
         </div>
 
         <div className="lg:col-span-5">
           {course.thumbnail_url && (
-            <div className="rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950">
+            <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-[#141415]">
               <img
                 src={course.thumbnail_url}
                 alt={course.title}
                 className="w-full aspect-video object-cover"
               />
-              <div className="px-4 py-2.5 bg-slate-950/90 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-300">
-                <span className="flex items-center gap-1.5 text-emerald-300 font-bold">
-                  <Lock className="w-3.5 h-3.5" /> In-LMS Locked Player
+              <div className="px-4 py-2.5 bg-[#0f0f10] border-t border-white/[0.08] flex items-center justify-between text-xs font-mono text-[#a1a1a6] tabular-nums">
+                <span className="flex items-center gap-1.5 text-[#4cc38a]">
+                  <Lock strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>In-LMS player</span>
                 </span>
-                <span>{course.total_lessons} HD Lectures</span>
+                <span>{course.total_lessons} lectures</span>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Scrollable Course Content + Sticky Summary Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Scrollable Body */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* End-to-End Certification Outcomes */}
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 space-y-4">
-            <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-cyan-400" />
-              What This Academy Includes
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-200">
-              <div className="p-3.5 rounded-2xl bg-slate-950/75 border border-slate-800 flex items-start gap-2.5">
-                <PlayCircle className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                <span>{course.total_lessons} In-LMS Video Lectures with Math Notes &amp; Code</span>
+      {/* Main Content + Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-8 space-y-6">
+          <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-6 space-y-4">
+            <h2 className="text-base font-medium text-[#ededed]">Included in this track</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#a1a1a6] tabular-nums">
+              <div className="p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] flex items-start gap-2.5">
+                <PlayCircle strokeWidth={1.5} className="w-4 h-4 text-[#85858b] shrink-0 mt-0.5" />
+                <span>{course.total_lessons} video lectures with notes and code</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/75 border border-slate-800 flex items-start gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{course.total_quizzes}+ After-Video &amp; Cumulative Mastery Quizzes</span>
+              <div className="p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] flex items-start gap-2.5">
+                <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0 mt-0.5" />
+                <span>{course.total_quizzes}+ post-lecture and mastery quizzes</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/75 border border-slate-800 flex items-start gap-2.5">
-                <Code2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                <span>{course.capstone_projects?.length || 3} Rubric-Evaluated Capstone Assignments</span>
+              <div className="p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] flex items-start gap-2.5">
+                <Code2 strokeWidth={1.5} className="w-4 h-4 text-[#85858b] shrink-0 mt-0.5" />
+                <span>{course.capstone_projects?.length || 3} rubric-graded capstones</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/75 border border-slate-800 flex items-start gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                <span>Camera Cheat-Protected Final Exam + Verified PDF &amp; Swag</span>
+              <div className="p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] flex items-start gap-2.5">
+                <ShieldCheck strokeWidth={1.5} className="w-4 h-4 text-[#e5a00d] shrink-0 mt-0.5" />
+                <span>Camera-proctored final exam and PDF credential</span>
               </div>
             </div>
           </div>
 
-          {/* Scrollable Full Syllabus */}
           <div id="scroll-syllabus" className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 className="text-xl font-extrabold text-white">
-                  Complete Scrollable Course Curriculum
-                </h2>
-                <p className="text-xs text-slate-400">
-                  Click any module or lecture below to launch directly at that exact lesson inside the LMS.
+                <h2 className="text-lg font-medium text-[#ededed]">Course curriculum</h2>
+                <p className="text-xs text-[#85858b]">
+                  Select any lecture to open it directly inside the LMS
                 </p>
               </div>
               <button
                 type="button"
                 onClick={expandAllModules}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition"
+                className="px-3 h-8 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
               >
-                Expand All {course.modules.length} Modules
+                Expand all ({course.modules.length})
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {course.modules.map((mod) => {
                 const modLessons = course.lessons.filter((l) => l.module_id === mod.id);
                 const doneInMod = modLessons.filter((l) => completed.includes(l.id)).length;
@@ -250,7 +225,7 @@ export const CourseDetailPage: React.FC = () => {
                 return (
                   <div
                     key={mod.id}
-                    className="rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden"
+                    className="rounded-xl border border-white/[0.08] bg-[#19191b] overflow-hidden"
                   >
                     <button
                       type="button"
@@ -260,57 +235,53 @@ export const CourseDetailPage: React.FC = () => {
                           [mod.id]: !isOpen,
                         }))
                       }
-                      className="w-full p-5 flex items-start justify-between gap-4 text-left hover:bg-slate-800/40 transition"
+                      className="w-full p-5 flex items-start justify-between gap-4 text-left hover:bg-[#222225]/50 transition-colors"
                     >
-                      <div className="space-y-1.5">
-                        <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                          <span className="px-2 py-0.5 rounded bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold">
-                            Module {mod.order}
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-3 text-xs font-mono tabular-nums">
+                          <span className="text-[#e5a00d]">Module {mod.order}</span>
+                          <span className="text-[#85858b]">
+                            {modLessons.length} lectures · ~{mod.estimated_hours || 2}h
                           </span>
-                          <span className="text-slate-400 font-mono">
-                            {modLessons.length} Lectures · ~{mod.estimated_hours || 2} hrs
-                          </span>
-                          <span className="text-emerald-400 font-bold">
-                            {doneInMod}/{modLessons.length} Done
+                          <span className="text-[#4cc38a]">
+                            {doneInMod}/{modLessons.length} done
                           </span>
                         </div>
-                        <h3 className="text-base font-bold text-white">{mod.title}</h3>
+                        <h3 className="text-sm font-medium text-[#ededed]">{mod.title}</h3>
                         {mod.description && (
-                          <p className="text-xs text-slate-400 leading-relaxed">{mod.description}</p>
+                          <p className="text-xs text-[#85858b] leading-relaxed">{mod.description}</p>
                         )}
                       </div>
                       {isOpen ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400 shrink-0 mt-1" />
+                        <ChevronUp strokeWidth={1.5} className="w-4 h-4 text-[#85858b] shrink-0 mt-1" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400 shrink-0 mt-1" />
+                        <ChevronDown strokeWidth={1.5} className="w-4 h-4 text-[#85858b] shrink-0 mt-1" />
                       )}
                     </button>
 
                     {isOpen && (
-                      <div className="border-t border-slate-800 bg-slate-950/60 divide-y divide-slate-800/60">
+                      <div className="border-t border-white/[0.08] bg-[#141415] divide-y divide-white/[0.06]">
                         {modLessons.map((lesson) => {
                           const done = completed.includes(lesson.id);
                           return (
                             <Link
                               key={lesson.id}
                               to={`${learnBasePath}/${lesson.id}`}
-                              className="px-5 py-3 flex items-center justify-between gap-3 hover:bg-indigo-600/10 transition group"
+                              className="px-5 py-3 flex items-center justify-between gap-3 hover:bg-[#222225]/60 transition-colors group"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 {done ? (
-                                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                  <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
                                 ) : (
-                                  <PlayCircle className="w-4 h-4 text-indigo-400 group-hover:text-cyan-300 shrink-0" />
+                                  <PlayCircle strokeWidth={1.5} className="w-4 h-4 text-[#85858b] group-hover:text-[#ededed] shrink-0" />
                                 )}
-                                <span className="text-xs font-medium text-slate-200 group-hover:text-white truncate">
+                                <span className="text-xs text-[#a1a1a6] group-hover:text-[#ededed] truncate tabular-nums">
                                   #{lesson.order}. {lesson.title}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-2 shrink-0 text-[11px] font-mono text-slate-500">
+                              <div className="flex items-center gap-2 shrink-0 text-xs font-mono text-[#85858b] tabular-nums">
                                 <span>{lesson.duration_label}</span>
-                                <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-cyan-300">
-                                  +Quiz
-                                </span>
+                                <span className="text-[#a1a1a6]">Quiz</span>
                               </div>
                             </Link>
                           );
@@ -323,32 +294,25 @@ export const CourseDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Capstones Preview Section */}
           {course.capstone_projects && course.capstone_projects.length > 0 && (
-            <div className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 space-y-4">
+            <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-                  <Code2 className="w-5 h-5 text-indigo-400" />
-                  Included Capstone Project Assignments
-                </h2>
-                <Link
-                  to={learnBasePath}
-                  className="text-xs font-bold text-cyan-300 hover:underline"
-                >
-                  Open Capstone Lab →
+                <h2 className="text-base font-medium text-[#ededed]">Capstone projects</h2>
+                <Link to={learnBasePath} className="text-xs text-[#a1a1a6] hover:text-[#ededed]">
+                  Open capstone lab →
                 </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {course.capstone_projects.map((cap) => (
                   <div
                     key={cap.id}
-                    className="rounded-2xl border border-slate-800 bg-slate-950/75 p-4 space-y-2"
+                    className="rounded-lg border border-white/[0.08] bg-[#141415] p-4 space-y-1.5"
                   >
-                    <span className="text-[10px] font-mono font-bold text-amber-300">
+                    <span className="text-xs font-mono text-[#e5a00d] tabular-nums">
                       {cap.difficulty} · ~{cap.estimated_hours}h
                     </span>
-                    <h3 className="text-xs font-bold text-white leading-snug">{cap.title}</h3>
-                    <p className="text-[11px] text-slate-400 line-clamp-3">{cap.summary}</p>
+                    <h3 className="text-xs font-medium text-[#ededed] leading-snug">{cap.title}</h3>
+                    <p className="text-xs text-[#85858b] line-clamp-3">{cap.summary}</p>
                   </div>
                 ))}
               </div>
@@ -356,67 +320,60 @@ export const CourseDetailPage: React.FC = () => {
           )}
         </div>
 
-        {/* Sticky Right Course Enrollment & Flow Card */}
-        <aside className="lg:col-span-4 sticky top-6 rounded-3xl border border-slate-800 bg-slate-900/85 p-6 space-y-5 shadow-2xl">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
-              Course Readiness
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold">
-              Enrolled Free
-            </span>
+        {/* Sticky Sidebar */}
+        <aside className="lg:col-span-4 sticky top-6 rounded-xl border border-white/[0.08] bg-[#19191b] p-6 space-y-5 tabular-nums">
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-[#a1a1a6]">Track progress</span>
+            <span className="text-[#4cc38a]">Enrolled</span>
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Overall Progress</span>
-              <span className="font-mono font-bold text-white">{completionPct}%</span>
+              <span className="text-[#85858b]">Completion</span>
+              <span className="font-mono text-[#ededed]">{completionPct}%</span>
             </div>
-            <div className="h-2 rounded-full bg-slate-950 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400"
-                style={{ width: `${completionPct}%` }}
-              />
+            <div className="h-1.5 rounded-full bg-[#222225] overflow-hidden">
+              <div className="h-full bg-[#e5a00d]" style={{ width: `${completionPct}%` }} />
             </div>
           </div>
 
-          <div className="space-y-2.5 text-xs text-slate-300 border-t border-b border-slate-800 py-4">
+          <div className="space-y-2.5 text-xs border-t border-b border-white/[0.08] py-4">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-slate-400">
-                <Clock className="w-4 h-4 text-cyan-400" /> Estimated Study
+              <span className="flex items-center gap-2 text-[#85858b]">
+                <Clock strokeWidth={1.5} className="w-4 h-4" />
+                <span>Estimated study</span>
               </span>
-              <span className="font-bold text-white">~{totalHours} Hours</span>
+              <span className="font-mono text-[#ededed]">~{totalHours} hrs</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-slate-400">
-                <BookOpen className="w-4 h-4 text-indigo-400" /> Quizzes &amp; Notes
+              <span className="flex items-center gap-2 text-[#85858b]">
+                <BookOpen strokeWidth={1.5} className="w-4 h-4" />
+                <span>Quizzes &amp; notes</span>
               </span>
-              <span className="font-bold text-white">{course.total_quizzes}+ Included</span>
+              <span className="font-mono text-[#ededed]">{course.total_quizzes}+</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-slate-400">
-                <Award className="w-4 h-4 text-emerald-400" /> PDF Certificate
+              <span className="flex items-center gap-2 text-[#85858b]">
+                <Award strokeWidth={1.5} className="w-4 h-4" />
+                <span>PDF certificate</span>
               </span>
-              <span className="font-bold text-emerald-300">SHA-256 Verified</span>
+              <span className="font-mono text-[#4cc38a]">SHA-256</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-slate-400">
-                <Gift className="w-4 h-4 text-amber-400" /> Graduate Goodies
+              <span className="flex items-center gap-2 text-[#85858b]">
+                <Gift strokeWidth={1.5} className="w-4 h-4" />
+                <span>Graduate kit</span>
               </span>
-              <span className="font-bold text-amber-300">Eligible on Finish</span>
+              <span className="font-mono text-[#e5a00d]">Included</span>
             </div>
           </div>
 
           <Link
             to={nextLecture ? `${learnBasePath}/${nextLecture.id}` : learnBasePath}
-            className={`w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white text-xs sm:text-sm font-extrabold transition shadow-xl ${
-              isDL
-                ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/25'
-                : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/25'
-            }`}
+            className="w-full inline-flex items-center justify-center gap-2 px-4 h-10 rounded-lg text-[#141415] bg-[#ededed] hover:bg-white text-xs font-medium transition-colors"
           >
-            <GraduationCap className="w-4 h-4" />
-            {completed.length > 0 ? 'Continue Lectures & Quizzes' : 'Begin Full Course Flow'}
+            <GraduationCap strokeWidth={1.5} className="w-4 h-4" />
+            <span>{completed.length > 0 ? 'Continue coursework' : 'Start coursework'}</span>
           </Link>
         </aside>
       </div>

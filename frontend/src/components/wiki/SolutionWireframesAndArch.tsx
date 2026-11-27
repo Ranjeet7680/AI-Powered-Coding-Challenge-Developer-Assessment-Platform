@@ -36,7 +36,7 @@ const PACKAGE_FILES: Record<
     ],
   },
   'task.toml': {
-    badge: 'Schema Config · Valid ✓',
+    badge: 'Schema Config · Valid',
     note: 'Resource bounds & deterministic runner settings',
     lines: [
       'version = "0.25"',
@@ -96,20 +96,20 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
   const [pipelineTriggered, setPipelineTriggered] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-cyan-500/30 bg-[#070B16] overflow-hidden shadow-xl">
+    <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
       {/* Header Switcher */}
-      <div className="px-4 py-3.5 sm:px-6 border-b border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 py-3.5 sm:px-6 border-b border-white/[0.08] bg-[#0f0f10] flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            Proposed Solution Architecture &amp; Dual-Interface Wireframes
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+            <LayoutDashboard className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Proposed solution architecture &amp; dual-interface wireframes
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#85858b]">
             Lightweight CLI &amp; Web Dashboard to trigger generation pipelines, inspect task packages, and view evaluation reports.
           </p>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-[#19191b] p-1 rounded-lg border border-white/[0.08] w-full sm:w-auto">
           {[
             { id: 'architecture' as const, label: 'Solution Architecture', icon: Layers },
             { id: 'cli' as const, label: 'CLI Wireframe', icon: Terminal },
@@ -244,10 +244,10 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
                   key={btn.id}
                   type="button"
                   onClick={() => setCliStep(btn.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border transition ${
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono font-medium border transition-colors ${
                     cliStep === btn.id
-                      ? 'bg-indigo-600/25 border-indigo-400 text-indigo-200'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                      ? 'bg-[#ededed] border-[#ededed] text-[#141415]'
+                      : 'bg-[#19191b] border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                   }`}
                 >
                   {btn.label}
@@ -255,17 +255,17 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
               ))}
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-[#04070f] overflow-hidden shadow-lg">
-              <div className="px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+            <div className="rounded-xl border border-white/[0.08] bg-[#0f0f10] overflow-hidden">
+              <div className="px-4 py-2.5 bg-[#19191b] border-b border-white/[0.08] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                  <span className="text-[11px] font-mono text-slate-400 ml-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#e5484d]/75" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#e5a00d]/75" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#4cc38a]/75" />
+                  <span className="text-[11px] font-mono text-[#85858b] ml-2">
                     taskforge-cli — ~/Innodata-AI-Hackathon
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-cyan-400 uppercase">CLI Wireframe Preview</span>
+                <span className="text-[11px] font-mono text-[#e5a00d]">CLI wireframe</span>
               </div>
 
               <pre className="p-4 sm:p-5 text-xs font-mono leading-relaxed overflow-x-auto text-slate-200">
@@ -331,10 +331,10 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
                     key={scr.id}
                     type="button"
                     onClick={() => setWebScreen(scr.id)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                       webScreen === scr.id
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-[#ededed] text-[#141415]'
+                        : 'bg-[#222225] text-[#a1a1a6] hover:text-[#ededed]'
                     }`}
                   >
                     {scr.label}
@@ -348,37 +348,37 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
               {webScreen === 'trigger' && (
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400 mb-1">REPOSITORY URL / LOCAL PATH</p>
-                      <p className="font-mono text-white">github.com/pallets/click</p>
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b] mb-1">Repository URL / path</p>
+                      <p className="font-mono text-[#ededed]">github.com/pallets/click</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400 mb-1">BASE COMMIT &amp; IMAGE PARAMS</p>
-                      <p className="font-mono text-cyan-300">934813e · Python 3.11 + JsonCpp</p>
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b] mb-1">Base commit &amp; runtime</p>
+                      <p className="font-mono text-[#e5a00d]">934813e · Python 3.11 + JsonCpp</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
                       <p className="text-[10px] font-mono text-slate-400 mb-1">TARGET AI MODELS</p>
                       <p className="font-mono text-emerald-300">Gemini 2.5 · Baseline · Oracle</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30">
-                    <span className="text-xs text-slate-300">
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                    <span className="text-xs text-[#a1a1a6]">
                       Checks Harbor 0.25 schema, zero-leakage prompt guard, and isolated container execution bounds.
                     </span>
                     <button
                       type="button"
                       onClick={() => setPipelineTriggered((prev) => !prev)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white transition"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#ededed] hover:bg-white text-xs font-medium text-[#141415] transition-colors"
                     >
-                      <Play className="w-3.5 h-3.5" />
-                      {pipelineTriggered ? 'Pipeline Queued (5 Packages ✓)' : 'Simulate Trigger Pipeline'}
+                      <Play className="w-3.5 h-3.5" strokeWidth={1.5} />
+                      {pipelineTriggered ? 'Pipeline queued (5 packages)' : 'Simulate trigger pipeline'}
                     </button>
                   </div>
 
                   {pipelineTriggered && (
-                    <div className="p-3 rounded-xl bg-emerald-950/25 border border-emerald-500/30 text-xs font-mono text-emerald-300">
-                      ✓ Job #TF-2026 triggered: checked out 934813e → built 5 task packages → ready for inspection &amp; grading.
+                    <div className="p-3 rounded-lg bg-[#4cc38a]/[0.06] border border-[#4cc38a]/30 text-xs font-mono text-[#4cc38a]">
+                      Job #TF-2026 triggered: checked out 934813e &rarr; built 5 task packages &rarr; ready for inspection &amp; grading.
                     </div>
                   )}
                 </div>
@@ -386,9 +386,9 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
 
               {webScreen === 'inspector' && (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 text-xs">
-                  <div className="md:col-span-5 p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
-                    <p className="text-[10px] font-mono uppercase text-cyan-300 font-bold flex items-center gap-1.5 mb-2">
-                      <FolderTree className="w-3.5 h-3.5" />
+                  <div className="md:col-span-5 p-3 rounded-lg bg-[#19191b] border border-white/[0.08] space-y-1.5">
+                    <p className="text-[11px] font-mono text-[#e5a00d] font-medium flex items-center gap-1.5 mb-2">
+                      <FolderTree className="w-3.5 h-3.5" strokeWidth={1.5} />
                       click-feature-command-aliases
                     </p>
                     {(Object.keys(PACKAGE_FILES) as PackageFileKey[]).map((fileKey) => (
@@ -396,27 +396,27 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
                         key={fileKey}
                         type="button"
                         onClick={() => setSelectedFile(fileKey)}
-                        className={`w-full text-left px-2.5 py-2 rounded-lg font-mono text-[11px] flex items-center gap-2 transition ${
+                        className={`w-full text-left px-2.5 py-2 rounded-md font-mono text-[11px] flex items-center gap-2 transition-colors ${
                           selectedFile === fileKey
-                            ? 'bg-cyan-600/20 border border-cyan-500/40 text-white'
-                            : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-200'
+                            ? 'bg-[#222225] border border-[#e5a00d]/50 text-[#ededed]'
+                            : 'text-[#85858b] hover:bg-[#141415] hover:text-[#ededed]'
                         }`}
                       >
-                        <FileCode2 className="w-3.5 h-3.5 shrink-0 text-cyan-400" />
+                        <FileCode2 className="w-3.5 h-3.5 shrink-0 text-[#85858b]" strokeWidth={1.5} />
                         <span className="truncate">{fileKey}</span>
                       </button>
                     ))}
                   </div>
 
-                  <div className="md:col-span-7 p-3.5 rounded-xl bg-[#04070f] border border-slate-800 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
-                      <span className="font-mono font-bold text-white">{selectedFile}</span>
-                      <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[10px]">
+                  <div className="md:col-span-7 p-3.5 rounded-lg bg-[#0f0f10] border border-white/[0.08] space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] pb-2">
+                      <span className="font-mono font-medium text-[#ededed]">{selectedFile}</span>
+                      <span className="px-2 py-0.5 rounded bg-[#4cc38a]/10 border border-[#4cc38a]/30 text-[#4cc38a] font-mono text-[11px]">
                         {PACKAGE_FILES[selectedFile].badge}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-400">{PACKAGE_FILES[selectedFile].note}</p>
-                    <pre className="font-mono text-[11px] text-slate-200 overflow-x-auto leading-relaxed pt-1">
+                    <p className="text-xs text-[#85858b]">{PACKAGE_FILES[selectedFile].note}</p>
+                    <pre className="font-mono text-[11px] text-[#ededed] overflow-x-auto leading-relaxed pt-1">
                       {PACKAGE_FILES[selectedFile].lines.join('\n')}
                     </pre>
                   </div>
@@ -424,31 +424,31 @@ export const SolutionWireframesAndArch: React.FC<{ defaultTab?: MockTab }> = ({
               )}
 
               {webScreen === 'reports' && (
-                <div className="space-y-4 text-xs">
+                <div className="space-y-4 text-xs tabular-nums">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400">BASELINE (NOP)</p>
-                      <p className="text-lg font-extrabold font-mono text-rose-400 mt-0.5">0.0 / 1.0</p>
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b]">Baseline (nop)</p>
+                      <p className="text-lg font-medium font-mono text-[#e5484d] mt-0.5">0.0 / 1.0</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400">ORACLE PASS</p>
-                      <p className="text-lg font-extrabold font-mono text-emerald-400 mt-0.5">1.0 / 1.0</p>
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b]">Oracle pass</p>
+                      <p className="text-lg font-medium font-mono text-[#4cc38a] mt-0.5">1.0 / 1.0</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400">MUTANT KILL</p>
-                      <p className="text-lg font-extrabold font-mono text-cyan-300 mt-0.5">100% (10/10)</p>
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b]">Mutant kill</p>
+                      <p className="text-lg font-medium font-mono text-[#ededed] mt-0.5">100% (10/10)</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                      <p className="text-[10px] font-mono text-slate-400">ARTIFACTS</p>
-                      <p className="text-sm font-bold text-amber-300 mt-1 flex items-center gap-1">
-                        <CheckCircle2 className="w-4 h-4" />
-                        JSON + PDF Ready
+                    <div className="p-3 rounded-lg bg-[#19191b] border border-white/[0.08]">
+                      <p className="text-[11px] font-mono text-[#85858b]">Artifacts</p>
+                      <p className="text-sm font-medium text-[#e5a00d] mt-1 flex items-center gap-1">
+                        <CheckCircle2 className="w-4 h-4" strokeWidth={1.5} />
+                        JSON + PDF ready
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1">
-                    <p className="text-cyan-300 font-bold">validation_evidence/validation_report.json</p>
+                  <div className="p-3.5 rounded-lg bg-[#0f0f10] border border-white/[0.08] font-mono text-[11px] text-[#a1a1a6] space-y-1">
+                    <p className="text-[#ededed] font-medium">validation_evidence/validation_report.json</p>
                     <p>• click-feature-command-aliases · Baseline: FAIL (0.0) · Oracle: PASS (1.0) · Mutants: 2/2</p>
                     <p>• click-feature-json-help-export · Baseline: FAIL (0.0) · Oracle: PASS (1.0) · Mutants: 2/2</p>
                     <p>• click-feature-nested-envvar-prefix · Baseline: FAIL (0.0) · Oracle: PASS (1.0) · Mutants: 2/2</p>

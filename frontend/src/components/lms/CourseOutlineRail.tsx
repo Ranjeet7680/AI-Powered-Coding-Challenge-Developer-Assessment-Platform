@@ -9,12 +9,12 @@ import {
   FileText,
   Filter,
   Gift,
+  GraduationCap,
   HelpCircle,
   ListChecks,
   PlayCircle,
   Search,
   ShieldCheck,
-  Sparkles,
   Star,
 } from 'lucide-react';
 import { MLLessonItem, MLModuleInfo, MLQuizResultRecord } from '../../types';
@@ -93,92 +93,92 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
   const milestones: {
     stage: 'quiz-bank' | 'capstone' | 'final-exam' | 'reviews' | 'certificate' | 'goodies' | 'done';
     label: string;
-    icon: React.ComponentType<{ className?: string }>;
+    icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
     done: boolean;
   }[] = [
     {
       stage: 'quiz-bank',
-      label: isDL ? '20+ Practice Quiz Bank' : '100+ Practice Quiz Bank',
+      label: isDL ? '20+ practice quiz bank' : '100+ practice quiz bank',
       icon: ListChecks,
       done: Object.values(quizResults).filter((r) => r.correct).length >= 5,
     },
     {
       stage: 'capstone',
-      label: 'Capstone Project Lab',
+      label: 'Capstone project lab',
       icon: Code2,
       done: capstoneSubmittedCount > 0,
     },
     {
       stage: 'final-exam',
-      label: 'Camera Final Exam',
+      label: 'Camera final exam',
       icon: ShieldCheck,
       done: examPassed,
     },
     {
       stage: 'reviews',
-      label: 'Course Feedback Survey',
+      label: 'Course feedback survey',
       icon: Star,
       done: hasFeedback,
     },
     {
       stage: 'certificate',
-      label: 'Verified Certificate & PDF',
+      label: 'Verified certificate & PDF',
       icon: Award,
       done: certificateEarned,
     },
     {
       stage: 'goodies',
-      label: 'Claim Graduate Goodies',
+      label: 'Claim graduate goodies',
       icon: Gift,
       done: goodiesClaimed,
     },
     {
       stage: 'done',
-      label: 'Graduation Complete',
-      icon: Sparkles,
+      label: 'Graduation summary',
+      icon: GraduationCap,
       done: certificateEarned && goodiesClaimed,
     },
   ];
 
   return (
-    <aside className="rounded-2xl border border-slate-800 bg-[#0A0F1D] overflow-hidden shadow-xl flex flex-col">
+    <aside className="rounded-xl border border-white/[0.08] bg-[#0f0f10] overflow-hidden flex flex-col">
       {/* Rail Header + Filter */}
-      <div className="p-3.5 border-b border-slate-800 space-y-2.5 bg-slate-950/70">
+      <div className="p-3.5 border-b border-white/[0.08] space-y-2.5 bg-[#141415]">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4 text-indigo-400" />
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-200">
-              Course Outline ({lessons.length})
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-[#a1a1a6]" strokeWidth={1.5} />
+            <h3 className="text-xs font-medium text-[#ededed] tabular-nums">
+              Course outline ({lessons.length})
             </h3>
           </div>
           <button
             type="button"
             onClick={() => setIncompleteOnly((prev) => !prev)}
-            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium border transition-colors ${
               incompleteOnly
-                ? 'bg-indigo-600/20 border-indigo-400 text-indigo-300'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#e5a00d]/15 border-[#e5a00d]/40 text-[#e5a00d]'
+                : 'bg-[#19191b] border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
             }`}
           >
-            <Filter className="w-3 h-3" />
+            <Filter className="w-3 h-3" strokeWidth={1.5} />
             {incompleteOnly ? 'Todo' : 'All'}
           </button>
         </div>
 
         <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-[#85858b] absolute left-2.5 top-1/2 -translate-y-1/2" strokeWidth={1.5} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={isDL ? 'Find lecture (GLM, SVM, EM)...' : 'Find lecture (PCA, XGB, GPT)...'}
-            className="w-full pl-8 pr-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-slate-200 placeholder:text-slate-500"
+            className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-[#19191b] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
           />
         </div>
       </div>
 
       {/* Scrollable Modules -> Sequential Video / Notes / Quiz Activities */}
-      <div className="max-h-[460px] lg:max-h-[540px] overflow-y-auto divide-y divide-slate-800/80 custom-scrollbar">
+      <div className="max-h-[460px] lg:max-h-[540px] overflow-y-auto divide-y divide-white/[0.06] custom-scrollbar">
         {modules.map((mod) => {
           const modLessons = filteredLessons.filter((l) => l.module_id === mod.id);
           if (modLessons.length === 0) return null;
@@ -193,7 +193,7 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
             (expandedModules[mod.id] ?? isLessonInMod);
 
           return (
-            <div key={mod.id} className="bg-slate-900/35">
+            <div key={mod.id} className="bg-[#0f0f10]">
               <button
                 type="button"
                 onClick={() =>
@@ -202,28 +202,28 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
                     [mod.id]: !isExpanded,
                   }))
                 }
-                className="w-full px-3.5 py-2.5 flex items-center justify-between gap-2 text-left hover:bg-slate-800/50 transition"
+                className="w-full px-3.5 py-2.5 flex items-center justify-between gap-2 text-left hover:bg-[#19191b] transition-colors"
               >
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
+                  <div className="text-[11px] font-mono text-[#85858b] tabular-nums">
                     Module {mod.order} · {mod.lesson_start}–{mod.lesson_end}
                   </div>
-                  <div className="text-xs font-bold text-slate-200 truncate">{mod.title}</div>
+                  <div className="text-xs font-medium text-[#ededed] truncate">{mod.title}</div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="text-[10px] font-mono text-slate-400">
+                  <span className="text-[11px] font-mono text-[#85858b] tabular-nums">
                     {doneInMod}/{mod.lesson_count}
                   </span>
                   {isExpanded ? (
-                    <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronUp className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
                   ) : (
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronDown className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
                   )}
                 </div>
               </button>
 
               {isExpanded && (
-                <div className="bg-slate-950/60 divide-y divide-slate-800/50">
+                <div className="bg-[#141415] divide-y divide-white/[0.05]">
                   {modLessons.map((lesson) => {
                     const isSelectedLecture =
                       (activeStage === 'watch' || activeStage === 'notes' || activeStage === 'quiz') &&
@@ -235,85 +235,107 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
                     return (
                       <div
                         key={lesson.id}
-                        className={`transition ${
-                          isSelectedLecture ? 'bg-indigo-600/15 border-l-2 border-indigo-400' : ''
+                        className={`transition-colors ${
+                          isSelectedLecture ? 'bg-[#19191b] border-l-2 border-[#e5a00d]' : ''
                         }`}
                       >
                         <button
                           type="button"
                           onClick={() => onSelectLessonActivity(lesson, 'watch')}
-                          className="w-full px-3.5 py-2 flex items-start gap-2 text-left hover:bg-slate-800/40 transition"
+                          className="w-full px-3.5 py-2 flex items-start gap-2 text-left hover:bg-[#19191b] transition-colors"
                         >
                           <div className="pt-0.5 shrink-0">
                             {isWatched && isQuizOk ? (
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#4cc38a]" strokeWidth={1.5} />
                             ) : (
                               <PlayCircle
                                 className={`w-3.5 h-3.5 ${
-                                  isSelectedLecture ? 'text-indigo-300' : 'text-slate-500'
+                                  isSelectedLecture ? 'text-[#e5a00d]' : 'text-[#85858b]'
                                 }`}
+                                strokeWidth={1.5}
                               />
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div
-                              className={`text-[11px] leading-snug line-clamp-2 ${
+                              className={`text-xs leading-snug line-clamp-2 ${
                                 isSelectedLecture
-                                  ? 'font-bold text-white'
-                                  : 'font-medium text-slate-300'
+                                  ? 'font-medium text-[#ededed]'
+                                  : 'text-[#a1a1a6]'
                               }`}
                             >
                               {lesson.order}. {lesson.title}
                             </div>
-                            <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-500">
+                            <div className="flex items-center gap-2 mt-0.5 text-[11px] font-mono text-[#85858b] tabular-nums">
                               <span>{lesson.duration_label}</span>
-                              {hasNote && <span className="text-cyan-400">Notes</span>}
-                              {isQuizOk && <span className="text-emerald-400">Quiz ✓</span>}
+                              {hasNote && <span className="text-[#a1a1a6]">Notes</span>}
+                              {isQuizOk && <span className="text-[#4cc38a]">Quiz passed</span>}
                             </div>
                           </div>
                         </button>
 
-                        {/* Google Cloud Skills Boost style Page Sub-Steps inside active lecture */}
+                        {/* Sub-Steps inside active lecture */}
                         {isSelectedLecture && (
                           <div className="pl-8 pr-3 pb-2 space-y-1">
                             <button
                               type="button"
                               onClick={() => onSelectLessonActivity(lesson, 'watch')}
-                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition ${
+                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                                 activeStage === 'watch'
-                                  ? 'bg-indigo-600 text-white'
-                                  : 'text-slate-300 hover:bg-slate-800/70'
+                                  ? 'bg-[#ededed] text-[#141415]'
+                                  : 'text-[#a1a1a6] hover:bg-[#222225] hover:text-[#ededed]'
                               }`}
                             >
-                              <PlayCircle className="w-3 h-3 shrink-0" />
-                              <span>1. Watch Video</span>
-                              {isWatched && <CheckCircle2 className="w-3 h-3 ml-auto text-emerald-300" />}
+                              <PlayCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+                              <span>1. Watch video</span>
+                              {isWatched && (
+                                <CheckCircle2
+                                  className={`w-3.5 h-3.5 ml-auto ${
+                                    activeStage === 'watch' ? 'text-[#141415]' : 'text-[#4cc38a]'
+                                  }`}
+                                  strokeWidth={1.5}
+                                />
+                              )}
                             </button>
                             <button
                               type="button"
                               onClick={() => onSelectLessonActivity(lesson, 'notes')}
-                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition ${
+                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                                 activeStage === 'notes'
-                                  ? 'bg-cyan-600 text-white'
-                                  : 'text-slate-300 hover:bg-slate-800/70'
+                                  ? 'bg-[#ededed] text-[#141415]'
+                                  : 'text-[#a1a1a6] hover:bg-[#222225] hover:text-[#ededed]'
                               }`}
                             >
-                              <FileText className="w-3 h-3 shrink-0" />
-                              <span>2. Study Notes &amp; Code</span>
-                              {hasNote && <CheckCircle2 className="w-3 h-3 ml-auto text-cyan-300" />}
+                              <FileText className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+                              <span>2. Study notes &amp; code</span>
+                              {hasNote && (
+                                <CheckCircle2
+                                  className={`w-3.5 h-3.5 ml-auto ${
+                                    activeStage === 'notes' ? 'text-[#141415]' : 'text-[#4cc38a]'
+                                  }`}
+                                  strokeWidth={1.5}
+                                />
+                              )}
                             </button>
                             <button
                               type="button"
                               onClick={() => onSelectLessonActivity(lesson, 'quiz')}
-                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition ${
+                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                                 activeStage === 'quiz'
-                                  ? 'bg-emerald-600 text-white'
-                                  : 'text-slate-300 hover:bg-slate-800/70'
+                                  ? 'bg-[#ededed] text-[#141415]'
+                                  : 'text-[#a1a1a6] hover:bg-[#222225] hover:text-[#ededed]'
                               }`}
                             >
-                              <HelpCircle className="w-3 h-3 shrink-0" />
-                              <span>3. Solve Quiz #{lesson.order}</span>
-                              {isQuizOk && <CheckCircle2 className="w-3 h-3 ml-auto text-emerald-300" />}
+                              <HelpCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+                              <span>3. Solve quiz #{lesson.order}</span>
+                              {isQuizOk && (
+                                <CheckCircle2
+                                  className={`w-3.5 h-3.5 ml-auto ${
+                                    activeStage === 'quiz' ? 'text-[#141415]' : 'text-[#4cc38a]'
+                                  }`}
+                                  strokeWidth={1.5}
+                                />
+                              )}
                             </button>
                           </div>
                         )}
@@ -328,9 +350,9 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
       </div>
 
       {/* Course Graduation & Certification Milestones */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/80 space-y-1">
-        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300 px-1.5 pb-1">
-          Certification Milestones
+      <div className="p-3 border-t border-white/[0.08] bg-[#141415] space-y-1">
+        <div className="text-xs font-medium text-[#85858b] px-2 pb-1">
+          Certification milestones
         </div>
         {milestones.map((m) => {
           const Icon = m.icon;
@@ -340,15 +362,18 @@ export const CourseOutlineRail: React.FC<CourseOutlineRailProps> = ({
               key={m.stage}
               type="button"
               onClick={() => onSelectMilestoneStage(m.stage)}
-              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition ${
+              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 isCurrent
-                  ? 'bg-indigo-600 text-white shadow'
-                  : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                  ? 'bg-[#222225] text-[#ededed] border border-white/[0.12]'
+                  : 'text-[#a1a1a6] hover:bg-[#19191b] hover:text-[#ededed] border border-transparent'
               }`}
             >
-              <Icon className="w-3.5 h-3.5 shrink-0" />
+              <Icon
+                className={`w-3.5 h-3.5 shrink-0 ${isCurrent ? 'text-[#e5a00d]' : 'text-[#85858b]'}`}
+                strokeWidth={1.5}
+              />
               <span className="truncate">{m.label}</span>
-              {m.done && <CheckCircle2 className="w-3.5 h-3.5 ml-auto text-emerald-400 shrink-0" />}
+              {m.done && <CheckCircle2 className="w-3.5 h-3.5 ml-auto text-[#4cc38a] shrink-0" strokeWidth={1.5} />}
             </button>
           );
         })}

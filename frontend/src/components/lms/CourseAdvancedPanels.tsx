@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
+  ArrowRight,
   Award,
   CheckCircle2,
   ChevronRight,
+  CircleDot,
   Clock,
   Code2,
   GitBranch,
@@ -10,7 +12,6 @@ import {
   Lock,
   PlayCircle,
   Send,
-  Sparkles,
   Star,
   ThumbsUp,
   Unlock,
@@ -27,7 +28,7 @@ import {
 } from '../../types';
 
 /* ============================================================================
- * 1. ADVANCED COURSE SYLlABUS & PREREQUISITE ROADMAP PANEL
+ * 1. ADVANCED COURSE SYLLABUS & PREREQUISITE ROADMAP PANEL
  * ==========================================================================*/
 interface SyllabusRoadmapProps {
   modules: MLModuleInfo[];
@@ -54,11 +55,31 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
   const quizzesDone = Object.values(quizResults).filter((r) => r.correct).length;
 
   const milestones = [
-    { label: 'In-LMS Video Stream', status: totalCompleted > 0 ? 'Active' : 'Start Now', ok: totalCompleted > 0 },
-    { label: 'Study Notes & Math', status: `${totalCompleted}/${lessons.length} Topics`, ok: totalCompleted > 0 },
-    { label: 'After-Video Quizzes', status: `${quizzesDone}/${lessons.length} Passed`, ok: quizzesDone > 0 },
-    { label: 'Capstone Project', status: capstoneCount > 0 ? `${capstoneCount} Submitted` : 'Required Stage', ok: capstoneCount > 0 },
-    { label: 'Proctored Exam & PDF', status: examPassed ? 'Certified ✓' : '70% Pass Target', ok: examPassed },
+    {
+      label: 'In-LMS video stream',
+      status: totalCompleted > 0 ? 'Active' : 'Start now',
+      ok: totalCompleted > 0,
+    },
+    {
+      label: 'Study notes & math',
+      status: `${totalCompleted}/${lessons.length} topics`,
+      ok: totalCompleted > 0,
+    },
+    {
+      label: 'After-video quizzes',
+      status: `${quizzesDone}/${lessons.length} passed`,
+      ok: quizzesDone > 0,
+    },
+    {
+      label: 'Capstone project',
+      status: capstoneCount > 0 ? `${capstoneCount} submitted` : 'Required stage',
+      ok: capstoneCount > 0,
+    },
+    {
+      label: 'Proctored exam & PDF',
+      status: examPassed ? 'Certified' : '70% pass target',
+      ok: examPassed,
+    },
   ];
 
   const isModuleCompleted = (modId: string) => {
@@ -69,30 +90,32 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
   return (
     <div className="space-y-6">
       {/* 5-Stage Mastery Pipeline */}
-      <div className="rounded-3xl border border-indigo-500/25 bg-slate-900/80 p-5 sm:p-6 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
-              Structured Mastery Blueprint
+            <span className="text-xs font-medium text-[#e5a00d]">
+              Structured mastery blueprint
             </span>
-            <h2 className="text-xl font-extrabold text-white mt-0.5">
-              5-Stage End-to-End Learning Architecture
+            <h2 className="text-lg sm:text-xl font-semibold text-[#ededed] mt-0.5 tracking-tight">
+              5-stage end-to-end learning architecture
             </h2>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => onJumpToTab('capstone')}
-              className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
             >
-              Open Capstone Lab →
+              Open capstone lab
+              <ArrowRight className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
             </button>
             <button
               type="button"
               onClick={() => onJumpToTab('final-exam')}
-              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
             >
-              Final Proctored Exam →
+              Final proctored exam
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -101,22 +124,22 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
           {milestones.map((m, idx) => (
             <div
               key={m.label}
-              className={`rounded-2xl border p-3.5 transition ${
+              className={`rounded-xl border p-3.5 transition-colors ${
                 m.ok
-                  ? 'border-emerald-500/40 bg-emerald-950/20'
-                  : 'border-slate-800 bg-slate-950/70'
+                  ? 'border-[#4cc38a]/30 bg-[#4cc38a]/[0.05]'
+                  : 'border-white/[0.08] bg-[#141415]'
               }`}
             >
-              <div className="flex items-center justify-between text-[11px] mb-1">
-                <span className="font-mono text-slate-400">STEP 0{idx + 1}</span>
+              <div className="flex items-center justify-between text-[11px] mb-1.5 tabular-nums">
+                <span className="font-mono text-[#85858b]">Step 0{idx + 1}</span>
                 {m.ok ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-[#4cc38a]" strokeWidth={1.5} />
                 ) : (
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                  <CircleDot className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
                 )}
               </div>
-              <div className="text-xs font-bold text-white">{m.label}</div>
-              <div className="text-[11px] text-cyan-300 font-semibold mt-0.5">{m.status}</div>
+              <div className="text-xs font-medium text-[#ededed]">{m.label}</div>
+              <div className="text-xs text-[#a1a1a6] mt-0.5 tabular-nums font-mono">{m.status}</div>
             </div>
           ))}
         </div>
@@ -136,48 +159,48 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
           return (
             <div
               key={mod.id}
-              className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col justify-between gap-4 hover:border-indigo-500/40 transition"
+              className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 flex flex-col justify-between gap-4 hover:border-white/[0.16] transition-colors"
             >
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold">
-                    <Layers className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#222225] border border-white/[0.08] text-[#ededed] text-xs font-medium tabular-nums">
+                    <Layers className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
                     Module {mod.order} · Lectures {mod.lesson_start}–{mod.lesson_end}
                   </span>
-                  <div className="flex items-center gap-2 text-[11px]">
-                    <span className="inline-flex items-center gap-1 text-slate-400">
-                      <Clock className="w-3 h-3 text-cyan-400" />~{mod.estimated_hours || 2}h
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="inline-flex items-center gap-1 text-[#85858b] font-mono tabular-nums">
+                      <Clock className="w-3 h-3" strokeWidth={1.5} />~{mod.estimated_hours || 2}h
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-bold border ${
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium border ${
                         prereqs.length === 0 || prereqsMet
-                          ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
-                          : 'bg-amber-500/15 border-amber-500/30 text-amber-300'
+                          ? 'bg-[#4cc38a]/10 border-[#4cc38a]/30 text-[#4cc38a]'
+                          : 'bg-[#e5a00d]/10 border-[#e5a00d]/30 text-[#e5a00d]'
                       }`}
                     >
                       {prereqs.length === 0 || prereqsMet ? (
                         <>
-                          <Unlock className="w-3 h-3" /> Ready
+                          <Unlock className="w-3 h-3" strokeWidth={1.5} /> Ready
                         </>
                       ) : (
                         <>
-                          <Lock className="w-3 h-3" /> Prereq M{mod.order - 1}
+                          <Lock className="w-3 h-3" strokeWidth={1.5} /> Prereq M{mod.order - 1}
                         </>
                       )}
                     </span>
                   </div>
                 </div>
 
-                <h3 className="text-base font-extrabold text-white leading-snug">{mod.title}</h3>
+                <h3 className="text-base font-medium text-[#ededed] leading-snug">{mod.title}</h3>
                 {mod.description && (
-                  <p className="text-xs text-slate-300 leading-relaxed">{mod.description}</p>
+                  <p className="text-xs text-[#a1a1a6] leading-relaxed">{mod.description}</p>
                 )}
 
                 {mod.learning_objectives && mod.learning_objectives.length > 0 && (
-                  <ul className="space-y-1.5 text-xs text-slate-400">
+                  <ul className="space-y-1.5 text-xs text-[#a1a1a6]">
                     {mod.learning_objectives.map((obj) => (
                       <li key={obj} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#4cc38a] shrink-0 mt-0.5" strokeWidth={1.5} />
                         <span>{obj}</span>
                       </li>
                     ))}
@@ -189,7 +212,7 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
                     {mod.key_topics.map((topic) => (
                       <span
                         key={topic}
-                        className="px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-[10px] font-mono text-slate-300"
+                        className="px-2 py-0.5 rounded bg-[#141415] border border-white/[0.08] text-[11px] font-mono text-[#a1a1a6]"
                       >
                         {topic}
                       </span>
@@ -198,16 +221,18 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
                 )}
               </div>
 
-              <div className="pt-3 border-t border-slate-800/80 space-y-2.5">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-400">
-                    Module Progress ({doneInMod}/{modLessons.length})
+              <div className="pt-3 border-t border-white/[0.06] space-y-2.5">
+                <div className="flex items-center justify-between text-xs tabular-nums">
+                  <span className="text-[#85858b]">
+                    Progress ({doneInMod}/{modLessons.length})
                   </span>
-                  <span className="font-bold text-emerald-400">{pct}%</span>
+                  <span className="font-mono font-medium text-[#ededed]">{pct}%</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-slate-950 overflow-hidden">
+                <div className="h-1.5 rounded-full bg-[#141415] overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all"
+                    className={`h-full transition-all ${
+                      pct === 100 ? 'bg-[#4cc38a]' : 'bg-[#e5a00d]'
+                    }`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -215,15 +240,15 @@ export const CourseSyllabusRoadmapPanel: React.FC<SyllabusRoadmapProps> = ({
                   <button
                     type="button"
                     onClick={() => onJumpToLesson(targetLesson)}
-                    className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-indigo-600 text-xs font-bold text-white transition"
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#ededed] text-[#ededed] hover:text-[#141415] border border-white/[0.08] text-xs font-medium transition-colors"
                   >
-                    <PlayCircle className="w-3.5 h-3.5" />
+                    <PlayCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
                     {doneInMod > 0 && doneInMod < modLessons.length
-                      ? `Resume Lecture #${targetLesson.order}`
+                      ? `Resume lecture #${targetLesson.order}`
                       : doneInMod === modLessons.length
-                      ? `Review Module #${mod.order}`
-                      : `Start Module #${mod.order}`}
-                    <ChevronRight className="w-3.5 h-3.5" />
+                      ? `Review module #${mod.order}`
+                      : `Start module #${mod.order}`}
+                    <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </button>
                 )}
               </div>
@@ -284,7 +309,7 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
 
   if (!activeProject) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-8 text-center text-sm text-slate-400">
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-8 text-center text-sm text-[#85858b]">
         No capstone assignments configured for this track.
       </div>
     );
@@ -297,18 +322,18 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
   return (
     <div className="space-y-6">
       {/* Project Brief Picker Cards */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4">
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">
-              Hands-On Applied Engineering Assignments
+            <span className="text-xs font-medium text-[#e5a00d]">
+              Applied engineering assignments
             </span>
-            <h2 className="text-xl font-extrabold text-white">
-              {courseTitle} — Capstone Projects
+            <h2 className="text-lg font-semibold text-[#ededed] tracking-tight">
+              {courseTitle} &mdash; Capstone projects
             </h2>
           </div>
-          <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-            {approvedIds.size}/{projects.length} Approved (+120 XP each)
+          <span className="px-3 py-1 rounded-md bg-[#4cc38a]/10 border border-[#4cc38a]/30 text-[#4cc38a] text-xs font-medium tabular-nums">
+            {approvedIds.size}/{projects.length} approved (+120 XP each)
           </span>
         </div>
 
@@ -321,24 +346,24 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
                 key={proj.id}
                 type="button"
                 onClick={() => handleSelectProject(proj)}
-                className={`text-left p-4 rounded-2xl border transition space-y-2 ${
+                className={`text-left p-4 rounded-xl border transition-colors space-y-2 ${
                   isSelected
-                    ? 'bg-indigo-600/20 border-indigo-400 shadow-lg shadow-indigo-500/15'
-                    : 'bg-slate-950/70 border-slate-800 hover:border-slate-600'
+                    ? 'bg-[#222225] border-[#e5a00d]/60'
+                    : 'bg-[#141415] border-white/[0.08] hover:border-white/[0.16]'
                 }`}
               >
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="font-mono font-bold text-indigo-300">PROJECT 0{idx + 1}</span>
+                <div className="flex items-center justify-between text-[11px] tabular-nums">
+                  <span className="font-mono text-[#85858b]">Project 0{idx + 1}</span>
                   {isApproved ? (
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+                    <span className="text-[#4cc38a] font-medium flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={1.5} /> Approved
                     </span>
                   ) : (
-                    <span className="text-amber-300 font-semibold">{proj.difficulty}</span>
+                    <span className="text-[#e5a00d] font-medium">{proj.difficulty}</span>
                   )}
                 </div>
-                <div className="text-xs font-bold text-white line-clamp-2">{proj.title}</div>
-                <div className="text-[11px] text-slate-400">~{proj.estimated_hours} hrs</div>
+                <div className="text-xs font-medium text-[#ededed] line-clamp-2">{proj.title}</div>
+                <div className="text-xs text-[#85858b] font-mono tabular-nums">~{proj.estimated_hours} hrs</div>
               </button>
             );
           })}
@@ -348,41 +373,41 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
       {/* Active Brief + Submission Form Split */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left: Brief, Deliverables & Rubric */}
-        <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-5">
+        <div className="lg:col-span-5 rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-5">
           <div>
-            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-[11px] font-bold">
-              {activeProject.difficulty} · {activeProject.estimated_hours} Hours
+            <span className="px-2.5 py-0.5 rounded-md bg-[#222225] border border-white/[0.08] text-[#e5a00d] text-xs font-medium tabular-nums">
+              {activeProject.difficulty} · {activeProject.estimated_hours} hours
             </span>
-            <h3 className="text-lg font-extrabold text-white mt-2">{activeProject.title}</h3>
-            <p className="text-xs text-slate-300 leading-relaxed mt-2">{activeProject.summary}</p>
+            <h3 className="text-base font-semibold text-[#ededed] mt-2">{activeProject.title}</h3>
+            <p className="text-xs text-[#a1a1a6] leading-relaxed mt-2">{activeProject.summary}</p>
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Required Deliverables
+            <h4 className="text-xs font-medium text-[#85858b]">
+              Required deliverables
             </h4>
-            <ul className="space-y-2 text-xs text-slate-200">
+            <ul className="space-y-2 text-xs text-[#ededed]">
               {activeProject.deliverables.map((del) => (
                 <li key={del} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{del}</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#4cc38a] shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="text-[#a1a1a6]">{del}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="space-y-2 pt-3 border-t border-slate-800">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Grading Rubric (100 Points)
+          <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+            <h4 className="text-xs font-medium text-[#85858b]">
+              Grading rubric (100 points)
             </h4>
             <div className="space-y-2">
               {activeProject.rubric.map((r) => (
                 <div
                   key={r.criterion}
-                  className="flex items-center justify-between text-xs px-3 py-2 rounded-xl bg-slate-950 border border-slate-800"
+                  className="flex items-center justify-between text-xs px-3 py-2 rounded-lg bg-[#141415] border border-white/[0.08] tabular-nums"
                 >
-                  <span className="text-slate-300">{r.criterion}</span>
-                  <span className="font-mono font-bold text-cyan-300">{r.max_points} pts</span>
+                  <span className="text-[#a1a1a6]">{r.criterion}</span>
+                  <span className="font-mono font-medium text-[#ededed]">{r.max_points} pts</span>
                 </div>
               ))}
             </div>
@@ -393,55 +418,55 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
         <div className="lg:col-span-7 space-y-5">
           <form
             onSubmit={handleFormSubmit}
-            className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4"
+            className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4"
           >
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-cyan-400" />
-                Submit Capstone Artifact &amp; Write-Up
+              <h4 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
+                Submit capstone artifact
               </h4>
               <button
                 type="button"
                 onClick={() => setCodeSubmission(activeProject.starter_template)}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition"
+                className="px-2.5 py-1 rounded-md bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
               >
-                Reset Starter Template
+                Reset template
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                  GitHub Repository URL (optional)
+                <label className="block text-xs font-medium text-[#85858b] mb-1">
+                  GitHub repository URL (optional)
                 </label>
                 <div className="relative">
-                  <GitBranch className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <GitBranch className="w-3.5 h-3.5 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" strokeWidth={1.5} />
                   <input
                     type="url"
                     value={repoUrl}
                     onChange={(e) => setRepoUrl(e.target.value)}
                     placeholder="https://github.com/username/capstone"
-                    className="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-slate-200"
+                    className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                  Live Notebook / Demo Link (optional)
+                <label className="block text-xs font-medium text-[#85858b] mb-1">
+                  Live notebook / demo link (optional)
                 </label>
                 <input
                   type="url"
                   value={demoUrl}
                   onChange={(e) => setDemoUrl(e.target.value)}
                   placeholder="https://colab.research.google.com/..."
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-slate-200"
+                  className="w-full px-3 py-2 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                Architecture Notes, Trade-Offs &amp; Validation Metrics (min 20 chars)
+              <label className="block text-xs font-medium text-[#85858b] mb-1">
+                Architecture notes, trade-offs &amp; validation metrics (min 20 chars)
               </label>
               <textarea
                 required
@@ -450,63 +475,63 @@ export const CapstoneWorkspacePanel: React.FC<CapstoneWorkspaceProps> = ({
                 value={architectureNotes}
                 onChange={(e) => setArchitectureNotes(e.target.value)}
                 placeholder="Document your mathematical formulation, feature scaling/regularization decisions, error analysis observations, and held-out metrics..."
-                className="w-full rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none p-3 text-xs text-slate-200 leading-relaxed"
+                className="w-full rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none p-3 text-xs text-[#ededed] placeholder:text-[#85858b] leading-relaxed"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                Python Implementation Code
+              <label className="block text-xs font-medium text-[#85858b] mb-1">
+                Python implementation code
               </label>
               <textarea
                 rows={8}
                 value={codeSubmission}
                 onChange={(e) => setCodeSubmission(e.target.value)}
-                className="w-full rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:outline-none p-3 text-xs font-mono text-cyan-200 leading-relaxed"
+                className="w-full rounded-lg bg-[#0f0f10] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none p-3 text-xs font-mono text-[#ededed] leading-relaxed"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-indigo-500/20"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
             >
-              <Send className="w-3.5 h-3.5" />
-              {isSubmitting ? 'Evaluating Rubric...' : 'Submit Capstone Assignment (+120 XP)'}
+              <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
+              {isSubmitting ? 'Evaluating rubric...' : 'Submit capstone assignment (+120 XP)'}
             </button>
           </form>
 
           {/* Submission Evaluation History */}
           {submissions.length > 0 && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4">
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <Award className="w-4 h-4 text-emerald-400" />
-                Graded Capstone Submissions ({submissions.length})
+            <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4">
+              <h4 className="text-sm font-medium text-[#ededed] flex items-center gap-2 tabular-nums">
+                <Award className="w-4 h-4 text-[#4cc38a]" strokeWidth={1.5} />
+                Graded capstone submissions ({submissions.length})
               </h4>
               <div className="space-y-3">
                 {submissions.map((sub) => (
                   <div
                     key={sub.id}
-                    className="rounded-2xl border border-slate-800 bg-slate-950/75 p-4 space-y-2.5"
+                    className="rounded-xl border border-white/[0.08] bg-[#141415] p-4 space-y-2.5"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="text-xs font-bold text-white">{sub.title}</div>
+                      <div className="text-xs font-medium text-[#ededed]">{sub.title}</div>
                       <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                        className={`px-2.5 py-0.5 rounded-md text-xs font-medium border tabular-nums ${
                           sub.status === 'Approved'
-                            ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-300'
-                            : 'bg-amber-500/15 border-amber-500/35 text-amber-300'
+                            ? 'bg-[#4cc38a]/10 border-[#4cc38a]/30 text-[#4cc38a]'
+                            : 'bg-[#e5a00d]/10 border-[#e5a00d]/30 text-[#e5a00d]'
                         }`}
                       >
                         {sub.status} · {sub.overall_score}%
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 leading-relaxed">{sub.ai_feedback}</p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <p className="text-xs text-[#a1a1a6] leading-relaxed">{sub.ai_feedback}</p>
+                    <div className="flex flex-wrap gap-1.5 tabular-nums">
                       {Object.entries(sub.rubric_scores).map(([crit, pts]) => (
                         <span
                           key={crit}
-                          className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[10px] font-mono text-cyan-300"
+                          className="px-2 py-0.5 rounded bg-[#19191b] border border-white/[0.08] text-[11px] font-mono text-[#a1a1a6]"
                         >
                           {crit}: {pts} pts
                         </span>
@@ -577,36 +602,39 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       {/* Left: Rating Summary + Structured Feedback Survey Form */}
       <div className="lg:col-span-5 space-y-5">
-        <div className="rounded-2xl border border-amber-500/25 bg-slate-900/80 p-5 space-y-4">
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-amber-300">
-                Course Feedback &amp; Verified Ratings
+              <div className="text-xs font-medium text-[#e5a00d]">
+                Course feedback &amp; verified ratings
               </div>
-              <div className="text-4xl font-black text-white mt-1 flex items-center gap-2">
+              <div className="text-3xl font-semibold text-[#ededed] mt-1 flex items-center gap-2 tabular-nums">
                 {avg}
-                <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
+                <Star className="w-6 h-6 text-[#e5a00d] fill-[#e5a00d]" strokeWidth={1.5} />
               </div>
-              <div className="text-xs text-slate-400 mt-1">
+              <div className="text-xs text-[#85858b] mt-1 tabular-nums">
                 Based on {total} learner feedback submissions for {courseTitle}
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-2">
+          <div className="space-y-1.5 pt-2 tabular-nums">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = reviewsData?.rating_breakdown?.[String(star)] || 0;
               const pct = total > 0 ? Math.round((count / total) * 100) : 0;
               return (
                 <div key={star} className="flex items-center gap-2.5 text-xs">
-                  <span className="w-8 font-mono text-slate-300">{star}★</span>
-                  <div className="flex-1 h-2 rounded-full bg-slate-950 overflow-hidden">
+                  <span className="w-9 inline-flex items-center gap-1 font-mono text-[#a1a1a6]">
+                    {star}
+                    <Star className="w-3 h-3 text-[#e5a00d] fill-[#e5a00d]" strokeWidth={1.5} />
+                  </span>
+                  <div className="flex-1 h-1.5 rounded-full bg-[#141415] overflow-hidden">
                     <div
-                      className="h-full bg-amber-400 rounded-full transition-all"
+                      className="h-full bg-[#e5a00d] rounded-full transition-all"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-10 text-right font-mono text-slate-400">{pct}%</span>
+                  <span className="w-10 text-right font-mono text-[#85858b]">{pct}%</span>
                 </div>
               );
             })}
@@ -615,23 +643,24 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-4"
+          className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">Submit Course Feedback &amp; Review</h3>
+            <h3 className="text-sm font-medium text-[#ededed]">Submit course feedback</h3>
             {submittedJustNow && onProceedToCertificate && (
               <button
                 type="button"
                 onClick={onProceedToCertificate}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
+                className="inline-flex items-center gap-1 text-xs font-medium text-[#4cc38a] hover:underline"
               >
-                Next: Certificate →
+                Next: Certificate
+                <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </button>
             )}
           </div>
 
-          <div className="space-y-1">
-            <span className="text-[11px] font-semibold text-slate-400">Overall Rating</span>
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-[#85858b]">Overall rating</span>
             <div className="flex items-center gap-1.5">
               {[1, 2, 3, 4, 5].map((starVal) => (
                 <button
@@ -639,30 +668,31 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
                   type="button"
                   onClick={() => setRating(starVal)}
                   aria-label={`Rate ${starVal} stars`}
-                  className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400/50 transition"
+                  className="p-1.5 rounded-lg bg-[#141415] border border-white/[0.08] hover:border-[#e5a00d]/50 transition-colors"
                 >
                   <Star
-                    className={`w-5 h-5 ${
-                      starVal <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'
+                    className={`w-4 h-4 ${
+                      starVal <= rating ? 'text-[#e5a00d] fill-[#e5a00d]' : 'text-[#85858b]'
                     }`}
+                    strokeWidth={1.5}
                   />
                 </button>
               ))}
-              <span className="ml-2 text-xs font-bold text-amber-300">{rating}.0 / 5.0</span>
+              <span className="ml-2 text-xs font-mono text-[#ededed] tabular-nums">{rating}.0 / 5.0</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 text-[11px]">
-            <div className="rounded-xl bg-slate-950/75 border border-slate-800 p-2.5 space-y-1.5">
-              <div className="text-slate-400 font-semibold">Lecture Clarity ({contentRating}/5)</div>
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="rounded-lg bg-[#141415] border border-white/[0.08] p-2.5 space-y-1.5">
+              <div className="text-[#85858b] font-medium tabular-nums">Lecture clarity ({contentRating}/5)</div>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((v) => (
                   <button
                     key={v}
                     type="button"
                     onClick={() => setContentRating(v)}
-                    className={`flex-1 py-1 rounded text-[10px] font-bold ${
-                      v <= contentRating ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400'
+                    className={`flex-1 py-1 rounded text-[11px] font-mono font-medium transition-colors ${
+                      v <= contentRating ? 'bg-[#ededed] text-[#141415]' : 'bg-[#222225] text-[#85858b]'
                     }`}
                   >
                     {v}
@@ -670,16 +700,16 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
                 ))}
               </div>
             </div>
-            <div className="rounded-xl bg-slate-950/75 border border-slate-800 p-2.5 space-y-1.5">
-              <div className="text-slate-400 font-semibold">Quizzes &amp; Exam ({quizRating}/5)</div>
+            <div className="rounded-lg bg-[#141415] border border-white/[0.08] p-2.5 space-y-1.5">
+              <div className="text-[#85858b] font-medium tabular-nums">Quizzes &amp; exam ({quizRating}/5)</div>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((v) => (
                   <button
                     key={v}
                     type="button"
                     onClick={() => setQuizRating(v)}
-                    className={`flex-1 py-1 rounded text-[10px] font-bold ${
-                      v <= quizRating ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400'
+                    className={`flex-1 py-1 rounded text-[11px] font-mono font-medium transition-colors ${
+                      v <= quizRating ? 'bg-[#ededed] text-[#141415]' : 'bg-[#222225] text-[#85858b]'
                     }`}
                   >
                     {v}
@@ -689,10 +719,10 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
             </div>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex justify-between text-[11px]">
-              <span className="text-slate-400 font-semibold">Recommend Score (NPS)</span>
-              <span className="font-mono font-bold text-emerald-300">{npsScore}/10</span>
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs tabular-nums">
+              <span className="text-[#85858b] font-medium">Recommend score (NPS)</span>
+              <span className="font-mono font-medium text-[#4cc38a]">{npsScore}/10</span>
             </div>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val) => (
@@ -700,10 +730,10 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
                   key={val}
                   type="button"
                   onClick={() => setNpsScore(val)}
-                  className={`flex-1 py-1 rounded text-[10px] font-mono font-bold ${
+                  className={`flex-1 py-1 rounded text-[11px] font-mono font-medium transition-colors ${
                     val <= npsScore
-                      ? 'bg-emerald-600/80 text-white'
-                      : 'bg-slate-950 border border-slate-800 text-slate-500'
+                      ? 'bg-[#e5a00d] text-[#141415]'
+                      : 'bg-[#141415] border border-white/[0.08] text-[#85858b]'
                   }`}
                 >
                   {val}
@@ -717,8 +747,8 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
             required
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
-            placeholder="Feedback headline (e.g. Crystal clear derivations & capstones)"
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-400 focus:outline-none text-xs text-white"
+            placeholder="Feedback headline (e.g. Clear derivations and capstones)"
+            className="w-full px-3.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
           />
 
           <textarea
@@ -726,34 +756,34 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
             rows={3}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience across lectures, after-video quizzes, capstone & camera exam..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-400 focus:outline-none text-xs text-slate-200 leading-relaxed"
+            placeholder="Share your experience across lectures, after-video quizzes, capstone, and proctored exam..."
+            className="w-full px-3.5 py-2.5 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b] leading-relaxed"
           />
 
           <input
             type="text"
             value={improvementSuggestion}
             onChange={(e) => setImprovementSuggestion(e.target.value)}
-            placeholder="What could make future cohorts even better? (optional)"
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-400 focus:outline-none text-xs text-slate-300"
+            placeholder="What could improve future cohorts? (optional)"
+            className="w-full px-3.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]"
           />
 
           <div className="flex flex-col sm:flex-row gap-2">
             <button
               type="submit"
               disabled={isSubmittingReview}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 text-xs font-extrabold transition"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
             >
-              <Send className="w-3.5 h-3.5" />
-              {isSubmittingReview ? 'Submitting Feedback...' : 'Submit Feedback (+20 XP)'}
+              <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
+              {isSubmittingReview ? 'Submitting feedback...' : 'Submit feedback (+20 XP)'}
             </button>
             {onProceedToCertificate && (
               <button
                 type="button"
                 onClick={onProceedToCertificate}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
               >
-                Next: Certificate <ChevronRight className="w-4 h-4" />
+                Certificate <ChevronRight className="w-4 h-4 text-[#85858b]" strokeWidth={1.5} />
               </button>
             )}
           </div>
@@ -765,29 +795,29 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
         {(reviewsData?.reviews || []).map((rev) => (
           <div
             key={rev.id}
-            className={`rounded-2xl border p-5 space-y-3 ${
+            className={`rounded-xl border p-5 space-y-3 ${
               rev.is_own_review
-                ? 'border-amber-500/40 bg-amber-950/15'
-                : 'border-slate-800 bg-slate-900/75'
+                ? 'border-[#e5a00d]/45 bg-[#222225]'
+                : 'border-white/[0.08] bg-[#19191b]'
             }`}
           >
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-bold text-white">{rev.author_name}</span>
-                  <span className="text-[11px] text-slate-400">{rev.author_role}</span>
+                  <span className="text-sm font-medium text-[#ededed]">{rev.author_name}</span>
+                  <span className="text-xs text-[#85858b]">{rev.author_role}</span>
                   {rev.verified_learner && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold">
-                      <CheckCircle2 className="w-3 h-3" /> Verified Learner
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#4cc38a]/10 border border-[#4cc38a]/30 text-[#4cc38a] text-[11px] font-medium">
+                      <CheckCircle2 className="w-3 h-3" strokeWidth={1.5} /> Verified learner
                     </span>
                   )}
                   {rev.is_own_review && (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">
-                      Your Feedback
+                    <span className="px-2 py-0.5 rounded-md bg-[#e5a00d]/15 border border-[#e5a00d]/35 text-[#e5a00d] text-[11px] font-medium">
+                      Your feedback
                     </span>
                   )}
                 </div>
-                <h4 className="text-sm font-bold text-slate-100 mt-1">{rev.headline}</h4>
+                <h4 className="text-sm font-medium text-[#ededed] mt-1">{rev.headline}</h4>
               </div>
 
               <div className="flex items-center gap-0.5">
@@ -795,39 +825,40 @@ export const CourseReviewsPanel: React.FC<CourseReviewsPanelProps> = ({
                   <Star
                     key={s}
                     className={`w-3.5 h-3.5 ${
-                      s <= rev.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'
+                      s <= rev.rating ? 'text-[#e5a00d] fill-[#e5a00d]' : 'text-[#2a2a2e]'
                     }`}
+                    strokeWidth={1.5}
                   />
                 ))}
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">{rev.comment}</p>
+            <p className="text-xs text-[#a1a1a6] leading-relaxed">{rev.comment}</p>
 
             {(rev.content_rating || rev.quiz_rating) && (
-              <div className="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400">
+              <div className="flex flex-wrap gap-2 text-[11px] font-mono text-[#85858b] tabular-nums">
                 <span>Clarity: {rev.content_rating ?? 5}/5</span>
-                <span>•</span>
+                <span>·</span>
                 <span>Quizzes: {rev.quiz_rating ?? 5}/5</span>
-                <span>•</span>
+                <span>·</span>
                 <span>NPS: {rev.nps_score ?? 10}/10</span>
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800/70 text-[11px]">
-              <span className="text-slate-500 font-mono">
+            <div className="flex items-center justify-between pt-2.5 border-t border-white/[0.06] text-xs">
+              <span className="text-[#85858b] font-mono tabular-nums">
                 {rev.created_at.slice(0, 10)}
               </span>
               <button
                 type="button"
                 onClick={() => onToggleHelpful(rev.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-medium transition-colors tabular-nums ${
                   rev.viewer_has_voted
-                    ? 'bg-indigo-600/25 border-indigo-400 text-indigo-200'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-[#e5a00d]/15 border-[#e5a00d]/45 text-[#e5a00d]'
+                    : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                 }`}
               >
-                <ThumbsUp className="w-3.5 h-3.5" />
+                <ThumbsUp className="w-3.5 h-3.5" strokeWidth={1.5} />
                 Helpful ({rev.helpful_count})
               </button>
             </div>

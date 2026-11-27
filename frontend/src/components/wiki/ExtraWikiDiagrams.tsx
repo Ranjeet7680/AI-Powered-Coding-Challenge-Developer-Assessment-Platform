@@ -8,14 +8,14 @@ interface ExtraWikiDiagramProps {
 export const ExtraWikiDiagram: React.FC<ExtraWikiDiagramProps> = ({ variant }) => {
   if (variant === 'deployment') {
     return (
-      <div className="rounded-2xl border border-cyan-500/30 bg-[#070B16] overflow-hidden shadow-xl">
-        <div className="px-4 py-3.5 sm:px-6 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between gap-3">
+      <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+        <div className="px-4 py-3.5 sm:px-6 border-b border-white/[0.08] bg-[#0f0f10] flex items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
-              <Cloud className="w-3.5 h-3.5" />
-              Multi-Environment Deployment, C++20 JsonCpp &amp; CI/CD Architecture
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+              <Cloud className="w-3.5 h-3.5" strokeWidth={1.5} />
+              Multi-environment deployment, C++20 JsonCpp &amp; CI/CD architecture
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#85858b]">
               Unified delivery across Local/Docker (Python + Node + C++20 JsonCpp), GitHub Actions CI + Wiki Sync, and Vercel Production.
             </p>
           </div>
@@ -88,14 +88,14 @@ export const ExtraWikiDiagram: React.FC<ExtraWikiDiagramProps> = ({ variant }) =
   }
 
   return (
-    <div className="rounded-2xl border border-amber-500/30 bg-[#070B16] overflow-hidden shadow-xl">
-      <div className="px-4 py-3.5 sm:px-6 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between gap-3">
+    <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+      <div className="px-4 py-3.5 sm:px-6 border-b border-white/[0.08] bg-[#0f0f10] flex items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-amber-300 font-bold">
-            <ShieldAlert className="w-3.5 h-3.5" />
-            Harbor 0.25 Mutation Testing &amp; Zero-Leakage Validation Matrix Flow
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+            <ShieldAlert className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Harbor 0.25 mutation testing &amp; zero-leakage validation matrix
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#85858b]">
             End-to-end integrity pipeline guaranteeing nop = 0.0, oracle = 1.0, 0 upstream regressions, and 100% mutant detection.
           </p>
         </div>
@@ -125,7 +125,7 @@ export const ExtraWikiDiagram: React.FC<ExtraWikiDiagramProps> = ({ variant }) =
           <text x="34" y="154" fill="#cbd5e1" fontSize="10.5">  (0 oracle spoilers)</text>
           <text x="34" y="176" fill="#34d399" fontSize="10.5">• Inspect Dockerfile</text>
           <text x="34" y="196" fill="#94a3b8" fontSize="10.5">• Pin commit 934813e</text>
-          <text x="34" y="238" fill="#a5b4fc" fontSize="10" fontFamily="monospace">0 Lint Errors ✓</text>
+          <text x="34" y="238" fill="#a5b4fc" fontSize="10" fontFamily="monospace">0 Lint Errors</text>
 
           <path d="M 210 110 L 252 80" stroke="#fbbf24" strokeWidth="1.8" markerEnd="url(#mut-arr)" />
           <path d="M 210 180 L 252 210" stroke="#fbbf24" strokeWidth="1.8" markerEnd="url(#mut-arr)" />
@@ -159,11 +159,11 @@ export const ExtraWikiDiagram: React.FC<ExtraWikiDiagramProps> = ({ variant }) =
           <rect x="780" y="64" width="160" height="180" rx="14" fill="#06281c" stroke="#34d399" strokeWidth="1.6" />
           <text x="794" y="88" fill="#6ee7b7" fontSize="10" fontWeight="700" fontFamily="monospace">EVIDENCE OUTPUT</text>
           <text x="794" y="112" fill="#ffffff" fontSize="12.5" fontWeight="700">Validated Artifacts</text>
-          <text x="794" y="136" fill="#cbd5e1" fontSize="10">✓ validation_report.json</text>
-          <text x="794" y="156" fill="#cbd5e1" fontSize="10">✓ validation_summary.md</text>
-          <text x="794" y="176" fill="#cbd5e1" fontSize="10">✓ baseline_logs/</text>
-          <text x="794" y="196" fill="#cbd5e1" fontSize="10">✓ oracle_logs/</text>
-          <text x="794" y="216" fill="#cbd5e1" fontSize="10">✓ mutation_logs/</text>
+          <text x="794" y="136" fill="#cbd5e1" fontSize="10">validation_report.json</text>
+          <text x="794" y="156" fill="#cbd5e1" fontSize="10">validation_summary.md</text>
+          <text x="794" y="176" fill="#cbd5e1" fontSize="10">baseline_logs/</text>
+          <text x="794" y="196" fill="#cbd5e1" fontSize="10">oracle_logs/</text>
+          <text x="794" y="216" fill="#cbd5e1" fontSize="10">mutation_logs/</text>
         </svg>
       </div>
     </div>

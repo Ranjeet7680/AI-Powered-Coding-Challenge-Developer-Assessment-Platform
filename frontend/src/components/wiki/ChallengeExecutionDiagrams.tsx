@@ -7,19 +7,19 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ChallengeDiagramTab>('solution-arch');
 
   return (
-    <div className="rounded-2xl border border-indigo-500/30 bg-[#070B16] overflow-hidden shadow-xl">
-      <div className="px-4 py-3.5 sm:px-6 border-b border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-3">
+    <div className="rounded-xl border border-white/[0.08] bg-[#141415] overflow-hidden">
+      <div className="px-4 py-3.5 sm:px-6 border-b border-white/[0.08] bg-[#0f0f10] flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold">
-            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-            Proposed Solution — 3 Architecture Diagrams &amp; Sequence
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#e5a00d] font-medium">
+            <Code2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Proposed solution — 3 architecture diagrams &amp; sequence
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#85858b]">
             Dual CLI/Web control plane, C++20 JsonCpp execution sandbox, 368+ challenge synthesis &amp; IDE Copilot sequence.
           </p>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1.5 bg-[#19191b] p-1 rounded-lg border border-white/[0.08] w-full sm:w-auto">
           {[
             { id: 'solution-arch' as const, label: 'Arch 1: Solution', icon: Layers },
             { id: 'execution' as const, label: 'Arch 2: Sandbox & JsonCpp', icon: Cpu },
@@ -33,10 +33,10 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   active
-                    ? 'bg-indigo-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#ededed] text-[#141415]'
+                    : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -193,10 +193,10 @@ export const ChallengeExecutionDiagrams: React.FC = () => {
             <rect x="682" y="95" width="258" height="170" rx="14" fill="#181308" stroke="#f59e0b" strokeWidth="1.6" />
             <text x="698" y="120" fill="#fcd34d" fontSize="10.5" fontWeight="700" fontFamily="monospace">CHALLENGE STORE &amp; API</text>
             <text x="698" y="148" fill="#ffffff" fontSize="13" fontWeight="700">SQLite / SQLAlchemy DB</text>
-            <text x="698" y="170" fill="#cbd5e1" fontSize="11">✓ 368+ Verified Tasks Ready</text>
-            <text x="698" y="190" fill="#cbd5e1" fontSize="11">✓ GET /api/challenges (Paginated)</text>
-            <text x="698" y="210" fill="#cbd5e1" fontSize="11">✓ GET /api/challenges/stats</text>
-            <text x="698" y="232" fill="#34d399" fontSize="11" fontWeight="700">✓ Ctrl+K Search + Monaco IDE</text>
+            <text x="698" y="170" fill="#cbd5e1" fontSize="11">368+ Verified Tasks Ready</text>
+            <text x="698" y="190" fill="#cbd5e1" fontSize="11">GET /api/challenges (Paginated)</text>
+            <text x="698" y="210" fill="#cbd5e1" fontSize="11">GET /api/challenges/stats</text>
+            <text x="698" y="232" fill="#4cc38a" fontSize="11" fontWeight="600">Ctrl+K Search + Monaco IDE</text>
           </svg>
         )}
 

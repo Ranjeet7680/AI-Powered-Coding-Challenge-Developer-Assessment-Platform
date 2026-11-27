@@ -14,7 +14,6 @@ import {
   PlayCircle,
   Search,
   ShieldCheck,
-  Sparkles,
   Star,
 } from 'lucide-react';
 import { api } from '../services/api';
@@ -23,22 +22,21 @@ import { MLCourseOverview, MLCourseReviewsOverview } from '../types';
 interface HubCourseEntry {
   track: 'ml' | 'dl';
   categoryTag: string;
-  accentClass: string;
   badgeText: string;
   overview: MLCourseOverview;
   reviews: MLCourseReviewsOverview | null;
 }
 
 const FLOW_STAGES = [
-  'Course Detail',
-  'Lectures & Notes',
+  'Course overview',
+  'Lectures & notes',
   'Quizzes',
   'Capstone',
-  'Final Exam',
+  'Final exam',
   'Feedback',
   'Certificate',
-  'Goodies Form',
-  'Done!',
+  'Goodies form',
+  'Complete',
 ];
 
 export const LMSHubPage: React.FC = () => {
@@ -60,17 +58,15 @@ export const LMSHubPage: React.FC = () => {
         setEntries([
           {
             track: 'ml',
-            categoryTag: 'Applied Machine Learning • Complete Engineering LMS',
-            accentClass: 'indigo',
-            badgeText: '106 VIDEOS · 100+ QUIZZES · CAM PROCTORED',
+            categoryTag: 'Applied Machine Learning · Engineering LMS',
+            badgeText: '106 videos · 100+ quizzes · Camera proctored',
             overview: mlOverview,
             reviews: mlReviews,
           },
           {
             track: 'dl',
-            categoryTag: 'Stanford CS229 × Coding Task Factory Academy',
-            accentClass: 'rose',
-            badgeText: 'STANFORD × CTF · 21 VIDEOS · 20+ QUIZZES',
+            categoryTag: 'Stanford CS229 × Coding Task Factory',
+            badgeText: '21 videos · 20+ quizzes · Camera proctored',
             overview: dlOverview,
             reviews: dlReviews,
           },
@@ -100,54 +96,47 @@ export const LMSHubPage: React.FC = () => {
   }, [entries, filterTrack, query]);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
-      {/* Course Landing Hero & End-to-End Flow Strip */}
-      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-br from-[#0B1124] via-[#0F132A] to-[#08151D] p-6 sm:p-8 shadow-2xl space-y-6">
+    <div className="space-y-6">
+      {/* Header Banner */}
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-6 space-y-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold">
-              <GraduationCap className="w-4 h-4" />
-              CODING TASK FACTORY ACADEMIES • LMS HUB
+          <div className="space-y-2 max-w-3xl">
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-[#e5a00d]">
+              <GraduationCap strokeWidth={1.5} className="w-4 h-4" />
+              <span>Coding Task Factory Academies</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              Select Your Engineering Course &amp; Certification Track
+            <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Engineering courses and certification tracks
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Every course runs end-to-end inside one distraction-free platform: inspect the full
-              syllabus, stream locked In-LMS video lectures with LaTeX notes, pass post-video quizzes,
-              submit graded capstones, conquer the camera-proctored exam, submit feedback, download
-              your Vector PDF Certificate, and claim physical graduate goodies!
+            <p className="text-sm text-[#a1a1a6] leading-relaxed">
+              Inspect the syllabus, watch in-platform video lectures with LaTeX notes, complete quizzes and graded capstones, pass the camera-proctored exam, and download your SHA-256 PDF certificate.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 shrink-0">
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3 text-center">
-              <div className="text-2xl font-black text-white">127</div>
-              <div className="text-[11px] text-indigo-300 font-semibold">In-LMS Lectures</div>
+          <div className="grid grid-cols-2 gap-3 shrink-0 tabular-nums">
+            <div className="rounded-lg bg-[#141415] border border-white/[0.08] px-4 py-3 text-center">
+              <div className="text-2xl font-medium font-mono text-[#ededed]">127</div>
+              <div className="text-xs text-[#85858b]">In-LMS lectures</div>
             </div>
-            <div className="rounded-2xl bg-slate-950/75 border border-slate-800 px-4 py-3 text-center">
-              <div className="text-2xl font-black text-emerald-400">2 Tracks</div>
-              <div className="text-[11px] text-slate-400 font-semibold">PDF + Swag Enabled</div>
+            <div className="rounded-lg bg-[#141415] border border-white/[0.08] px-4 py-3 text-center">
+              <div className="text-2xl font-medium font-mono text-[#4cc38a]">2</div>
+              <div className="text-xs text-[#85858b]">Active tracks</div>
             </div>
           </div>
         </div>
 
-        {/* Visual 9-Step End-to-End Journey Stepper */}
-        <div className="pt-4 border-t border-slate-800/80 space-y-2">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-cyan-300 font-bold">
-            Complete Guided End-to-End LMS Workflow
-          </div>
-          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pb-1">
+        {/* End-to-End Flow */}
+        <div className="pt-4 border-t border-white/[0.08] space-y-2">
+          <p className="text-xs font-mono text-[#85858b]">Course completion sequence</p>
+          <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pb-1 tabular-nums">
             {FLOW_STAGES.map((stage, idx) => (
               <React.Fragment key={stage}>
-                <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-800 text-[11px] font-semibold text-slate-200 whitespace-nowrap">
-                  <span className="w-4 h-4 rounded bg-indigo-600/30 text-indigo-300 font-mono text-[10px] flex items-center justify-center font-bold">
-                    {idx + 1}
-                  </span>
-                  {stage}
+                <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#141415] border border-white/[0.08] text-xs text-[#a1a1a6] whitespace-nowrap">
+                  <span className="font-mono text-[#85858b]">{idx + 1}.</span>
+                  <span>{stage}</span>
                 </span>
                 {idx < FLOW_STAGES.length - 1 && (
-                  <ArrowRight className="w-3 h-3 text-slate-600 shrink-0" />
+                  <ArrowRight strokeWidth={1.5} className="w-3 h-3 text-[#85858b] shrink-0" />
                 )}
               </React.Fragment>
             ))}
@@ -156,31 +145,31 @@ export const LMSHubPage: React.FC = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/75 p-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-[#19191b] p-4">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search strokeWidth={1.5} className="w-4 h-4 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search courses by title, instructor, neural nets, kernels, transformers..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs sm:text-sm text-white"
+            placeholder="Search courses"
+            className="w-full h-9 pl-9 pr-4 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d] focus:outline-none text-xs sm:text-sm text-[#ededed] placeholder-[#85858b]"
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1 p-1 rounded-lg bg-[#141415] border border-white/[0.08]">
           {[
-            { id: 'all' as const, label: 'All Tracks (2)' },
-            { id: 'ml' as const, label: 'ML Mastery (106)' },
-            { id: 'dl' as const, label: 'Stanford × CTF DL (21)' },
+            { id: 'all' as const, label: 'All tracks (2)' },
+            { id: 'ml' as const, label: 'ML mastery (106)' },
+            { id: 'dl' as const, label: 'Stanford DL (21)' },
           ].map((pill) => (
             <button
               key={pill.id}
               type="button"
               onClick={() => setFilterTrack(pill.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors tabular-nums ${
                 filterTrack === pill.id
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                  : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-[#222225] text-[#ededed]'
+                  : 'text-[#85858b] hover:text-[#ededed]'
               }`}
             >
               {pill.label}
@@ -189,18 +178,15 @@ export const LMSHubPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Course Landing Cards Grid */}
+      {/* Course Cards */}
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {[1, 2].map((idx) => (
-            <div
-              key={idx}
-              className="h-[500px] rounded-3xl border border-slate-800 bg-slate-900/60 animate-pulse"
-            />
+            <div key={idx} className="h-[460px] rounded-xl border border-white/[0.08] bg-[#19191b] animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 tabular-nums">
           {filtered.map((entry) => {
             const ov = entry.overview;
             const completedCount = ov.progress?.completed_lessons?.length || 0;
@@ -213,15 +199,10 @@ export const LMSHubPage: React.FC = () => {
             return (
               <div
                 key={ov.id}
-                className={`group rounded-3xl border overflow-hidden bg-slate-900/80 flex flex-col justify-between shadow-2xl transition duration-300 ${
-                  isDL
-                    ? 'border-rose-500/35 hover:border-rose-400/70'
-                    : 'border-indigo-500/35 hover:border-indigo-400/70'
-                }`}
+                className="rounded-xl border border-white/[0.08] hover:border-white/[0.14] overflow-hidden bg-[#19191b] flex flex-col justify-between transition-colors"
               >
                 <div>
-                  {/* Custom Official Course Thumbnail */}
-                  <Link to={`/app/lms/${entry.track}`} className="block relative overflow-hidden">
+                  <Link to={`/app/lms/${entry.track}`} className="block relative overflow-hidden bg-[#141415]">
                     <img
                       src={
                         ov.thumbnail_url ||
@@ -230,74 +211,61 @@ export const LMSHubPage: React.FC = () => {
                           : '/thumbnails/ml-ctf-course-thumbnail.svg')
                       }
                       alt={ov.title}
-                      className="w-full aspect-video object-cover group-hover:scale-[1.03] transition duration-500"
+                      className="w-full aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity"
                     />
-                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/85 border border-white/15 text-[10px] font-mono font-bold text-cyan-300 backdrop-blur-md">
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#141415]/90 border border-white/[0.1] text-xs font-mono text-[#ededed]">
                       {entry.badgeText}
                     </div>
-                    <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-emerald-500/30 text-[10px] font-bold text-emerald-300 flex items-center gap-1 backdrop-blur-md">
-                      <Lock className="w-3 h-3" />
-                      LMS-Only Player
+                    <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-md bg-[#141415]/90 border border-white/[0.1] text-xs text-[#4cc38a] flex items-center gap-1.5">
+                      <Lock strokeWidth={1.5} className="w-3 h-3" />
+                      <span>In-LMS player</span>
                     </div>
                   </Link>
 
                   <div className="p-6 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full font-bold border ${
-                          isDL
-                            ? 'bg-rose-500/15 border-rose-500/30 text-rose-300'
-                            : 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300'
-                        }`}
-                      >
-                        {entry.categoryTag}
-                      </span>
+                      <span className="font-mono text-[#85858b]">{entry.categoryTag}</span>
                       {entry.reviews && (
-                        <span className="inline-flex items-center gap-1 font-bold text-amber-300">
-                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          {entry.reviews.average_rating.toFixed(1)} ({entry.reviews.total_reviews})
+                        <span className="inline-flex items-center gap-1 font-mono text-[#e5a00d]">
+                          <Star strokeWidth={1.5} className="w-3.5 h-3.5 fill-current" />
+                          <span>
+                            {entry.reviews.average_rating.toFixed(1)} ({entry.reviews.total_reviews})
+                          </span>
                         </span>
                       )}
                     </div>
 
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-snug">
-                      {ov.title}
-                    </h2>
+                    <h2 className="text-xl font-medium text-[#ededed] leading-snug">{ov.title}</h2>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-medium text-slate-300">
-                      <div className="px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center gap-1.5">
-                        <PlayCircle className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                        <span>{ov.total_lessons} Videos</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-[#a1a1a6]">
+                      <div className="px-2.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] flex items-center gap-1.5">
+                        <PlayCircle strokeWidth={1.5} className="w-3.5 h-3.5 text-[#85858b] shrink-0" />
+                        <span>{ov.total_lessons} videos</span>
                       </div>
-                      <div className="px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                        <span>~{totalHours} Hours</span>
+                      <div className="px-2.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] flex items-center gap-1.5">
+                        <Clock strokeWidth={1.5} className="w-3.5 h-3.5 text-[#85858b] shrink-0" />
+                        <span>~{totalHours} hrs</span>
                       </div>
-                      <div className="px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center gap-1.5">
-                        <Code2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>{ov.capstone_projects?.length || 3} Capstones</span>
+                      <div className="px-2.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] flex items-center gap-1.5">
+                        <Code2 strokeWidth={1.5} className="w-3.5 h-3.5 text-[#85858b] shrink-0" />
+                        <span>{ov.capstone_projects?.length || 3} capstones</span>
                       </div>
-                      <div className="px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center gap-1.5">
-                        <Gift className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                        <span>PDF + Swag</span>
+                      <div className="px-2.5 py-2 rounded-lg bg-[#141415] border border-white/[0.08] flex items-center gap-1.5">
+                        <Gift strokeWidth={1.5} className="w-3.5 h-3.5 text-[#85858b] shrink-0" />
+                        <span>PDF + swag</span>
                       </div>
                     </div>
 
-                    {/* Progress Tracker */}
                     <div className="space-y-1.5 pt-1">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-400">
-                          Your Progress: <strong className="text-white">{completedCount}/{totalLessons}</strong> lectures
+                        <span className="text-[#85858b]">
+                          Progress: <span className="text-[#ededed] font-mono">{completedCount}/{totalLessons}</span> lectures
                         </span>
-                        <span className="font-mono font-bold text-emerald-400">{progressPct}%</span>
+                        <span className="font-mono text-[#4cc38a]">{progressPct}%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
+                      <div className="h-1.5 rounded-full bg-[#222225] overflow-hidden">
                         <div
-                          className={`h-full transition-all duration-500 ${
-                            isDL
-                              ? 'bg-gradient-to-r from-rose-500 to-indigo-400'
-                              : 'bg-gradient-to-r from-indigo-500 to-emerald-400'
-                          }`}
+                          className="h-full bg-[#e5a00d] transition-all duration-300"
                           style={{ width: `${progressPct}%` }}
                         />
                       </div>
@@ -305,25 +273,20 @@ export const LMSHubPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Primary Selection Actions */}
-                <div className="px-6 pb-6 flex flex-wrap gap-3">
+                <div className="px-6 pb-6 flex flex-wrap gap-2.5">
                   <Link
                     to={`/app/lms/${entry.track}`}
-                    className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-extrabold transition shadow-lg ${
-                      isDL
-                        ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/25'
-                        : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/25'
-                    }`}
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
                   >
-                    <BookOpen className="w-4 h-4" />
-                    Select &amp; View Course Detail
+                    <BookOpen strokeWidth={1.5} className="w-3.5 h-3.5" />
+                    <span>View syllabus</span>
                   </Link>
                   <Link
                     to={learnPath}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] text-xs font-medium transition-colors"
                   >
-                    <PlayCircle className="w-4 h-4 text-cyan-400" />
-                    {completedCount > 0 ? 'Resume' : 'Start Now'}
+                    <PlayCircle strokeWidth={1.5} className="w-3.5 h-3.5 text-[#e5a00d]" />
+                    <span>{completedCount > 0 ? 'Resume' : 'Start'}</span>
                   </Link>
                 </div>
               </div>
@@ -332,44 +295,39 @@ export const LMSHubPage: React.FC = () => {
         </div>
       )}
 
-      {/* Academy Guarantees Highlight */}
+      {/* Guarantees */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 flex items-start gap-3">
-          <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex items-start gap-3">
+          <ShieldCheck strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-xs font-bold text-white">Camera Cheat-Protected Final Exams</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              WebRTC webcam verification, fullscreen lock, and 3-strike integrity ensure every issued
-              credential carries genuine technical weight.
+            <h3 className="text-xs font-medium text-[#ededed]">Camera-proctored final exams</h3>
+            <p className="text-xs text-[#85858b] mt-1 leading-relaxed">
+              Webcam monitoring, fullscreen enforcement, and violation logging protect credential integrity.
             </p>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 flex items-start gap-3">
-          <Award className="w-6 h-6 text-cyan-400 shrink-0" />
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex items-start gap-3">
+          <Award strokeWidth={1.5} className="w-4 h-4 text-[#e5a00d] shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-xs font-bold text-white">Vector A4 PDF &amp; SHA-256 Verification</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              Export high-DPI ReportLab certificates, share directly to LinkedIn/Instagram/Facebook,
-              and verify via cryptographic credential IDs.
+            <h3 className="text-xs font-medium text-[#ededed]">Vector PDF &amp; SHA-256 registry</h3>
+            <p className="text-xs text-[#85858b] mt-1 leading-relaxed">
+              Download ReportLab A4 certificates and verify credential IDs on public registry URLs.
             </p>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 flex items-start gap-3">
-          <Sparkles className="w-6 h-6 text-amber-400 shrink-0" />
+        <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex items-start gap-3">
+          <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6] shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-xs font-bold text-white">Capstone Lab, Feedback &amp; Goodies Box</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              Submit hands-on projects for automated rubric grading, post structured feedback, and
-              claim your Graduate Goodies Bundle.
+            <h3 className="text-xs font-medium text-[#ededed]">Capstone lab &amp; graduate kit</h3>
+            <p className="text-xs text-[#85858b] mt-1 leading-relaxed">
+              Submit rubric-graded capstone work, post course reviews, and submit graduate shipping details.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Unused BrainCircuit & CheckCircle2 safeguard */}
       <span className="hidden" aria-hidden="true">
         <BrainCircuit />
-        <CheckCircle2 />
       </span>
     </div>
   );

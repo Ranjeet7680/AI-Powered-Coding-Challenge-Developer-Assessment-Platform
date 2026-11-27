@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { CodeGlyphField } from '../components/common/CodeGlyphField';
 import { api } from '../services/api';
 import {
-  Sparkles,
   ArrowRight,
   Code2,
   Cpu,
@@ -14,24 +14,25 @@ import {
   Play,
   Terminal,
   ShieldCheck,
-  Zap,
   Users,
   GraduationCap,
   Building,
   Briefcase,
   ChevronDown,
   Check,
-  Star,
   BrainCircuit,
   X,
+  FileCheck2,
+  GitBranch,
+  Lock,
 } from 'lucide-react';
+
+const EASE_UI = [0.22, 1, 0.36, 1] as const;
 
 export const LandingPage: React.FC = () => {
   const [stats, setStats] = useState({
     coding_challenges: '368+',
-    active_developers: '14,200+',
-    successful_submissions: '182,500+',
-    supported_languages: '4 Core',
+    supported_languages: '4',
   });
 
   const [activeTab, setActiveTab] = useState<'ide' | 'generator' | 'dashboard' | 'review' | 'credentials'>('ide');
@@ -47,14 +48,20 @@ export const LandingPage: React.FC = () => {
     description: string;
   } | null>(null);
 
-  // Hero Interactive Simulator State
   const [heroLang, setHeroLang] = useState<'python' | 'typescript' | 'cpp'>('python');
   const [simState, setSimState] = useState<'idle' | 'running' | 'completed'>('idle');
   const [simProgress, setSimProgress] = useState(0);
 
   useEffect(() => {
     api.getPlatformStats()
-      .then(setStats)
+      .then((res) => {
+        if (res) {
+          setStats({
+            coding_challenges: res.coding_challenges || '368+',
+            supported_languages: res.supported_languages || '4',
+          });
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -71,11 +78,11 @@ export const LandingPage: React.FC = () => {
     setSimState('running');
     setSimProgress(1);
 
-    setTimeout(() => setSimProgress(3), 500);
-    setTimeout(() => setSimProgress(5), 1000);
+    setTimeout(() => setSimProgress(3), 450);
+    setTimeout(() => setSimProgress(5), 900);
     setTimeout(() => {
       setSimState('completed');
-    }, 1400);
+    }, 1300);
   };
 
   const heroCodeSnippets = {
@@ -97,7 +104,7 @@ class LRUCache:
             self.cache.move_to_end(key)
         self.cache[key] = value
         if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)  # Evict least recently used`,
+            self.cache.popitem(last=False)  # Evict oldest`,
     typescript: `class LRUCache {
   private capacity: number;
   private cache: Map<number, number>;
@@ -111,7 +118,7 @@ class LRUCache:
     if (!this.cache.has(key)) return -1;
     const val = this.cache.get(key)!;
     this.cache.delete(key);
-    this.cache.set(key, val); // Refresh order
+    this.cache.set(key, val);
     return val;
   }
 
@@ -134,413 +141,366 @@ class LRUCache {
     unordered_map<int, list<pair<int, int>>::iterator> lookup;
 public:
     LRUCache(int capacity) : cap(capacity) {}
-    
+
     int get(int key) {
         if (!lookup.count(key)) return -1;
-        order.splice(order.begin(), order, lookup[key]); // O(1) move to front
+        order.splice(order.begin(), order, lookup[key]);
         return lookup[key]->second;
     }
-};`
+};`,
   };
 
   const features = [
     {
-      title: '368+ Multi-Language Bank',
-      description: 'Master 368+ curated & synthesized problems across 10 CS & ML domains with Python, JavaScript, TypeScript, and C++ templates.',
+      title: '368+ multi-language problem bank',
+      description: 'Structured tasks across 10 CS and ML domains with Python, JavaScript, TypeScript, and C++ harnesses.',
       icon: Code2,
-      color: 'from-cyan-500 to-teal-500',
     },
     {
-      title: 'AI Generator & Copilot',
-      description: 'Synthesize production-grade challenges with Google Gemini and ask a code-aware AI Copilot for hints, bug fixes, and complexity breakdowns.',
-      icon: Sparkles,
-      color: 'from-indigo-500 to-blue-500',
-    },
-    {
-      title: 'Smart Code Evaluation',
-      description: 'Execute test suites across isolated subprocess runners verifying correctness, hidden boundary edge cases, runtime latency, and memory.',
+      title: 'Task generator & copilot',
+      description: 'Create new challenges with Gemini or AST fallbacks and review time/space complexity inline.',
       icon: Cpu,
-      color: 'from-violet-500 to-purple-500',
     },
     {
-      title: 'Vector PDF & QR Credentials',
-      description: 'Download landscape A4 ReportLab PDF diplomas complete with SHA-256 verification hashes, 15×15 QR matrices, and public /verify URLs.',
+      title: 'Isolated subprocess runner',
+      description: 'Execute public and hidden unit vectors with strict timeouts, stdout/stderr capture, and runtime profiling.',
+      icon: Terminal,
+    },
+    {
+      title: 'SHA-256 PDF credentials',
+      description: 'Export ReportLab landscape A4 certificates with deterministic 15×15 QR matrices and public /verify links.',
       icon: ShieldCheck,
-      color: 'from-amber-500 to-orange-500',
     },
     {
-      title: 'Social Post & Card Studio',
-      description: 'Publish achievements to LinkedIn, Instagram (1080×1080 PNG card), Facebook (1200×630 PNG card), and WhatsApp with tailored copy.',
+      title: 'Social card exporter',
+      description: 'Render 1080×1080 and 1200×630 PNG credential cards and pre-formatted posts for LinkedIn, Instagram, Facebook, and WhatsApp.',
       icon: Award,
-      color: 'from-pink-500 to-rose-500',
     },
     {
-      title: 'Analytics & Assessments',
-      description: 'Deliver timed technical screeners, visualize skills radars & velocity heatmaps, and track global & weekly leaderboard standings.',
+      title: 'Assessments & analytics',
+      description: 'Run timed engineering screeners, track weekly submission volume, and compare domain mastery.',
       icon: BarChart3,
-      color: 'from-emerald-500 to-green-500',
     },
   ];
 
   const steps = [
-    { num: '01', title: 'Choose Topic', desc: 'Select algorithms, system design, data structures, or API patterns.' },
-    { num: '02', title: 'Generate AI Challenge', desc: 'Gemini constructs problems with input/output format and test suites.' },
-    { num: '03', title: 'Write Code in IDE', desc: 'Implement your solution in Python, TypeScript, JavaScript, or C++.' },
-    { num: '04', title: 'Run Test Cases', desc: 'Verify your code against public and hidden unit test vectors.' },
-    { num: '05', title: 'Receive AI Feedback', desc: 'Get automated big-O complexity insights and refactoring suggestions.' },
-    { num: '06', title: 'Track Performance', desc: 'Climb the global leaderboard and collect verified skill certificates.' },
+    { num: '01', title: 'Select a domain', desc: 'Pick algorithms, systems design, data structures, or machine learning.' },
+    { num: '02', title: 'Configure or generate', desc: 'Choose from 368+ curated tasks or synthesize a custom problem with unit tests.' },
+    { num: '03', title: 'Write in the IDE', desc: 'Implement solutions in Python, TypeScript, JavaScript, or C++ inside Monaco.' },
+    { num: '04', title: 'Verify against tests', desc: 'Run sample and hidden boundary checks in isolated subprocesses.' },
+    { num: '05', title: 'Inspect complexity', desc: 'Review time/space complexity estimates and refactoring notes.' },
+    { num: '06', title: 'Issue credentials', desc: 'Pass assessments or courses to mint a SHA-256 verified PDF diploma.' },
   ];
 
-  const testimonials = [
+  const architecturePillars = [
     {
-      name: 'Sarah Lin',
-      role: 'Principal Engineer @ Databricks',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      text: 'The AI Challenge Generator is simply unparalleled. It synthesizes problems that mirror actual production distributed system bottlenecks rather than textbook trivia.',
-      rating: 5,
+      title: 'Subprocess execution isolation',
+      metric: '4 runtimes',
+      desc: 'Python 3, Node.js (.mjs), TypeScript (--experimental-strip-types), and C++ (g++) execute in temporary directories with strict timeout bounds.',
+      icon: Terminal,
     },
     {
-      name: 'Marcus Vance',
-      role: 'Senior Systems Architect',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      text: 'Having Monaco Editor paired with instant sandboxed Python & Node execution and automated Big-O feedback makes interview prep genuinely enjoyable.',
-      rating: 5,
+      title: 'Cryptographic credential verification',
+      metric: 'PBKDF2 + SHA-256',
+      desc: 'Accounts enforce 100k-round salted PBKDF2 and HS256 JWTs. Certificates carry immutable SHA-256 digests and public /verify routes.',
+      icon: Lock,
     },
     {
-      name: 'Priya Sharma',
-      role: 'AI Research Engineer',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-      text: 'We screen 200+ engineers monthly. Coding Task Factory eliminated leaked interview solutions overnight with customized AI challenges.',
-      rating: 5,
+      title: 'Harbor 0.25 benchmark parity',
+      metric: '10/10 mutation kill',
+      desc: 'Automated TaskForge pipeline builds SWE feature-development packages verified against baseline failure (0.0) and oracle pass (1.0).',
+      icon: GitBranch,
     },
   ];
 
   const solutions = [
-    { title: 'Individual Developers', desc: 'Sharpen problem-solving skills and prepare for top-tier FAANG engineering interviews.', icon: Users },
-    { title: 'Students & Learners', desc: 'Learn programming fundamentals and algorithms with instant AI explanations.', icon: GraduationCap },
-    { title: 'Educators & Universities', desc: 'Automate student homework grading and design tailored weekly problem sets.', icon: Terminal },
-    { title: 'Coding Bootcamps', desc: 'Deliver realistic technical exercises with automated test cases and feedback.', icon: Terminal },
-    { title: 'Technical Recruiters', desc: 'Screen candidates with customized, ungoogleable, timed coding challenges.', icon: Briefcase },
-    { title: 'Enterprise Teams', desc: 'Upskill engineering departments and standardise internal technical benchmarks.', icon: Building },
+    { title: 'Individual developers', desc: 'Practice algorithmic patterns and systems design with timed test feedback.', icon: Users },
+    { title: 'Students & learners', desc: 'Follow 127 ML and deep learning lectures paired with notes and coding labs.', icon: GraduationCap },
+    { title: 'Educators & universities', desc: 'Assign problem sets with automated unit verification and progress tracking.', icon: Terminal },
+    { title: 'Coding bootcamps', desc: 'Deliver hands-on exercises across four languages without local setup friction.', icon: Code2 },
+    { title: 'Technical recruiters', desc: 'Screen candidates with timed multi-problem assessments and complexity audits.', icon: Briefcase },
+    { title: 'Engineering teams', desc: 'Standardize internal coding benchmarks and verify completion with signed PDFs.', icon: Building },
   ];
 
   const faqs = [
     {
-      q: 'How does AI challenge generation work?',
-      a: 'Coding Task Factory leverages Google Gemini to synthesize realistic, original programming challenges based on your selected topic, difficulty, and language. Every generated challenge includes a detailed problem statement, constraints, example input/output, starter code, and verified unit tests.'
+      q: 'How does task generation work',
+      a: 'Coding Task Factory uses Google Gemini (or offline deterministic AST templates when no key is set) to produce a problem statement, constraints, starter code, and unit test vectors.',
     },
     {
-      q: 'Which programming languages are supported?',
-      a: 'We natively support Python 3, JavaScript (Node.js), TypeScript, and C++, with ongoing extensions for Java, Go, Rust, and SQL. Code execution runs in isolated sandboxes with strict timeouts.'
+      q: 'Which programming languages are supported',
+      a: 'Python 3, JavaScript (Node.js), TypeScript, and C++ run natively inside the sandboxed execution engine.',
     },
     {
-      q: 'Is code execution safe and secure?',
-      a: 'Yes. All user submissions run in isolated, sandboxed environments with memory boundaries, execution timeouts, and restricted network/filesystem permissions to guarantee maximum security.'
+      q: 'How is code execution isolated',
+      a: 'Every submission runs in a temporary working directory inside an isolated subprocess with strict memory and timeout limits.',
     },
     {
-      q: 'Can companies create customized assessments for candidate screening?',
-      a: 'Yes! The Assessments module allows hiring managers and bootcamps to assemble multi-question timed assessments, set passing criteria, and receive comprehensive candidate scoring reports with AI code reviews.'
+      q: 'Can teams build custom timed assessments',
+      a: 'Yes. The Assessments module lets you select challenges, configure duration and passing thresholds, and inspect per-problem scores.',
     },
     {
-      q: 'Are certificates verifiable and shareable on LinkedIn, Instagram, Facebook & WhatsApp?',
-      a: 'Yes! Every certificate includes a unique Credential ID, SHA-256 fingerprint, public /verify/:credentialId page, ReportLab landscape A4 vector PDF export, 1080×1080 & 1200×630 PNG social graphic cards, and pre-formatted messages for LinkedIn, Instagram, Facebook, and WhatsApp.'
+      q: 'How do certificate verification and PDF exports work',
+      a: 'Earned certificates include a unique Credential ID, a SHA-256 verification digest, a public /verify/:credentialId page, a ReportLab landscape A4 PDF download, and PNG social card exports.',
     },
     {
-      q: 'Can I connect my own Google Gemini API key?',
-      a: 'Yes. You can input your custom Gemini API key in Platform Settings to enjoy unrestricted custom model generation (Gemini 1.5 Flash / Pro).'
-    }
+      q: 'Can I bring my own Gemini API key',
+      a: 'Yes. Save your Google Gemini API key in Settings; it is stored server-side and masked in all API responses.',
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-[#05070E] text-slate-100 flex flex-col selection:bg-indigo-500/30 overflow-x-hidden">
+    <div className="min-h-screen bg-[#141415] text-[#ededed] flex flex-col overflow-x-hidden">
       <Navbar />
 
-      {/* Hero Section */}
-      <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-        {/* Background Grid & Ambient Spotlights */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-45 pointer-events-none -z-20" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] bg-gradient-to-tr from-indigo-600/20 via-violet-600/15 to-cyan-500/10 blur-[140px] pointer-events-none -z-10" />
-        <div className="absolute top-10 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      {/* Hero Section: Calm space on left for headline, code-glyph field on right, live IDE rising from bottom */}
+      <section id="hero" className="relative pt-28 sm:pt-32 pb-0 overflow-hidden border-b border-white/[0.08]">
+        <CodeGlyphField className="absolute inset-0 w-full h-full opacity-90" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-violet-500/15 to-cyan-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-8 backdrop-blur-md shadow-lg shadow-indigo-950/40 animate-float-slow"
-          >
-            <Sparkles className="w-4 h-4 text-cyan-300 animate-pulse" />
-            <span>368+ Coding Challenges • AI Copilot • Vector PDF Credentials</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-cyan-300 font-mono">v2.1 Live</span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1] max-w-4xl mx-auto mb-6"
-          >
-            Build Smarter.{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-300 to-violet-400 animate-gradient-text">
-              Code Better.
-            </span>{' '}
-            Get Evaluated Faster.
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed font-normal"
-          >
-            Generate intelligent coding challenges with AI, solve real-world programming problems in our full-featured online IDE, and evaluate developer skills through automated assessments.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
-          >
-            <Link
-              to="/register"
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-indigo-600 via-violet-500 to-indigo-600 bg-[length:200%_100%] animate-shimmer rounded-xl shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/50 transition-all duration-200 active:scale-95 border border-indigo-400/35"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-2xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: EASE_UI }}
+              className="text-4xl sm:text-5xl lg:text-[60px] font-medium tracking-[-0.025em] text-[#ededed] leading-[1.06]"
             >
-              <Sparkles className="w-4 h-4 text-cyan-300 animate-pulse" />
-              <span>Start Building Free</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
+              Coding challenges, live execution, and verified credentials
+            </motion.h1>
 
-            <Link
-              to="/login"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800 rounded-xl border border-slate-700/80 hover:border-indigo-500/40 transition-all duration-200"
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.08, ease: EASE_UI }}
+              className="text-base sm:text-lg text-[#a1a1a6] max-w-[34rem] mt-5 leading-relaxed"
             >
-              <Code2 className="w-4 h-4 text-indigo-400" />
-              Sign In to Workstation
-            </Link>
-          </motion.div>
+              Practice across 368+ tasks in Python, JavaScript, TypeScript, and C++, test solutions in an isolated sandbox, and issue SHA-256 verified PDF certificates.
+            </motion.p>
 
-          {/* Trust badges */}
-          <p className="text-xs uppercase tracking-wider text-slate-500 font-mono mb-4">
-            Trusted by developers, educators, and engineering teams from
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-75 grayscale hover:grayscale-0 transition-all duration-300 text-slate-400 text-sm font-semibold">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-indigo-400" /> Google Developer Groups</span>
-            <span className="flex items-center gap-1.5"><Terminal className="w-4 h-4 text-cyan-400" /> Stanford Code Club</span>
-            <span className="flex items-center gap-1.5"><Cpu className="w-4 h-4 text-violet-400" /> MIT Hackers</span>
-            <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-400" /> Innodata AI Labs</span>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.14, ease: EASE_UI }}
+              className="flex flex-wrap items-center gap-3 mt-8"
+            >
+              <Link
+                to="/register"
+                className="group inline-flex items-center justify-center gap-2 h-11 px-5 text-sm font-medium text-[#141415] bg-[#ededed] hover:bg-white rounded-lg transition-[background-color,transform] duration-150 active:scale-[0.98]"
+              >
+                <span>Start building free</span>
+                <ArrowRight strokeWidth={1.5} className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+              </Link>
+
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center gap-2 h-11 px-5 text-sm font-medium text-[#ededed] bg-[#222225] hover:bg-[#2a2a2e] rounded-lg border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-[background-color,transform] duration-150 active:scale-[0.98]"
+              >
+                <Code2 strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
+                <span>Sign in</span>
+              </Link>
+            </motion.div>
+
+            <p className="mt-6 text-xs font-mono text-[#85858b]">
+              Python 3 · Node.js · TypeScript · C++20 · ReportLab PDF · Harbor 0.25
+            </p>
           </div>
 
-          {/* Hero Visual: Interactive Product Preview & Simulator */}
-          <div className="mt-16 relative max-w-5xl mx-auto rounded-3xl p-1 bg-gradient-to-b from-indigo-500/30 via-slate-800/40 to-transparent shadow-2xl shadow-indigo-950/60">
-            <div className="rounded-[23px] bg-[#0A0D17] border border-slate-800/90 overflow-hidden text-left">
-              {/* Window Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 bg-slate-950/90 border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
-                  <span className="ml-3 text-xs font-mono text-slate-300 flex items-center gap-1.5 font-semibold">
-                    <Terminal className="w-3.5 h-3.5 text-indigo-400" />
-                    lru_cache_engine.{heroLang === 'python' ? 'py' : heroLang === 'typescript' ? 'ts' : 'cpp'}
-                  </span>
+          {/* Product Preview rising from bottom edge of hero */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.18, ease: EASE_UI }}
+            className="mt-12 lg:mt-14 rounded-t-2xl bg-[#19191b] border border-b-0 border-white/[0.1] overflow-hidden shadow-2xl shadow-black/50"
+          >
+            {/* Window Header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 h-12 bg-[#0f0f10] border-b border-white/[0.08]">
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-1.5" aria-hidden="true">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#323236]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#323236]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#323236]" />
+                </div>
+                <span className="text-xs font-mono text-[#a1a1a6] flex items-center gap-2">
+                  <Terminal strokeWidth={1.5} className="w-3.5 h-3.5 text-[#85858b]" />
+                  <span>lru_cache.{heroLang === 'python' ? 'py' : heroLang === 'typescript' ? 'ts' : 'cpp'}</span>
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5 bg-[#19191b] p-0.5 rounded-lg border border-white/[0.08] text-xs font-mono">
+                  {(['python', 'typescript', 'cpp'] as const).map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => setHeroLang(lang)}
+                      className={`px-2.5 py-1 rounded-md transition-colors capitalize ${
+                        heroLang === lang
+                          ? 'bg-[#222225] text-[#ededed] font-medium'
+                          : 'text-[#85858b] hover:text-[#ededed]'
+                      }`}
+                    >
+                      {lang === 'cpp' ? 'C++' : lang}
+                    </button>
+                  ))}
                 </div>
 
-                {/* Language Switcher and Live Run Button */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-xs font-mono">
-                    {(['python', 'typescript', 'cpp'] as const).map((lang) => (
-                      <button
-                        key={lang}
-                        onClick={() => setHeroLang(lang)}
-                        className={`px-2.5 py-1 rounded-md transition capitalize ${
-                          heroLang === lang ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {lang === 'cpp' ? 'C++' : lang}
-                      </button>
-                    ))}
+                <button
+                  type="button"
+                  onClick={runHeroSimulation}
+                  disabled={simState === 'running'}
+                  className="inline-flex items-center gap-1.5 px-3 h-7 rounded-md text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-[background-color,transform] duration-150 active:scale-[0.98]"
+                >
+                  {simState === 'running' ? (
+                    <>
+                      <span className="w-3 h-3 border-2 border-[#141415]/30 border-t-[#141415] rounded-full animate-spin" />
+                      <span>Running</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play strokeWidth={1.5} className="w-3 h-3 fill-current" />
+                      <span>Run tests</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Workbench Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              {/* Problem Spec */}
+              <div className="lg:col-span-5 p-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#141415]/60 flex flex-col justify-between space-y-5">
+                <div>
+                  <div className="flex items-center justify-between text-xs font-mono mb-3">
+                    <span className="inline-flex items-center gap-1.5 text-[#e5a00d]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#e5a00d]" />
+                      Medium
+                    </span>
+                    <span className="text-[#85858b] tabular-nums">Target O(1) · 68.5% pass</span>
                   </div>
 
-                  <button
-                    onClick={runHeroSimulation}
-                    disabled={simState === 'running'}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition shadow-sm active:scale-95"
-                  >
-                    {simState === 'running' ? (
-                      <>
-                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Running Tests...
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-3 h-3 fill-current" />
-                        Run Simulation
-                      </>
-                    )}
-                  </button>
+                  <h2 className="text-lg font-medium text-[#ededed] mb-2">LRU cache implementation</h2>
+                  <p className="text-xs text-[#a1a1a6] leading-relaxed mb-4">
+                    Design a cache supporting <code className="bg-[#222225] px-1.5 py-0.5 rounded text-[#ededed] font-mono">get(key)</code> and{' '}
+                    <code className="bg-[#222225] px-1.5 py-0.5 rounded text-[#ededed] font-mono">put(key, val)</code> in constant average time.
+                  </p>
+
+                  <div className="p-3.5 rounded-lg bg-[#0f0f10] border border-white/[0.08] font-mono text-xs text-[#a1a1a6] space-y-1 tabular-nums">
+                    <p className="text-[#85858b]">// Constraints</p>
+                    <p>capacity: 1 &lt;= cap &lt;= 3000</p>
+                    <p>eviction: drop least recently used key</p>
+                    <p>time complexity: O(1) average</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-lg bg-[#19191b] border border-white/[0.08] flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-medium text-[#ededed]">
+                      <span className="font-mono text-[#4cc38a]">[PASS]</span>
+                      <span>Complexity check</span>
+                    </div>
+                    <p className="text-xs text-[#85858b] mt-1 leading-relaxed">
+                      Constant-time lookup and eviction verified across ordered hash nodes.
+                    </p>
+                  </div>
+                  <span className="font-mono text-xs text-[#ededed] tabular-nums shrink-0">98/100</span>
                 </div>
               </div>
 
-              {/* Mock IDE Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px]">
-                {/* Left: Problem Statement & AI Review Badge */}
-                <div className="lg:col-span-5 p-6 border-b lg:border-b-0 lg:border-r border-slate-800 bg-[#090C16] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                        Medium
-                      </span>
-                      <span className="text-xs text-slate-500 font-mono">Target: O(1) Time</span>
-                      <span className="text-xs text-emerald-400 font-mono ml-auto">Accepted: 68.5%</span>
-                    </div>
+              {/* Code & Output */}
+              <div className="lg:col-span-7 p-6 bg-[#19191b] font-mono text-xs flex flex-col justify-between">
+                <pre className="text-[#ededed]/90 overflow-x-auto leading-relaxed max-h-60 custom-scrollbar">
+                  {heroCodeSnippets[heroLang]}
+                </pre>
 
-                    <h3 className="text-lg font-bold text-white mb-2">LRU Cache Implementation</h3>
-                    <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                      Design a data structure that implements a <strong>Least Recently Used (LRU)</strong> cache with O(1) <code className="bg-slate-800 px-1 py-0.5 rounded text-indigo-300 font-mono">get(key)</code> and <code className="bg-slate-800 px-1 py-0.5 rounded text-indigo-300 font-mono">put(key, val)</code> operations.
-                    </p>
-
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1 mb-4">
-                      <p className="text-indigo-400 font-semibold">// Constraints:</p>
-                      <p>capacity: 1 &lt;= cap &lt;= 3000</p>
-                      <p>eviction: remove oldest when full</p>
-                      <p>complexity: O(1) average time</p>
-                    </div>
-                  </div>
-
-                  {/* AI Feedback Badge */}
-                  <div className="p-3.5 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 flex items-start gap-3">
-                    <Sparkles className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-semibold text-white">Gemini AI Code Review</p>
-                        <span className="text-[10px] font-mono font-bold text-emerald-400">Score: 98/100</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
-                        "Constant-time eviction achieved with double hashing. Memory profile is optimal."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right: Code Viewer + Test Output */}
-                <div className="lg:col-span-7 p-6 bg-[#0B0F19] font-mono text-xs flex flex-col justify-between">
-                  <pre className="text-slate-300 overflow-x-auto leading-relaxed max-h-64 custom-scrollbar">
-                    {heroCodeSnippets[heroLang]}
-                  </pre>
-
-                  {/* Execution footer bar */}
-                  <div className="mt-6 pt-4 border-t border-slate-800 space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2.5 h-2.5 rounded-full ${simState === 'running' ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
-                        <span className="text-slate-300 font-semibold">
-                          {simState === 'running'
-                            ? `Running unit test case ${simProgress} of 5...`
-                            : 'All 5 Unit Tests Passed'}
-                        </span>
-                      </div>
-                      <span className="text-slate-400 font-mono text-[11px]">
-                        Latency: 18ms | RAM: 13.2MB
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs pt-1">
-                      <span className="text-[11px] text-slate-500 font-sans">
-                        Click "Run Simulation" to test compiler execution
-                      </span>
-                      <Link
-                        to="/login"
-                        className="inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-bold"
+                <div className="mt-5 pt-4 border-t border-white/[0.08] space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`font-mono font-medium ${
+                          simState === 'running' ? 'text-[#e5a00d]' : 'text-[#4cc38a]'
+                        }`}
                       >
-                        Launch in Live Workspace <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
+                        {simState === 'running' ? '[RUN]' : '[PASS]'}
+                      </span>
+                      <span className="text-[#ededed]">
+                        {simState === 'running'
+                          ? `Running unit test ${simProgress} of 5`
+                          : '5 of 5 unit tests passed'}
+                      </span>
                     </div>
+                    <span className="text-[#85858b] font-mono tabular-nums">
+                      18 ms · 13.2 MB
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-sans">
+                    <span className="text-[#85858b]">Switch language or run simulation above</span>
+                    <Link
+                      to="/app/workspace/c2-lru-cache"
+                      className="inline-flex items-center gap-1.5 text-[#ededed] hover:text-[#e5a00d] font-medium transition-colors"
+                    >
+                      <span>Open in IDE</span>
+                      <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Platform Statistics Section */}
-      <section className="py-14 border-y border-slate-800/80 bg-[#090C16]">
+      {/* Factual Platform Metrics Strip */}
+      <section className="py-12 border-b border-white/[0.08] bg-[#0f0f10]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60">
-              <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 font-mono">
-                {stats.coding_challenges}
-              </p>
-              <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
-                Coding Challenges
-              </p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60">
-              <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400 font-mono">
-                {stats.active_developers}
-              </p>
-              <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
-                Active Developers
-              </p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60">
-              <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 font-mono">
-                {stats.successful_submissions}
-              </p>
-              <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
-                Successful Submissions
-              </p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/60">
-              <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 font-mono">
-                {stats.supported_languages}
-              </p>
-              <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
-                Supported Languages
-              </p>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { value: stats.coding_challenges, label: 'Coding challenges', note: '10 CS & ML domains' },
+              { value: stats.supported_languages, label: 'Execution runtimes', note: 'Python, JS, TS, C++' },
+              { value: '127', label: 'Academy lectures', note: 'ML & deep learning tracks' },
+              { value: 'SHA-256', label: 'PDF credentials', note: 'QR & /verify registry' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="p-5 rounded-xl bg-[#19191b] border border-white/[0.08]"
+              >
+                <p className="text-2xl sm:text-3xl font-medium text-[#ededed] font-mono tabular-nums tracking-tight">
+                  {item.value}
+                </p>
+                <p className="text-sm text-[#a1a1a6] mt-1.5">{item.label}</p>
+                <p className="text-xs text-[#85858b] mt-0.5">{item.note}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 relative">
+      <section id="features" className="py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-indigo-400 mb-3">
-              Autonomous Developer Platform
+          <div className="max-w-2xl mb-12">
+            <p className="text-xs font-mono text-[#85858b] mb-2">Capabilities</p>
+            <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Everything needed to practice, assess, and verify code
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Everything You Need to Create, Code & Evaluate
-            </h3>
-            <p className="text-slate-400 text-base">
-              Engineered with modern full-stack tools to elevate individual coding practice and automate enterprise technical hiring.
+            <p className="text-[#a1a1a6] text-base mt-3 leading-relaxed">
+              Built as a single workbench for algorithmic training, coursework, and candidate evaluation.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {features.map((f) => {
               const Icon = f.icon;
               return (
                 <div
                   key={f.title}
-                  className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 hover:border-indigo-500/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden shadow-xl"
+                  className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] hover:border-white/[0.14] transition-colors"
                 >
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center text-white mb-5 shadow-lg shadow-indigo-950/50`}>
-                    <Icon className="w-6 h-6" />
+                  <div className="w-9 h-9 rounded-lg bg-[#222225] border border-white/[0.08] flex items-center justify-center mb-4">
+                    <Icon strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
                   </div>
-                  <h4 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">
-                    {f.title}
-                  </h4>
-                  <p className="text-sm text-slate-400 leading-relaxed">
-                    {f.description}
-                  </p>
+                  <h3 className="text-base font-medium text-[#ededed] mb-2">{f.title}</h3>
+                  <p className="text-sm text-[#85858b] leading-relaxed">{f.description}</p>
                 </div>
               );
             })}
@@ -548,32 +508,27 @@ public:
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 bg-[#090C16] border-y border-slate-800/80">
+      {/* Workflow Steps */}
+      <section className="py-20 bg-[#0f0f10] border-y border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-              Streamlined Flow
+          <div className="max-w-2xl mb-12">
+            <p className="text-xs font-mono text-[#85858b] mb-2">Workflow</p>
+            <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+              From problem selection to verified credential
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              How Coding Task Factory Works
-            </h3>
-            <p className="text-slate-400 text-base">
-              From challenge conception to AI-powered code evaluation in six seamless steps.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {steps.map((s) => (
               <div
                 key={s.num}
-                className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition"
+                className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08]"
               >
-                <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 font-mono">
+                <span className="text-sm font-mono font-medium text-[#e5a00d] tabular-nums">
                   {s.num}
                 </span>
-                <h4 className="text-base font-bold text-white mt-3 mb-2">{s.title}</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+                <h3 className="text-base font-medium text-[#ededed] mt-3 mb-1.5">{s.title}</h3>
+                <p className="text-sm text-[#85858b] leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -581,72 +536,83 @@ public:
       </section>
 
       {/* Product Showcase Tabs */}
-      <section id="challenges" className="py-24">
+      <section id="challenges" className="py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-indigo-400 mb-3">
-              Application Preview
-            </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Explore the Unified SaaS Experience
-            </h3>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+            <div>
+              <p className="text-xs font-mono text-[#85858b] mb-2">Workspace modules</p>
+              <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+                Inside Coding Task Factory
+              </h2>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5 bg-[#0f0f10] p-1 rounded-xl border border-white/[0.08]">
+              {(
+                [
+                  { id: 'ide', label: 'Workspace IDE' },
+                  { id: 'generator', label: 'Task generator' },
+                  { id: 'dashboard', label: 'Dashboard' },
+                  { id: 'review', label: 'Code review' },
+                  { id: 'credentials', label: 'PDF credentials' },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-[#222225] text-[#ededed] border border-white/[0.12]'
+                      : 'text-[#85858b] hover:text-[#ededed]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Tab Switcher */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-            {(
-              [
-                { id: 'ide', label: 'Coding Workspace IDE' },
-                { id: 'generator', label: 'AI Challenge Generator' },
-                { id: 'dashboard', label: 'Desktop Dashboard' },
-                { id: 'review', label: 'Evaluation Report' },
-                { id: 'credentials', label: 'PDF & Social Credentials' },
-              ] as const
-            ).map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition ${
-                  activeTab === tab.id
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Interactive Preview Container */}
-          <div className="rounded-3xl p-6 sm:p-8 bg-slate-900/60 border border-slate-800 shadow-2xl">
+          <div className="rounded-2xl p-6 sm:p-8 bg-[#19191b] border border-white/[0.08]">
             {activeTab === 'ide' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h4 className="text-xl font-bold text-white mb-2">Monaco-Powered Code Editor</h4>
-                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                    Write code with full syntax highlighting, bracket matching, and hotkeys. Run single test cases or execute full suites with immediate stdout/stderr feedback.
+                  <h3 className="text-xl font-medium text-[#ededed] mb-2">Monaco code editor</h3>
+                  <p className="text-sm text-[#a1a1a6] mb-5 leading-relaxed">
+                    Write code with syntax highlighting, keyboard shortcuts, and per-language local drafts. Execute sample or hidden test suites with stdout/stderr inspection.
                   </p>
-                  <ul className="space-y-2 text-xs text-slate-300 font-mono mb-6">
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Python, JavaScript, TypeScript, C++ support</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Real-time execution time & memory measurement</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Hidden test cases to prevent hardcoded solutions</li>
+                  <ul className="space-y-2 text-xs text-[#a1a1a6] font-mono mb-6">
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>Python, JavaScript, TypeScript, and C++ runtimes</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>Latency and memory profiling per test run</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>Hidden boundary vectors for verification</span>
+                    </li>
                   </ul>
                   <Link
-                    to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30"
+                    to="/app/workspace/c2-lru-cache"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
                   >
-                    Open Workspace <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Open workspace</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-slate-800 font-mono text-xs text-slate-300 space-y-2">
-                  <p className="text-indigo-400">// Test Case Execution Vector</p>
-                  <p className="text-emerald-400">✓ Test Case 1: Passed (14ms, 12.8MB)</p>
-                  <p className="text-emerald-400">✓ Test Case 2: Passed (18ms, 13.1MB)</p>
-                  <p className="text-emerald-400">✓ Test Case 3: Passed (12ms, 12.4MB)</p>
-                  <p className="text-emerald-400">✓ Test Case 4 (Hidden): Passed (22ms)</p>
-                  <p className="text-emerald-400">✓ Test Case 5 (Hidden): Passed (19ms)</p>
-                  <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400">
-                    Status: <span className="text-emerald-400 font-bold">ACCEPTED</span> (100% Score)
+
+                <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] font-mono text-xs space-y-2 tabular-nums">
+                  <p className="text-[#85858b]">// Execution report</p>
+                  <p className="text-[#4cc38a]">[PASS] Case 1 · 14 ms · 12.8 MB</p>
+                  <p className="text-[#4cc38a]">[PASS] Case 2 · 18 ms · 13.1 MB</p>
+                  <p className="text-[#4cc38a]">[PASS] Case 3 · 12 ms · 12.4 MB</p>
+                  <p className="text-[#4cc38a]">[PASS] Case 4 (hidden) · 22 ms</p>
+                  <p className="text-[#4cc38a]">[PASS] Case 5 (hidden) · 19 ms</p>
+                  <div className="mt-4 pt-3 border-t border-white/[0.08] flex justify-between text-[#a1a1a6]">
+                    <span>Status: Accepted</span>
+                    <span className="text-[#ededed]">100%</span>
                   </div>
                 </div>
               </div>
@@ -655,27 +621,28 @@ public:
             {activeTab === 'generator' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h4 className="text-xl font-bold text-white mb-2">Google Gemini Challenge Synthesis</h4>
-                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                    Craft tailored problems in seconds. Specify your domain: graph algorithms, system concurrency, dynamic programming, or microservice architecture.
+                  <h3 className="text-xl font-medium text-[#ededed] mb-2">Custom challenge synthesis</h3>
+                  <p className="text-sm text-[#a1a1a6] mb-5 leading-relaxed">
+                    Specify a topic, difficulty tier, target runtime, and test case count. Save generated challenges directly into the library or launch them in the IDE.
                   </p>
                   <Link
-                    to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-xs"
+                    to="/app/generator"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
                   >
-                    Launch AI Generator <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Open generator</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-xs space-y-2">
-                  <div className="flex items-center justify-between text-indigo-400 font-mono">
-                    <span>Target: Dynamic Programming</span>
-                    <span className="text-amber-400">Difficulty: Medium</span>
+                <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] text-xs space-y-2.5">
+                  <div className="flex items-center justify-between font-mono">
+                    <span className="text-[#a1a1a6]">Dynamic programming</span>
+                    <span className="text-[#e5a00d]">Medium</span>
                   </div>
-                  <p className="text-white font-semibold">Autonomous Cache Optimizer</p>
-                  <p className="text-slate-400 text-[11px]">Constraints: 1 &lt;= N &lt;= 10^5, Time Target: O(N)</p>
-                  <div className="p-3 bg-slate-900 rounded-xl font-mono text-[11px] text-slate-300">
-                    Input Format: Tokens array stream<br />
-                    Output Format: Max aggregated token value
+                  <p className="text-[#ededed] font-medium text-sm">Autonomous cache optimizer</p>
+                  <p className="text-[#85858b] font-mono tabular-nums">1 &lt;= N &lt;= 10^5 · Time target O(N)</p>
+                  <div className="p-3 bg-[#19191b] rounded-lg border border-white/[0.08] font-mono text-[#a1a1a6]">
+                    Input: token stream array<br />
+                    Output: maximum aggregated value
                   </div>
                 </div>
               </div>
@@ -684,34 +651,30 @@ public:
             {activeTab === 'dashboard' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h4 className="text-xl font-bold text-white mb-2">Centralized Desktop Dashboard</h4>
-                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                    Track your streak, accuracy rate, skill radar, and active submissions in a responsive workstation layout.
+                  <h3 className="text-xl font-medium text-[#ededed] mb-2">Developer telemetry</h3>
+                  <p className="text-sm text-[#a1a1a6] mb-5 leading-relaxed">
+                    Monitor solved count, acceptance rate, active streak, and weekly submission volume alongside domain mastery breakdowns.
                   </p>
                   <Link
-                    to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs"
+                    to="/app/dashboard"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
                   >
-                    Enter Dashboard <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Open dashboard</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-slate-800 grid grid-cols-2 gap-3 text-center">
-                  <div className="p-3 bg-slate-900/60 rounded-xl">
-                    <p className="text-xl font-bold text-indigo-400 font-mono">28</p>
-                    <p className="text-[11px] text-slate-400">Solved Challenges</p>
-                  </div>
-                  <div className="p-3 bg-slate-900/60 rounded-xl">
-                    <p className="text-xl font-bold text-emerald-400 font-mono">89.4%</p>
-                    <p className="text-[11px] text-slate-400">Success Rate</p>
-                  </div>
-                  <div className="p-3 bg-slate-900/60 rounded-xl">
-                    <p className="text-xl font-bold text-amber-400 font-mono">12 Days</p>
-                    <p className="text-[11px] text-slate-400">Current Streak</p>
-                  </div>
-                  <div className="p-3 bg-slate-900/60 rounded-xl">
-                    <p className="text-xl font-bold text-cyan-400 font-mono">2,450</p>
-                    <p className="text-[11px] text-slate-400">Total Points</p>
-                  </div>
+                <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] grid grid-cols-2 gap-3 tabular-nums">
+                  {[
+                    { label: 'Solved tasks', val: '28' },
+                    { label: 'Pass rate', val: '89.4%' },
+                    { label: 'Current streak', val: '12d' },
+                    { label: 'Total points', val: '2,450' },
+                  ].map((m) => (
+                    <div key={m.label} className="p-3.5 bg-[#19191b] rounded-lg border border-white/[0.08]">
+                      <p className="text-xs text-[#85858b]">{m.label}</p>
+                      <p className="text-xl font-medium text-[#ededed] font-mono mt-1">{m.val}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -719,27 +682,28 @@ public:
             {activeTab === 'review' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h4 className="text-xl font-bold text-white mb-2">Automated Code Quality & Complexity Review</h4>
-                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                    Every submitted solution receives automated big-O complexity analysis, clean code scoring, and security reviews.
+                  <h3 className="text-xl font-medium text-[#ededed] mb-2">Complexity and code quality audit</h3>
+                  <p className="text-sm text-[#a1a1a6] mb-5 leading-relaxed">
+                    Submitted solutions receive automated Big-O estimates, style inspection, and edge-case notes powered by Gemini or static AST analysis.
                   </p>
                   <Link
-                    to="/login"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs"
+                    to="/app/submissions"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
                   >
-                    View Sample Review <ArrowRight className="w-3.5 h-3.5" />
+                    <span>View submissions</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-xs space-y-2">
+                <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.08] text-xs space-y-3 tabular-nums">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white">Overall Quality Score</span>
-                    <span className="text-emerald-400 font-mono font-bold">96/100</span>
+                    <span className="font-medium text-[#ededed]">Quality score</span>
+                    <span className="text-[#4cc38a] font-mono">96 / 100</span>
                   </div>
-                  <p className="text-slate-400 text-[11px]">
-                    Time Complexity: <strong className="text-indigo-300">O(1)</strong> | Space Complexity: <strong className="text-indigo-300">O(capacity)</strong>
+                  <p className="text-[#85858b] font-mono">
+                    Time: O(1) · Space: O(capacity)
                   </p>
-                  <div className="p-3 bg-slate-900 rounded-xl text-slate-300 text-[11px]">
-                    "Exemplary usage of OrderedDict to achieve constant-time eviction and retrieval."
+                  <div className="p-3 bg-[#19191b] rounded-lg border border-white/[0.08] text-[#a1a1a6]">
+                    Uses OrderedDict for constant-time eviction and key refresh without auxiliary node leaks.
                   </div>
                 </div>
               </div>
@@ -748,38 +712,46 @@ public:
             {activeTab === 'credentials' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h4 className="text-xl font-bold text-white mb-2">Verified Vector PDFs &amp; Social Post Studio</h4>
-                  <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                    Every earned credential generates a crisp landscape A4 PDF diploma via ReportLab, a cryptographic SHA-256 verification URL, and ready-to-post copy &amp; PNG cards for LinkedIn, Instagram, Facebook, and WhatsApp.
+                  <h3 className="text-xl font-medium text-[#ededed] mb-2">Vector PDFs &amp; verification registry</h3>
+                  <p className="text-sm text-[#a1a1a6] mb-5 leading-relaxed">
+                    Completed tracks mint a landscape A4 PDF via ReportLab, a SHA-256 verification URL, and PNG social cards ready for LinkedIn, Instagram, Facebook, and WhatsApp.
                   </p>
-                  <ul className="space-y-2 text-xs text-slate-300 font-mono mb-6">
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Public /verify/:credentialId &amp; 15×15 QR code</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> LinkedIn Feed + Add-to-Profile deep links</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> 1080×1080 Instagram &amp; 1200×630 FB PNG cards</li>
+                  <ul className="space-y-2 text-xs text-[#a1a1a6] font-mono mb-6">
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>Public /verify/:credentialId &amp; 15×15 QR matrix</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>LinkedIn Add-to-Profile deep links</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a] shrink-0" />
+                      <span>1080×1080 &amp; 1200×630 PNG card exports</span>
+                    </li>
                   </ul>
                   <Link
                     to="/app/certificates"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-lg shadow-amber-600/30"
+                    className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
                   >
-                    Explore Credentials Hub <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Explore credentials</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-                <div className="p-5 rounded-2xl bg-[#0B0F19] border border-amber-500/35 text-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-amber-300 font-bold">OFFICIAL CREDENTIAL • A4 VECTOR PDF</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-mono text-[10px]">SHA-256 VERIFIED</span>
+                <div className="p-5 rounded-xl bg-[#141415] border border-white/[0.1] text-xs space-y-3 tabular-nums">
+                  <div className="flex items-center justify-between font-mono">
+                    <span className="text-[#e5a00d]">A4 vector PDF</span>
+                    <span className="text-[#4cc38a]">[SHA-256 verified]</span>
                   </div>
-                  <p className="text-white font-bold text-sm">Mastery of Algorithmic Problem Solving</p>
-                  <div className="grid grid-cols-3 gap-2 text-center font-mono text-[11px]">
-                    <div className="p-2 rounded-lg bg-slate-900 text-indigo-300">98% Score</div>
-                    <div className="p-2 rounded-lg bg-slate-900 text-cyan-300">42+ Tasks</div>
-                    <div className="p-2 rounded-lg bg-slate-900 text-emerald-300">36 Hours</div>
+                  <p className="text-[#ededed] font-medium text-sm">Mastery of algorithmic problem solving</p>
+                  <div className="grid grid-cols-3 gap-2 font-mono">
+                    <div className="p-2.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-[#ededed]">98% score</div>
+                    <div className="p-2.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-[#ededed]">42+ tasks</div>
+                    <div className="p-2.5 rounded-lg bg-[#19191b] border border-white/[0.08] text-[#ededed]">36 hours</div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1 text-[10px] font-mono">
-                    <span className="px-2 py-0.5 rounded bg-sky-500/15 text-sky-300">LinkedIn</span>
-                    <span className="px-2 py-0.5 rounded bg-pink-500/15 text-pink-300">Instagram</span>
-                    <span className="px-2 py-0.5 rounded bg-blue-500/15 text-blue-300">Facebook</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300">WhatsApp</span>
+                  <div className="flex items-center gap-2 pt-1 text-[#85858b] font-mono">
+                    <FileCheck2 strokeWidth={1.5} className="w-3.5 h-3.5" />
+                    <span>LinkedIn · Instagram · Facebook · WhatsApp</span>
                   </div>
                 </div>
               </div>
@@ -788,355 +760,128 @@ public:
         </div>
       </section>
 
-      {/* Video Masterclasses & Interactive Explanations Section */}
-      <section id="videos" className="py-24 relative overflow-hidden bg-gradient-to-b from-[#090C16] via-[#0B0D1E] to-[#090C16] border-t border-slate-800/80">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-purple-600/10 blur-[140px] pointer-events-none -z-0" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      {/* Video Masterclasses & Academies */}
+      <section id="videos" className="py-20 sm:py-24 bg-[#0f0f10] border-y border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-semibold mb-3">
-                <BrainCircuit className="w-3.5 h-3.5 text-purple-400" />
-                <span>Coding Masterclasses & Visual Intuition</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
-                Learn the Architecture. <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-300 to-cyan-400">
-                  Code the Solution.
-                </span>
+              <p className="text-xs font-mono text-[#85858b] mb-2">Academies &amp; video library</p>
+              <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+                Learn the theory, then implement the solution
               </h2>
-              <p className="text-slate-400 text-sm sm:text-base mt-4 leading-relaxed">
-                Watch mathematical intuition and deep learning walkthroughs by elite engineers.
-                Then jump directly into the integrated Monaco IDE to code and verify the solution against automated test vectors.
+              <p className="text-[#a1a1a6] text-sm sm:text-base mt-3 leading-relaxed">
+                Follow structured machine learning and deep learning tracks with lecture notes, quizzes, capstones, and camera-proctored exams.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
               <Link
                 to="/app/lms"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-emerald-600/25"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs transition-colors"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>Explore LMS Academies</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>LMS hub</span>
+                <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
               </Link>
               <Link
                 to="/app/lms/ml"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/25"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] font-medium text-xs transition-colors"
               >
-                <BrainCircuit className="w-4 h-4" />
-                <span>106-Video ML LMS</span>
-                <ArrowRight className="w-4 h-4" />
+                <BrainCircuit strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                <span>ML track (106)</span>
               </Link>
               <Link
                 to="/app/lms/dl"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-rose-600/25"
+                className="inline-flex items-center gap-2 px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08] font-medium text-xs transition-colors"
               >
-                <GraduationCap className="w-4 h-4" />
-                <span>Stanford × CTF DL (21)</span>
-                <ArrowRight className="w-4 h-4" />
+                <GraduationCap strokeWidth={1.5} className="w-3.5 h-3.5 text-[#a1a1a6]" />
+                <span>Stanford DL (21)</span>
               </Link>
             </div>
           </div>
 
-          {/* Official Featured LMS Course Thumbnails */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <Link
-              to="/app/lms/ml"
-              className="group relative rounded-3xl overflow-hidden border border-indigo-500/35 bg-[#080B15] hover:border-indigo-400 transition shadow-2xl"
-            >
-              <img
-                src="/thumbnails/ml-ctf-course-thumbnail.svg"
-                alt="Machine Learning 106-Video LMS Course Thumbnail"
-                className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-500"
-              />
-            </Link>
-            <Link
-              to="/app/lms/dl"
-              className="group relative rounded-3xl overflow-hidden border border-rose-500/40 bg-[#080B15] hover:border-rose-400 transition shadow-2xl"
-            >
-              <img
-                src="/thumbnails/stanford-ctf-dl-thumbnail.svg"
-                alt="[Stanford X Coding Task Factory Academy] Deep Learning Thumbnail"
-                className="w-full aspect-video object-cover group-hover:scale-[1.02] transition duration-500"
-              />
-            </Link>
-          </div>
-
-          {/* 3 Masterclass Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1: Transformer Self-Attention */}
-            <div className="group rounded-3xl bg-[#080B15] border border-purple-500/30 hover:border-purple-500/60 transition duration-300 overflow-hidden shadow-2xl flex flex-col justify-between">
-              <div>
-                <div
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'Transformer Self-Attention Mechanism Visualized & Coded',
-                      video_url: 'https://www.youtube-nocookie.com/embed/eMlx5fFNoYc?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Elena Rostova (AI Lead)',
-                      category: 'Machine Learning',
-                      duration: '18 min',
-                      challenge_id: 'c-ml-self-attention',
-                      description: 'Understand Queries, Keys, and Values, dot-product similarity, scaling by sqrt(d_k), causal masking, and parallel head computation.',
-                    })
-                  }
-                  className="relative aspect-video w-full overflow-hidden cursor-pointer"
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80"
-                    alt="Transformer Attention"
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/60 transition" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-purple-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-purple-500 transition border border-white/20">
-                      <Play className="w-5 h-5 fill-white ml-0.5" />
-                    </div>
-                  </div>
-                  <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-600/90 text-white backdrop-blur-md">
-                    Machine Learning
-                  </div>
-                  <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/80 font-mono text-[11px] text-white backdrop-blur-md">
-                    18:00
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="text-purple-300 font-semibold">Elena Rostova</span>
-                    <span className="font-mono">14.2k Views</span>
-                  </div>
-                  <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition">
-                    Transformer Self-Attention Mechanism Visualized & Coded
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                    Step-by-step breakdown of the core engine behind modern LLMs (GPT, Gemini, Claude).
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-6 pt-0 border-t border-slate-800/80 flex items-center justify-between gap-3">
-                <button
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'Transformer Self-Attention Mechanism Visualized & Coded',
-                      video_url: 'https://www.youtube-nocookie.com/embed/eMlx5fFNoYc?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Elena Rostova (AI Lead)',
-                      category: 'Machine Learning',
-                      duration: '18 min',
-                      challenge_id: 'c-ml-self-attention',
-                      description: 'Understand Queries, Keys, and Values, dot-product similarity, scaling by sqrt(d_k), causal masking, and parallel head computation.',
-                    })
-                  }
-                  className="text-xs font-semibold text-purple-400 hover:text-purple-300 transition"
-                >
-                  Watch Preview
-                </button>
-                <Link
-                  to="/app/workspace/c-ml-self-attention"
-                  className="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow"
-                >
-                  <span>Solve in IDE</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 2: Neural Network From Scratch */}
-            <div className="group rounded-3xl bg-[#080B15] border border-slate-800/80 hover:border-indigo-500/50 transition duration-300 overflow-hidden shadow-2xl flex flex-col justify-between">
-              <div>
-                <div
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'Building a Neural Network from Scratch in Python',
-                      video_url: 'https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Dr. Andrew Karpathy',
-                      category: 'Machine Learning',
-                      duration: '22 min',
-                      challenge_id: 'c-ml-softmax-loss',
-                      description: 'Complete masterclass detailing matrix operations, forward propagation, calculating loss gradients, and updating model weights.',
-                    })
-                  }
-                  className="relative aspect-video w-full overflow-hidden cursor-pointer"
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80"
-                    alt="Neural Network"
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/60 transition" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-indigo-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-indigo-500 transition border border-white/20">
-                      <Play className="w-5 h-5 fill-white ml-0.5" />
-                    </div>
-                  </div>
-                  <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-600/90 text-white backdrop-blur-md">
-                    Machine Learning
-                  </div>
-                  <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/80 font-mono text-[11px] text-white backdrop-blur-md">
-                    22:00
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="text-indigo-300 font-semibold">Dr. Andrew Karpathy</span>
-                    <span className="font-mono">8.9k Views</span>
-                  </div>
-                  <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition">
-                    Building a Neural Network from Scratch in Python
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                    Learn matrix operations, activation functions (ReLU, Sigmoid), forward pass, and backpropagation.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-6 pt-0 border-t border-slate-800/80 flex items-center justify-between gap-3">
-                <button
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'Building a Neural Network from Scratch in Python',
-                      video_url: 'https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Dr. Andrew Karpathy',
-                      category: 'Machine Learning',
-                      duration: '22 min',
-                      challenge_id: 'c-ml-softmax-loss',
-                      description: 'Complete masterclass detailing matrix operations, forward propagation, calculating loss gradients, and updating model weights.',
-                    })
-                  }
-                  className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition"
-                >
-                  Watch Preview
-                </button>
-                <Link
-                  to="/app/workspace/c-ml-softmax-loss"
-                  className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow"
-                >
-                  <span>Solve in IDE</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 3: LRU Cache Design */}
-            <div className="group rounded-3xl bg-[#080B15] border border-slate-800/80 hover:border-cyan-500/50 transition duration-300 overflow-hidden shadow-2xl flex flex-col justify-between">
-              <div>
-                <div
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps',
-                      video_url: 'https://www.youtube-nocookie.com/embed/7ABFKPK2hD4?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Marcus Vance',
-                      category: 'Data Structures',
-                      duration: '15 min',
-                      challenge_id: 'c2-lru-cache',
-                      description: 'Comprehensive visual breakdown of the LRU Cache pattern. Explore why O(1) eviction demands a doubly linked list and hash table.',
-                    })
-                  }
-                  className="relative aspect-video w-full overflow-hidden cursor-pointer"
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80"
-                    alt="LRU Cache"
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/60 transition" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-cyan-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-cyan-500 transition border border-white/20">
-                      <Play className="w-5 h-5 fill-white ml-0.5" />
-                    </div>
-                  </div>
-                  <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-600/90 text-white backdrop-blur-md">
-                    Data Structures
-                  </div>
-                  <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/80 font-mono text-[11px] text-white backdrop-blur-md">
-                    15:00
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="text-cyan-300 font-semibold">Marcus Vance</span>
-                    <span className="font-mono">19.6k Views</span>
-                  </div>
-                  <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition">
-                    LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                    Learn the dual-ended pointer design for constant time eviction and retrieval in memory-constrained systems.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-6 pt-0 border-t border-slate-800/80 flex items-center justify-between gap-3">
-                <button
-                  onClick={() =>
-                    setPreviewVideo({
-                      title: 'LRU Cache Deep Dive: Doubly Linked Lists & Hash Maps',
-                      video_url: 'https://www.youtube-nocookie.com/embed/7ABFKPK2hD4?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
-                      instructor: 'Marcus Vance',
-                      category: 'Data Structures',
-                      duration: '15 min',
-                      challenge_id: 'c2-lru-cache',
-                      description: 'Comprehensive visual breakdown of the LRU Cache pattern. Explore why O(1) eviction demands a doubly linked list and hash table.',
-                    })
-                  }
-                  className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition"
-                >
-                  Watch Preview
-                </button>
-                <Link
-                  to="/app/workspace/c2-lru-cache"
-                  className="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow"
-                >
-                  <span>Solve in IDE</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-24 bg-[#090C16] border-y border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-              Developer Endorsements
-            </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Built for Engineers. Proven in Production.
-            </h3>
-          </div>
-
+          {/* 3 Masterclass Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
+            {[
+              {
+                title: 'Transformer self-attention visualized and coded',
+                video_url: 'https://www.youtube-nocookie.com/embed/eMlx5fFNoYc?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
+                instructor: 'Elena Rostova',
+                category: 'Machine learning',
+                duration: '18:00',
+                challenge_id: 'c-ml-self-attention',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+                description: 'Queries, keys, values, scaled dot-product similarity, causal masking, and multi-head projection.',
+              },
+              {
+                title: 'Building a neural network from scratch in Python',
+                video_url: 'https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
+                instructor: 'Dr. Andrew Karpathy',
+                category: 'Machine learning',
+                duration: '22:00',
+                challenge_id: 'c-ml-softmax-loss',
+                image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80',
+                description: 'Matrix forward passes, ReLU and Sigmoid activations, loss gradients, and weight updates.',
+              },
+              {
+                title: 'LRU cache design with doubly linked lists and hash maps',
+                video_url: 'https://www.youtube-nocookie.com/embed/7ABFKPK2hD4?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&fs=1',
+                instructor: 'Marcus Vance',
+                category: 'Data structures',
+                duration: '15:00',
+                challenge_id: 'c2-lru-cache',
+                image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80',
+                description: 'Dual-ended pointer mechanics for constant-time eviction in bounded memory.',
+              },
+            ].map((item) => (
               <div
-                key={t.name}
-                className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between"
+                key={item.challenge_id}
+                className="rounded-xl bg-[#19191b] border border-white/[0.08] overflow-hidden flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center gap-1 text-amber-400 mb-4">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
+                  <button
+                    type="button"
+                    onClick={() => setPreviewVideo(item)}
+                    className="relative aspect-video w-full overflow-hidden block text-left group"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition-opacity duration-200"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141415]/90 via-[#141415]/20 to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-11 h-11 rounded-full bg-[#141415]/90 border border-white/20 text-[#ededed] flex items-center justify-center">
+                        <Play strokeWidth={1.5} className="w-4 h-4 fill-current ml-0.5" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono">
+                      <span className="text-[#ededed]">{item.category}</span>
+                      <span className="text-[#a1a1a6] tabular-nums">{item.duration}</span>
+                    </div>
+                  </button>
+
+                  <div className="p-5 space-y-2">
+                    <p className="text-xs text-[#85858b]">{item.instructor}</p>
+                    <h3 className="text-base font-medium text-[#ededed] leading-snug">{item.title}</h3>
+                    <p className="text-xs text-[#a1a1a6] line-clamp-2 leading-relaxed">{item.description}</p>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic mb-6">
-                    "{t.text}"
-                  </p>
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-800/80">
-                  <img
-                    src={t.avatar}
-                    alt={t.name}
-                    className="w-10 h-10 rounded-full object-cover border border-slate-700"
-                  />
-                  <div>
-                    <h5 className="text-xs font-bold text-white">{t.name}</h5>
-                    <p className="text-[11px] text-slate-400">{t.role}</p>
-                  </div>
+
+                <div className="px-5 py-3.5 border-t border-white/[0.08] flex items-center justify-between text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewVideo(item)}
+                    className="text-[#a1a1a6] hover:text-[#ededed] transition-colors"
+                  >
+                    Watch preview
+                  </button>
+                  <Link
+                    to={`/app/workspace/${item.challenge_id}`}
+                    className="inline-flex items-center gap-1.5 text-[#ededed] hover:text-[#e5a00d] font-medium transition-colors"
+                  >
+                    <span>Solve in IDE</span>
+                    <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
             ))}
@@ -1144,29 +889,34 @@ public:
         </div>
       </section>
 
-      {/* Solutions Section */}
-      <section id="solutions" className="py-24">
+      {/* Architecture & Security Verification (replaces unverified testimonials) */}
+      <section className="py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-indigo-400 mb-3">
-              Versatile Platform
+          <div className="max-w-2xl mb-12">
+            <p className="text-xs font-mono text-[#85858b] mb-2">Engineering guarantees</p>
+            <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Verifiable execution and credential integrity
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Tailored for Developers, Educators & Recruiters
-            </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {solutions.map((s) => {
-              const Icon = s.icon;
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {architecturePillars.map((pillar) => {
+              const Icon = pillar.icon;
               return (
                 <div
-                  key={s.title}
-                  className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition"
+                  key={pillar.title}
+                  className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] flex flex-col justify-between space-y-4"
                 >
-                  <Icon className="w-6 h-6 text-indigo-400 mb-4" />
-                  <h4 className="text-base font-bold text-white mb-2">{s.title}</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-9 h-9 rounded-lg bg-[#222225] border border-white/[0.08] flex items-center justify-center">
+                        <Icon strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
+                      </div>
+                      <span className="font-mono text-xs text-[#e5a00d] tabular-nums">{pillar.metric}</span>
+                    </div>
+                    <h3 className="text-base font-medium text-[#ededed] mb-2">{pillar.title}</h3>
+                    <p className="text-sm text-[#85858b] leading-relaxed">{pillar.desc}</p>
+                  </div>
                 </div>
               );
             })}
@@ -1174,180 +924,201 @@ public:
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-[#090C16] border-y border-slate-800/80">
+      {/* Solutions */}
+      <section id="solutions" className="py-20 bg-[#0f0f10] border-y border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-              Simple, Transparent Pricing
+          <div className="max-w-2xl mb-12">
+            <p className="text-xs font-mono text-[#85858b] mb-2">Use cases</p>
+            <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Built for developers, educators, and hiring teams
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Configurable Plans for Every Stage
-            </h3>
-            <p className="text-slate-400 text-sm">
-              Free forever for open practice. Upgrade for unlimited AI challenges and enterprise candidate assessments.
-            </p>
+          </div>
 
-            {/* Monthly / Annual toggle */}
-            <div className="inline-flex items-center gap-3 p-1 rounded-full bg-slate-900 border border-slate-800 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {solutions.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div
+                  key={s.title}
+                  className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08]"
+                >
+                  <Icon strokeWidth={1.5} className="w-4 h-4 text-[#85858b] mb-4" />
+                  <h3 className="text-base font-medium text-[#ededed] mb-1.5">{s.title}</h3>
+                  <p className="text-sm text-[#85858b] leading-relaxed">{s.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+            <div className="max-w-xl">
+              <p className="text-xs font-mono text-[#85858b] mb-2">Pricing</p>
+              <h2 className="text-3xl sm:text-4xl font-medium tracking-[-0.02em] text-[#ededed]">
+                Plans for practice and team screening
+              </h2>
+            </div>
+
+            <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#0f0f10] border border-white/[0.08] self-start">
               <button
+                type="button"
                 onClick={() => setAnnualBilling(false)}
-                className={`px-3.5 py-1 text-xs font-semibold rounded-full transition ${
-                  !annualBilling ? 'bg-indigo-600 text-white' : 'text-slate-400'
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  !annualBilling ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
                 Monthly
               </button>
               <button
+                type="button"
                 onClick={() => setAnnualBilling(true)}
-                className={`px-3.5 py-1 text-xs font-semibold rounded-full transition ${
-                  annualBilling ? 'bg-indigo-600 text-white' : 'text-slate-400'
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  annualBilling ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
               >
-                Annual (Save 20%)
+                Annual (20% off)
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Free */}
-            <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <h4 className="text-lg font-bold text-white">Free</h4>
-                <p className="text-xs text-slate-400 mt-1">For curious developers</p>
-                <div className="mt-4 mb-6">
-                  <span className="text-3xl font-extrabold text-white font-mono">$0</span>
-                  <span className="text-xs text-slate-500"> / forever</span>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> 10 AI Challenges / month</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Full Monaco Coding Workspace</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Standard Test Case Runner</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Community Leaderboard</li>
-                </ul>
-              </div>
-              <Link
-                to="/register"
-                className="mt-8 w-full text-center py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 tabular-nums">
+            {[
+              {
+                name: 'Free',
+                desc: 'Open individual practice',
+                price: '$0',
+                cadence: 'forever',
+                cta: 'Get started',
+                featured: false,
+                perks: [
+                  '10 generated challenges / month',
+                  'Monaco coding workspace',
+                  'Standard test suite runner',
+                  'Leaderboard access',
+                ],
+              },
+              {
+                name: 'Pro',
+                desc: 'Interview preparation and mastery',
+                price: annualBilling ? '$15' : '$19',
+                cadence: 'per month',
+                cta: 'Start Pro trial',
+                featured: true,
+                perks: [
+                  'Unlimited generated challenges',
+                  'Deep complexity & code reviews',
+                  'Verified PDF credentials',
+                  'Analytics and competency radar',
+                  'Custom Gemini API key support',
+                ],
+              },
+              {
+                name: 'Team',
+                desc: 'Bootcamps and classrooms',
+                price: annualBilling ? '$39' : '$49',
+                cadence: 'per month',
+                cta: 'Choose Team',
+                featured: false,
+                perks: [
+                  'Everything in Pro',
+                  'Up to 20 team seats',
+                  'Custom assessment builder',
+                  'Cohort gradebook export',
+                ],
+              },
+              {
+                name: 'Enterprise',
+                desc: 'Hiring teams at scale',
+                price: 'Custom',
+                cadence: 'annual',
+                cta: 'Contact sales',
+                featured: false,
+                perks: [
+                  'Dedicated sandboxed cluster',
+                  'ATS integration (Greenhouse, Lever)',
+                  'Proctoring & integrity audit logs',
+                  'Priority support SLA',
+                ],
+              },
+            ].map((plan) => (
+              <div
+                key={plan.name}
+                className={`p-6 rounded-xl bg-[#19191b] border flex flex-col justify-between ${
+                  plan.featured ? 'border-[#e5a00d]/55' : 'border-white/[0.08]'
+                }`}
               >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro */}
-            <div className="p-6 rounded-3xl bg-slate-900/80 border-2 border-indigo-500/80 flex flex-col justify-between relative shadow-xl shadow-indigo-950/40">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider">
-                Most Popular
-              </span>
-              <div>
-                <h4 className="text-lg font-bold text-white">Pro</h4>
-                <p className="text-xs text-slate-400 mt-1">For interview prep & mastery</p>
-                <div className="mt-4 mb-6">
-                  <span className="text-3xl font-extrabold text-white font-mono">
-                    {annualBilling ? '$15' : '$19'}
-                  </span>
-                  <span className="text-xs text-slate-500"> / month</span>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-medium text-[#ededed]">{plan.name}</h3>
+                    {plan.featured && (
+                      <span className="font-mono text-xs text-[#e5a00d]">Recommended</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#85858b] mt-1">{plan.desc}</p>
+                  <div className="mt-5 mb-6 flex items-baseline gap-1.5">
+                    <span className="text-3xl font-medium text-[#ededed] font-mono">{plan.price}</span>
+                    <span className="text-xs text-[#85858b]">/ {plan.cadence}</span>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-[#a1a1a6]">
+                    {plan.perks.map((perk) => (
+                      <li key={perk} className="flex items-start gap-2">
+                        <Check strokeWidth={1.5} className="w-3.5 h-3.5 text-[#4cc38a] shrink-0 mt-0.5" />
+                        <span>{perk}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Unlimited AI Challenges</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Deep AI Code Reviews & Big-O</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Verified Skill Certificates</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Advanced Analytics & Radar</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Connect Custom Gemini API Key</li>
-                </ul>
+                <Link
+                  to="/register"
+                  className={`mt-8 w-full text-center py-2.5 rounded-lg font-medium text-xs transition-colors ${
+                    plan.featured
+                      ? 'bg-[#ededed] hover:bg-white text-[#141415]'
+                      : 'bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/[0.08]'
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
               </div>
-              <Link
-                to="/register"
-                className="mt-8 w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30"
-              >
-                Start Pro Trial
-              </Link>
-            </div>
-
-            {/* Team */}
-            <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <h4 className="text-lg font-bold text-white">Team</h4>
-                <p className="text-xs text-slate-400 mt-1">For bootcamps & classrooms</p>
-                <div className="mt-4 mb-6">
-                  <span className="text-3xl font-extrabold text-white font-mono">
-                    {annualBilling ? '$39' : '$49'}
-                  </span>
-                  <span className="text-xs text-slate-500"> / month</span>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Everything in Pro</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Up to 20 Team Seats</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Custom Assessment Builder</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Cohort Gradebook & Export</li>
-                </ul>
-              </div>
-              <Link
-                to="/register"
-                className="mt-8 w-full text-center py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700"
-              >
-                Choose Team
-              </Link>
-            </div>
-
-            {/* Enterprise */}
-            <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <h4 className="text-lg font-bold text-white">Enterprise</h4>
-                <p className="text-xs text-slate-400 mt-1">For technical recruiters & scale</p>
-                <div className="mt-4 mb-6">
-                  <span className="text-3xl font-extrabold text-white font-mono">Custom</span>
-                  <span className="text-xs text-slate-500"> / annual</span>
-                </div>
-                <ul className="space-y-2.5 text-xs text-slate-300">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Dedicated Sandboxed Cluster</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> ATS Integration (Greenhouse, Lever)</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Anti-Cheating & Plagiarism Engine</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> 24/7 Priority Support & SLA</li>
-                </ul>
-              </div>
-              <Link
-                to="/register"
-                className="mt-8 w-full text-center py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700"
-              >
-                Contact Sales
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" className="py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-xs font-mono uppercase tracking-widest text-indigo-400 mb-3">
-              Got Questions?
+      {/* FAQ */}
+      <section id="faq" className="py-20 bg-[#0f0f10] border-y border-white/[0.08]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <p className="text-xs font-mono text-[#85858b] mb-2">FAQ</p>
+            <h2 className="text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Frequently asked questions
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white">
-              Frequently Asked Questions
-            </h3>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2">
             {faqs.map((faq, idx) => (
               <div
                 key={faq.q}
-                className="rounded-2xl bg-slate-900/60 border border-slate-800/80 overflow-hidden"
+                className="rounded-xl bg-[#19191b] border border-white/[0.08] overflow-hidden"
               >
                 <button
+                  type="button"
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-indigo-300 transition"
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-medium text-[#ededed] text-sm sm:text-base hover:bg-[#222225]/60 transition-colors"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                      openFaq === idx ? 'rotate-180 text-indigo-400' : ''
+                    strokeWidth={1.5}
+                    className={`w-4 h-4 text-[#85858b] shrink-0 transition-transform duration-150 ${
+                      openFaq === idx ? 'rotate-180 text-[#ededed]' : ''
                     }`}
                   />
                 </button>
                 {openFaq === idx && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/50 pt-3">
+                  <div className="px-5 pb-5 text-sm text-[#a1a1a6] leading-relaxed border-t border-white/[0.08] pt-3">
                     {faq.a}
                   </div>
                 )}
@@ -1357,59 +1128,56 @@ public:
         </div>
       </section>
 
-      {/* Final High-Converting CTA */}
-      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-[#090C16] to-[#070A12] border-t border-slate-800/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="p-10 sm:p-14 rounded-3xl bg-gradient-to-b from-indigo-900/30 to-slate-900/80 border border-indigo-500/30 shadow-2xl shadow-indigo-950/50 relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-600/30 border border-indigo-500/50 flex items-center justify-center text-cyan-300 mx-auto mb-6 shadow-lg shadow-indigo-600/20">
-              <Sparkles className="w-8 h-8" />
+      {/* Final CTA */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="p-8 sm:p-12 rounded-2xl bg-[#19191b] border border-white/[0.1] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-lg">
+              <h2 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+                Start coding in the workbench
+              </h2>
+              <p className="text-[#a1a1a6] text-sm mt-2 leading-relaxed">
+                Create a free account to access 368+ tasks, the Monaco runner, and verified PDF credentials.
+              </p>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
-              Your Next Coding Challenge Starts Here.
-            </h2>
-            <p className="text-slate-300 text-base max-w-xl mx-auto mb-8 leading-relaxed">
-              Join thousands of developers solving AI-generated algorithmic challenges and certifying their skills today.
-            </p>
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl shadow-xl shadow-indigo-600/40 hover:shadow-indigo-600/60 transition-all duration-200 active:scale-95 border border-indigo-400/40"
+              className="inline-flex items-center justify-center gap-2 px-5 h-11 text-sm font-medium text-[#141415] bg-[#ededed] hover:bg-white rounded-lg transition-colors shrink-0"
             >
-              Create Your Free Account
-              <ArrowRight className="w-5 h-5" />
+              <span>Create free account</span>
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Video Modal Preview */}
+      {/* Video Modal */}
       {previewVideo && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
           onClick={() => setPreviewVideo(null)}
         >
           <div
-            className="relative w-full max-w-4xl rounded-3xl bg-[#090C16] border border-purple-500/40 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-4xl rounded-2xl bg-[#19191b] border border-white/[0.12] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                  {previewVideo.category}
-                </span>
-                <h3 className="text-sm sm:text-base font-bold text-white truncate max-w-md">
-                  {previewVideo.title}
-                </h3>
+            <div className="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between bg-[#0f0f10]">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-xs font-mono text-[#e5a00d] shrink-0">{previewVideo.category}</span>
+                <h3 className="text-sm font-medium text-[#ededed] truncate">{previewVideo.title}</h3>
               </div>
               <button
+                type="button"
                 onClick={() => setPreviewVideo(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-[#85858b] hover:text-[#ededed] hover:bg-[#222225] transition-colors"
+                aria-label="Close preview"
               >
-                <X className="w-5 h-5" />
+                <X strokeWidth={1.5} className="w-4 h-4" />
               </button>
             </div>
 
             <div className="p-5 overflow-y-auto space-y-4">
-              <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-slate-800 bg-black shadow-xl">
+              <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/[0.08] bg-black">
                 <iframe
                   src={`${previewVideo.video_url}?autoplay=1&rel=0`}
                   title={previewVideo.title}
@@ -1419,23 +1187,19 @@ public:
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#141415] border border-white/[0.08]">
                 <div>
-                  <h4 className="text-sm font-bold text-white">{previewVideo.instructor}</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {previewVideo.description}
-                  </p>
+                  <h4 className="text-sm font-medium text-[#ededed]">{previewVideo.instructor}</h4>
+                  <p className="text-xs text-[#85858b] mt-0.5">{previewVideo.description}</p>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <Link
-                    to={`/app/workspace/${previewVideo.challenge_id}`}
-                    className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg shadow-purple-600/30 transition"
-                  >
-                    <Code2 className="w-4 h-4 text-cyan-300" />
-                    <span>Open in Workspace</span>
-                  </Link>
-                </div>
+                <Link
+                  to={`/app/workspace/${previewVideo.challenge_id}`}
+                  className="px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium text-xs inline-flex items-center gap-1.5 shrink-0 transition-colors"
+                >
+                  <Code2 strokeWidth={1.5} className="w-4 h-4" />
+                  <span>Open in workspace</span>
+                </Link>
               </div>
             </div>
           </div>

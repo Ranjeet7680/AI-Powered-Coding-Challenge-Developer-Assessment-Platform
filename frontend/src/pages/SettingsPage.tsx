@@ -8,7 +8,6 @@ import {
   Palette,
   Save,
   CheckCircle2,
-  Sparkles,
   ExternalLink,
   Trash2,
 } from 'lucide-react';
@@ -20,7 +19,6 @@ export const SettingsPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'profile' | 'api' | 'security' | 'appearance'>('profile');
 
-  // Profile & API states
   const [fullName, setFullName] = useState(user?.full_name || '');
   const [role, setRole] = useState(user?.role || 'Developer');
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -28,7 +26,6 @@ export const SettingsPage: React.FC = () => {
   const [testingKey, setTestingKey] = useState(false);
   const [keyStatus, setKeyStatus] = useState<string | null>(null);
 
-  // Security states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,7 +54,7 @@ export const SettingsPage: React.FC = () => {
     try {
       await updateProfile({ gemini_api_key: geminiApiKey.trim() });
       setGeminiApiKey('');
-      showToast('Gemini API key saved securely.', 'success');
+      showToast('Gemini API key saved.', 'success');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not save API key.';
       showToast(msg, 'error');
@@ -82,17 +79,19 @@ export const SettingsPage: React.FC = () => {
     setKeyStatus(null);
     try {
       if (!geminiApiKey.trim()) {
-        setKeyStatus('Please enter a key to verify before saving.');
+        setKeyStatus('Enter a key to verify before saving.');
         return;
       }
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(geminiApiKey.trim())}`);
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(geminiApiKey.trim())}`
+      );
       if (res.ok) {
-        setKeyStatus('Connection verified! Google Gemini API is ready.');
+        setKeyStatus('Connection verified. Google Gemini API is ready.');
       } else {
-        setKeyStatus('Invalid key or network error. Please verify in Google AI Studio.');
+        setKeyStatus('Invalid key or network error. Verify in Google AI Studio.');
       }
     } catch {
-      setKeyStatus('Connection error. Please check your network or key permissions.');
+      setKeyStatus('Connection error. Check network or key permissions.');
     } finally {
       setTestingKey(false);
     }
@@ -123,36 +122,38 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Platform Settings
+    <div className="max-w-4xl space-y-6">
+      <div className="pb-2 border-b border-white/[0.08]">
+        <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+          Settings
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Manage your developer profile, Gemini API integration, account security, and Monaco IDE defaults.
+        <p className="text-sm text-[#85858b] mt-1">
+          Profile, Gemini API integration, password security, and IDE preferences
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs font-semibold overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-1.5 border-b border-white/[0.08] pb-3 text-xs font-medium overflow-x-auto no-scrollbar">
         {[
-          { id: 'profile', label: 'Profile & Role', icon: User },
-          { id: 'api', label: 'AI & Gemini API Key', icon: Key },
-          { id: 'security', label: 'Security & Password', icon: Shield },
-          { id: 'appearance', label: 'IDE Preferences', icon: Palette },
+          { id: 'profile', label: 'Profile', icon: User },
+          { id: 'api', label: 'Gemini API key', icon: Key },
+          { id: 'security', label: 'Security', icon: Shield },
+          { id: 'appearance', label: 'IDE preferences', icon: Palette },
         ].map((tab) => {
           const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              className={`flex items-center gap-2 px-3.5 h-8 rounded-lg transition-colors whitespace-nowrap ${
+                isActive
+                  ? 'bg-[#222225] text-[#ededed] border border-white/[0.1]'
+                  : 'text-[#85858b] hover:text-[#ededed]'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon strokeWidth={1.5} className="w-3.5 h-3.5" />
               <span>{tab.label}</span>
             </button>
           );
@@ -160,17 +161,17 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {activeTab === 'profile' && (
-        <form onSubmit={handleSaveProfile} className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 shadow-xl">
-          <div className="flex items-center gap-4 pb-6 border-b border-slate-800">
+        <form onSubmit={handleSaveProfile} className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-6">
+          <div className="flex items-center gap-4 pb-5 border-b border-white/[0.08]">
             <img
               src={user?.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'}
               alt={user?.full_name || 'User'}
-              className="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500/50"
+              className="w-14 h-14 rounded-xl object-cover border border-white/[0.1]"
             />
             <div>
-              <h3 className="text-base font-bold text-white">{user?.full_name}</h3>
-              <p className="text-xs text-slate-400">{user?.email}</p>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-1 inline-block">
+              <h2 className="text-base font-medium text-[#ededed]">{user?.full_name}</h2>
+              <p className="text-xs text-[#85858b]">{user?.email}</p>
+              <span className="text-xs font-mono text-[#a1a1a6] mt-1 inline-block">
                 Level: {user?.experience || 'Intermediate'}
               </span>
             </div>
@@ -178,72 +179,69 @@ export const SettingsPage: React.FC = () => {
 
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Full Name</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Full name</label>
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Professional Title / Role</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Role</label>
               <input
                 type="text"
                 required
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               />
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex justify-end">
+          <div className="pt-4 border-t border-white/[0.08] flex justify-end">
             <button
               type="submit"
               disabled={savingProfile}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
             >
-              <Save className="w-4 h-4" />
-              {savingProfile ? 'Saving...' : 'Save Changes'}
+              <Save strokeWidth={1.5} className="w-3.5 h-3.5" />
+              <span>{savingProfile ? 'Saving' : 'Save changes'}</span>
             </button>
           </div>
         </form>
       )}
 
       {activeTab === 'api' && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 shadow-xl text-xs">
+        <div className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-6 text-xs">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h3 className="text-base font-bold text-white flex items-center gap-2 mb-1">
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-                Google Gemini API Integration
-              </h3>
-              <p className="text-slate-400 text-xs">
-                Connect your Google AI Studio key for live Gemini challenge synthesis, AI Copilot, and code reviews.
+              <h2 className="text-base font-medium text-[#ededed] mb-1">Google Gemini API key</h2>
+              <p className="text-[#85858b]">
+                Connect your Google AI Studio key for live Gemini challenge synthesis, copilot chat, and reviews.
               </p>
             </div>
             {user?.has_gemini_api_key && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 font-mono">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#141415] border border-white/[0.08] text-[#4cc38a] font-mono">
+                <CheckCircle2 strokeWidth={1.5} className="w-3.5 h-3.5" />
                 <span>Saved: {user.gemini_api_key_preview}</span>
                 <button
                   type="button"
                   onClick={handleClearApiKey}
-                  className="text-rose-400 hover:text-rose-300 ml-1"
+                  className="text-[#e5484d] hover:opacity-80 ml-1"
                   title="Remove stored API key"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 strokeWidth={1.5} className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
           </div>
 
           <div className="space-y-3">
-            <label className="block font-semibold text-slate-300">
-              {user?.has_gemini_api_key ? 'Replace Gemini API Key' : 'Gemini API Key'}
+            <label className="block font-medium text-[#a1a1a6]">
+              {user?.has_gemini_api_key ? 'Replace Gemini API key' : 'Gemini API key'}
             </label>
             <div className="flex flex-col sm:flex-row gap-2">
               <input
@@ -251,154 +249,153 @@ export const SettingsPage: React.FC = () => {
                 placeholder="AIzaSy..."
                 value={geminiApiKey}
                 onChange={(e) => setGeminiApiKey(e.target.value)}
-                className="flex-1 bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono focus:outline-none focus:border-indigo-500"
+                className="flex-1 h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] font-mono focus:outline-none focus:border-[#e5a00d]"
               />
               <button
                 type="button"
                 onClick={handleTestApiKey}
                 disabled={testingKey}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 transition"
+                className="px-4 h-9 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] font-medium border border-white/[0.08] transition-colors"
               >
-                {testingKey ? 'Testing...' : 'Test Connection'}
+                {testingKey ? 'Testing' : 'Test connection'}
               </button>
             </div>
 
             {keyStatus && (
-              <p className={`text-[11px] font-mono ${keyStatus.includes('verified') ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <p className={`text-xs font-mono ${keyStatus.includes('verified') ? 'text-[#4cc38a]' : 'text-[#e5a00d]'}`}>
                 {keyStatus}
               </p>
             )}
 
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-              <p className="font-semibold text-slate-300">Zero-Config Fallback Included</p>
-              <p className="text-slate-400 leading-relaxed text-[11px]">
-                Even without a Gemini API key, our procedural task engine and heuristic code analyzer let you generate problems, chat with Copilot, and run full test suites immediately.
+            <div className="p-4 rounded-lg bg-[#141415] border border-white/[0.08] space-y-2">
+              <p className="font-medium text-[#ededed]">Offline fallback active</p>
+              <p className="text-[#85858b] leading-relaxed">
+                Even without a Gemini API key, procedural problem generation and static AST code analysis remain available.
               </p>
               <a
                 href="https://aistudio.google.com/app/apikey"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-semibold text-[11px]"
+                className="inline-flex items-center gap-1.5 text-[#a1a1a6] hover:text-[#ededed] font-medium"
               >
-                Get a free key from Google AI Studio <ExternalLink className="w-3 h-3" />
+                <span>Get key from Google AI Studio</span>
+                <ExternalLink strokeWidth={1.5} className="w-3 h-3" />
               </a>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex justify-end">
+          <div className="pt-4 border-t border-white/[0.08] flex justify-end">
             <button
               type="button"
               onClick={handleSaveApiKey}
               disabled={savingProfile}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
             >
-              <Save className="w-4 h-4" />
-              Save API Configuration
+              <Save strokeWidth={1.5} className="w-3.5 h-3.5" />
+              <span>Save configuration</span>
             </button>
           </div>
         </div>
       )}
 
       {activeTab === 'security' && (
-        <form onSubmit={handlePasswordChange} className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 shadow-xl text-xs">
+        <form onSubmit={handlePasswordChange} className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-5 text-xs">
           <div>
-            <h3 className="text-base font-bold text-white">Change Account Password</h3>
-            <p className="text-slate-400 mt-1">
-              Passwords require 10+ characters with uppercase, lowercase, digit, and symbol. Re-hashed with 100k PBKDF2 rounds.
+            <h2 className="text-base font-medium text-[#ededed]">Change password</h2>
+            <p className="text-[#85858b] mt-1">
+              Requires 10+ characters with uppercase, lowercase, digit, and symbol. Re-hashed with 100k PBKDF2 rounds.
             </p>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Current Password</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Current password</label>
               <input
                 type="password"
                 required
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">New Strong Password</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">New password</label>
               <input
                 type="password"
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimum 10 chars, Aa, 123, !@#"
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                placeholder="10+ chars, Aa, 0-9, symbol"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Confirm New Password</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Confirm new password</label>
               <input
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter new password"
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                placeholder="Re-enter password"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-sm text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               />
             </div>
           </div>
           <button
             type="submit"
             disabled={updatingPw}
-            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition"
+            className="px-4 h-9 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] font-medium transition-colors"
           >
-            {updatingPw ? 'Updating Password...' : 'Update Password'}
+            {updatingPw ? 'Updating' : 'Update password'}
           </button>
         </form>
       )}
 
       {activeTab === 'appearance' && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6 shadow-xl text-xs">
+        <div className="p-6 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-6 text-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-white">Monaco IDE Preferences</h3>
-              <p className="text-slate-400 mt-1">
-                Changes apply immediately to your Coding Workspace editor.
-              </p>
+              <h2 className="text-base font-medium text-[#ededed]">Monaco IDE preferences</h2>
+              <p className="text-[#85858b] mt-1">Applied immediately in the coding workspace.</p>
             </div>
             <button
               type="button"
               onClick={() => {
                 resetPreferences();
-                showToast('IDE preferences reset to defaults.', 'info');
+                showToast('IDE preferences reset.', 'info');
               }}
-              className="text-indigo-400 hover:text-indigo-300 font-semibold"
+              className="text-[#a1a1a6] hover:text-[#ededed] font-medium"
             >
-              Reset Defaults
+              Reset defaults
             </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Editor Color Theme</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Editor theme</label>
               <select
                 value={preferences.editorTheme}
                 onChange={(e) => {
                   updatePreferences({ editorTheme: e.target.value as EditorThemeOption });
                   showToast('Editor theme updated.', 'success');
                 }}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               >
-                <option value="midnight-obsidian">Midnight Obsidian (Default)</option>
+                <option value="midnight-obsidian">Graphite Dark (Default)</option>
                 <option value="vs-dark">VS Code Dark+</option>
                 <option value="hc-black">High Contrast Dark</option>
               </select>
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Editor Font Size</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Font size</label>
               <select
                 value={preferences.fontSize}
                 onChange={(e) => {
                   updatePreferences({ fontSize: Number(e.target.value) });
                   showToast('Font size saved.', 'success');
                 }}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               >
                 <option value={12}>12px (Compact)</option>
                 <option value={13}>13px (Default)</option>
@@ -408,40 +405,40 @@ export const SettingsPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Tab Indentation Size</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Tab size</label>
               <select
                 value={preferences.tabSize}
                 onChange={(e) => updatePreferences({ tabSize: Number(e.target.value) })}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               >
-                <option value={2}>2 Spaces</option>
-                <option value={4}>4 Spaces (PEP8)</option>
+                <option value={2}>2 spaces</option>
+                <option value={4}>4 spaces (PEP8)</option>
               </select>
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Word Wrap</label>
+              <label className="block font-medium text-[#a1a1a6] mb-1.5">Word wrap</label>
               <select
                 value={preferences.wordWrap}
                 onChange={(e) => updatePreferences({ wordWrap: e.target.value as 'on' | 'off' })}
-                className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full h-9 bg-[#141415] border border-white/[0.1] rounded-lg px-3 text-[#ededed] focus:outline-none focus:border-[#e5a00d]"
               >
-                <option value="on">Enabled (Wrap long lines)</option>
-                <option value="off">Disabled (Horizontal scroll)</option>
+                <option value="on">Enabled</option>
+                <option value="off">Disabled</option>
               </select>
             </div>
           </div>
 
-          <label className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 cursor-pointer">
+          <label className="flex items-center gap-3 p-3.5 rounded-lg bg-[#141415] border border-white/[0.08] cursor-pointer">
             <input
               type="checkbox"
               checked={preferences.minimap}
               onChange={(e) => updatePreferences({ minimap: e.target.checked })}
-              className="rounded border-slate-700 text-indigo-600 bg-slate-900"
+              className="rounded border-white/20 bg-[#19191b] accent-[#e5a00d]"
             />
             <div>
-              <p className="font-semibold text-white">Show Code Minimap</p>
-              <p className="text-[11px] text-slate-400">Display overview minimap on the right side of Monaco Editor.</p>
+              <p className="font-medium text-[#ededed]">Show code minimap</p>
+              <p className="text-[11px] text-[#85858b]">Display overview minimap inside Monaco Editor</p>
             </div>
           </label>
         </div>

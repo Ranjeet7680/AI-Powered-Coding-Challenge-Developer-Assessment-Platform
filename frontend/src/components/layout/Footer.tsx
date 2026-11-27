@@ -14,42 +14,44 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
   const legalModalNode = legalModal && (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn no-print"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn no-print"
       onClick={() => setLegalModal(null)}
     >
       <div
-        className="w-full max-w-lg bg-[#0B101D] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4 text-left"
+        className="w-full max-w-lg bg-[#19191b] border border-white/[0.12] rounded-2xl p-6 shadow-2xl space-y-4 text-left"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-indigo-400" />
-            {legalModal === 'privacy' ? 'Privacy & Data Protection Policy' : 'Terms of Service'}
+        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+          <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+            <ShieldCheck strokeWidth={1.5} className="w-4 h-4 text-[#a1a1a6]" />
+            <span>{legalModal === 'privacy' ? 'Privacy and data protection' : 'Terms of service'}</span>
           </h3>
           <button
+            type="button"
             onClick={() => setLegalModal(null)}
-            className="p-1 text-slate-400 hover:text-white rounded-lg"
+            className="p-1.5 text-[#85858b] hover:text-[#ededed] rounded-lg transition-colors"
+            aria-label="Close modal"
           >
-            <X className="w-4 h-4" />
+            <X strokeWidth={1.5} className="w-4 h-4" />
           </button>
         </div>
-        <div className="text-xs text-slate-300 leading-relaxed space-y-3">
+        <div className="text-sm text-[#a1a1a6] leading-relaxed space-y-3">
           {legalModal === 'privacy' ? (
             <>
               <p>
                 Coding Task Factory stores account credentials using salted PBKDF2-HMAC-SHA256 (100,000 iterations) and signs session tokens with HMAC-SHA256.
               </p>
               <p>
-                Optional Gemini API keys saved in Platform Settings are stored exclusively for your user-initiated challenge generation and code review requests and are never returned in plaintext API responses.
+                Optional Gemini API keys saved in Settings are stored server-side solely for your user-initiated generation and review requests and are never returned in plaintext API responses.
               </p>
             </>
           ) : (
             <>
               <p>
-                All code executions run in isolated temporary subprocesses with strict execution timeouts. Users must not submit malicious payloads designed to exhaust host resources.
+                Code executions run in isolated temporary subprocesses with strict execution timeouts. Do not submit payloads designed to exhaust host resources.
               </p>
               <p>
-                Assessment credentials and Harbor 0.25 task packages are open-sourced under the MIT License for educational, benchmarking, and technical evaluation workflows.
+                Assessment credentials and Harbor 0.25 task packages are available under the MIT License for educational, benchmarking, and technical evaluation workflows.
               </p>
             </>
           )}
@@ -60,100 +62,74 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
 
   if (compact) {
     return (
-      <footer className="mt-8 sm:mt-10 rounded-2xl border border-slate-800/80 bg-[#070B14]/95 px-4 py-5 sm:px-7 no-print shadow-xl">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 pb-5 border-b border-slate-800/75 text-xs">
-          {/* Group 1: Workspace & Coding */}
-          <div className="space-y-2.5">
-            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-300">
-              Workspace &amp; Coding
-            </h4>
-            <ul className="space-y-1.5 text-slate-400">
-              <li><Link to="/" className="hover:text-white transition">Home Overview</Link></li>
-              <li><Link to="/app/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-              <li><Link to="/app/challenges" className="hover:text-white transition">Challenges (368+)</Link></li>
-              <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-white transition">Monaco Coding IDE</Link></li>
-              <li><Link to="/app/generator" className="hover:text-white transition">AI Task Generator</Link></li>
+      <footer className="mt-8 rounded-xl border border-white/[0.08] bg-[#0f0f10] px-5 py-5 sm:px-6 no-print">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-5 border-b border-white/[0.08] text-xs">
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-[#ededed]">Workspace</h4>
+            <ul className="space-y-1.5 text-[#85858b]">
+              <li><Link to="/" className="hover:text-[#ededed] transition-colors">Home</Link></li>
+              <li><Link to="/app/dashboard" className="hover:text-[#ededed] transition-colors">Overview</Link></li>
+              <li><Link to="/app/challenges" className="hover:text-[#ededed] transition-colors">Challenge library (368+)</Link></li>
+              <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-[#ededed] transition-colors">Coding IDE</Link></li>
+              <li><Link to="/app/generator" className="hover:text-[#ededed] transition-colors">Task generator</Link></li>
             </ul>
           </div>
 
-          {/* Group 2: AI & Deep Learning LMS */}
-          <div className="space-y-2.5">
-            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-300">
-              AI &amp; DL Academies
-            </h4>
-            <ul className="space-y-1.5 text-slate-400">
-              <li>
-                <Link to="/app/lms" className="text-cyan-300 hover:text-cyan-200 font-semibold transition">
-                  LMS Academies Hub
-                </Link>
-              </li>
-              <li>
-                <Link to="/app/ml-course" className="text-emerald-300 hover:text-emerald-200 font-semibold transition">
-                  ML Course LMS (106)
-                </Link>
-              </li>
-              <li>
-                <Link to="/app/dl-course" className="text-rose-300 hover:text-rose-200 font-semibold transition">
-                  Stanford × CTF DL (21)
-                </Link>
-              </li>
-              <li><Link to="/app/videos" className="hover:text-white transition">Video Masterclasses</Link></li>
-              <li><Link to="/app/submissions" className="hover:text-white transition">My Submissions</Link></li>
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-[#ededed]">Academies</h4>
+            <ul className="space-y-1.5 text-[#85858b]">
+              <li><Link to="/app/lms" className="hover:text-[#ededed] transition-colors">LMS courses hub</Link></li>
+              <li><Link to="/app/ml-course" className="hover:text-[#ededed] transition-colors">ML course (106)</Link></li>
+              <li><Link to="/app/dl-course" className="hover:text-[#ededed] transition-colors">Stanford DL (21)</Link></li>
+              <li><Link to="/app/videos" className="hover:text-[#ededed] transition-colors">Video library</Link></li>
+              <li><Link to="/app/submissions" className="hover:text-[#ededed] transition-colors">Submissions</Link></li>
             </ul>
           </div>
 
-          {/* Group 3: Assessments & Growth */}
-          <div className="space-y-2.5">
-            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-300">
-              Growth &amp; Credentials
-            </h4>
-            <ul className="space-y-1.5 text-slate-400">
-              <li><Link to="/app/assessments" className="hover:text-white transition">Technical Assessments</Link></li>
-              <li><Link to="/app/certificates" className="hover:text-white transition">PDF Certificates &amp; Share</Link></li>
-              <li><Link to="/app/analytics" className="hover:text-white transition">Developer Analytics</Link></li>
-              <li><Link to="/app/leaderboard" className="hover:text-white transition">Global Leaderboard</Link></li>
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-[#ededed]">Credentials</h4>
+            <ul className="space-y-1.5 text-[#85858b]">
+              <li><Link to="/app/assessments" className="hover:text-[#ededed] transition-colors">Assessments</Link></li>
+              <li><Link to="/app/certificates" className="hover:text-[#ededed] transition-colors">PDF certificates</Link></li>
+              <li><Link to="/app/analytics" className="hover:text-[#ededed] transition-colors">Analytics</Link></li>
+              <li><Link to="/app/leaderboard" className="hover:text-[#ededed] transition-colors">Leaderboard</Link></li>
             </ul>
           </div>
 
-          {/* Group 4: Wiki, Settings & Legal */}
-          <div className="space-y-2.5">
-            <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-300">
-              Platform Wiki &amp; Legal
-            </h4>
-            <ul className="space-y-1.5 text-slate-400">
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-[#ededed]">Documentation &amp; legal</h4>
+            <ul className="space-y-1.5 text-[#85858b]">
               <li>
-                <Link to="/wiki" className="text-cyan-300 hover:text-cyan-200 font-semibold transition inline-flex items-center gap-1">
-                  <BookOpen className="w-3 h-3" />
-                  Platform Wiki
+                <Link to="/wiki" className="hover:text-[#ededed] transition-colors inline-flex items-center gap-1.5">
+                  <BookOpen strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>Platform wiki</span>
                 </Link>
               </li>
-              <li><Link to="/app/settings" className="hover:text-white transition">API &amp; Key Settings</Link></li>
+              <li><Link to="/app/settings" className="hover:text-[#ededed] transition-colors">Settings</Link></li>
               <li>
-                <button type="button" onClick={() => setLegalModal('privacy')} className="hover:text-white transition text-left">
-                  Privacy Policy
+                <button type="button" onClick={() => setLegalModal('privacy')} className="hover:text-[#ededed] transition-colors text-left">
+                  Privacy policy
                 </button>
               </li>
               <li>
-                <button type="button" onClick={() => setLegalModal('terms')} className="hover:text-white transition text-left">
-                  Terms of Service
+                <button type="button" onClick={() => setLegalModal('terms')} className="hover:text-[#ededed] transition-colors text-left">
+                  Terms of service
                 </button>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Status Strip */}
-        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex flex-wrap items-center gap-2.5">
+        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#85858b]">
+          <div className="flex items-center gap-3">
             <BrandLogo size="sm" />
-            <span className="hidden sm:inline text-slate-700">•</span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 font-mono text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              All Services Online
+            <span className="inline-flex items-center gap-1.5 font-mono text-xs text-[#a1a1a6]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4cc38a]" />
+              Services online
             </span>
           </div>
-          <p className="text-[11px] font-mono text-slate-500">
-            © {CURRENT_YEAR} Coding Task Factory • MIT License
+          <p className="font-mono text-xs tabular-nums">
+            © {CURRENT_YEAR} Coding Task Factory · MIT License
           </p>
         </div>
         {legalModalNode}
@@ -162,25 +138,22 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
   }
 
   return (
-    <footer className="border-t border-slate-800/80 bg-[#060911] pt-14 pb-10 relative overflow-hidden no-print">
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[250px] bg-gradient-to-t from-indigo-900/10 to-transparent blur-3xl pointer-events-none -z-10" />
-
+    <footer className="border-t border-white/[0.08] bg-[#0f0f10] pt-16 pb-10 no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Brand & Social Strip */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-10 mb-10 border-b border-slate-800/80">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-10 mb-10 border-b border-white/[0.08]">
           <div className="max-w-xl">
             <BrandLogo size="md" className="mb-3" />
-            <p className="text-slate-400 text-sm leading-relaxed">
-              An intelligent AI-powered platform with 368+ multi-language challenges, real-time Monaco IDE &amp; AI Copilot, automated technical assessments, and verifiable vector PDF credentials.
+            <p className="text-[#a1a1a6] text-sm leading-relaxed">
+              Multi-language coding challenge bench with isolated test execution, structured ML/DL coursework, timed assessments, and SHA-256 verifiable PDF certificates.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href="https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition"
+              className="w-9 h-9 rounded-lg bg-[#19191b] border border-white/[0.08] flex items-center justify-center text-[#85858b] hover:text-[#ededed] transition-colors"
               aria-label="GitHub Repository"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -191,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               href="https://twitter.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-slate-700 transition"
+              className="w-9 h-9 rounded-lg bg-[#19191b] border border-white/[0.08] flex items-center justify-center text-[#85858b] hover:text-[#ededed] transition-colors"
               aria-label="X / Twitter"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -202,7 +175,7 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
               href="https://linkedin.com"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-indigo-400 hover:border-slate-700 transition"
+              className="w-9 h-9 rounded-lg bg-[#19191b] border border-white/[0.08] flex items-center justify-center text-[#85858b] hover:text-[#ededed] transition-colors"
               aria-label="LinkedIn"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -212,121 +185,95 @@ export const Footer: React.FC<FooterProps> = ({ compact = false }) => {
           </div>
         </div>
 
-        {/* Complete 5-Column All-Pages Sitemap */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
-          {/* Col 1: Workspace & Coding */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-4 whitespace-nowrap">
-              Workspace &amp; Coding
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/" className="hover:text-white transition">Home Overview</Link></li>
-              <li><Link to="/app/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-              <li><Link to="/app/challenges" className="hover:text-white transition">Explore 368+ Challenges</Link></li>
-              <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-white transition">Coding Workspace IDE</Link></li>
-              <li><Link to="/app/generator" className="hover:text-white transition">AI Task Generator</Link></li>
-              <li><Link to="/app/ml-course" className="hover:text-emerald-300 transition">ML Course LMS (106 Videos)</Link></li>
-              <li><Link to="/app/dl-course" className="hover:text-rose-300 transition">Stanford × CTF Deep Learning (21)</Link></li>
-              <li><Link to="/app/videos" className="hover:text-white transition">Video Masterclasses</Link></li>
+            <h4 className="text-xs font-medium text-[#ededed] mb-3">Workspace</h4>
+            <ul className="space-y-2 text-sm text-[#85858b]">
+              <li><Link to="/" className="hover:text-[#ededed] transition-colors">Home</Link></li>
+              <li><Link to="/app/dashboard" className="hover:text-[#ededed] transition-colors">Dashboard</Link></li>
+              <li><Link to="/app/challenges" className="hover:text-[#ededed] transition-colors">368+ Challenges</Link></li>
+              <li><Link to="/app/workspace/c2-lru-cache" className="hover:text-[#ededed] transition-colors">Coding IDE</Link></li>
+              <li><Link to="/app/generator" className="hover:text-[#ededed] transition-colors">Task generator</Link></li>
+              <li><Link to="/app/ml-course" className="hover:text-[#ededed] transition-colors">ML course (106)</Link></li>
+              <li><Link to="/app/dl-course" className="hover:text-[#ededed] transition-colors">Stanford DL (21)</Link></li>
+              <li><Link to="/app/videos" className="hover:text-[#ededed] transition-colors">Video library</Link></li>
             </ul>
           </div>
 
-          {/* Col 2: Assessments & Growth */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-4 whitespace-nowrap">
-              Growth &amp; Credentials
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/app/submissions" className="hover:text-white transition">My Submissions</Link></li>
-              <li><Link to="/app/assessments" className="hover:text-white transition">Technical Assessments</Link></li>
-              <li><Link to="/app/leaderboard" className="hover:text-white transition">Global Leaderboard</Link></li>
-              <li><Link to="/app/analytics" className="hover:text-white transition">Developer Analytics</Link></li>
-              <li><Link to="/app/certificates" className="hover:text-white transition">PDF Certificates &amp; Share</Link></li>
-              <li><Link to="/onboarding" className="hover:text-white transition">Onboarding Wizard</Link></li>
+            <h4 className="text-xs font-medium text-[#ededed] mb-3">Credentials</h4>
+            <ul className="space-y-2 text-sm text-[#85858b]">
+              <li><Link to="/app/submissions" className="hover:text-[#ededed] transition-colors">Submissions</Link></li>
+              <li><Link to="/app/assessments" className="hover:text-[#ededed] transition-colors">Assessments</Link></li>
+              <li><Link to="/app/leaderboard" className="hover:text-[#ededed] transition-colors">Leaderboard</Link></li>
+              <li><Link to="/app/analytics" className="hover:text-[#ededed] transition-colors">Analytics</Link></li>
+              <li><Link to="/app/certificates" className="hover:text-[#ededed] transition-colors">PDF certificates</Link></li>
+              <li><Link to="/onboarding" className="hover:text-[#ededed] transition-colors">Onboarding</Link></li>
             </ul>
           </div>
 
-          {/* Col 3: Platform Wiki */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-cyan-300 font-mono mb-4 flex items-center gap-1.5 whitespace-nowrap">
-              <BookOpen className="w-3.5 h-3.5 shrink-0" />
-              Platform Wiki
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/wiki" className="hover:text-white transition">Wiki Home &amp; Map</Link></li>
-              <li><Link to="/wiki/architecture" className="hover:text-white transition">Architecture &amp; ER Schema</Link></li>
-              <li><Link to="/wiki/challenge-bank" className="hover:text-white transition">368+ Bank &amp; Sandbox</Link></li>
-              <li><Link to="/wiki/security-credentials" className="hover:text-white transition">Security &amp; PDFs</Link></li>
-              <li><Link to="/wiki/taskforge" className="hover:text-white transition">TaskForge Harbor 0.25</Link></li>
+            <h4 className="text-xs font-medium text-[#ededed] mb-3">Platform wiki</h4>
+            <ul className="space-y-2 text-sm text-[#85858b]">
+              <li><Link to="/wiki" className="hover:text-[#ededed] transition-colors">Wiki overview</Link></li>
+              <li><Link to="/wiki/architecture" className="hover:text-[#ededed] transition-colors">Architecture &amp; schema</Link></li>
+              <li><Link to="/wiki/challenge-bank" className="hover:text-[#ededed] transition-colors">Challenge bank &amp; runner</Link></li>
+              <li><Link to="/wiki/security-credentials" className="hover:text-[#ededed] transition-colors">Security &amp; PDFs</Link></li>
+              <li><Link to="/wiki/taskforge" className="hover:text-[#ededed] transition-colors">TaskForge Harbor 0.25</Link></li>
               <li>
                 <a
                   href="https://github.com/Ranjeet7680/AI-Powered-Coding-Challenge-Developer-Assessment-Platform/tree/main/wiki"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-white transition"
+                  className="hover:text-[#ededed] transition-colors"
                 >
-                  GitHub Markdown Wiki
+                  GitHub markdown wiki
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Account & Product */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-4 whitespace-nowrap">
-              Account &amp; Platform
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/login" className="hover:text-white transition">Sign In</Link></li>
-              <li><Link to="/register" className="hover:text-white transition">Create Free Account</Link></li>
-              <li><Link to="/forgot-password" className="hover:text-white transition">Reset Password</Link></li>
+            <h4 className="text-xs font-medium text-[#ededed] mb-3">Account</h4>
+            <ul className="space-y-2 text-sm text-[#85858b]">
+              <li><Link to="/login" className="hover:text-[#ededed] transition-colors">Sign in</Link></li>
+              <li><Link to="/register" className="hover:text-[#ededed] transition-colors">Create account</Link></li>
+              <li><Link to="/forgot-password" className="hover:text-[#ededed] transition-colors">Reset password</Link></li>
               <li>
-                <Link to="/app/settings" className="hover:text-white transition flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                  <span>API &amp; Key Settings</span>
+                <Link to="/app/settings" className="hover:text-[#ededed] transition-colors inline-flex items-center gap-1.5">
+                  <Terminal strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>API &amp; key settings</span>
                 </Link>
               </li>
-              <li><a href="/#features" className="hover:text-white transition">Platform Features</a></li>
-              <li><a href="/#pricing" className="hover:text-white transition">Pricing Plans</a></li>
+              <li><a href="/#features" className="hover:text-[#ededed] transition-colors">Features</a></li>
+              <li><a href="/#pricing" className="hover:text-[#ededed] transition-colors">Pricing</a></li>
             </ul>
           </div>
 
-          {/* Col 5: Solutions & Legal */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-4 whitespace-nowrap">
-              Solutions &amp; Legal
-            </h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><a href="/#solutions" className="hover:text-white transition">Individual Developers</a></li>
-              <li><a href="/#solutions" className="hover:text-white transition">Students &amp; Bootcamps</a></li>
-              <li><a href="/#solutions" className="hover:text-white transition">Technical Recruiters</a></li>
-              <li><a href="/#faq" className="hover:text-white transition">FAQ &amp; Support</a></li>
+            <h4 className="text-xs font-medium text-[#ededed] mb-3">Solutions &amp; legal</h4>
+            <ul className="space-y-2 text-sm text-[#85858b]">
+              <li><a href="/#solutions" className="hover:text-[#ededed] transition-colors">Individual developers</a></li>
+              <li><a href="/#solutions" className="hover:text-[#ededed] transition-colors">Students &amp; bootcamps</a></li>
+              <li><a href="/#solutions" className="hover:text-[#ededed] transition-colors">Technical recruiters</a></li>
+              <li><a href="/#faq" className="hover:text-[#ededed] transition-colors">FAQ</a></li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => setLegalModal('privacy')}
-                  className="hover:text-white transition text-left"
-                >
-                  Privacy Policy
+                <button type="button" onClick={() => setLegalModal('privacy')} className="hover:text-[#ededed] transition-colors text-left">
+                  Privacy policy
                 </button>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => setLegalModal('terms')}
-                  className="hover:text-white transition text-left"
-                >
-                  Terms of Service
+                <button type="button" onClick={() => setLegalModal('terms')} className="hover:text-[#ededed] transition-colors text-left">
+                  Terms of service
                 </button>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {CURRENT_YEAR} Coding Task Factory. All rights reserved.</p>
-          <p>Engineered with precision for developers worldwide</p>
+        <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs text-[#85858b] gap-4">
+          <p className="tabular-nums">© {CURRENT_YEAR} Coding Task Factory. All rights reserved.</p>
+          <p className="font-mono">Python 3 · Node.js · TypeScript · C++20</p>
         </div>
       </div>
 

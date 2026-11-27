@@ -36,86 +36,90 @@ export const LeaderboardPage: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Developer Leaderboard
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+            Leaderboard
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Competitive rankings based on algorithm solutions, streak length, and test case accuracy.
+          <p className="text-sm text-[#85858b] mt-1">
+            Rankings by solved challenges, streak cadence, and accuracy
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-1 p-1 rounded-2xl bg-slate-900 border border-slate-800 text-xs font-semibold self-start sm:self-auto">
+        <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#19191b] border border-white/[0.08] text-xs font-medium self-start sm:self-auto">
           <button
+            type="button"
             onClick={() => handleFilterChange('all')}
-            className={`px-4 py-1.5 rounded-xl transition ${
-              filter === 'all'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-white'
+            className={`px-3 py-1.5 rounded-md transition-colors ${
+              filter === 'all' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
             }`}
           >
-            All-Time Global
+            All-time
           </button>
           <button
+            type="button"
             onClick={() => handleFilterChange('weekly')}
-            className={`px-4 py-1.5 rounded-xl transition ${
-              filter === 'weekly'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-white'
+            className={`px-3 py-1.5 rounded-md transition-colors ${
+              filter === 'weekly' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
             }`}
           >
-            Weekly Sprint
+            Weekly
           </button>
         </div>
       </div>
 
-      {/* Podium Top 3 */}
+      {/* Top 3 */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-60 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+            <div key={i} className="h-52 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 tabular-nums">
           {leaderboard.slice(0, 3).map((top, idx) => {
-            const podiumStyles = [
-              { border: 'border-amber-400/50', badge: 'bg-amber-400/20 text-amber-300', rank: '1st Place' },
-              { border: 'border-slate-300/40', badge: 'bg-slate-300/20 text-slate-200', rank: '2nd Place' },
-              { border: 'border-amber-600/40', badge: 'bg-amber-600/20 text-amber-400', rank: '3rd Place' },
-            ];
-            const style = podiumStyles[idx] || podiumStyles[0];
-
+            const rankLabels = ['#1', '#2', '#3'];
             return (
               <div
                 key={top.rank}
-                className={`p-6 rounded-3xl bg-slate-900/60 border ${style.border} shadow-2xl relative flex flex-col items-center text-center`}
+                className={`p-5 rounded-xl bg-[#19191b] border flex flex-col justify-between ${
+                  idx === 0 ? 'border-[#e5a00d]/50' : 'border-white/[0.08]'
+                }`}
               >
-                <span className={`px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 ${style.badge}`}>
-                  {style.rank}
-                </span>
-                <img
-                  src={top.avatar}
-                  alt={top.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-indigo-500/50 shadow-lg mb-3"
-                />
-                <h4 className="text-base font-bold text-white">{top.name}</h4>
-                <p className="text-xs text-slate-400 mb-4">{top.role}</p>
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src={top.avatar}
+                      alt={top.name}
+                      className="w-10 h-10 rounded-lg object-cover border border-white/[0.1]"
+                    />
+                    <div className="min-w-0">
+                      <h2 className="text-sm font-medium text-[#ededed] truncate">{top.name}</h2>
+                      <p className="text-xs text-[#85858b] truncate">{top.role}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`font-mono text-xs ${
+                      idx === 0 ? 'text-[#e5a00d]' : 'text-[#85858b]'
+                    }`}
+                  >
+                    {rankLabels[idx] || `#${top.rank}`}
+                  </span>
+                </div>
 
-                <div className="w-full pt-4 border-t border-slate-800 grid grid-cols-3 text-center text-xs">
+                <div className="pt-4 border-t border-white/[0.08] grid grid-cols-3 text-xs">
                   <div>
-                    <p className="font-mono font-bold text-indigo-400">{top.points.toLocaleString()}</p>
-                    <p className="text-[10px] text-slate-500">Points</p>
+                    <p className="text-[#85858b]">Points</p>
+                    <p className="font-mono text-[#ededed] mt-0.5">{top.points.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="font-mono font-bold text-emerald-400">{top.solved}</p>
-                    <p className="text-[10px] text-slate-500">Solved</p>
+                    <p className="text-[#85858b]">Solved</p>
+                    <p className="font-mono text-[#ededed] mt-0.5">{top.solved}</p>
                   </div>
                   <div>
-                    <p className="font-mono font-bold text-amber-400">{top.streak}d</p>
-                    <p className="text-[10px] text-slate-500">Streak</p>
+                    <p className="text-[#85858b]">Streak</p>
+                    <p className="font-mono text-[#4cc38a] mt-0.5">{top.streak}d</p>
                   </div>
                 </div>
               </div>
@@ -124,56 +128,52 @@ export const LeaderboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Full Leaderboard Table */}
-      <div className="rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl overflow-hidden">
-        <div className="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Table */}
+      <div className="rounded-xl bg-[#19191b] border border-white/[0.08] overflow-hidden">
+        <div className="p-4 border-b border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search strokeWidth={1.5} className="w-4 h-4 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search developer..."
+              placeholder="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full h-9 bg-[#141415] border border-white/[0.08] rounded-lg pl-9 pr-3 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#e5a00d]"
             />
           </div>
-          <span className="text-xs text-slate-400 font-mono">
-            {filter === 'weekly' ? 'Weekly Sprint' : 'All-Time'} • {filteredUsers.length} ranked
+          <span className="text-xs text-[#85858b] font-mono tabular-nums">
+            {filter === 'weekly' ? 'Weekly' : 'All-time'} · {filteredUsers.length} ranked
           </span>
         </div>
 
-        {/* Mobile Card Stack (< sm) */}
-        <div className="sm:hidden divide-y divide-slate-800/70">
+        {/* Mobile */}
+        <div className="sm:hidden divide-y divide-white/[0.08]">
           {filteredUsers.map((u) => {
             const isCurrentUser = Boolean(u.is_current_user) || u.name.includes('(You)');
             return (
               <div
                 key={`mob-${u.rank}-${u.name}`}
-                className={`p-3.5 flex items-center justify-between gap-3 ${
-                  isCurrentUser ? 'bg-indigo-600/15 border-l-4 border-l-indigo-500' : ''
+                className={`p-3.5 flex items-center justify-between gap-3 tabular-nums ${
+                  isCurrentUser ? 'bg-[#222225]' : ''
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="font-mono text-xs font-bold text-slate-400 w-7 shrink-0">#{u.rank}</span>
+                  <span className="font-mono text-xs text-[#85858b] w-7 shrink-0">#{u.rank}</span>
                   <img
                     src={u.avatar}
                     alt={u.name}
-                    className="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0"
+                    className="w-8 h-8 rounded-md object-cover border border-white/[0.08] shrink-0"
                   />
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-white truncate">{u.name}</p>
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400 mt-0.5">
-                      <span className="text-slate-300">{u.solved} solved</span>
-                      <span>·</span>
-                      <span className="text-amber-400">{u.streak}d</span>
-                      <span>·</span>
-                      <span className="text-emerald-400">{u.win_rate}</span>
-                    </div>
+                    <p className="text-xs font-medium text-[#ededed] truncate">{u.name}</p>
+                    <p className="text-[11px] font-mono text-[#85858b] mt-0.5">
+                      {u.solved} solved · {u.streak}d · {u.win_rate}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-xs font-mono font-extrabold text-indigo-300">{u.points.toLocaleString()}</p>
-                  <p className="text-[10px] text-slate-500 font-mono">PTS</p>
+                  <p className="text-xs font-mono text-[#ededed]">{u.points.toLocaleString()}</p>
+                  <p className="text-[10px] text-[#85858b] font-mono">pts</p>
                 </div>
               </div>
             );
@@ -181,50 +181,44 @@ export const LeaderboardPage: React.FC = () => {
         </div>
 
         <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs tabular-nums">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-mono">
-                <th className="py-3.5 px-6 font-semibold">Rank</th>
-                <th className="py-3.5 px-4 font-semibold">Developer</th>
-                <th className="py-3.5 px-4 font-semibold">Title / Badge</th>
-                <th className="py-3.5 px-4 font-semibold">Solved</th>
-                <th className="py-3.5 px-4 font-semibold">Streak</th>
-                <th className="py-3.5 px-4 font-semibold">Win Rate</th>
-                <th className="py-3.5 px-6 font-semibold text-right">Points</th>
+              <tr className="border-b border-white/[0.08] bg-[#0f0f10] text-[#85858b] font-mono">
+                <th className="py-3.5 px-6 font-normal">Rank</th>
+                <th className="py-3.5 px-4 font-normal">Developer</th>
+                <th className="py-3.5 px-4 font-normal">Tier</th>
+                <th className="py-3.5 px-4 font-normal">Solved</th>
+                <th className="py-3.5 px-4 font-normal">Streak</th>
+                <th className="py-3.5 px-4 font-normal">Accuracy</th>
+                <th className="py-3.5 px-6 font-normal text-right">Points</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-white/[0.06]">
               {filteredUsers.map((u) => {
                 const isCurrentUser = Boolean(u.is_current_user) || u.name.includes('(You)');
                 return (
                   <tr
                     key={`${u.rank}-${u.name}`}
-                    className={`transition ${
-                      isCurrentUser
-                        ? 'bg-indigo-600/15 border-l-4 border-l-indigo-500 font-semibold'
-                        : 'hover:bg-slate-800/30'
+                    className={`transition-colors ${
+                      isCurrentUser ? 'bg-[#222225] font-medium' : 'hover:bg-[#222225]/50'
                     }`}
                   >
-                    <td className="py-3.5 px-6 font-mono font-bold text-slate-300">#{u.rank}</td>
+                    <td className="py-3.5 px-6 font-mono text-[#a1a1a6]">#{u.rank}</td>
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
                         <img
                           src={u.avatar}
                           alt={u.name}
-                          className="w-7 h-7 rounded-full object-cover border border-slate-700"
+                          className="w-7 h-7 rounded-md object-cover border border-white/[0.08]"
                         />
-                        <span className="font-semibold text-white">{u.name}</span>
+                        <span className="font-medium text-[#ededed]">{u.name}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                        {u.badge}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-300">{u.solved}</td>
-                    <td className="py-3.5 px-4 font-mono text-amber-400">{u.streak} Days</td>
-                    <td className="py-3.5 px-4 font-mono text-emerald-400">{u.win_rate}</td>
-                    <td className="py-3.5 px-6 font-mono font-bold text-right text-indigo-300">
+                    <td className="py-3.5 px-4 font-mono text-[#85858b]">{u.badge}</td>
+                    <td className="py-3.5 px-4 font-mono text-[#a1a1a6]">{u.solved}</td>
+                    <td className="py-3.5 px-4 font-mono text-[#a1a1a6]">{u.streak}d</td>
+                    <td className="py-3.5 px-4 font-mono text-[#4cc38a]">{u.win_rate}</td>
+                    <td className="py-3.5 px-6 font-mono text-right text-[#ededed]">
                       {u.points.toLocaleString()}
                     </td>
                   </tr>

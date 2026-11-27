@@ -23,7 +23,6 @@ import {
   Save,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Trophy,
   X,
   XCircle,
@@ -658,10 +657,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto p-6 space-y-5">
-        <div className="h-16 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+        <div className="h-14 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-3 h-[540px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
-          <div className="lg:col-span-9 h-[540px] rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse" />
+          <div className="lg:col-span-3 h-[540px] rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
+          <div className="lg:col-span-9 h-[540px] rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse" />
         </div>
       </div>
     );
@@ -670,16 +669,16 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   if (loadError || !course || !activeLesson) {
     return (
       <div className="max-w-3xl mx-auto p-8 text-center">
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-950/20 p-8">
-          <ShieldAlert className="w-10 h-10 text-rose-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-white mb-2">Unable to load LMS Course</h2>
-          <p className="text-sm text-slate-400 mb-5">{loadError || 'Catalog unavailable.'}</p>
+        <div className="rounded-xl border border-[#e5484d]/30 bg-[#19191b] p-8">
+          <ShieldAlert className="w-8 h-8 text-[#e5484d] mx-auto mb-3" strokeWidth={1.5} />
+          <h2 className="text-lg font-semibold text-[#ededed] mb-2">Unable to load LMS course</h2>
+          <p className="text-sm text-[#a1a1a6] mb-5">{loadError || 'Catalog unavailable.'}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition"
+            className="px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
           >
-            Reload Classroom
+            Reload classroom
           </button>
         </div>
       </div>
@@ -701,86 +700,85 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
   const activeQuizRecord = quizResults[activeLesson.id];
   const hasOwnReview = Boolean(reviewsData?.reviews.some((r) => r.is_own_review));
 
-  // Pure metadata descriptor for Google Cloud Skills Boost Bottom Stepper Pager (event handlers kept out of render values)
   const pagerMeta = (() => {
     if (pageStage === 'watch') {
       return {
-        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 1 of 3 (Watch Video)`,
-        prevText: prevLesson ? `← Lecture #${prevLesson.order} Quiz` : '← Course Detail',
-        nextText: `Next: Solve Quiz #${activeLesson.order} →`,
-        secondaryText: 'Study Notes & Code →',
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 1 of 3 (Watch video)`,
+        prevText: prevLesson ? `Lecture #${prevLesson.order} quiz` : 'Course detail',
+        nextText: `Next: Solve quiz #${activeLesson.order}`,
+        secondaryText: 'Study notes & code',
       };
     }
     if (pageStage === 'notes') {
       return {
-        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 2 of 3 (Study Notes & Code)`,
-        prevText: '← Watch Video',
-        nextText: `Next: Solve Quiz #${activeLesson.order} →`,
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 2 of 3 (Study notes & code)`,
+        prevText: 'Watch video',
+        nextText: `Next: Solve quiz #${activeLesson.order}`,
         secondaryText: '',
       };
     }
     if (pageStage === 'quiz') {
       return {
-        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 3 of 3 (Comprehension Quiz)`,
-        prevText: '← Study Notes',
+        label: `Lecture ${activeLesson.order} of ${totalLessons} · Step 3 of 3 (Comprehension quiz)`,
+        prevText: 'Study notes',
         nextText: nextLesson
-          ? `Next: Watch Lecture #${nextLesson.order} →`
-          : 'Next: Full Quiz Practice Bank →',
-        secondaryText: 'Back to Video',
+          ? `Next: Watch lecture #${nextLesson.order}`
+          : 'Next: Quiz practice bank',
+        secondaryText: 'Back to video',
       };
     }
     if (pageStage === 'quiz-bank') {
       return {
-        label: `Milestone 1 · Cumulative Quiz Practice (${quizBank.length} Questions)`,
-        prevText: `← Lecture #${activeLesson.order}`,
-        nextText: 'Next: Capstone Project Lab →',
+        label: `Milestone 1 · Cumulative quiz practice (${quizBank.length} questions)`,
+        prevText: `Lecture #${activeLesson.order}`,
+        nextText: 'Next: Capstone project lab',
         secondaryText: '',
       };
     }
     if (pageStage === 'capstone') {
       return {
-        label: 'Milestone 2 · Graded Capstone Lab',
-        prevText: '← Quiz Practice Bank',
-        nextText: 'Next: Camera Final Exam →',
+        label: 'Milestone 2 · Graded capstone lab',
+        prevText: 'Quiz practice bank',
+        nextText: 'Next: Camera final exam',
         secondaryText: '',
       };
     }
     if (pageStage === 'final-exam') {
       return {
-        label: 'Milestone 3 · Camera Cheat-Protected Final Exam',
-        prevText: '← Capstone Lab',
-        nextText: 'Next: Course Feedback →',
+        label: 'Milestone 3 · Camera-proctored final exam',
+        prevText: 'Capstone lab',
+        nextText: 'Next: Course feedback',
         secondaryText: '',
       };
     }
     if (pageStage === 'reviews') {
       return {
-        label: 'Milestone 4 · Course Feedback Survey',
-        prevText: '← Final Exam',
-        nextText: 'Next: Verified Certificate →',
+        label: 'Milestone 4 · Course feedback survey',
+        prevText: 'Final exam',
+        nextText: 'Next: Verified certificate',
         secondaryText: '',
       };
     }
     if (pageStage === 'certificate') {
       return {
-        label: 'Milestone 5 · Verified Certificate & Vector PDF',
-        prevText: '← Feedback Survey',
-        nextText: 'Next: Claim Goodies Form →',
+        label: 'Milestone 5 · Verified certificate & vector PDF',
+        prevText: 'Feedback survey',
+        nextText: 'Next: Graduate goodies form',
         secondaryText: '',
       };
     }
     if (pageStage === 'goodies') {
       return {
-        label: 'Milestone 6 · Graduate Goodies Dispatch Form',
-        prevText: '← Certificate',
-        nextText: 'Next: Done Summary →',
+        label: 'Milestone 6 · Graduate goodies dispatch form',
+        prevText: 'Certificate',
+        nextText: 'Next: Graduation summary',
         secondaryText: '',
       };
     }
     return {
-      label: 'Graduation Complete!',
-      prevText: '← Goodies Form',
-      nextText: 'Browse All Courses →',
+      label: 'Track milestones recorded',
+      prevText: 'Goodies form',
+      nextText: 'Browse all courses',
       secondaryText: '',
     };
   })();
@@ -849,55 +847,55 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
   return (
     <div ref={stageTopRef} className="max-w-7xl mx-auto p-3 sm:p-5 space-y-4">
-      {/* Compact Google Cloud Skills Boost Classroom Top Bar */}
-      <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+      {/* Compact Classroom Top Bar */}
+      <div className="rounded-xl border border-white/[0.08] bg-[#19191b] px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5 min-w-0">
           <Link
             to={`/app/lms/${track}`}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/40 text-xs font-bold text-slate-300 hover:text-white transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222225] border border-white/[0.08] hover:border-white/[0.16] text-xs font-medium text-[#ededed] transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Course Detail
+            <ArrowLeft className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+            Course detail
           </Link>
 
           <button
             type="button"
             onClick={() => setOutlineOpen((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-cyan-300 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222225] border border-white/[0.08] hover:border-white/[0.16] text-xs font-medium text-[#ededed] transition-colors"
           >
             {outlineOpen ? (
               <>
-                <PanelLeftClose className="w-3.5 h-3.5" />
-                Hide Outline
+                <PanelLeftClose className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                Hide outline
               </>
             ) : (
               <>
-                <PanelLeftOpen className="w-3.5 h-3.5" />
-                Show Outline
+                <PanelLeftOpen className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
+                Show outline
               </>
             )}
           </button>
 
-          <div className="hidden sm:block h-4 w-px bg-slate-800" />
-          <span className="text-xs sm:text-sm font-extrabold text-white truncate max-w-xs md:max-w-md">
+          <div className="hidden sm:block h-4 w-px bg-white/[0.08]" />
+          <span className="text-xs sm:text-sm font-medium text-[#ededed] truncate max-w-xs md:max-w-md">
             {course.title}
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px]">
+          <div className="flex items-center gap-1 bg-[#141415] p-1 rounded-lg border border-white/[0.08] text-xs">
             <Link
               to="/app/ml-course"
-              className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                !isDL ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                !isDL ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
               }`}
             >
               ML (106)
             </Link>
             <Link
               to="/app/dl-course"
-              className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                isDL ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                isDL ? 'bg-[#ededed] text-[#141415]' : 'text-[#85858b] hover:text-[#ededed]'
               }`}
             >
               Stanford DL (21)
@@ -905,13 +903,13 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           </div>
 
           <div className="w-32 hidden md:block">
-            <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
+            <div className="flex justify-between text-[11px] font-mono text-[#85858b] mb-1 tabular-nums">
               <span>{completedCount}/{totalLessons}</span>
-              <span className="text-emerald-400 font-bold">{completionPct}%</span>
+              <span className="text-[#ededed] font-medium">{completionPct}%</span>
             </div>
-            <div className="h-1.5 rounded-full bg-slate-950 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-[#141415] overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400"
+                className="h-full bg-[#e5a00d] transition-all"
                 style={{ width: `${completionPct}%` }}
               />
             </div>
@@ -921,25 +919,24 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
       {/* Main Two-Column Guided Classroom Body */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Responsive Outline Rail: Slide-over Drawer on Mobile/Tablet, Sticky Sidebar on Desktop */}
         {outlineOpen && (
           <div className="fixed inset-0 z-50 flex lg:static lg:inset-auto lg:z-auto lg:block lg:col-span-3 lg:sticky lg:top-4">
             <div
-              className="fixed inset-0 bg-black/75 backdrop-blur-xs lg:hidden"
+              className="fixed inset-0 bg-black/75 lg:hidden"
               onClick={() => setOutlineOpen(false)}
             />
-            <div className="relative z-10 w-[86vw] max-w-sm lg:w-full h-full lg:h-auto overflow-y-auto bg-[#05070E] lg:bg-transparent p-3 lg:p-0 border-r border-slate-800 lg:border-none">
-              <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-800 lg:hidden">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-300">
-                  Curriculum Navigator
+            <div className="relative z-10 w-[86vw] max-w-sm lg:w-full h-full lg:h-auto overflow-y-auto bg-[#0f0f10] lg:bg-transparent p-3 lg:p-0 border-r border-white/[0.08] lg:border-none">
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/[0.08] lg:hidden">
+                <span className="text-xs font-medium text-[#e5a00d]">
+                  Curriculum navigator
                 </span>
                 <button
                   type="button"
                   onClick={() => setOutlineOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                  className="p-1.5 rounded-lg bg-[#222225] text-[#a1a1a6] hover:text-[#ededed]"
                   aria-label="Close course outline"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
               <CourseOutlineRail
@@ -966,81 +963,89 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
         {/* Right Single-Focus Page Canvas + Bottom Pager */}
         <motion.div
           key={`${pageStage}-${pageStage === 'watch' || pageStage === 'notes' || pageStage === 'quiz' ? activeLesson.id : 'milestone'}`}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className={`${outlineOpen ? 'lg:col-span-9' : 'lg:col-span-12'} space-y-4`}
         >
-          {/* Sub-Stepper Pill Header when viewing any Lecture Activity (Watch / Notes / Quiz) */}
+          {/* Sub-Stepper Header when viewing any Lecture Activity (Watch / Notes / Quiz) */}
           {(pageStage === 'watch' || pageStage === 'notes' || pageStage === 'quiz') && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3">
+            <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 sm:p-5 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="px-2.5 py-0.5 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold">
+                <div className="flex flex-wrap items-center gap-2 text-xs tabular-nums">
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#222225] border border-white/[0.08] text-[#ededed] font-medium">
                     Module {activeLesson.module_order}: {activeLesson.module_title}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-slate-800 text-slate-300 font-mono">
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#141415] border border-white/[0.08] text-[#a1a1a6] font-mono">
                     Lecture #{activeLesson.order} / {totalLessons}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-slate-400">
-                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="inline-flex items-center gap-1 text-[#85858b] font-mono">
+                    <Clock className="w-3.5 h-3.5" strokeWidth={1.5} />
                     {activeLesson.duration_label}
                   </span>
                 </div>
                 {isLessonCompleted && activeQuizRecord?.correct && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    Lecture Completed
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#4cc38a]/10 border border-[#4cc38a]/30 text-[#4cc38a] text-xs font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    Lecture completed
                   </span>
                 )}
               </div>
 
-              <h1 className="text-lg sm:text-2xl font-extrabold text-white leading-snug">
+              <h1 className="text-lg sm:text-xl font-semibold text-[#ededed] leading-snug tracking-tight">
                 {activeLesson.title}
               </h1>
 
               {/* 3-Step Sequential Activity Switcher Inside Current Lecture */}
-              <div className="flex items-center overflow-x-auto no-scrollbar gap-2 pt-1 pb-1 border-t border-slate-800/80">
+              <div className="flex items-center overflow-x-auto no-scrollbar gap-2 pt-2 pb-1 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'watch')}
-                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     pageStage === 'watch'
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-indigo-500/40'
+                      ? 'bg-[#ededed] text-[#141415]'
+                      : 'bg-[#141415] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                   }`}
                 >
-                  <PlayCircle className="w-3.5 h-3.5" />
-                  Step 1: Watch Video
-                  {isLessonCompleted && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />}
+                  <PlayCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Step 1: Watch video
+                  {isLessonCompleted && (
+                    <CheckCircle2
+                      className={`w-3.5 h-3.5 ${pageStage === 'watch' ? 'text-[#141415]' : 'text-[#4cc38a]'}`}
+                      strokeWidth={1.5}
+                    />
+                  )}
                 </button>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#85858b] shrink-0" strokeWidth={1.5} />
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'notes')}
-                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     pageStage === 'notes'
-                      ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25'
-                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-cyan-500/40'
+                      ? 'bg-[#ededed] text-[#141415]'
+                      : 'bg-[#141415] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                   }`}
                 >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  Step 2: Study Notes &amp; Code
+                  <BookOpen className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Step 2: Study notes &amp; code
                 </button>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#85858b] shrink-0" strokeWidth={1.5} />
                 <button
                   type="button"
                   onClick={() => openLessonStage(activeLesson, 'quiz')}
-                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors tabular-nums ${
                     pageStage === 'quiz'
-                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25'
-                      : 'bg-slate-950 border border-slate-800 text-slate-300 hover:border-emerald-500/40'
+                      ? 'bg-[#ededed] text-[#141415]'
+                      : 'bg-[#141415] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                   }`}
                 >
-                  <HelpCircle className="w-3.5 h-3.5" />
-                  Step 3: Solve Quiz #{activeLesson.order}
+                  <HelpCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Step 3: Solve quiz #{activeLesson.order}
                   {activeQuizRecord?.correct && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                    <CheckCircle2
+                      className={`w-3.5 h-3.5 ${pageStage === 'quiz' ? 'text-[#141415]' : 'text-[#4cc38a]'}`}
+                      strokeWidth={1.5}
+                    />
                   )}
                 </button>
               </div>
@@ -1049,7 +1054,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
           {/* ===================== PAGE 1: WATCH VIDEO ===================== */}
           {pageStage === 'watch' && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 sm:p-5 space-y-4">
+            <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 sm:p-5 space-y-4">
               <InLMSVideoPlayer
                 key={activeLesson.id}
                 lesson={activeLesson}
@@ -1059,17 +1064,18 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               />
 
               {videoJustFinished && (
-                <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/30 p-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 text-xs sm:text-sm font-bold text-emerald-200">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                    Video finished! Continue to read the study notes or solve Quiz #{activeLesson.order}.
+                <div className="rounded-xl border border-[#4cc38a]/35 bg-[#4cc38a]/[0.06] p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-[#ededed]">
+                    <CheckCircle2 className="w-4 h-4 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
+                    Video finished. Continue to study notes or solve Quiz #{activeLesson.order}.
                   </div>
                   <button
                     type="button"
                     onClick={() => handleWatchNextAction('quiz')}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
                   >
-                    Solve Quiz #{activeLesson.order} Now →
+                    Solve quiz #{activeLesson.order}
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </button>
                 </div>
               )}
@@ -1080,26 +1086,26 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                     type="button"
                     disabled={isCompletingLesson}
                     onClick={() => markLessonWatched(false)}
-                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition ${
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border text-xs font-medium transition-colors ${
                       isLessonCompleted
-                        ? 'bg-emerald-500/15 border border-emerald-500/35 text-emerald-300'
-                        : 'bg-slate-800 hover:bg-slate-700 text-white'
+                        ? 'bg-[#4cc38a]/15 border-[#4cc38a]/35 text-[#4cc38a]'
+                        : 'bg-[#222225] hover:bg-[#2a2a2e] border-white/[0.08] text-[#ededed]'
                     }`}
                   >
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4" strokeWidth={1.5} />
                     {isLessonCompleted
-                      ? 'Video Watched ✓'
+                      ? 'Video watched'
                       : isCompletingLesson
                       ? 'Saving...'
-                      : 'Mark Video Watched (+15 XP)'}
+                      : 'Mark video watched (+15 XP)'}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleWatchNextAction('notes')}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600/20 border border-cyan-500/35 hover:bg-cyan-600/30 text-cyan-200 text-xs font-bold transition"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
                   >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    Next: Read Notes &amp; Code
+                    <BookOpen className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                    Read notes &amp; code
                   </button>
                   <VideoShareButton
                     title={activeLesson.title}
@@ -1112,10 +1118,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 <button
                   type="button"
                   onClick={() => handleWatchNextAction('quiz')}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors tabular-nums"
                 >
-                  After Watch: Next Solve Quiz #{activeLesson.order}
-                  <ChevronRight className="w-4 h-4" />
+                  Next: Solve quiz #{activeLesson.order}
+                  <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
             </div>
@@ -1124,37 +1130,37 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           {/* ===================== PAGE 2: STUDY NOTES & CODE ===================== */}
           {pageStage === 'notes' && (
             <div className="space-y-5">
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 sm:p-6 space-y-5">
-                <div className="rounded-2xl border border-indigo-500/25 bg-indigo-950/25 p-4">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mb-1">
-                    Core Formula &amp; Conceptual Anchor
+              <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-6 space-y-5">
+                <div className="rounded-xl border border-white/[0.08] border-l-2 border-l-[#e5a00d] bg-[#141415] p-4">
+                  <div className="text-xs font-medium text-[#e5a00d] mb-1">
+                    Core formula &amp; conceptual anchor
                   </div>
-                  <div className="text-sm font-mono text-white break-words">
+                  <div className="text-sm font-mono text-[#ededed] break-words">
                     <MarkdownRenderer content={activeLesson.key_formula} />
                   </div>
                 </div>
 
-                <div className="prose prose-invert max-w-none text-sm text-slate-200">
+                <div className="prose prose-invert max-w-none text-sm text-[#a1a1a6]">
                   <MarkdownRenderer content={activeLesson.notes_markdown} />
                 </div>
 
                 {activeLesson.code_snippet && (
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden">
-                    <div className="px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300">
-                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                        Python Reference Implementation
+                  <div className="rounded-xl border border-white/[0.08] bg-[#0f0f10] overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-white/[0.08] bg-[#141415] flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#ededed]">
+                        <Code2 className="w-3.5 h-3.5 text-[#e5a00d]" strokeWidth={1.5} />
+                        Python reference implementation
                       </span>
                       <button
                         type="button"
                         onClick={() => handleCopySnippet(activeLesson.code_snippet)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                       >
-                        <Copy className="w-3 h-3" />
-                        Copy Code
+                        <Copy className="w-3 h-3 text-[#85858b]" strokeWidth={1.5} />
+                        Copy code
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    <pre className="p-4 text-xs font-mono text-[#ededed] overflow-x-auto leading-relaxed">
                       <code>{activeLesson.code_snippet}</code>
                     </pre>
                   </div>
@@ -1162,11 +1168,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               </div>
 
               {/* Personal Cloud Notebook */}
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 space-y-3">
+              <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <FileEdit className="w-4 h-4 text-cyan-400" />
-                    My Personal Study Notes — Lecture #{activeLesson.order}
+                  <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2 tabular-nums">
+                    <FileEdit className="w-4 h-4 text-[#85858b]" strokeWidth={1.5} />
+                    Personal study notes &mdash; Lecture #{activeLesson.order}
                   </h3>
                   <button
                     type="button"
@@ -1177,9 +1183,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                           : `# ${activeLesson.title}\n- Key Equation: \n- Edge Cases: \n- Summary: `
                       )
                     }
-                    className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
+                    className="px-3 py-1 rounded-md bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#a1a1a6] hover:text-[#ededed] transition-colors"
                   >
-                    Insert Template
+                    Insert template
                   </button>
                 </div>
                 <textarea
@@ -1187,18 +1193,18 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   onChange={(e) => setDraftNote(e.target.value)}
                   rows={5}
                   placeholder={`Record your personal notes for "${activeLesson.title}"...`}
-                  className="w-full rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:outline-none p-3.5 text-xs text-slate-200 font-mono leading-relaxed"
+                  className="w-full rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none p-3.5 text-xs text-[#ededed] placeholder:text-[#85858b] font-mono leading-relaxed"
                 />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-500">{draftNote.length} chars</span>
+                  <span className="text-xs text-[#85858b] font-mono tabular-nums">{draftNote.length} chars</span>
                   <button
                     type="button"
                     disabled={isSavingNote}
                     onClick={handleSaveNotes}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
                   >
-                    <Save className="w-3.5 h-3.5" />
-                    {isSavingNote ? 'Saving...' : 'Save Notes to Cloud'}
+                    <Save className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    {isSavingNote ? 'Saving...' : 'Save notes to cloud'}
                   </button>
                 </div>
               </div>
@@ -1207,24 +1213,24 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
           {/* ===================== PAGE 3: SOLVE QUIZ #X ===================== */}
           {pageStage === 'quiz' && (
-            <div className="rounded-2xl border border-emerald-500/25 bg-slate-900/80 p-5 sm:p-7 space-y-5 shadow-xl">
+            <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 sm:p-7 space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-                  After-Video Quiz #{activeLesson.order} · {activeLesson.module_title}
+                <span className="px-2.5 py-1 rounded-md bg-[#222225] border border-white/[0.08] text-[#ededed] text-xs font-medium tabular-nums">
+                  After-video quiz #{activeLesson.order} · {activeLesson.module_title}
                 </span>
                 {activeQuizRecord && (
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-[#85858b] tabular-nums">
                     Attempts: {activeQuizRecord.attempts} ·{' '}
                     <strong
-                      className={activeQuizRecord.correct ? 'text-emerald-400' : 'text-amber-300'}
+                      className={`font-medium ${activeQuizRecord.correct ? 'text-[#4cc38a]' : 'text-[#e5a00d]'}`}
                     >
-                      {activeQuizRecord.correct ? 'Passed ✓' : 'Try Again'}
+                      {activeQuizRecord.correct ? 'Passed' : 'Try again'}
                     </strong>
                   </span>
                 )}
               </div>
 
-              <h2 className="text-lg sm:text-xl font-extrabold text-white leading-snug">
+              <h2 className="text-lg font-semibold text-[#ededed] leading-snug">
                 {activeLesson.quiz.question}
               </h2>
 
@@ -1242,21 +1248,21 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                         setSelectedQuizOption(idx);
                         setQuizFeedback(null);
                       }}
-                      className={`w-full text-left p-4 rounded-xl border text-sm transition flex items-start gap-3 ${
+                      className={`w-full text-left p-3.5 rounded-lg border text-sm transition-colors flex items-start gap-3 ${
                         revealCorrect
-                          ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
+                          ? 'bg-[#4cc38a]/15 border-[#4cc38a]/60 text-[#ededed]'
                           : revealWrong
-                          ? 'bg-rose-500/15 border-rose-500 text-rose-100'
+                          ? 'bg-[#e5484d]/15 border-[#e5484d]/60 text-[#ededed]'
                           : isSelected
-                          ? 'bg-indigo-600/20 border-indigo-400 text-white'
-                          : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
+                          ? 'bg-[#222225] border-[#e5a00d]/60 text-[#ededed]'
+                          : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:border-white/[0.16]'
                       }`}
                     >
                       <span
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                        className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-mono font-medium shrink-0 ${
                           isSelected
-                            ? 'bg-indigo-500 text-white'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'bg-[#e5a00d] text-[#141415]'
+                            : 'bg-[#222225] text-[#85858b]'
                         }`}
                       >
                         {String.fromCharCode(65 + idx)}
@@ -1269,57 +1275,58 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
               {quizFeedback && (
                 <div
-                  className={`rounded-2xl border p-4 text-sm space-y-1.5 ${
+                  className={`rounded-xl border p-4 text-sm space-y-1.5 ${
                     quizFeedback.correct
-                      ? 'bg-emerald-950/35 border-emerald-500/40 text-emerald-200'
-                      : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+                      ? 'bg-[#4cc38a]/[0.08] border-[#4cc38a]/35 text-[#ededed]'
+                      : 'bg-[#e5a00d]/[0.08] border-[#e5a00d]/35 text-[#ededed]'
                   }`}
                 >
-                  <div className="flex items-center gap-2 font-bold">
+                  <div className="flex items-center gap-2 font-medium">
                     {quizFeedback.correct ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-[#4cc38a]" strokeWidth={1.5} />
                     ) : (
-                      <XCircle className="w-4 h-4 text-amber-400" />
+                      <XCircle className="w-4 h-4 text-[#e5a00d]" strokeWidth={1.5} />
                     )}
                     {quizFeedback.correct
-                      ? `Correct! Lecture #${activeLesson.order} Quiz Mastered.`
-                      : 'Review the explanation and select the right option'}
+                      ? `Correct — Lecture #${activeLesson.order} quiz passed.`
+                      : 'Review the explanation and select the right option.'}
                   </div>
-                  <p className="text-xs leading-relaxed opacity-90">{quizFeedback.explanation}</p>
+                  <p className="text-xs leading-relaxed text-[#a1a1a6]">{quizFeedback.explanation}</p>
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/[0.06]">
                 <button
                   type="button"
                   disabled={selectedQuizOption === null || isSubmittingLessonQuiz}
                   onClick={handleSubmitLessonQuiz}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 text-white text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-45 text-[#141415] text-xs font-medium transition-colors"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  {isSubmittingLessonQuiz ? 'Checking Answer...' : 'Check Quiz Answer (+10 XP)'}
+                  <CheckCircle2 className="w-4 h-4" strokeWidth={1.5} />
+                  {isSubmittingLessonQuiz ? 'Checking answer...' : 'Check quiz answer (+10 XP)'}
                 </button>
 
                 {nextLesson ? (
                   <button
                     type="button"
                     onClick={() => openLessonStage(nextLesson, 'watch')}
-                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition ${
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-colors ${
                       quizFeedback?.correct || activeQuizRecord?.correct
-                        ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                        ? 'bg-[#e5a00d] hover:bg-[#f0b024] text-[#141415]'
+                        : 'bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed]'
                     }`}
                   >
-                    Next: Watch Lecture #{nextLesson.order} ({nextLesson.title.slice(0, 28)}...)
-                    <ChevronRight className="w-4 h-4" />
+                    Next: Lecture #{nextLesson.order} ({nextLesson.title.slice(0, 26)}...)
+                    <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => openMilestoneStage('quiz-bank')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#e5a00d] hover:bg-[#f0b024] text-[#141415] text-xs font-medium transition-colors"
                   >
-                    Next Milestone: Full Quiz Practice Bank →
+                    Next milestone: Practice quiz bank
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </button>
                 )}
               </div>
@@ -1329,19 +1336,19 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
           {/* ===================== MILESTONE: QUIZ PRACTICE BANK ===================== */}
           {pageStage === 'quiz-bank' && (
             <div className="space-y-5">
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">
-                    {quizBank.length} Comprehension Quizzes ({isDL ? '20+ Bank' : '100+ Bank'})
+                  <h2 className="text-lg font-semibold text-[#ededed] tabular-nums">
+                    {quizBank.length} comprehension quizzes ({isDL ? '20+ bank' : '100+ bank'})
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Best Mastery Score: <strong className="text-cyan-300">{bestPracticeScore}%</strong> · Answer &amp; grade all modules before your Capstone &amp; Final Exam.
+                  <p className="text-xs text-[#a1a1a6] mt-1 tabular-nums">
+                    Best score: <strong className="font-medium text-[#ededed]">{bestPracticeScore}%</strong> · Grade all modules before capstone &amp; final exam.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <div className="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                  <div className="px-3 py-1.5 rounded-lg bg-[#141415] border border-white/[0.08] text-xs text-[#a1a1a6] tabular-nums">
                     Answered:{' '}
-                    <span className="font-bold text-cyan-300">
+                    <span className="font-mono font-medium text-[#ededed]">
                       {Object.keys(practiceAnswers).length}/{quizBank.length}
                     </span>
                   </div>
@@ -1351,43 +1358,44 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       setPracticeAnswers({});
                       setPracticeResult(null);
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                   >
-                    <RotateCcw className="w-3.5 h-3.5" />
+                    <RotateCcw className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
                     Reset
                   </button>
                   <button
                     type="button"
                     disabled={isSubmittingPractice}
                     onClick={handleSubmitPracticeBank}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-bold transition shadow-lg shadow-cyan-500/20"
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
                   >
-                    <CheckCircle2 className="w-4 h-4" />
-                    {isSubmittingPractice ? 'Grading...' : 'Grade Practice Submission'}
+                    <CheckCircle2 className="w-4 h-4" strokeWidth={1.5} />
+                    {isSubmittingPractice ? 'Grading...' : 'Grade practice submission'}
                   </button>
                 </div>
               </div>
 
               {practiceResult && (
-                <div className="rounded-2xl border border-cyan-500/35 bg-cyan-950/25 p-5 flex flex-wrap items-center justify-between gap-4">
+                <div className="rounded-xl border border-[#4cc38a]/35 bg-[#4cc38a]/[0.06] p-5 flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <Trophy className="w-8 h-8 text-cyan-400" />
+                    <Trophy className="w-6 h-6 text-[#e5a00d]" strokeWidth={1.5} />
                     <div>
-                      <div className="text-base font-bold text-white">
-                        Practice Score: {practiceResult.score_percent}% ({practiceResult.correct_count}/
+                      <div className="text-sm font-medium text-[#ededed] tabular-nums">
+                        Practice score: {practiceResult.score_percent}% ({practiceResult.correct_count}/
                         {practiceResult.total_answered} correct)
                       </div>
-                      <div className="text-xs text-cyan-200/80">
-                        All-time Best Score: {practiceResult.best_score}%
+                      <div className="text-xs text-[#a1a1a6] tabular-nums">
+                        All-time best score: {practiceResult.best_score}%
                       </div>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => openMilestoneStage('capstone')}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
                   >
-                    Continue to Capstone Project Lab →
+                    Continue to capstone lab
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </button>
                 </div>
               )}
@@ -1400,10 +1408,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       setPracticeModuleFilter('ALL');
                       setPracticePage(0);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors tabular-nums ${
                       practiceModuleFilter === 'ALL'
-                        ? 'bg-cyan-600 text-white'
-                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                        ? 'bg-[#ededed] text-[#141415]'
+                        : 'bg-[#19191b] border border-white/[0.08] text-[#85858b] hover:text-[#ededed]'
                     }`}
                   >
                     All ({quizBank.length})
@@ -1416,10 +1424,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                         setPracticeModuleFilter(m.id);
                         setPracticePage(0);
                       }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors tabular-nums ${
                         practiceModuleFilter === m.id
-                          ? 'bg-cyan-600 text-white'
-                          : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-[#ededed] text-[#141415]'
+                          : 'bg-[#19191b] border border-white/[0.08] text-[#85858b] hover:text-[#ededed]'
                       }`}
                     >
                       M{m.order} ({m.lesson_count}Q)
@@ -1434,10 +1442,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                         key={idx}
                         type="button"
                         onClick={() => setPracticePage(idx)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition ${
+                        className={`px-2.5 py-1 rounded-md text-xs font-mono font-medium transition-colors tabular-nums ${
                           safePracticePage === idx
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                            ? 'bg-[#e5a00d] text-[#141415]'
+                            : 'bg-[#19191b] border border-white/[0.08] text-[#85858b] hover:text-[#ededed]'
                         }`}
                       >
                         {idx * PRACTICE_PAGE_SIZE + 1}–
@@ -1459,11 +1467,11 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                   return (
                     <div
                       key={q.id}
-                      className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 space-y-3 flex flex-col justify-between"
+                      className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 space-y-3 flex flex-col justify-between"
                     >
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between gap-2 text-[11px]">
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 font-bold">
+                        <div className="flex items-center justify-between gap-2 text-xs">
+                          <span className="px-2 py-0.5 rounded bg-[#222225] border border-white/[0.08] text-[#ededed] font-mono tabular-nums">
                             Q#{q.lesson_order} · {q.module_title}
                           </span>
                           <button
@@ -1472,12 +1480,13 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                               const target = course.lessons.find((l) => l.id === q.lesson_id);
                               if (target) openLessonStage(target, 'watch');
                             }}
-                            className="text-cyan-400 hover:underline font-semibold"
+                            className="inline-flex items-center gap-1 text-[#e5a00d] hover:underline font-medium"
                           >
-                            Review Video →
+                            Review video
+                            <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                           </button>
                         </div>
-                        <h4 className="text-sm font-bold text-white leading-snug">{q.question}</h4>
+                        <h4 className="text-sm font-medium text-[#ededed] leading-snug">{q.question}</h4>
                         <div className="space-y-1.5">
                           {q.options.map((opt, idx) => {
                             const isPicked = selectedIdx === idx;
@@ -1493,17 +1502,17 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                                     [q.id]: idx,
                                   }))
                                 }
-                                className={`w-full text-left px-3 py-2 rounded-xl border text-xs transition ${
+                                className={`w-full text-left px-3 py-2 rounded-lg border text-xs transition-colors ${
                                   isRight
-                                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-100'
+                                    ? 'bg-[#4cc38a]/15 border-[#4cc38a]/60 text-[#ededed]'
                                     : isWrong
-                                    ? 'bg-rose-500/15 border-rose-500 text-rose-100'
+                                    ? 'bg-[#e5484d]/15 border-[#e5484d]/60 text-[#ededed]'
                                     : isPicked
-                                    ? 'bg-cyan-600/20 border-cyan-400 text-white'
-                                    : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'
+                                    ? 'bg-[#222225] border-[#e5a00d]/60 text-[#ededed]'
+                                    : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:border-white/[0.16]'
                                 }`}
                               >
-                                <span className="font-bold mr-2">
+                                <span className="font-mono font-medium mr-2 text-[#85858b]">
                                   {String.fromCharCode(65 + idx)}.
                                 </span>
                                 {opt}
@@ -1514,10 +1523,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       </div>
                       {graded && (
                         <div
-                          className={`text-[11px] rounded-xl p-2.5 border ${
+                          className={`text-xs rounded-lg p-2.5 border ${
                             graded.correct
-                              ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200'
-                              : 'bg-rose-950/30 border-rose-500/30 text-rose-200'
+                              ? 'bg-[#4cc38a]/[0.08] border-[#4cc38a]/30 text-[#ededed]'
+                              : 'bg-[#e5484d]/[0.08] border-[#e5484d]/30 text-[#ededed]'
                           }`}
                         >
                           {graded.explanation}
@@ -1546,65 +1555,65 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
               <div className="xl:col-span-8 space-y-5">
                 {examPhase === 'preflight' && (
-                  <div className="rounded-3xl border border-emerald-500/25 bg-slate-900/80 p-6 sm:p-7 space-y-5">
+                  <div className="rounded-2xl border border-white/[0.08] bg-[#19191b] p-6 sm:p-7 space-y-5">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                        Proctored Certification Exam
+                      <span className="text-xs font-medium text-[#4cc38a]">
+                        Proctored certification exam
                       </span>
-                      <h2 className="text-2xl font-extrabold text-white mt-0.5">
+                      <h2 className="text-xl font-semibold text-[#ededed] mt-0.5 tracking-tight">
                         {finalExam?.title || `${course.title} — Final Exam`}
                       </h2>
-                      <p className="text-xs sm:text-sm text-slate-300 mt-2">
-                        Pass with ≥{finalExam?.passing_score || 70}% under active webcam guard to
-                        unlock your SHA-256 Vector PDF Certificate &amp; Graduate Goodies Bundle.
+                      <p className="text-xs sm:text-sm text-[#a1a1a6] mt-2 tabular-nums">
+                        Pass with &ge;{finalExam?.passing_score || 70}% under active webcam guard to
+                        unlock your SHA-256 Vector PDF Certificate and Graduate Goodies Bundle.
                       </p>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
-                        <div className="text-[11px] text-slate-400">Length</div>
-                        <div className="text-base font-extrabold text-white">
+                      <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
+                        <div className="text-xs text-[#85858b]">Length</div>
+                        <div className="text-base font-medium text-[#ededed] tabular-nums">
                           {finalExam?.total_questions || (isDL ? 20 : 35)} Qs
                         </div>
                       </div>
-                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
-                        <div className="text-[11px] text-slate-400">Timer</div>
-                        <div className="text-base font-extrabold text-white">
-                          {finalExam?.duration_minutes || (isDL ? 30 : 45)} Min
+                      <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
+                        <div className="text-xs text-[#85858b]">Timer</div>
+                        <div className="text-base font-medium text-[#ededed] tabular-nums">
+                          {finalExam?.duration_minutes || (isDL ? 30 : 45)} min
                         </div>
                       </div>
-                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
-                        <div className="text-[11px] text-slate-400">Pass Score</div>
-                        <div className="text-base font-extrabold text-emerald-400">
+                      <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
+                        <div className="text-xs text-[#85858b]">Pass score</div>
+                        <div className="text-base font-medium text-[#4cc38a] tabular-nums">
                           {finalExam?.passing_score || 70}%
                         </div>
                       </div>
-                      <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
-                        <div className="text-[11px] text-slate-400">Strike Limit</div>
-                        <div className="text-base font-extrabold text-rose-400">3 Max</div>
+                      <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3">
+                        <div className="text-xs text-[#85858b]">Strike limit</div>
+                        <div className="text-base font-medium text-[#e5484d] tabular-nums">3 max</div>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-800">
+                    <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/[0.06]">
                       <span
-                        className={`text-xs font-bold ${
-                          cameraReady ? 'text-emerald-400' : 'text-amber-300'
+                        className={`text-xs font-medium ${
+                          cameraReady ? 'text-[#4cc38a]' : 'text-[#e5a00d]'
                         }`}
                       >
                         {cameraReady
-                          ? '✓ AI Face & Object Guard Verified — Ready to begin'
+                          ? 'Face & object guard verified — Ready to begin'
                           : proctorIntegrity.status !== 'ok' && proctorIntegrity.faceCount !== null
-                          ? `⚠ ${proctorIntegrity.headline}: Center uncovered face in camera to unlock`
-                          : 'Enable Webcam Guard and center your uncovered face in the side panel first'}
+                          ? `${proctorIntegrity.headline}: Center uncovered face in camera to unlock`
+                          : 'Enable webcam guard and center your uncovered face in the side panel first'}
                       </span>
                       <button
                         type="button"
                         disabled={!cameraReady}
                         onClick={handleStartExam}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-45 text-white text-xs sm:text-sm font-extrabold transition shadow-xl shadow-emerald-500/20"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-45 text-[#141415] text-xs font-medium transition-colors"
                       >
-                        <ShieldCheck className="w-4 h-4" />
-                        Start Proctored Final Exam
+                        <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+                        Start proctored final exam
                       </button>
                     </div>
                   </div>
@@ -1612,22 +1621,22 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
                 {examPhase === 'active' && finalExam && finalExam.questions.length > 0 && (
                   <div className="space-y-4">
-                    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-sm font-bold text-cyan-300">
+                        <span className="px-3 py-1 rounded-lg bg-[#141415] border border-white/[0.08] font-mono text-sm font-medium text-[#e5a00d] tabular-nums">
                           {formatCountdown(examRemainingSec)}
                         </span>
-                        <span className="text-xs text-slate-300 font-semibold">
-                          {Object.keys(examAnswers).length} / {finalExam.questions.length} Answered
+                        <span className="text-xs text-[#a1a1a6] font-medium tabular-nums">
+                          {Object.keys(examAnswers).length} / {finalExam.questions.length} answered
                         </span>
                       </div>
                       <button
                         type="button"
                         disabled={isSubmittingExam}
                         onClick={() => submitFinalExam(false)}
-                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition"
+                        className="px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
                       >
-                        {isSubmittingExam ? 'Submitting...' : 'Submit Final Exam'}
+                        {isSubmittingExam ? 'Submitting...' : 'Submit final exam'}
                       </button>
                     </div>
 
@@ -1640,31 +1649,31 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                       return (
                         <div
                           onDragStart={(e) => e.preventDefault()}
-                          className="relative rounded-2xl border border-slate-800 bg-slate-900/80 p-5 space-y-4 select-none overflow-hidden"
+                          className="relative rounded-xl border border-white/[0.08] bg-[#19191b] p-5 space-y-4 select-none overflow-hidden"
                         >
                           {shieldLocked && (
-                            <div className="absolute inset-0 z-20 bg-[#050814]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center space-y-3 border-2 border-rose-500/50 rounded-2xl">
-                              <ShieldAlert className="w-10 h-10 text-rose-400 animate-pulse" />
+                            <div className="absolute inset-0 z-20 bg-[#0f0f10]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center space-y-3 border-2 border-[#e5484d]/50 rounded-xl">
+                              <ShieldAlert className="w-8 h-8 text-[#e5484d]" strokeWidth={1.5} />
                               <div className="space-y-1 max-w-md">
-                                <div className="text-xs font-mono uppercase tracking-wider text-rose-300 font-bold">
-                                  Anti-Cheat Shield Locked · Strikes {examViolations}/3
+                                <div className="text-xs font-mono text-[#e5484d] font-medium tabular-nums">
+                                  Anti-cheat shield locked · Strikes {examViolations}/3
                                 </div>
-                                <h3 className="text-lg font-extrabold text-white">
+                                <h3 className="text-base font-semibold text-[#ededed]">
                                   {proctorIntegrity.headline}
                                 </h3>
-                                <p className="text-xs text-slate-300 leading-relaxed">
-                                  {proctorIntegrity.reason} Questions remain blurred until your uncovered face is centered cleanly in camera view.
+                                <p className="text-xs text-[#a1a1a6] leading-relaxed">
+                                  {proctorIntegrity.reason} Questions remain hidden until your uncovered face is centered cleanly in camera view.
                                 </p>
                               </div>
                             </div>
                           )}
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-300 font-bold">
+                          <div className="flex items-center justify-between text-xs tabular-nums">
+                            <span className="px-2.5 py-1 rounded-md bg-[#222225] border border-white/[0.08] text-[#ededed] font-mono">
                               Question {examQuestionIdx + 1} / {finalExam.questions.length}
                             </span>
-                            <span className="text-slate-400">{q.module_title}</span>
+                            <span className="text-[#85858b]">{q.module_title}</span>
                           </div>
-                          <h3 className="text-base sm:text-lg font-bold text-white">{q.question}</h3>
+                          <h3 className="text-base font-medium text-[#ededed]">{q.question}</h3>
                           <div className="space-y-2">
                             {q.options.map((opt, idx) => (
                               <button
@@ -1676,17 +1685,17 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                                     [q.id]: idx,
                                   }))
                                 }
-                                className={`w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm transition flex items-start gap-3 ${
+                                className={`w-full text-left p-3.5 rounded-lg border text-xs sm:text-sm transition-colors flex items-start gap-3 ${
                                   picked === idx
-                                    ? 'bg-indigo-600/20 border-indigo-400 text-white'
-                                    : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
+                                    ? 'bg-[#222225] border-[#e5a00d]/60 text-[#ededed]'
+                                    : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:border-white/[0.16]'
                                 }`}
                               >
                                 <span
-                                  className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                                  className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-mono font-medium shrink-0 ${
                                     picked === idx
-                                      ? 'bg-indigo-500 text-white'
-                                      : 'bg-slate-800 text-slate-400'
+                                      ? 'bg-[#e5a00d] text-[#141415]'
+                                      : 'bg-[#222225] text-[#85858b]'
                                   }`}
                                 >
                                   {String.fromCharCode(65 + idx)}
@@ -1700,9 +1709,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                               type="button"
                               disabled={examQuestionIdx === 0}
                               onClick={() => setExamQuestionIdx((i) => Math.max(0, i - 1))}
-                              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-semibold text-white"
+                              className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] disabled:opacity-40 border border-white/[0.08] text-xs font-medium text-[#ededed]"
                             >
-                              ← Previous
+                              <ChevronLeft className="w-3.5 h-3.5" strokeWidth={1.5} />
+                              Previous
                             </button>
                             <button
                               type="button"
@@ -1712,16 +1722,17 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                                   Math.min(finalExam.questions.length - 1, i + 1)
                                 )
                               }
-                              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-xs font-bold text-white"
+                              className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-40 text-xs font-medium text-[#141415]"
                             >
-                              Save &amp; Next →
+                              Save &amp; next
+                              <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                             </button>
                           </div>
                         </div>
                       );
                     })()}
 
-                    <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-4 flex flex-wrap gap-1.5">
+                    <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-4 flex flex-wrap gap-1.5">
                       {finalExam.questions.map((q, idx) => {
                         const isAnswered = examAnswers[q.id] !== undefined;
                         const isCurrent = idx === examQuestionIdx;
@@ -1730,12 +1741,12 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                             key={q.id}
                             type="button"
                             onClick={() => setExamQuestionIdx(idx)}
-                            className={`w-8 h-8 rounded-lg text-xs font-mono font-bold border ${
+                            className={`w-8 h-8 rounded-md text-xs font-mono font-medium border tabular-nums ${
                               isCurrent
-                                ? 'bg-indigo-600 border-indigo-300 text-white'
+                                ? 'bg-[#ededed] border-[#ededed] text-[#141415]'
                                 : isAnswered
-                                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                                : 'bg-slate-950 border-slate-800 text-slate-400'
+                                ? 'bg-[#4cc38a]/15 border-[#4cc38a]/35 text-[#4cc38a]'
+                                : 'bg-[#141415] border-white/[0.08] text-[#85858b]'
                             }`}
                           >
                             {idx + 1}
@@ -1748,27 +1759,27 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
 
                 {examPhase === 'submitted' && examResult && (
                   <div
-                    className={`rounded-3xl border p-6 space-y-5 ${
+                    className={`rounded-2xl border bg-[#19191b] p-6 space-y-5 ${
                       examResult.passed
-                        ? 'border-emerald-500/40 bg-emerald-950/25'
-                        : 'border-rose-500/40 bg-rose-950/25'
+                        ? 'border-[#4cc38a]/40'
+                        : 'border-[#e5484d]/40'
                     }`}
                   >
                     <div className="flex items-start gap-4">
                       {examResult.passed ? (
-                        <Award className="w-10 h-10 text-emerald-400 shrink-0" />
+                        <Award className="w-8 h-8 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
                       ) : (
-                        <ShieldAlert className="w-10 h-10 text-rose-400 shrink-0" />
+                        <ShieldAlert className="w-8 h-8 text-[#e5484d] shrink-0" strokeWidth={1.5} />
                       )}
                       <div>
-                        <h2 className="text-xl font-extrabold text-white">
+                        <h2 className="text-lg font-semibold text-[#ededed] tabular-nums">
                           {examResult.disqualified
-                            ? 'Disqualified — Anti-Cheat Triggered'
+                            ? 'Disqualified — proctoring threshold exceeded'
                             : examResult.passed
-                            ? `Passed (${examResult.score_percent}%) — Certificate Earned!`
-                            : `Scored ${examResult.score_percent}% — Review & Retry`}
+                            ? `Passed (${examResult.score_percent}%) — Certificate earned`
+                            : `Scored ${examResult.score_percent}% — Review and retry`}
                         </h2>
-                        <p className="text-xs sm:text-sm text-slate-300 mt-1">{examResult.message}</p>
+                        <p className="text-xs sm:text-sm text-[#a1a1a6] mt-1">{examResult.message}</p>
                       </div>
                     </div>
 
@@ -1778,24 +1789,26 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                           <button
                             type="button"
                             onClick={() => openMilestoneStage('reviews')}
-                            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#e5a00d] hover:bg-[#f0b024] text-[#141415] text-xs font-medium transition-colors"
                           >
-                            Next Page: Submit Course Feedback →
+                            Submit course feedback
+                            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                           </button>
                           <button
                             type="button"
                             onClick={() => openMilestoneStage('certificate')}
-                            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
                           >
-                            View Certificate Stage →
+                            View certificate
+                            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                           </button>
                           <button
                             type="button"
                             onClick={() => openMilestoneStage('goodies')}
-                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
                           >
-                            <Gift className="w-3.5 h-3.5" />
-                            Claim Goodies Form →
+                            <Gift className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+                            Claim goodies
                           </button>
                         </>
                       )}
@@ -1807,9 +1820,9 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                           setExamViolations(0);
                           setExamViolationLog([]);
                         }}
-                        className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white"
+                        className="px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
                       >
-                        Retake Exam
+                        Retake exam
                       </button>
                     </div>
                   </div>
@@ -1880,18 +1893,18 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
             />
           )}
 
-          {/* Pinned Google Cloud Skills Boost Bottom Page-by-Page Navigator */}
-          <div className="rounded-2xl border border-slate-800 bg-[#0A0F1D] p-3.5 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 shadow-lg">
+          {/* Bottom Page-by-Page Navigator */}
+          <div className="rounded-xl border border-white/[0.08] bg-[#19191b] p-3.5 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={handlePagerPrev}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200 transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors"
             >
-              <ChevronLeft className="w-4 h-4 shrink-0" />
+              <ChevronLeft className="w-4 h-4 shrink-0 text-[#85858b]" strokeWidth={1.5} />
               <span className="truncate">{pagerMeta.prevText.replace(/^←\s*/, '')}</span>
             </button>
 
-            <span className="text-[11px] font-mono text-slate-400 text-center hidden md:inline">
+            <span className="text-xs font-mono text-[#85858b] text-center hidden md:inline tabular-nums">
               {pagerMeta.label}
             </span>
 
@@ -1900,7 +1913,7 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
                 <button
                   type="button"
                   onClick={handlePagerSecondary}
-                  className="px-3.5 py-2.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-cyan-300 transition text-center"
+                  className="px-3.5 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-xs font-medium text-[#ededed] transition-colors text-center"
                 >
                   {pagerMeta.secondaryText}
                 </button>
@@ -1908,10 +1921,10 @@ const CourseLMSView: React.FC<{ track: CourseTrack }> = ({ track }) => {
               <button
                 type="button"
                 onClick={handlePagerNext}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold transition shadow-lg shadow-indigo-500/20"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
               >
                 <span className="truncate">{pagerMeta.nextText.replace(/\s*→$/, '')}</span>
-                <ChevronRight className="w-4 h-4 shrink-0" />
+                <ChevronRight className="w-4 h-4 shrink-0" strokeWidth={1.5} />
               </button>
             </div>
           </div>

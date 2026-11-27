@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  ArrowRight,
   Award,
   CheckCircle2,
   ChevronRight,
@@ -12,7 +13,6 @@ import {
   PackageCheck,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Truck,
 } from 'lucide-react';
 import { api } from '../../services/api';
@@ -40,32 +40,34 @@ export const CourseCertificateStagePanel: React.FC<CertificateStageProps> = ({
 }) => {
   if (!certificate) {
     return (
-      <div className="rounded-3xl border border-amber-500/30 bg-slate-900/80 p-8 text-center max-w-3xl mx-auto space-y-5">
-        <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mx-auto">
-          <ShieldAlert className="w-7 h-7 text-amber-400" />
+      <div className="rounded-2xl border border-white/[0.08] bg-[#19191b] p-8 text-center max-w-3xl mx-auto space-y-5">
+        <div className="w-12 h-12 rounded-xl bg-[#e5a00d]/10 border border-[#e5a00d]/30 flex items-center justify-center mx-auto">
+          <ShieldAlert className="w-6 h-6 text-[#e5a00d]" strokeWidth={1.5} />
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-extrabold text-white">Certificate Locked — Final Exam Pending</h2>
-          <p className="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-            Pass the camera-proctored final examination (≥70% with verified webcam) to mint your
-            official SHA-256 credential and Vector A4 PDF for <strong>{courseTitle}</strong>.
+          <h2 className="text-xl font-semibold text-[#ededed]">Certificate locked — final exam pending</h2>
+          <p className="text-sm text-[#a1a1a6] max-w-xl mx-auto leading-relaxed">
+            Pass the camera-proctored final examination (&ge;70% with verified webcam) to mint your
+            official SHA-256 credential and Vector A4 PDF for{' '}
+            <strong className="font-medium text-[#ededed]">{courseTitle}</strong>.
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-3">
           <button
             type="button"
             onClick={onGoToExam}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
           >
-            <ShieldCheck className="w-4 h-4" />
-            Take Camera-Proctored Final Exam
+            <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+            Take proctored final exam
           </button>
           <button
             type="button"
             onClick={onGoToGoodies}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
           >
-            Preview Goodies Claim Form →
+            Preview goodies claim form
+            <ArrowRight className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
           </button>
         </div>
       </div>
@@ -74,44 +76,45 @@ export const CourseCertificateStagePanel: React.FC<CertificateStageProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Ornate Credential Card Preview */}
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-[#0B1226] via-slate-900 to-emerald-950/25 p-6 sm:p-8 shadow-2xl space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-xs font-bold">
-            <Award className="w-4 h-4" />
-            OFFICIAL VERIFIED CREDENTIAL • A4 VECTOR PDF READY
+      <div className="rounded-2xl border border-[#e5a00d]/35 bg-[#19191b] p-6 sm:p-8 space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-[#4cc38a]">
+            <Award className="w-4 h-4" strokeWidth={1.5} />
+            Official verified credential · A4 vector PDF ready
           </div>
-          <span className="font-mono text-xs text-cyan-300 font-bold">
+          <span className="font-mono text-xs text-[#e5a00d] font-medium tabular-nums">
             {certificate.credential_id}
           </span>
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-mono uppercase tracking-widest text-indigo-300">
-            Awarded with Verified Distinction to {certificate.recipient_name}
+          <p className="text-xs font-mono text-[#a1a1a6]">
+            Awarded to {certificate.recipient_name}
           </p>
-          <h2 className="text-2xl sm:text-3xl font-black text-white">{certificate.title}</h2>
-          <p className="text-sm text-slate-300 leading-relaxed">{certificate.summary}</p>
+          <h2 className="text-2xl font-semibold text-[#ededed] tracking-tight">
+            {certificate.title}
+          </h2>
+          <p className="text-sm text-[#a1a1a6] leading-relaxed">{certificate.summary}</p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-3.5">
-            <div className="text-[11px] text-slate-400">Standing</div>
-            <div className="text-sm font-bold text-emerald-300 mt-0.5">{certificate.grade}</div>
+          <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3.5">
+            <div className="text-xs text-[#85858b]">Standing</div>
+            <div className="text-sm font-medium text-[#4cc38a] mt-0.5">{certificate.grade}</div>
           </div>
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-3.5">
-            <div className="text-[11px] text-slate-400">Signatory</div>
-            <div className="text-sm font-bold text-white mt-0.5">{certificate.signatory_name}</div>
+          <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3.5">
+            <div className="text-xs text-[#85858b]">Signatory</div>
+            <div className="text-sm font-medium text-[#ededed] mt-0.5">{certificate.signatory_name}</div>
           </div>
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-3.5">
-            <div className="text-[11px] text-slate-400">Study Hours</div>
-            <div className="text-sm font-bold text-cyan-300 mt-0.5">
+          <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3.5">
+            <div className="text-xs text-[#85858b]">Study hours</div>
+            <div className="text-sm font-medium text-[#ededed] mt-0.5 tabular-nums">
               {certificate.completion_hours || 28} hrs
             </div>
           </div>
-          <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-3.5">
-            <div className="text-[11px] text-slate-400">SHA-256 Digest</div>
-            <div className="text-xs font-mono text-slate-300 mt-1 truncate">
+          <div className="rounded-xl bg-[#141415] border border-white/[0.08] p-3.5">
+            <div className="text-xs text-[#85858b]">SHA-256 digest</div>
+            <div className="text-xs font-mono text-[#a1a1a6] mt-1 truncate">
               {certificate.credential_hash?.slice(0, 16) || 'verified-hash'}
             </div>
           </div>
@@ -122,47 +125,48 @@ export const CourseCertificateStagePanel: React.FC<CertificateStageProps> = ({
             {certificate.skills_verified.map((skill) => (
               <span
                 key={skill}
-                className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-indigo-200 font-medium"
+                className="px-2.5 py-1 rounded-md bg-[#141415] border border-white/[0.08] text-xs text-[#a1a1a6]"
               >
-                ✓ {skill}
+                {skill}
               </span>
             ))}
           </div>
         )}
 
-        <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="pt-4 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2.5">
             <button
               type="button"
               onClick={() => api.downloadCertificatePdf(certificate.credential_id)}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-500/20"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
             >
-              <Download className="w-4 h-4" />
-              Download Landscape A4 PDF
+              <Download className="w-4 h-4" strokeWidth={1.5} />
+              Download landscape A4 PDF
             </button>
             <Link
               to={`/verify/${certificate.credential_id}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
             >
-              <ShieldCheck className="w-4 h-4 text-cyan-400" />
-              Public Verify URL
+              <ShieldCheck className="w-4 h-4 text-[#4cc38a]" strokeWidth={1.5} />
+              Public verify URL
             </Link>
             <Link
               to="/app/certificates"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600/25 border border-indigo-500/35 hover:bg-indigo-600/35 text-indigo-200 text-xs font-bold transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Share to LinkedIn / IG / FB
+              <ExternalLink className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+              Share credential
             </Link>
           </div>
 
           <button
             type="button"
             onClick={onGoToGoodies}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 text-xs font-black transition shadow-lg"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#e5a00d] hover:bg-[#f0b024] text-[#141415] text-xs font-medium transition-colors"
           >
-            <Gift className="w-4 h-4" />
-            Next: Claim Graduate Goodies →
+            <Gift className="w-4 h-4" strokeWidth={1.5} />
+            Claim graduate goodies
+            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
           </button>
         </div>
       </div>
@@ -176,18 +180,18 @@ export const CourseCertificateStagePanel: React.FC<CertificateStageProps> = ({
 const SWAG_BUNDLES = [
   {
     id: 'Complete Graduate Swag Box',
-    badge: 'POPULAR',
-    desc: 'Embroidered Dev Hoodie + Matte Steel Tumbler + Mechanical Keycap + Holographic Stickers',
+    badge: 'Complete kit',
+    desc: 'Embroidered Dev Hoodie + Matte Steel Tumbler + Mechanical Keycap + Sticker Set',
   },
   {
     id: 'Academy Developer Hoodie Kit',
-    badge: 'APPAREL',
-    desc: 'Heavyweight Dark Navy Zip Hoodie with Stanford X Coding Task Factory Emblem + Sticker Pack',
+    badge: 'Apparel',
+    desc: 'Heavyweight Dark Graphite Zip Hoodie with Stanford X Coding Task Factory Emblem + Stickers',
   },
   {
     id: 'Desk Pro Engineering Kit',
-    badge: 'HARDWARE',
-    desc: 'Laser-etched Aluminum Water Bottle + PBT Escape Keycap + Desk Cheat-Sheet Mat',
+    badge: 'Hardware',
+    desc: 'Laser-etched Aluminum Water Bottle + PBT Escape Keycap + Desk Reference Mat',
   },
 ];
 
@@ -243,45 +247,50 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
     });
   };
 
+  const inputCls =
+    'px-3.5 py-2.5 rounded-lg bg-[#141415] border border-white/[0.08] focus:border-[#e5a00d]/60 focus:outline-none text-xs text-[#ededed] placeholder:text-[#85858b]';
+
   return (
     <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       {/* Left: Dispatch Summary + Active Claim Card */}
       <div className="lg:col-span-5 space-y-5">
-        <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-br from-slate-900 via-amber-950/20 to-slate-900 p-6 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
-            <Gift className="w-3.5 h-3.5" />
-            GRADUATE GOODIES &amp; SWAG PROGRAM
+        <div className="rounded-2xl border border-white/[0.08] bg-[#19191b] p-6 space-y-4">
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-[#e5a00d]">
+            <Gift className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Graduate goodies program
           </div>
-          <h2 className="text-xl font-extrabold text-white">
-            Claim Your {courseTitle} Swag Box (+50 XP)
+          <h2 className="text-lg font-semibold text-[#ededed]">
+            Claim your {courseTitle} swag kit (+50 XP)
           </h2>
-          <p className="text-xs text-slate-300 leading-relaxed">
-            Celebrate completing lectures, quizzes, capstone projects, and proctored assessment by
-            selecting your official apparel/desk bundle and delivery destination.
+          <p className="text-xs text-[#a1a1a6] leading-relaxed">
+            Upon completing lectures, quizzes, capstone projects, and the proctored assessment, select
+            your apparel or desk bundle and shipping destination.
           </p>
 
           {existingClaim && (
-            <div className="rounded-2xl border border-emerald-500/35 bg-emerald-950/30 p-4 space-y-2.5">
+            <div className="rounded-xl border border-[#4cc38a]/30 bg-[#4cc38a]/[0.06] p-4 space-y-2.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-emerald-300 flex items-center gap-1.5">
-                  <PackageCheck className="w-4 h-4" />
-                  Order Claimed!
+                <span className="font-medium text-[#4cc38a] flex items-center gap-1.5">
+                  <PackageCheck className="w-4 h-4" strokeWidth={1.5} />
+                  Dispatch claimed
                 </span>
-                <span className="font-mono font-bold text-white">{existingClaim.dispatch_code}</span>
+                <span className="font-mono font-medium text-[#ededed] tabular-nums">
+                  {existingClaim.dispatch_code}
+                </span>
               </div>
-              <p className="text-[11px] text-emerald-200/80">
-                Bundle: <strong>{existingClaim.swag_bundle}</strong> ({existingClaim.tshirt_size})
+              <p className="text-xs text-[#a1a1a6]">
+                Bundle: <strong className="font-medium text-[#ededed]">{existingClaim.swag_bundle}</strong> ({existingClaim.tshirt_size})
               </p>
-              <p className="text-[11px] text-slate-300 flex items-center gap-1.5">
-                <Truck className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                {existingClaim.status} → {existingClaim.city}, {existingClaim.country}
+              <p className="text-xs text-[#a1a1a6] flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-[#85858b] shrink-0" strokeWidth={1.5} />
+                {existingClaim.status} &mdash; {existingClaim.city}, {existingClaim.country}
               </p>
               <button
                 type="button"
                 onClick={onProceedToDone}
-                className="w-full mt-2 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition"
+                className="w-full mt-2 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
               >
-                Finish &amp; View Done Summary <ChevronRight className="w-4 h-4" />
+                View graduation summary <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
               </button>
             </div>
           )}
@@ -291,11 +300,11 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
       {/* Right: Interactive Goodies Order Form */}
       <form
         onSubmit={handleSubmit}
-        className="lg:col-span-7 rounded-3xl border border-slate-800 bg-slate-900/80 p-6 space-y-5"
+        className="lg:col-span-7 rounded-2xl border border-white/[0.08] bg-[#19191b] p-6 space-y-5"
       >
         <div className="space-y-2.5">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
-            1. Choose Your Goodies Bundle
+          <label className="block text-xs font-medium text-[#a1a1a6]">
+            1. Choose your bundle
           </label>
           <div className="grid grid-cols-1 gap-2.5">
             {SWAG_BUNDLES.map((bundle) => {
@@ -305,19 +314,19 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
                   key={bundle.id}
                   type="button"
                   onClick={() => setSwagBundle(bundle.id)}
-                  className={`text-left p-3.5 rounded-2xl border transition ${
+                  className={`text-left p-3.5 rounded-xl border transition-colors ${
                     selected
-                      ? 'bg-amber-500/15 border-amber-400 text-white shadow-lg shadow-amber-500/10'
-                      : 'bg-slate-950/75 border-slate-800 text-slate-300 hover:border-slate-600'
+                      ? 'bg-[#222225] border-[#e5a00d]/60 text-[#ededed]'
+                      : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:border-white/[0.16]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold">{bundle.id}</span>
-                    <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-mono text-amber-300">
+                    <span className="text-xs font-medium text-[#ededed]">{bundle.id}</span>
+                    <span className="px-2 py-0.5 rounded bg-[#19191b] border border-white/[0.08] text-[11px] font-mono text-[#e5a00d]">
                       {bundle.badge}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">{bundle.desc}</p>
+                  <p className="text-xs text-[#85858b] mt-1">{bundle.desc}</p>
                 </button>
               );
             })}
@@ -325,8 +334,8 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
-            2. Hoodie / Apparel Size
+          <label className="block text-xs font-medium text-[#a1a1a6]">
+            2. Hoodie / apparel size
           </label>
           <div className="flex flex-wrap gap-2">
             {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((sz) => (
@@ -334,10 +343,10 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
                 key={sz}
                 type="button"
                 onClick={() => setTshirtSize(sz)}
-                className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition ${
+                className={`px-3.5 py-2 rounded-lg border text-xs font-mono font-medium transition-colors ${
                   tshirtSize === sz
-                    ? 'bg-indigo-600 border-indigo-400 text-white'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-[#ededed] border-[#ededed] text-[#141415]'
+                    : 'bg-[#141415] border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed]'
                 }`}
               >
                 {sz}
@@ -346,10 +355,10 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
           </div>
         </div>
 
-        <div className="space-y-3 pt-2 border-t border-slate-800">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
-            <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-            3. Shipping Details
+        <div className="space-y-3 pt-3 border-t border-white/[0.08]">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-[#a1a1a6]">
+            <MapPin className="w-3.5 h-3.5 text-[#85858b]" strokeWidth={1.5} />
+            3. Shipping details
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -358,16 +367,16 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Recipient Full Name *"
-              className="px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              placeholder="Recipient full name *"
+              className={inputCls}
             />
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Confirmation Email *"
-              className="px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              placeholder="Confirmation email *"
+              className={inputCls}
             />
           </div>
 
@@ -376,15 +385,15 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone Number (for courier)"
-              className="px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              placeholder="Phone number (for courier)"
+              className={inputCls}
             />
             <input
               type="url"
               value={linkedinUrl}
               onChange={(e) => setLinkedinUrl(e.target.value)}
-              placeholder="LinkedIn / GitHub Profile URL (optional)"
-              className="px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              placeholder="LinkedIn / GitHub URL (optional)"
+              className={inputCls}
             />
           </div>
 
@@ -393,8 +402,8 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
             required
             value={addressLine}
             onChange={(e) => setAddressLine(e.target.value)}
-            placeholder="Street Address, Building / Apartment *"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+            placeholder="Street address, building or apartment *"
+            className={`w-full ${inputCls}`}
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -404,22 +413,22 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="City *"
-              className="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              className={inputCls}
             />
             <input
               type="text"
               value={stateRegion}
               onChange={(e) => setStateRegion(e.target.value)}
               placeholder="State"
-              className="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              className={inputCls}
             />
             <input
               type="text"
               required
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
-              placeholder="Postal Code *"
-              className="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              placeholder="Postal code *"
+              className={inputCls}
             />
             <input
               type="text"
@@ -427,7 +436,7 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder="Country *"
-              className="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+              className={inputCls}
             />
           </div>
 
@@ -435,22 +444,22 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
             rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Delivery instructions or personalized message note (optional)"
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-xs text-white"
+            placeholder="Delivery instructions or note (optional)"
+            className={`w-full ${inputCls}`}
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 disabled:opacity-50 text-slate-950 text-xs sm:text-sm font-black transition shadow-xl"
+          className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#ededed] hover:bg-white disabled:opacity-50 text-[#141415] text-xs font-medium transition-colors"
         >
-          <Gift className="w-4 h-4" />
+          <Gift className="w-4 h-4" strokeWidth={1.5} />
           {isSubmitting
-            ? 'Confirming Swag Dispatch...'
+            ? 'Confirming dispatch...'
             : existingClaim
-            ? 'Update Goodies Claim & View Done Page →'
-            : 'Submit Goodies Form & Complete Course (+50 XP) →'}
+            ? 'Update goodies claim & view summary'
+            : 'Submit goodies claim (+50 XP)'}
         </button>
       </form>
     </div>
@@ -458,7 +467,7 @@ export const CourseGoodiesFormPanel: React.FC<GoodiesFormProps> = ({
 };
 
 /* ============================================================================
- * 3. FINAL "DONE" GRADUATION CELEBRATION SUMMARY SCREEN
+ * 3. FINAL "DONE" GRADUATION SUMMARY SCREEN
  * ==========================================================================*/
 interface CompletionDoneProps {
   courseTitle: string;
@@ -482,29 +491,54 @@ export const CourseCompletionDonePanel: React.FC<CompletionDoneProps> = ({
   goodiesClaim,
 }) => {
   const checklist = [
-    { label: 'In-LMS Video Lectures & Notes', detail: `${completedLessonsCount} / ${totalLessonsCount} completed`, ok: completedLessonsCount > 0 },
-    { label: 'Comprehension Quizzes Passed', detail: `${quizzesPassedCount} / ${totalLessonsCount} mastered`, ok: quizzesPassedCount > 0 },
-    { label: 'Capstone Project Assignments', detail: `${capstoneCount} submitted`, ok: capstoneCount > 0 },
-    { label: 'Camera-Proctored Final Exam', detail: examScore !== null ? `${examScore}% scored` : 'Ready to take', ok: examScore !== null && examScore >= 70 },
-    { label: 'Verified Certificate & Vector PDF', detail: certificate ? certificate.credential_id : 'Pending Exam Pass', ok: Boolean(certificate) },
-    { label: 'Graduate Goodies & Swag Box', detail: goodiesClaim ? goodiesClaim.dispatch_code : 'Ready to claim', ok: Boolean(goodiesClaim) },
+    {
+      label: 'Video lectures & notes',
+      detail: `${completedLessonsCount} / ${totalLessonsCount} completed`,
+      ok: completedLessonsCount > 0,
+    },
+    {
+      label: 'Comprehension quizzes passed',
+      detail: `${quizzesPassedCount} / ${totalLessonsCount} mastered`,
+      ok: quizzesPassedCount > 0,
+    },
+    {
+      label: 'Capstone project assignments',
+      detail: `${capstoneCount} submitted`,
+      ok: capstoneCount > 0,
+    },
+    {
+      label: 'Proctored final exam',
+      detail: examScore !== null ? `${examScore}% scored` : 'Ready to take',
+      ok: examScore !== null && examScore >= 70,
+    },
+    {
+      label: 'Verified certificate & PDF',
+      detail: certificate ? certificate.credential_id : 'Pending exam pass',
+      ok: Boolean(certificate),
+    },
+    {
+      label: 'Graduate goodies dispatch',
+      detail: goodiesClaim ? goodiesClaim.dispatch_code : 'Ready to claim',
+      ok: Boolean(goodiesClaim),
+    },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto rounded-3xl border border-emerald-500/35 bg-gradient-to-br from-[#071318] via-slate-900 to-indigo-950/35 p-6 sm:p-10 space-y-7 shadow-2xl">
+    <div className="max-w-4xl mx-auto rounded-2xl border border-white/[0.08] bg-[#19191b] p-6 sm:p-10 space-y-7">
       <div className="text-center space-y-3">
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto">
-          <Sparkles className="w-8 h-8 text-emerald-400" />
+        <div className="w-12 h-12 rounded-xl bg-[#4cc38a]/15 border border-[#4cc38a]/30 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-6 h-6 text-[#4cc38a]" strokeWidth={1.5} />
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
-          END-TO-END LMS JOURNEY COMPLETE
+        <div className="text-xs font-medium text-[#4cc38a]">
+          End-to-end track complete
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">
-          Congratulations! You Completed the Flow
+        <h2 className="text-2xl sm:text-3xl font-semibold text-[#ededed] tracking-tight">
+          Track milestones recorded
         </h2>
-        <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Your milestones, verified credential, course feedback, and graduate goodies dispatch for{' '}
-          <strong className="text-white">{courseTitle}</strong> are safely recorded in your account.
+        <p className="text-sm text-[#a1a1a6] max-w-2xl mx-auto leading-relaxed">
+          Your completed lectures, proctored assessment, verified credential, course feedback, and
+          swag dispatch for <strong className="font-medium text-[#ededed]">{courseTitle}</strong> are
+          saved to your account.
         </p>
       </div>
 
@@ -512,19 +546,20 @@ export const CourseCompletionDonePanel: React.FC<CompletionDoneProps> = ({
         {checklist.map((item) => (
           <div
             key={item.label}
-            className={`rounded-2xl border p-4 space-y-1 ${
+            className={`rounded-xl border p-4 space-y-1.5 ${
               item.ok
-                ? 'bg-emerald-950/25 border-emerald-500/35'
-                : 'bg-slate-950/75 border-slate-800'
+                ? 'bg-[#4cc38a]/[0.05] border-[#4cc38a]/25'
+                : 'bg-[#141415] border-white/[0.08]'
             }`}
           >
-            <div className="flex items-center justify-between text-xs font-bold text-white">
+            <div className="flex items-center justify-between text-xs font-medium text-[#ededed]">
               <span>{item.label}</span>
               <CheckCircle2
-                className={`w-4 h-4 shrink-0 ${item.ok ? 'text-emerald-400' : 'text-slate-600'}`}
+                className={`w-4 h-4 shrink-0 ${item.ok ? 'text-[#4cc38a]' : 'text-[#85858b]'}`}
+                strokeWidth={1.5}
               />
             </div>
-            <div className="text-xs font-mono text-cyan-300">{item.detail}</div>
+            <div className="text-xs font-mono text-[#a1a1a6] tabular-nums">{item.detail}</div>
           </div>
         ))}
       </div>
@@ -534,24 +569,24 @@ export const CourseCompletionDonePanel: React.FC<CompletionDoneProps> = ({
           <button
             type="button"
             onClick={() => api.downloadCertificatePdf(certificate.credential_id)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ededed] hover:bg-white text-[#141415] text-xs font-medium transition-colors"
           >
-            <Download className="w-4 h-4" />
-            Download PDF Certificate
+            <Download className="w-4 h-4" strokeWidth={1.5} />
+            Download PDF certificate
           </button>
         )}
         <Link
           to="/app/lms"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-lg shadow-indigo-500/20"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#222225] hover:bg-[#2a2a2e] border border-white/[0.08] text-[#ededed] text-xs font-medium transition-colors"
         >
-          <GraduationCap className="w-4 h-4" />
-          Browse More LMS Courses
+          <GraduationCap className="w-4 h-4 text-[#a1a1a6]" strokeWidth={1.5} />
+          Browse LMS courses
         </Link>
         <Link
           to="/app/dashboard"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#141415] hover:bg-[#222225] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed] text-xs font-medium transition-colors"
         >
-          Back to Overview Dashboard
+          Back to overview
         </Link>
       </div>
     </div>

@@ -4,16 +4,14 @@ import { api } from '../services/api';
 import { Challenge, ChallengeStats } from '../types';
 import {
   Search,
-  Sparkles,
+  Cpu,
   CheckCircle2,
   ArrowRight,
-  BrainCircuit,
   LayoutGrid,
   List,
   X,
   ChevronLeft,
   ChevronRight,
-  Layers,
 } from 'lucide-react';
 
 const PAGE_SIZE = 24;
@@ -114,106 +112,104 @@ export const ChallengesPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header & Quick Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Challenge Library
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-[#ededed]">
+              Challenge library
             </h1>
-            <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-              <Layers className="w-3.5 h-3.5 text-cyan-400" />
-              {stats?.total ?? challenges.length} Challenges
+            <span className="font-mono text-sm text-[#85858b] tabular-nums">
+              {stats?.total ?? challenges.length} tasks
             </span>
           </div>
-          <p className="text-sm text-slate-400 mt-1">
-            Explore verified algorithmic, systems &amp; ML challenges across 10 domains —{' '}
-            <span className="text-emerald-400 font-mono font-semibold">
-              {solvedVisibleCount}/{filteredChallenges.length} solved in view
+          <p className="text-sm text-[#85858b] mt-1 tabular-nums">
+            10 CS and ML domains ·{' '}
+            <span className="font-mono text-[#4cc38a]">
+              {solvedVisibleCount}/{filteredChallenges.length} solved
             </span>
           </p>
         </div>
 
         <Link
           to="/app/generator"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-lg shadow-indigo-600/30 transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors self-start sm:self-auto"
         >
-          <Sparkles className="w-4 h-4 text-cyan-300" />
-          Generate with AI
+          <Cpu strokeWidth={1.5} className="w-3.5 h-3.5" />
+          <span>Generate task</span>
         </Link>
       </div>
 
-      {/* Search and Filters Toolbar */}
-      <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+      {/* Filters */}
+      <div className="p-4 rounded-xl bg-[#19191b] border border-white/[0.08] space-y-3">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-3">
           <div className="relative w-full lg:w-80">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search strokeWidth={1.5} className="w-4 h-4 text-[#85858b] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search 350+ problems by title, tag, or topic..."
+              placeholder="Search"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full h-9 bg-[#141415] border border-white/[0.08] rounded-lg pl-9 pr-8 text-xs text-[#ededed] placeholder-[#85858b] focus:outline-none focus:border-[#e5a00d] transition-colors"
             />
             {search && (
               <button
+                type="button"
                 onClick={() => {
                   setSearch('');
                   setPage(1);
                 }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#85858b] hover:text-[#ededed]"
                 aria-label="Clear search"
               >
-                <X className="w-3.5 h-3.5" />
+                <X strokeWidth={1.5} className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-between lg:justify-end">
-            {/* Difficulty Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto">
+            <div className="flex items-center gap-1 bg-[#141415] p-1 rounded-lg border border-white/[0.08] overflow-x-auto">
               {['All', 'Easy', 'Medium', 'Hard'].map((diff) => {
-                const count =
-                  diff === 'All' ? stats?.total : stats?.by_difficulty?.[diff];
+                const count = diff === 'All' ? stats?.total : stats?.by_difficulty?.[diff];
                 return (
                   <button
                     key={diff}
+                    type="button"
                     onClick={() => {
                       setDifficultyFilter(diff);
                       setPage(1);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-medium transition whitespace-nowrap flex items-center gap-1.5 ${
+                    className={`px-2.5 py-1 rounded-md text-xs transition-colors whitespace-nowrap flex items-center gap-1.5 tabular-nums ${
                       difficultyFilter === diff
-                        ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                        : 'bg-slate-950/60 text-slate-400 hover:text-white border border-slate-800'
+                        ? 'bg-[#222225] text-[#ededed] font-medium'
+                        : 'text-[#85858b] hover:text-[#ededed]'
                     }`}
                   >
                     <span>{diff}</span>
                     {count !== undefined && (
-                      <span className="text-[10px] font-mono opacity-75">({count})</span>
+                      <span className="text-[11px] font-mono text-[#85858b]">{count}</span>
                     )}
                   </button>
                 );
               })}
             </div>
 
-            {/* Solved / Unsolved Filter */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-950 border border-slate-800">
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-[#141415] border border-white/[0.08]">
               {(['all', 'solved', 'unsolved'] as const).map((st) => (
                 <button
                   key={st}
+                  type="button"
                   onClick={() => {
                     setStatusFilter(st);
                     setPage(1);
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize transition ${
+                  className={`px-2.5 py-1 rounded-md text-xs capitalize transition-colors ${
                     statusFilter === st
-                      ? 'bg-emerald-600/80 text-white'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[#222225] text-[#ededed] font-medium'
+                      : 'text-[#85858b] hover:text-[#ededed]'
                   }`}
                 >
                   {st}
@@ -221,54 +217,55 @@ export const ChallengesPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Grid / Table Toggle */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-950 border border-slate-800">
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-[#141415] border border-white/[0.08]">
               <button
+                type="button"
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-lg transition ${
-                  viewMode === 'grid' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`p-1.5 rounded-md transition-colors ${
+                  viewMode === 'grid' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
-                title="Grid View"
+                title="Grid view"
+                aria-label="Grid view"
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
+                <LayoutGrid strokeWidth={1.5} className="w-3.5 h-3.5" />
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('table')}
-                className={`p-1.5 rounded-lg transition ${
-                  viewMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`p-1.5 rounded-md transition-colors ${
+                  viewMode === 'table' ? 'bg-[#222225] text-[#ededed]' : 'text-[#85858b] hover:text-[#ededed]'
                 }`}
-                title="Table View"
+                title="Table view"
+                aria-label="Table view"
               >
-                <List className="w-3.5 h-3.5" />
+                <List strokeWidth={1.5} className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
         </div>
 
-        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pt-2 pb-1 border-t border-slate-800/80">
-          <span className="text-[11px] text-slate-500 font-semibold mr-1 shrink-0">Categories:</span>
+        <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 pt-2.5 border-t border-white/[0.08]">
+          <span className="text-xs text-[#85858b] mr-1 shrink-0">Category</span>
           {categories.map((cat) => {
-            const catCount =
-              cat === 'All' ? stats?.total : stats?.by_category?.[cat];
+            const catCount = cat === 'All' ? stats?.total : stats?.by_category?.[cat];
+            const isSelected = categoryFilter === cat;
             return (
               <button
                 key={cat}
+                type="button"
                 onClick={() => {
                   setCategoryFilter(cat);
                   setPage(1);
                 }}
-                className={`shrink-0 whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-                  categoryFilter === cat
-                    ? cat === 'Machine Learning'
-                      ? 'bg-purple-600 text-white font-semibold shadow-md shadow-purple-600/30'
-                      : 'bg-indigo-600 text-white font-semibold shadow-sm'
-                    : 'bg-slate-950/60 text-slate-400 hover:text-white border border-slate-800'
+                className={`shrink-0 whitespace-nowrap px-2.5 py-1 rounded-md text-xs transition-colors flex items-center gap-1.5 border tabular-nums ${
+                  isSelected
+                    ? 'bg-[#222225] text-[#ededed] border-[#e5a00d]/50 font-medium'
+                    : 'bg-[#141415] text-[#85858b] hover:text-[#ededed] border-white/[0.08]'
                 }`}
               >
-                {cat === 'Machine Learning' && <BrainCircuit className="w-3 h-3 text-purple-300" />}
                 <span>{cat}</span>
                 {catCount !== undefined && (
-                  <span className="text-[10px] font-mono opacity-75">{catCount}</span>
+                  <span className="text-[11px] font-mono text-[#85858b]">{catCount}</span>
                 )}
               </button>
             );
@@ -278,81 +275,66 @@ export const ChallengesPage: React.FC = () => {
 
       {/* Content */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-48 rounded-2xl bg-slate-900/50 border border-slate-800 animate-pulse p-5 space-y-3">
-              <div className="h-4 w-20 bg-slate-800 rounded" />
-              <div className="h-5 w-3/4 bg-slate-800 rounded" />
-              <div className="h-3 w-full bg-slate-800 rounded" />
-            </div>
+            <div key={i} className="h-44 rounded-xl bg-[#19191b] border border-white/[0.08] animate-pulse p-5" />
           ))}
         </div>
       ) : paginatedChallenges.length > 0 ? (
         <>
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {paginatedChallenges.map((c) => {
                 const isSolved = solvedIds.has(c.id);
                 return (
                   <div
                     key={c.id}
-                    className={`p-5 rounded-2xl bg-slate-900/50 border transition duration-200 flex flex-col justify-between group shadow-lg hover:-translate-y-1 ${
-                      c.category === 'Machine Learning'
-                        ? 'border-purple-500/35 hover:border-purple-500/75 shadow-purple-950/20'
-                        : 'border-slate-800/80 hover:border-indigo-500/40'
-                    }`}
+                    className="p-5 rounded-xl bg-[#19191b] border border-white/[0.08] hover:border-white/[0.14] transition-colors flex flex-col justify-between"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between mb-3 text-xs font-mono">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${
+                            className={
                               c.difficulty === 'Easy'
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                ? 'text-[#4cc38a]'
                                 : c.difficulty === 'Medium'
-                                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                            }`}
+                                ? 'text-[#e5a00d]'
+                                : 'text-[#e5484d]'
+                            }
                           >
                             {c.difficulty}
                           </span>
-                          {c.category === 'Machine Learning' && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
-                              <BrainCircuit className="w-3 h-3" />
-                              ML
-                            </span>
-                          )}
                           {isSolved && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                              <CheckCircle2 className="w-3 h-3" />
+                            <span className="inline-flex items-center gap-1 text-[#4cc38a]">
+                              <CheckCircle2 strokeWidth={1.5} className="w-3.5 h-3.5" />
                               Solved
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] font-mono text-slate-500">
+                        <span className="text-[#85858b] tabular-nums">
                           {c.expected_complexity?.time || 'O(N)'}
                         </span>
                       </div>
 
-                      <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors mb-1.5">
-                        {c.title}
-                      </h3>
-                      <p className="text-[11px] font-mono text-indigo-400/90 mb-2">{c.category}</p>
-                      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                      <h2 className="text-base font-medium text-[#ededed] mb-1">{c.title}</h2>
+                      <p className="text-xs font-mono text-[#85858b] mb-2">{c.category}</p>
+                      <p className="text-xs text-[#a1a1a6] line-clamp-2 leading-relaxed mb-4">
                         {c.description.replace(/[#*`$]/g, '')}
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                      <span className="text-xs text-slate-500 font-mono">
-                        {c.acceptance_rate}% Acceptance
+                    <div className="pt-3.5 border-t border-white/[0.08] flex items-center justify-between">
+                      <span className="text-xs text-[#85858b] font-mono tabular-nums">
+                        {c.acceptance_rate}% acceptance
                       </span>
                       <button
+                        type="button"
                         onClick={() => navigate(`/app/workspace/${c.id}`)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/20 transition active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg text-xs font-medium text-[#141415] bg-[#ededed] hover:bg-white transition-colors"
                       >
-                        {isSolved ? 'Review / Optimize' : 'Solve Challenge'}
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <span>{isSolved ? 'Review' : 'Solve'}</span>
+                        <ArrowRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -360,57 +342,59 @@ export const ChallengesPage: React.FC = () => {
               })}
             </div>
           ) : (
-            <div className="rounded-3xl bg-slate-900/60 border border-slate-800 overflow-hidden shadow-xl">
+            <div className="rounded-xl bg-[#19191b] border border-white/[0.08] overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs tabular-nums">
                   <thead>
-                    <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-mono">
-                      <th className="py-3.5 px-5 font-semibold">Status</th>
-                      <th className="py-3.5 px-4 font-semibold">Challenge</th>
-                      <th className="py-3.5 px-4 font-semibold">Category</th>
-                      <th className="py-3.5 px-4 font-semibold">Difficulty</th>
-                      <th className="py-3.5 px-4 font-semibold">Target</th>
-                      <th className="py-3.5 px-4 font-semibold">Acceptance</th>
-                      <th className="py-3.5 px-5 font-semibold text-right">Action</th>
+                    <tr className="border-b border-white/[0.08] bg-[#0f0f10] text-[#85858b] font-mono">
+                      <th className="py-3 px-5 font-normal">Status</th>
+                      <th className="py-3 px-4 font-normal">Challenge</th>
+                      <th className="py-3 px-4 font-normal">Category</th>
+                      <th className="py-3 px-4 font-normal">Difficulty</th>
+                      <th className="py-3 px-4 font-normal">Target</th>
+                      <th className="py-3 px-4 font-normal">Acceptance</th>
+                      <th className="py-3 px-5 font-normal text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-white/[0.06]">
                     {paginatedChallenges.map((c) => {
                       const isSolved = solvedIds.has(c.id);
                       return (
-                        <tr key={c.id} className="hover:bg-slate-800/35 transition">
+                        <tr key={c.id} className="hover:bg-[#222225]/50 transition-colors">
                           <td className="py-3.5 px-5">
                             {isSolved ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                              <CheckCircle2 strokeWidth={1.5} className="w-4 h-4 text-[#4cc38a]" />
                             ) : (
-                              <span className="w-3.5 h-3.5 rounded-full border border-slate-600 inline-block" />
+                              <span className="w-3.5 h-3.5 rounded-full border border-white/20 inline-block" />
                             )}
                           </td>
-                          <td className="py-3.5 px-4 font-semibold text-white">{c.title}</td>
-                          <td className="py-3.5 px-4 text-slate-400">{c.category}</td>
-                          <td className="py-3.5 px-4">
+                          <td className="py-3.5 px-4 font-medium text-[#ededed]">{c.title}</td>
+                          <td className="py-3.5 px-4 text-[#a1a1a6]">{c.category}</td>
+                          <td className="py-3.5 px-4 font-mono">
                             <span
-                              className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
+                              className={
                                 c.difficulty === 'Easy'
-                                  ? 'bg-emerald-500/10 text-emerald-400'
+                                  ? 'text-[#4cc38a]'
                                   : c.difficulty === 'Medium'
-                                  ? 'bg-amber-500/10 text-amber-400'
-                                  : 'bg-rose-500/10 text-rose-400'
-                              }`}
+                                  ? 'text-[#e5a00d]'
+                                  : 'text-[#e5484d]'
+                              }
                             >
                               {c.difficulty}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 font-mono text-indigo-300">
+                          <td className="py-3.5 px-4 font-mono text-[#a1a1a6]">
                             {c.expected_complexity?.time || 'O(N)'}
                           </td>
-                          <td className="py-3.5 px-4 font-mono text-slate-400">{c.acceptance_rate}%</td>
+                          <td className="py-3.5 px-4 font-mono text-[#85858b]">{c.acceptance_rate}%</td>
                           <td className="py-3.5 px-5 text-right">
                             <button
+                              type="button"
                               onClick={() => navigate(`/app/workspace/${c.id}`)}
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold"
+                              className="inline-flex items-center gap-1 px-3 h-7 rounded-md bg-[#222225] hover:bg-[#ededed] text-[#ededed] hover:text-[#141415] border border-white/[0.08] font-medium transition-colors"
                             >
-                              Solve <ArrowRight className="w-3 h-3" />
+                              <span>Solve</span>
+                              <ArrowRight strokeWidth={1.5} className="w-3 h-3" />
                             </button>
                           </td>
                         </tr>
@@ -422,46 +406,48 @@ export const ChallengesPage: React.FC = () => {
             </div>
           )}
 
-          {/* Pagination Bar */}
           {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800/80 text-xs">
-              <span className="text-slate-400 font-mono">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/[0.08] text-xs tabular-nums">
+              <span className="text-[#85858b] font-mono">
                 Showing {(safePage - 1) * PAGE_SIZE + 1}–
                 {Math.min(safePage * PAGE_SIZE, filteredChallenges.length)} of{' '}
-                {filteredChallenges.length} challenges (Page {safePage} of {totalPages})
+                {filteredChallenges.length}
               </span>
               <div className="flex items-center gap-1.5">
                 <button
+                  type="button"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={safePage === 1}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 transition"
+                  className="inline-flex items-center gap-1 px-3 h-8 rounded-lg bg-[#19191b] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed] disabled:opacity-40 transition-colors"
                 >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  Prev
+                  <ChevronLeft strokeWidth={1.5} className="w-3.5 h-3.5" />
+                  <span>Prev</span>
                 </button>
-                <span className="px-3 py-1.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 font-mono font-bold text-indigo-300">
+                <span className="px-3 h-8 inline-flex items-center rounded-lg bg-[#222225] border border-white/[0.08] font-mono text-[#ededed]">
                   {safePage} / {totalPages}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={safePage === totalPages}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 transition"
+                  className="inline-flex items-center gap-1 px-3 h-8 rounded-lg bg-[#19191b] border border-white/[0.08] text-[#a1a1a6] hover:text-[#ededed] disabled:opacity-40 transition-colors"
                 >
-                  Next
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span>Next</span>
+                  <ChevronRight strokeWidth={1.5} className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           )}
         </>
       ) : (
-        <div className="p-12 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs space-y-3">
+        <div className="p-12 text-center rounded-xl bg-[#19191b] border border-white/[0.08] text-[#85858b] text-xs space-y-3">
           <p>No challenges matching your filters.</p>
           <button
+            type="button"
             onClick={resetAllFilters}
-            className="text-indigo-400 hover:text-indigo-300 font-semibold"
+            className="text-[#ededed] hover:text-[#e5a00d] font-medium transition-colors"
           >
-            Reset Filters
+            Reset filters
           </button>
         </div>
       )}

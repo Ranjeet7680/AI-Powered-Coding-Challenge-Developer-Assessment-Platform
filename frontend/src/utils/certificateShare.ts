@@ -33,65 +33,62 @@ export function buildSocialPostMessage(
     ? cert.skills_verified
     : [cert.category, 'Algorithms', 'Clean Code']
   ).slice(0, 5);
-  const skillsLine = skills.join(' • ');
+  const skillsLine = skills.join(' · ');
   const verifyUrl = getVerificationUrl(cert.credential_id);
 
   if (platform === 'linkedin') {
     return [
-      `Excited to share that I have earned the "${cert.title}" credential from ${cert.issuer_name || 'Coding Task Factory Academy'}!`,
+      `Earned the "${cert.title}" credential from ${cert.issuer_name || 'Coding Task Factory Academy'}.`,
       '',
-      `Achievement Highlights:`,
-      `• Standing: ${cert.grade} (${score}% Evaluation Score)`,
-      `• Practical Output: ${challenges}+ verified automated test-suite challenges (${hours} lab hours)`,
-      `• Verified Skills: ${skillsLine}`,
+      `Summary:`,
+      `- Standing: ${cert.grade} (${score}% score)`,
+      `- Practical work: ${challenges}+ verified challenges (${hours} lab hours)`,
+      `- Verified skills: ${skillsLine}`,
       '',
       `Credential ID: ${cert.credential_id}`,
-      `Verify Credential: ${verifyUrl}`,
+      `Verify: ${verifyUrl}`,
       '',
-      `#SoftwareEngineering #Algorithms #DataStructures #CodingTaskFactory #TechCredentials #ContinuousLearning`,
+      `#SoftwareEngineering #Algorithms #DataStructures #CodingTaskFactory`,
     ].join('\n');
   }
 
   if (platform === 'instagram') {
     return [
-      `Unlocked: ${cert.title} — ${cert.grade}! 🚀💻`,
+      `Credential earned: ${cert.title} — ${cert.grade}`,
       '',
-      `${challenges}+ coding challenges crushed across ${hours} hours of algorithmic benchmarks & multi-language test suites (${score}% score).`,
+      `Completed ${challenges}+ coding benchmarks across ${hours} hours of multi-language test suites (${score}% score).`,
       '',
-      `Key Skills Verified:`,
-      `⚡ ${skills.join(' | ')}`,
+      `Verified skills: ${skills.join(' | ')}`,
       '',
-      `Credential ID: ${cert.credential_id} (Signed by ${recipient})`,
-      `Verify via link: ${verifyUrl}`,
+      `Credential ID: ${cert.credential_id} (${recipient})`,
+      `Verify: ${verifyUrl}`,
       '',
-      `#CodingLife #SoftwareEngineer #Algorithms #100DaysOfCode #DeveloperJourney #MachineLearning #CodingTaskFactory #TechMilestone`,
+      `#SoftwareEngineering #Algorithms #MachineLearning #CodingTaskFactory`,
     ].join('\n');
   }
 
   if (platform === 'facebook') {
     return [
-      `Proud milestone unlocked! I just earned my "${cert.title}" certificate on Coding Task Factory Academy with a standing of ${cert.grade}! 🎉`,
+      `Earned the "${cert.title}" certificate on Coding Task Factory Academy (${cert.grade}).`,
       '',
-      `After completing ${challenges}+ timed challenges and ${hours} hours of algorithmic & engineering assessments, these competencies are officially verified:`,
-      `${skillsLine}`,
+      `Completed ${challenges}+ timed challenges and ${hours} hours of engineering assessments across: ${skillsLine}.`,
       '',
-      `Check out my verified credential (${cert.credential_id}): ${verifyUrl}`,
+      `Verify credential (${cert.credential_id}): ${verifyUrl}`,
       '',
-      `#CodingMilestone #SoftwareDevelopment #CodingTaskFactory #EngineeringExcellence`,
+      `#SoftwareDevelopment #CodingTaskFactory #Engineering`,
     ].join('\n');
   }
 
-  // whatsapp
   return [
-    `Hey! Sharing a quick milestone — I just earned the *${cert.title}* credential on *Coding Task Factory*! 🏆`,
+    `Sharing a verified credential — *${cert.title}* on *Coding Task Factory*.`,
     '',
-    `• *Recipient:* ${recipient}`,
-    `• *Standing:* ${cert.grade} (${score}%)`,
-    `• *Completed:* ${challenges}+ challenges (${hours} hrs)`,
-    `• *Skills:* ${skillsLine}`,
-    `• *Credential ID:* \`${cert.credential_id}\``,
+    `- *Recipient:* ${recipient}`,
+    `- *Standing:* ${cert.grade} (${score}%)`,
+    `- *Completed:* ${challenges}+ challenges (${hours} hrs)`,
+    `- *Skills:* ${skillsLine}`,
+    `- *Credential ID:* \`${cert.credential_id}\``,
     '',
-    `Verify it live here: ${verifyUrl}`,
+    `Verify online: ${verifyUrl}`,
   ].join('\n');
 }
 
@@ -236,39 +233,21 @@ export async function downloadSocialCardPng(
     : [cert.category, 'Algorithms', 'Clean Code']
   ).slice(0, 4);
 
-  // Obsidian Gradient Background
-  const bg = ctx.createLinearGradient(0, 0, width, height);
-  bg.addColorStop(0, '#050814');
-  bg.addColorStop(0.5, '#0B1124');
-  bg.addColorStop(1, '#070B18');
-  ctx.fillStyle = bg;
+  // Graphite backdrop (flat matte surface, zero neon glow blobs)
+  ctx.fillStyle = '#141415';
   ctx.fillRect(0, 0, width, height);
 
-  // Subtle glow accents
-  const glow1 = ctx.createRadialGradient(width * 0.85, height * 0.15, 20, width * 0.85, height * 0.15, 360);
-  glow1.addColorStop(0, 'rgba(99, 102, 241, 0.28)');
-  glow1.addColorStop(1, 'rgba(99, 102, 241, 0)');
-  ctx.fillStyle = glow1;
-  ctx.fillRect(0, 0, width, height);
-
-  const glow2 = ctx.createRadialGradient(width * 0.18, height * 0.85, 20, width * 0.18, height * 0.85, 340);
-  glow2.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
-  glow2.addColorStop(1, 'rgba(16, 185, 129, 0)');
-  ctx.fillStyle = glow2;
-  ctx.fillRect(0, 0, width, height);
-
-  // Outer Gold & Inner Indigo Frames
   const pad = format === 'square' ? 42 : 28;
-  drawRoundedRect(ctx, pad, pad, width - pad * 2, height - pad * 2, 24);
-  ctx.fillStyle = 'rgba(11, 16, 32, 0.9)';
+  drawRoundedRect(ctx, pad, pad, width - pad * 2, height - pad * 2, 16);
+  ctx.fillStyle = '#19191b';
   ctx.fill();
-  ctx.strokeStyle = '#D4AF37';
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(229, 160, 13, 0.5)';
+  ctx.lineWidth = 2;
   ctx.stroke();
 
-  drawRoundedRect(ctx, pad + 14, pad + 14, width - (pad + 14) * 2, height - (pad + 14) * 2, 18);
-  ctx.strokeStyle = 'rgba(99, 102, 241, 0.55)';
-  ctx.lineWidth = 1.5;
+  drawRoundedRect(ctx, pad + 14, pad + 14, width - (pad + 14) * 2, height - (pad + 14) * 2, 12);
+  ctx.strokeStyle = 'rgba(237, 237, 237, 0.1)';
+  ctx.lineWidth = 1;
   ctx.stroke();
 
   const innerX = pad + 48;
@@ -276,152 +255,153 @@ export async function downloadSocialCardPng(
   const innerW = innerRight - innerX;
 
   // Header Badge
-  const headerY = pad + 56;
-  drawRoundedRect(ctx, innerX, headerY, 54, 54, 12);
-  ctx.fillStyle = '#4F46E5';
+  const headerY = pad + 54;
+  drawRoundedRect(ctx, innerX, headerY, 52, 52, 10);
+  ctx.fillStyle = '#222225';
   ctx.fill();
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 22px monospace';
+  ctx.strokeStyle = 'rgba(237, 237, 237, 0.14)';
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  ctx.fillStyle = '#e5a00d';
+  ctx.font = '500 20px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('</>', innerX + 27, headerY + 34);
+  ctx.fillText('</>', innerX + 26, headerY + 33);
 
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#F8FAFC';
-  ctx.font = 'bold 22px sans-serif';
-  ctx.fillText(issuer.toUpperCase(), innerX + 70, headerY + 24);
-  ctx.fillStyle = '#94A3B8';
+  ctx.fillStyle = '#ededed';
+  ctx.font = '500 21px sans-serif';
+  ctx.fillText(issuer, innerX + 68, headerY + 23);
+  ctx.fillStyle = '#85858b';
   ctx.font = '15px sans-serif';
-  ctx.fillText(`Verified Credential  •  ${cert.category}`, innerX + 70, headerY + 46);
+  ctx.fillText(`Verified credential · ${cert.category}`, innerX + 68, headerY + 45);
 
-  // Pill top-right
-  const pillW = 240;
-  drawRoundedRect(ctx, innerRight - pillW, headerY + 8, pillW, 36, 18);
-  ctx.fillStyle = 'rgba(16, 185, 129, 0.14)';
+  // Status tag top-right
+  const pillW = 216;
+  drawRoundedRect(ctx, innerRight - pillW, headerY + 8, pillW, 34, 8);
+  ctx.fillStyle = '#141415';
   ctx.fill();
-  ctx.strokeStyle = '#10B981';
-  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(76, 195, 138, 0.45)';
+  ctx.lineWidth = 1.2;
   ctx.stroke();
-  ctx.fillStyle = '#34D399';
-  ctx.font = 'bold 13px monospace';
+  ctx.fillStyle = '#4cc38a';
+  ctx.font = '500 13px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('VERIFIED CREDENTIAL', innerRight - pillW / 2, headerY + 31);
+  ctx.fillText('[SHA-256 VERIFIED]', innerRight - pillW / 2, headerY + 30);
 
   // Center Body
   ctx.textAlign = 'center';
   const midX = width / 2;
-  const titleBaseY = format === 'square' ? 250 : 182;
+  const titleBaseY = format === 'square' ? 248 : 180;
 
-  ctx.fillStyle = '#FBBF24';
-  ctx.font = 'bold 18px sans-serif';
-  ctx.fillText('CERTIFICATE OF ENGINEERING EXCELLENCE', midX, titleBaseY);
+  ctx.fillStyle = '#e5a00d';
+  ctx.font = '500 16px monospace';
+  ctx.fillText('Certificate of Engineering Mastery', midX, titleBaseY);
 
-  ctx.fillStyle = '#94A3B8';
-  ctx.font = '18px sans-serif';
-  ctx.fillText('PROUDLY PRESENTED TO', midX, titleBaseY + 48);
+  ctx.fillStyle = '#85858b';
+  ctx.font = '17px sans-serif';
+  ctx.fillText('Awarded to', midX, titleBaseY + 46);
 
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = format === 'square' ? 'bold 54px Georgia, serif' : 'bold 44px Georgia, serif';
-  ctx.fillText(recipient, midX, titleBaseY + (format === 'square' ? 115 : 98));
+  ctx.fillStyle = '#ededed';
+  ctx.font = format === 'square' ? '500 52px Georgia, serif' : '500 42px Georgia, serif';
+  ctx.fillText(recipient, midX, titleBaseY + (format === 'square' ? 112 : 96));
 
-  ctx.strokeStyle = '#6366F1';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(237, 237, 237, 0.14)';
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(midX - 210, titleBaseY + (format === 'square' ? 136 : 114));
-  ctx.lineTo(midX + 210, titleBaseY + (format === 'square' ? 136 : 114));
+  ctx.moveTo(midX - 200, titleBaseY + (format === 'square' ? 134 : 112));
+  ctx.lineTo(midX + 200, titleBaseY + (format === 'square' ? 134 : 112));
   ctx.stroke();
 
-  // Cert Title
-  ctx.fillStyle = '#C7D2FE';
-  ctx.font = format === 'square' ? 'bold 34px sans-serif' : 'bold 27px sans-serif';
+  ctx.fillStyle = '#ededed';
+  ctx.font = format === 'square' ? '500 32px sans-serif' : '500 26px sans-serif';
   const titleLines = wrapCanvasText(ctx, cert.title, innerW - 60).slice(0, 2);
-  let curY = titleBaseY + (format === 'square' ? 195 : 158);
+  let curY = titleBaseY + (format === 'square' ? 192 : 156);
   for (const line of titleLines) {
     ctx.fillText(line, midX, curY);
-    curY += format === 'square' ? 42 : 34;
+    curY += format === 'square' ? 40 : 32;
   }
 
   // Metrics strip
-  const metricY = format === 'square' ? curY + 48 : curY + 20;
-  const boxH = format === 'square' ? 96 : 74;
+  const metricY = format === 'square' ? curY + 46 : curY + 18;
+  const boxH = format === 'square' ? 92 : 72;
   const boxGap = 16;
   const metricW = (innerW - 2 * boxGap) / 3;
   const metricItems = [
-    { label: 'STANDING', value: cert.grade },
-    { label: 'SCORE', value: `${score}% Verified` },
-    { label: 'PRACTICAL LABS', value: `${challenges}+ Tasks • ${hours}h` },
+    { label: 'Standing', value: cert.grade },
+    { label: 'Score', value: `${score}%` },
+    { label: 'Practical work', value: `${challenges}+ tasks · ${hours}h` },
   ];
   metricItems.forEach((m, i) => {
     const bx = innerX + i * (metricW + boxGap);
-    drawRoundedRect(ctx, bx, metricY, metricW, boxH, 12);
-    ctx.fillStyle = '#11182C';
+    drawRoundedRect(ctx, bx, metricY, metricW, boxH, 10);
+    ctx.fillStyle = '#141415';
     ctx.fill();
-    ctx.strokeStyle = '#1E293B';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(237, 237, 237, 0.08)';
+    ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.fillStyle = '#818CF8';
-    ctx.font = 'bold 13px monospace';
+    ctx.fillStyle = '#85858b';
+    ctx.font = '13px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(m.label, bx + metricW / 2, metricY + (format === 'square' ? 34 : 26));
+    ctx.fillText(m.label, bx + metricW / 2, metricY + (format === 'square' ? 32 : 25));
 
-    ctx.fillStyle = '#F8FAFC';
-    ctx.font = format === 'square' ? 'bold 20px sans-serif' : 'bold 17px sans-serif';
+    ctx.fillStyle = '#ededed';
+    ctx.font = format === 'square' ? '500 20px sans-serif' : '500 17px sans-serif';
     const valText = m.value.length > 22 ? `${m.value.slice(0, 20)}...` : m.value;
-    ctx.fillText(valText, bx + metricW / 2, metricY + (format === 'square' ? 68 : 54));
+    ctx.fillText(valText, bx + metricW / 2, metricY + (format === 'square' ? 66 : 52));
   });
 
-  // Skills pills
-  const skillY = metricY + boxH + (format === 'square' ? 44 : 24);
-  ctx.font = '600 15px sans-serif';
-  const pillWidths = skills.map((s) => Math.max(120, ctx.measureText(s).width + 36));
+  // Skills tags
+  const skillY = metricY + boxH + (format === 'square' ? 42 : 22);
+  ctx.font = '500 14px sans-serif';
+  const pillWidths = skills.map((s) => Math.max(116, ctx.measureText(s).width + 32));
   const totalPW = pillWidths.reduce((a, b) => a + b, 0) + (skills.length - 1) * 12;
   let sx = (width - totalPW) / 2;
   skills.forEach((sk, idx) => {
     const pw = pillWidths[idx];
-    drawRoundedRect(ctx, sx, skillY, pw, 36, 18);
-    ctx.fillStyle = '#172036';
+    drawRoundedRect(ctx, sx, skillY, pw, 34, 8);
+    ctx.fillStyle = '#222225';
     ctx.fill();
-    ctx.strokeStyle = '#4F46E5';
-    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = 'rgba(237, 237, 237, 0.1)';
+    ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.fillStyle = '#E0E7FF';
+    ctx.fillStyle = '#a1a1a6';
     ctx.textAlign = 'center';
-    ctx.fillText(sk, sx + pw / 2, skillY + 23);
+    ctx.fillText(sk, sx + pw / 2, skillY + 22);
     sx += pw + 12;
   });
 
   // Footer Bar with QR Matrix
-  const footerY = height - pad - 115;
-  ctx.strokeStyle = '#1E293B';
-  ctx.lineWidth = 1.5;
+  const footerY = height - pad - 112;
+  ctx.strokeStyle = 'rgba(237, 237, 237, 0.08)';
+  ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(innerX, footerY);
   ctx.lineTo(innerRight, footerY);
   ctx.stroke();
 
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#94A3B8';
-  ctx.font = 'bold 13px monospace';
-  ctx.fillText(`ISSUED: ${formatCertificateDate(cert.issue_date)}`, innerX, footerY + 34);
-  ctx.fillStyle = '#A5B4FC';
-  ctx.font = 'bold 18px monospace';
-  ctx.fillText(`CREDENTIAL ID: ${cert.credential_id}`, innerX, footerY + 62);
-  ctx.fillStyle = '#64748B';
+  ctx.fillStyle = '#85858b';
   ctx.font = '13px monospace';
-  ctx.fillText(`Signed by ${cert.signatory_name || 'Dr. Aris Thorne'} • Coding Task Factory`, innerX, footerY + 86);
+  ctx.fillText(`Issued: ${formatCertificateDate(cert.issue_date)}`, innerX, footerY + 34);
+  ctx.fillStyle = '#ededed';
+  ctx.font = '500 17px monospace';
+  ctx.fillText(`Credential ID: ${cert.credential_id}`, innerX, footerY + 62);
+  ctx.fillStyle = '#85858b';
+  ctx.font = '13px monospace';
+  ctx.fillText(`Signed by ${cert.signatory_name || 'Dr. Aris Thorne'} · Coding Task Factory`, innerX, footerY + 86);
 
-  // Mini QR matrix on bottom-right
-  const qrBox = 86;
+  const qrBox = 84;
   const qx = innerRight - qrBox;
   const qy = footerY + 14;
-  drawRoundedRect(ctx, qx, qy, qrBox, qrBox, 8);
-  ctx.fillStyle = '#F8FAFC';
+  drawRoundedRect(ctx, qx, qy, qrBox, qrBox, 6);
+  ctx.fillStyle = '#ededed';
   ctx.fill();
 
   const matrix = buildQrMatrixCells(`${cert.credential_id}:${cert.credential_hash || ''}`, 15);
   const cell = (qrBox - 12) / 15;
-  ctx.fillStyle = '#090D16';
+  ctx.fillStyle = '#141415';
   matrix.forEach((row, r) => {
     row.forEach((filled, c) => {
       if (filled) {
