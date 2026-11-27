@@ -142,6 +142,7 @@ app.include_router(ml_course.ds_router)
 app.include_router(ml_course.biz_router)
 app.include_router(ml_course.agentic_router)
 app.include_router(ml_course.share_router)
+app.include_router(ml_course.public_share_router)
 
 
 @app.get("/api/health")

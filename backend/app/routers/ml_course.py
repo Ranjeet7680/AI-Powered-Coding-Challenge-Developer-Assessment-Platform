@@ -1171,10 +1171,10 @@ _SHARE_TRACK_MAP: Dict[str, CourseTrackConfig] = {
 }
 
 share_router = APIRouter(prefix="/api/share", tags=["Course Share"])
+public_share_router = APIRouter(prefix="/share", tags=["Course Share"])
 
 
-@share_router.get("/course/{track}", response_class=HTMLResponse)
-def get_course_share_preview(track: str, request: Request):
+def _render_course_share_preview(track: str, request: Request) -> HTMLResponse:
     """Serve Open Graph / Twitter Card HTML with the course thumbnail and redirect browsers to the LMS track."""
     track_cfg = _SHARE_TRACK_MAP.get(track)
     if not track_cfg:
@@ -1246,3 +1246,13 @@ def get_course_share_preview(track: str, request: Request):
 </body>
 </html>"""
     return HTMLResponse(content=html_doc, status_code=200)
+
+
+@share_router.get("/course/{track}", response_class=HTMLResponse)
+def get_api_course_share_preview(track: str, request: Request):
+    return _render_course_share_preview(track, request)
+
+
+@public_share_router.get("/course/{track}", response_class=HTMLResponse)
+def get_public_course_share_preview(track: str, request: Request):
+    return _render_course_share_preview(track, request)

@@ -899,13 +899,14 @@ def test_course_share_open_graph_preview_with_thumbnail(
     track: str,
     expected_thumb: str,
 ):
-    resp = ml_client.get(f"/api/share/course/{track}")
-    assert resp.status_code == 200, resp.text
-    html_body = resp.text
-    assert 'property="og:image"' in html_body
-    assert expected_thumb in html_body
-    assert 'name="twitter:card" content="summary_large_image"' in html_body
-    assert f"/app/lms/{track}" in html_body
+    for endpoint in (f"/api/share/course/{track}", f"/share/course/{track}"):
+        resp = ml_client.get(endpoint)
+        assert resp.status_code == 200, resp.text
+        html_body = resp.text
+        assert 'property="og:image"' in html_body
+        assert expected_thumb in html_body
+        assert 'name="twitter:card" content="summary_large_image"' in html_body
+        assert f"/app/lms/{track}" in html_body
 
     bad_resp = ml_client.get("/api/share/course/unknown-track")
     assert bad_resp.status_code == 404
