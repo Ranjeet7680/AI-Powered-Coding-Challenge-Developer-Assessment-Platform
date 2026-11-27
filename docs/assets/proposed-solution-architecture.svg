@@ -1,126 +1,115 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="690" viewBox="0 0 1120 690" role="img" aria-label="Architecture Diagram of the Proposed Coding Task Factory CLI and Web Platform">
   <defs>
-    <linearGradient id="archBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#050814" />
-      <stop offset="100%" stop-color="#0A1022" />
-    </linearGradient>
     <pattern id="archGrid" width="28" height="28" patternUnits="userSpaceOnUse">
-      <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#1E293B" stroke-width="0.6" stroke-opacity="0.38" />
+      <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#222225" stroke-width="0.6" />
     </pattern>
-    <marker id="arrBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#818CF8" />
-    </marker>
-    <marker id="arrCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#22D3EE" />
+    <marker id="arrNeutral" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#a1a1a6" />
     </marker>
     <marker id="arrGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34D399" />
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#4cc38a" />
     </marker>
     <marker id="arrAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#FBBF24" />
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#e5a00d" />
     </marker>
   </defs>
 
-  <rect width="1120" height="690" rx="18" fill="url(#archBg)" />
-  <rect width="1120" height="690" rx="18" fill="url(#archGrid)" />
-  <rect x="4" y="4" width="1112" height="682" rx="15" fill="none" stroke="#312E81" stroke-width="1.4" />
+  <rect width="1120" height="690" rx="16" fill="#141415" />
+  <rect width="1120" height="690" rx="16" fill="url(#archGrid)" opacity="0.65" />
+  <rect x="4" y="4" width="1112" height="682" rx="14" fill="none" stroke="#2c2c31" stroke-width="1.4" />
 
   <!-- Title Bar -->
-  <text x="34" y="38" fill="#38BDF8" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700" letter-spacing="2">PROPOSED SOLUTION ARCHITECTURE</text>
-  <text x="34" y="64" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800">Lightweight CLI &amp; Web Dashboard + Autonomous Pipeline &amp; Validation Architecture</text>
+  <text x="34" y="38" fill="#e5a00d" font-family="ui-monospace, monospace" font-size="11.5" font-weight="500">PROPOSED SOLUTION ARCHITECTURE</text>
+  <text x="34" y="64" fill="#ededed" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="600">Lightweight CLI &amp; Web Dashboard + Autonomous Pipeline &amp; Validation Architecture</text>
 
   <!-- LAYER 1: USER INTERFACES -->
-  <rect x="28" y="84" width="1064" height="114" rx="14" fill="#0B1124" stroke="#6366F1" stroke-width="1.5" />
-  <text x="46" y="106" fill="#A5B4FC" font-family="ui-monospace, monospace" font-size="11" font-weight="700">1 · USER INTERFACE LAYER (DUAL CONTROL SURFACES)</text>
+  <rect x="28" y="84" width="1064" height="114" rx="12" fill="#19191b" stroke="#2c2c31" stroke-width="1.5" />
+  <text x="46" y="106" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="11" font-weight="500">1 · USER INTERFACE LAYER (DUAL CONTROL SURFACES)</text>
 
-  <!-- Lightweight CLI Box -->
-  <rect x="46" y="118" width="490" height="66" rx="10" fill="#131B36" stroke="#818CF8" stroke-width="1.2" />
-  <text x="64" y="139" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13.5" font-weight="700">Lightweight Command-Line Interface (CLI)</text>
-  <text x="64" y="158" fill="#A5B4FC" font-family="ui-monospace, monospace" font-size="11">run_factory.py · validate_tasks.py · run_mutation_testing.py</text>
-  <text x="64" y="175" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">Trigger pipelines · Inspect task trees · Stream evaluation scorecards &amp; logs</text>
+  <rect x="46" y="118" width="490" height="66" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+  <text x="64" y="139" fill="#ededed" font-family="system-ui, sans-serif" font-size="13.5" font-weight="600">Lightweight Command-Line Interface (CLI)</text>
+  <text x="64" y="158" fill="#e5a00d" font-family="ui-monospace, monospace" font-size="11">run_factory.py · validate_tasks.py · run_mutation_testing.py</text>
+  <text x="64" y="175" fill="#85858b" font-family="system-ui, sans-serif" font-size="10.5">Trigger pipelines · Inspect task trees · Stream evaluation scorecards &amp; logs</text>
 
-  <!-- Web Dashboard Box -->
-  <rect x="562" y="118" width="512" height="66" rx="10" fill="#0C1F33" stroke="#22D3EE" stroke-width="1.2" />
-  <text x="580" y="139" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13.5" font-weight="700">Web Dashboard UI (React 19 + TypeScript + Monaco IDE)</text>
-  <text x="580" y="158" fill="#67E8F9" font-family="ui-monospace, monospace" font-size="11">Pipeline Trigger UI · Task Package Inspector · Evaluation &amp; PDF Reports</text>
-  <text x="580" y="175" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">Interactive job launch · Package file/diff inspection · Benchmark charts &amp; verify links</text>
+  <rect x="562" y="118" width="512" height="66" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.2" />
+  <text x="580" y="139" fill="#ededed" font-family="system-ui, sans-serif" font-size="13.5" font-weight="600">Web Dashboard UI (React 19 + TypeScript + Monaco IDE)</text>
+  <text x="580" y="158" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="11">Pipeline Trigger UI · Task Package Inspector · Evaluation &amp; PDF Reports</text>
+  <text x="580" y="175" fill="#85858b" font-family="system-ui, sans-serif" font-size="10.5">Interactive job launch · Package file/diff inspection · Benchmark charts &amp; verify links</text>
 
   <!-- LAYER 2: API & ORCHESTRATION CONTROL PLANE -->
-  <path d="M 290 198 L 290 226" stroke="#818CF8" stroke-width="2" marker-end="url(#arrBlue)" />
-  <path d="M 818 198 L 818 226" stroke="#22D3EE" stroke-width="2" marker-end="url(#arrCyan)" />
+  <path d="M 290 198 L 290 226" stroke="#a1a1a6" stroke-width="2" marker-end="url(#arrNeutral)" />
+  <path d="M 818 198 L 818 226" stroke="#a1a1a6" stroke-width="2" marker-end="url(#arrNeutral)" />
 
-  <rect x="28" y="230" width="1064" height="106" rx="14" fill="#0F152B" stroke="#8B5CF6" stroke-width="1.5" />
-  <text x="46" y="252" fill="#C4B5FD" font-family="ui-monospace, monospace" font-size="11" font-weight="700">2 · API GATEWAY &amp; PIPELINE CONTROL PLANE</text>
+  <rect x="28" y="230" width="1064" height="106" rx="12" fill="#19191b" stroke="#2c2c31" stroke-width="1.5" />
+  <text x="46" y="252" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="11" font-weight="500">2 · API GATEWAY &amp; PIPELINE CONTROL PLANE</text>
 
-  <rect x="46" y="264" width="330" height="58" rx="10" fill="#1E1B4B" stroke="#A78BFA" stroke-width="1.1" />
-  <text x="62" y="285" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">FastAPI Zero-Trust Control Server</text>
-  <text x="62" y="303" fill="#CBD5E1" font-family="ui-monospace, monospace" font-size="10.5">Auth JWT · /api/challenges · /api/generate · /api/run-code</text>
+  <rect x="46" y="264" width="330" height="58" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.1" />
+  <text x="62" y="285" fill="#ededed" font-family="system-ui, sans-serif" font-size="13" font-weight="600">FastAPI Zero-Trust Control Server</text>
+  <text x="62" y="303" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="10.5">Auth JWT · /api/challenges · /api/generate · /api/run-code</text>
 
-  <rect x="394" y="264" width="340" height="58" rx="10" fill="#1E1B4B" stroke="#A78BFA" stroke-width="1.1" />
-  <text x="410" y="285" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">TaskForge Pipeline Controller</text>
-  <text x="410" y="303" fill="#CBD5E1" font-family="ui-monospace, monospace" font-size="10.5">pipeline/config.py · Repo / Image Parameter Resolver</text>
+  <rect x="394" y="264" width="340" height="58" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.1" />
+  <text x="410" y="285" fill="#ededed" font-family="system-ui, sans-serif" font-size="13" font-weight="600">TaskForge Pipeline Controller</text>
+  <text x="410" y="303" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="10.5">pipeline/config.py · Repo / Image Parameter Resolver</text>
 
-  <rect x="752" y="264" width="322" height="58" rx="10" fill="#172554" stroke="#38BDF8" stroke-width="1.1" />
-  <text x="768" y="285" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Task Package Inspector &amp; Index</text>
-  <text x="768" y="303" fill="#CBD5E1" font-family="ui-monospace, monospace" font-size="10.5">Harbor 0.25 schema checks · AST &amp; diff resolver</text>
+  <rect x="752" y="264" width="322" height="58" rx="8" fill="#222225" stroke="#35353b" stroke-width="1.1" />
+  <text x="768" y="285" fill="#ededed" font-family="system-ui, sans-serif" font-size="13" font-weight="600">Task Package Inspector &amp; Index</text>
+  <text x="768" y="303" fill="#a1a1a6" font-family="ui-monospace, monospace" font-size="10.5">Harbor 0.25 schema checks · AST &amp; diff resolver</text>
 
   <!-- LAYER 3: TASK GENERATION & MODEL SANDBOX -->
-  <path d="M 300 336 L 300 364" stroke="#818CF8" stroke-width="2" marker-end="url(#arrBlue)" />
-  <path d="M 800 336 L 800 364" stroke="#22D3EE" stroke-width="2" marker-end="url(#arrCyan)" />
+  <path d="M 300 336 L 300 364" stroke="#a1a1a6" stroke-width="2" marker-end="url(#arrNeutral)" />
+  <path d="M 800 336 L 800 364" stroke="#a1a1a6" stroke-width="2" marker-end="url(#arrNeutral)" />
 
-  <!-- Left Half: Generation Engine -->
-  <rect x="28" y="368" width="520" height="148" rx="14" fill="#0B192C" stroke="#06B6D4" stroke-width="1.5" />
-  <text x="46" y="390" fill="#67E8F9" font-family="ui-monospace, monospace" font-size="11" font-weight="700">3A · TASK PACKAGE GENERATOR ENGINE</text>
+  <rect x="28" y="368" width="520" height="148" rx="12" fill="#19191b" stroke="#2c2c31" stroke-width="1.5" />
+  <text x="46" y="390" fill="#ededed" font-family="ui-monospace, monospace" font-size="11" font-weight="500">3A · TASK PACKAGE GENERATOR ENGINE</text>
 
-  <rect x="46" y="404" width="234" height="96" rx="10" fill="#0F172A" stroke="#38BDF8" stroke-width="1" />
-  <text x="60" y="425" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">RepoAnalyzer &amp; Specs</text>
-  <text x="60" y="445" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Git URL + Pinned SHA</text>
-  <text x="60" y="462" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• AST &amp; module graph</text>
-  <text x="60" y="479" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Image base + dependencies</text>
+  <rect x="46" y="404" width="234" height="96" rx="8" fill="#141415" stroke="#35353b" stroke-width="1" />
+  <text x="60" y="425" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">RepoAnalyzer &amp; Specs</text>
+  <text x="60" y="445" fill="#85858b" font-family="system-ui, sans-serif" font-size="10.5">• Git URL + Pinned SHA</text>
+  <text x="60" y="462" fill="#85858b" font-family="system-ui, sans-serif" font-size="10.5">• AST &amp; module graph</text>
+  <text x="60" y="479" fill="#85858b" font-family="system-ui, sans-serif" font-size="10.5">• Image base + dependencies</text>
 
-  <rect x="296" y="404" width="236" height="96" rx="10" fill="#0F172A" stroke="#38BDF8" stroke-width="1" />
-  <text x="310" y="425" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">PackageBuilder (Harbor 0.25)</text>
-  <text x="310" y="445" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• instruction.md &amp; task.toml</text>
-  <text x="310" y="462" fill="#34D399" font-family="-apple-system, sans-serif" font-size="10.5">• Reference Tests (F2P/P2P)</text>
-  <text x="310" y="479" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Solution patch + Dockerfile</text>
+  <rect x="296" y="404" width="236" height="96" rx="8" fill="#141415" stroke="#35353b" stroke-width="1" />
+  <text x="310" y="425" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">PackageBuilder (Harbor 0.25)</text>
+  <text x="310" y="445" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• instruction.md &amp; task.toml</text>
+  <text x="310" y="462" fill="#4cc38a" font-family="system-ui, sans-serif" font-size="10.5">• Reference Tests (F2P/P2P)</text>
+  <text x="310" y="479" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• Solution patch + Dockerfile</text>
 
-  <!-- Right Half: Execution & Target AI Sandbox -->
-  <path d="M 548 442 L 570 442" stroke="#34D399" stroke-width="2.2" marker-end="url(#arrGreen)" />
+  <path d="M 548 442 L 570 442" stroke="#4cc38a" stroke-width="2.2" marker-end="url(#arrGreen)" />
 
-  <rect x="574" y="368" width="518" height="148" rx="14" fill="#081D1A" stroke="#10B981" stroke-width="1.5" />
-  <text x="592" y="390" fill="#6EE7B7" font-family="ui-monospace, monospace" font-size="11" font-weight="700">3B · TARGET AI &amp; ISOLATED EXECUTION SANDBOX</text>
+  <rect x="574" y="368" width="518" height="148" rx="12" fill="#19191b" stroke="#4cc38a" stroke-opacity="0.4" stroke-width="1.5" />
+  <text x="592" y="390" fill="#4cc38a" font-family="ui-monospace, monospace" font-size="11" font-weight="500">3B · TARGET AI &amp; ISOLATED EXECUTION SANDBOX</text>
 
-  <rect x="592" y="404" width="232" height="96" rx="10" fill="#052E16" stroke="#34D399" stroke-width="1" />
-  <text x="606" y="425" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">Target AI Model Harness</text>
-  <text x="606" y="445" fill="#D1FAE5" font-family="-apple-system, sans-serif" font-size="10.5">• Gemini / Frontier Coding Models</text>
-  <text x="606" y="462" fill="#CBD5E1" font-family="-apple-system, sans-serif" font-size="10.5">• Baseline (nop) = 0.0 Check</text>
-  <text x="606" y="479" fill="#FDE68A" font-family="-apple-system, sans-serif" font-size="10.5">• Oracle Patch = 1.0 Check</text>
+  <rect x="592" y="404" width="232" height="96" rx="8" fill="#141415" stroke="#35353b" stroke-width="1" />
+  <text x="606" y="425" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">Target AI Model Harness</text>
+  <text x="606" y="445" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• Gemini / Frontier Coding Models</text>
+  <text x="606" y="462" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• Baseline (nop) = 0.0 Check</text>
+  <text x="606" y="479" fill="#4cc38a" font-family="system-ui, sans-serif" font-size="10.5">• Oracle Patch = 1.0 Check</text>
 
-  <rect x="840" y="404" width="236" height="96" rx="10" fill="#052E16" stroke="#34D399" stroke-width="1" />
-  <text x="854" y="425" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">Multi-Runtime Sandbox</text>
-  <text x="854" y="445" fill="#D1FAE5" font-family="-apple-system, sans-serif" font-size="10.5">• Python 3.11 + pytest</text>
-  <text x="854" y="462" fill="#D1FAE5" font-family="-apple-system, sans-serif" font-size="10.5">• Node JS &amp; TS Strip-Types</text>
-  <text x="854" y="479" fill="#67E8F9" font-family="-apple-system, sans-serif" font-size="10.5">• C++20 g++ + JsonCpp / Docker</text>
+  <rect x="840" y="404" width="236" height="96" rx="8" fill="#141415" stroke="#35353b" stroke-width="1" />
+  <text x="854" y="425" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">Multi-Runtime Sandbox</text>
+  <text x="854" y="445" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• Python 3.11 + pytest</text>
+  <text x="854" y="462" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">• Node JS &amp; TS Strip-Types</text>
+  <text x="854" y="479" fill="#e5a00d" font-family="system-ui, sans-serif" font-size="10.5">• C++20 g++ + JsonCpp / Docker</text>
 
   <!-- LAYER 4: VALIDATED ARTIFACTS & REPORTING -->
-  <path d="M 290 516 L 290 544" stroke="#FBBF24" stroke-width="2" marker-end="url(#arrAmber)" />
-  <path d="M 830 516 L 830 544" stroke="#FBBF24" stroke-width="2" marker-end="url(#arrAmber)" />
+  <path d="M 290 516 L 290 544" stroke="#e5a00d" stroke-width="2" marker-end="url(#arrAmber)" />
+  <path d="M 830 516 L 830 544" stroke="#e5a00d" stroke-width="2" marker-end="url(#arrAmber)" />
 
-  <rect x="28" y="548" width="1064" height="122" rx="14" fill="#181308" stroke="#F59E0B" stroke-width="1.5" />
-  <text x="46" y="570" fill="#FCD34D" font-family="ui-monospace, monospace" font-size="11" font-weight="700">4 · VALIDATION ENGINE, PERSISTENCE &amp; EVALUATION REPORT STORE</text>
+  <rect x="28" y="548" width="1064" height="122" rx="12" fill="#19191b" stroke="#e5a00d" stroke-opacity="0.45" stroke-width="1.5" />
+  <text x="46" y="570" fill="#e5a00d" font-family="ui-monospace, monospace" font-size="11" font-weight="500">4 · VALIDATION ENGINE, PERSISTENCE &amp; EVALUATION REPORT STORE</text>
 
-  <rect x="46" y="584" width="320" height="72" rx="10" fill="#271D0B" stroke="#FBBF24" stroke-width="1" />
-  <text x="62" y="606" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">Validator &amp; Mutation Suite</text>
-  <text x="62" y="625" fill="#FDE68A" font-family="ui-monospace, monospace" font-size="10.5">validator.py · mutation_tester.py</text>
-  <text x="62" y="642" fill="#CBD5E1" font-family="-apple-system, sans-serif" font-size="10.5">100% mutant kill + zero-leakage gate</text>
+  <rect x="46" y="584" width="320" height="72" rx="8" fill="#222225" stroke="#35353b" stroke-width="1" />
+  <text x="62" y="606" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">Validator &amp; Mutation Suite</text>
+  <text x="62" y="625" fill="#e5a00d" font-family="ui-monospace, monospace" font-size="10.5">validator.py · mutation_tester.py</text>
+  <text x="62" y="642" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">100% mutant kill + zero-leakage gate</text>
 
-  <rect x="386" y="584" width="334" height="72" rx="10" fill="#271D0B" stroke="#FBBF24" stroke-width="1" />
-  <text x="402" y="606" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">Task Packages &amp; Evidence Store</text>
-  <text x="402" y="625" fill="#FDE68A" font-family="ui-monospace, monospace" font-size="10.5">task_packages/ · validation_evidence/</text>
-  <text x="402" y="642" fill="#CBD5E1" font-family="-apple-system, sans-serif" font-size="10.5">SQLite/SQLAlchemy + validation_report.json</text>
+  <rect x="386" y="584" width="334" height="72" rx="8" fill="#222225" stroke="#35353b" stroke-width="1" />
+  <text x="402" y="606" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">Task Packages &amp; Evidence Store</text>
+  <text x="402" y="625" fill="#ededed" font-family="ui-monospace, monospace" font-size="10.5">task_packages/ · validation_evidence/</text>
+  <text x="402" y="642" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">SQLite/SQLAlchemy + validation_report.json</text>
 
-  <rect x="740" y="584" width="334" height="72" rx="10" fill="#271D0B" stroke="#FBBF24" stroke-width="1" />
-  <text x="756" y="606" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="12.5" font-weight="700">Evaluation Reports &amp; Credentials</text>
-  <text x="756" y="625" fill="#FDE68A" font-family="ui-monospace, monospace" font-size="10.5">Summary Matrix · Stdout Logs · SHA-256 PDF</text>
-  <text x="756" y="642" fill="#CBD5E1" font-family="-apple-system, sans-serif" font-size="10.5">Streamed directly back to CLI &amp; Web Dashboard</text>
+  <rect x="740" y="584" width="334" height="72" rx="8" fill="#222225" stroke="#35353b" stroke-width="1" />
+  <text x="756" y="606" fill="#ededed" font-family="system-ui, sans-serif" font-size="12.5" font-weight="600">Evaluation Reports &amp; Credentials</text>
+  <text x="756" y="625" fill="#4cc38a" font-family="ui-monospace, monospace" font-size="10.5">Summary Matrix · Stdout Logs · SHA-256 PDF</text>
+  <text x="756" y="642" fill="#a1a1a6" font-family="system-ui, sans-serif" font-size="10.5">Streamed directly back to CLI &amp; Web Dashboard</text>
 </svg>
